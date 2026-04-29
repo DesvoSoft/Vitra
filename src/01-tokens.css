@@ -1,0 +1,11 @@
+/* 01-tokens.css - Foundation Tokens */
+/* Part of Vitra CSS Framework */
+/* Phase 1: Tokens & Themes - Plan 01 */
+
+/* Define cascade layer order */
+@layer tokens, glass, layout, components, utilities;
+
+/* Tokens layer - immutable design tokens */
+@layer tokens {
+  /* Core tokens will be defined in Task 2 */
+}
