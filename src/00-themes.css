@@ -1,0 +1,270 @@
+/* 00-themes.css - Theme Definitions */
+/* Part of Vitra CSS Framework */
+/* Phase 1: Tokens & Themes - Plan 02 */
+
+/* ============================================
+   THEME SYSTEM - Vitra CSS Framework
+   Themes override tokens using [data-theme] selectors
+   Apply via: <html data-theme="theme-name"> or JS
+   ============================================ */
+
+@layer tokens {
+  /* --- DEFAULT THEME --- */
+  /* Base tokens are already defined in 01-tokens.css */
+  /* Default theme matches the base token values */
+
+  /* --- LIGHT THEME --- */
+  [data-theme="light"] {
+    /* Colors - Light background, dark text */
+    --vitra-color-bg: #ffffff;
+    --vitra-color-surface: rgba(0, 0, 0, 0.05);
+    --vitra-color-surface-hover: rgba(0, 0, 0, 0.08);
+    --vitra-color-surface-active: rgba(0, 0, 0, 0.12);
+    --vitra-color-border: rgba(0, 0, 0, 0.12);
+    --vitra-color-border-hover: rgba(0, 0, 0, 0.2);
+    --vitra-color-accent: #6c63ff;
+    --vitra-color-accent-hover: #7b73ff;
+    --vitra-color-accent-active: #5a52e0;
+    --vitra-color-text-primary: rgba(0, 0, 0, 0.95);
+    --vitra-color-text-secondary: rgba(0, 0, 0, 0.7);
+    --vitra-color-text-tertiary: rgba(0, 0, 0, 0.5);
+    --vitra-color-text-inverse: #ffffff;
+    --vitra-color-success: #10b981;
+    --vitra-color-warning: #f59e0b;
+    --vitra-color-error: #ef4444;
+    --vitra-color-info: #3b82f6;
+
+    /* Shadows - Lighter for light theme */
+    --vitra-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.12);
+    --vitra-shadow-glow: 0 0 20px rgba(108, 99, 255, 0.2);
+    --vitra-shadow-glow-strong: 0 0 40px rgba(108, 99, 255, 0.3);
+  }
+
+  /* --- DARK THEME --- */
+  [data-theme="dark"] {
+    /* Colors - Dark background, light text */
+    --vitra-color-bg: #0f0f14;
+    --vitra-color-surface: rgba(255, 255, 255, 0.05);
+    --vitra-color-surface-hover: rgba(255, 255, 255, 0.08);
+    --vitra-color-surface-active: rgba(255, 255, 255, 0.12);
+    --vitra-color-border: rgba(255, 255, 255, 0.12);
+    --vitra-color-border-hover: rgba(255, 255, 255, 0.2);
+    --vitra-color-accent: #6c63ff;
+    --vitra-color-accent-hover: #7b73ff;
+    --vitra-color-accent-active: #5a52e0;
+    --vitra-color-text-primary: rgba(255, 255, 255, 0.95);
+    --vitra-color-text-secondary: rgba(255, 255, 255, 0.7);
+    --vitra-color-text-tertiary: rgba(255, 255, 255, 0.5);
+    --vitra-color-text-inverse: #0f0f14;
+    --vitra-color-success: #10b981;
+    --vitra-color-warning: #f59e0b;
+    --vitra-color-error: #ef4444;
+    --vitra-color-info: #3b82f6;
+
+    /* Shadows - Glow effects for dark theme */
+    --vitra-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --vitra-shadow-glow: 0 0 20px rgba(108, 99, 255, 0.3);
+    --vitra-shadow-glow-strong: 0 0 40px rgba(108, 99, 255, 0.5);
+  }
+
+  /* --- PASTEL THEME --- */
+  [data-theme="pastel"] {
+    /* Colors - Soft muted colors */
+    --vitra-color-bg: #f9f7f7;
+    --vitra-color-surface: rgba(255, 182, 193, 0.15);
+    --vitra-color-surface-hover: rgba(255, 182, 193, 0.25);
+    --vitra-color-surface-active: rgba(255, 182, 193, 0.35);
+    --vitra-color-border: rgba(200, 162, 200, 0.3);
+    --vitra-color-border-hover: rgba(200, 162, 200, 0.5);
+    --vitra-color-accent: #ffb6c1;
+    --vitra-color-accent-hover: #ffc0cb;
+    --vitra-color-accent-active: #db7093;
+    --vitra-color-text-primary: rgba(80, 60, 80, 0.95);
+    --vitra-color-text-secondary: rgba(80, 60, 80, 0.7);
+    --vitra-color-text-tertiary: rgba(80, 60, 80, 0.5);
+    --vitra-color-text-inverse: #f9f7f7;
+    --vitra-color-success: #90ee90;
+    --vitra-color-warning: #fffacd;
+    --vitra-color-error: #ffb6c1;
+    --vitra-color-info: #add8e6;
+
+    /* Shadows - Soft pastel shadows */
+    --vitra-shadow-subtle: 0 1px 3px rgba(200, 162, 200, 0.15);
+    --vitra-shadow-medium: 0 4px 12px rgba(200, 162, 200, 0.2);
+    --vitra-shadow-elevated: 0 8px 32px rgba(200, 162, 200, 0.25);
+    --vitra-shadow-glow: 0 0 20px rgba(255, 182, 193, 0.3);
+    --vitra-shadow-glow-strong: 0 0 40px rgba(255, 182, 193, 0.4);
+  }
+
+  /* --- NEON THEME --- */
+  [data-theme="neon"] {
+    /* Colors - Bright glowing accents */
+    --vitra-color-bg: #0a0a0f;
+    --vitra-color-surface: rgba(0, 255, 255, 0.05);
+    --vitra-color-surface-hover: rgba(0, 255, 255, 0.1);
+    --vitra-color-surface-active: rgba(0, 255, 255, 0.15);
+    --vitra-color-border: rgba(0, 255, 255, 0.3);
+    --vitra-color-border-hover: rgba(0, 255, 255, 0.5);
+    --vitra-color-accent: #00ffff;
+    --vitra-color-accent-hover: #00ffaa;
+    --vitra-color-accent-active: #00ccaa;
+    --vitra-color-text-primary: rgba(0, 255, 255, 0.95);
+    --vitra-color-text-secondary: rgba(0, 255, 255, 0.7);
+    --vitra-color-text-tertiary: rgba(0, 255, 255, 0.5);
+    --vitra-color-text-inverse: #0a0a0f;
+    --vitra-color-success: #00ff00;
+    --vitra-color-warning: #ffff00;
+    --vitra-color-error: #ff00ff;
+    --vitra-color-info: #00aaff;
+
+    /* Shadows - Strong glow effects */
+    --vitra-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.5);
+    --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.6);
+    --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.7);
+    --vitra-shadow-glow: 0 0 20px rgba(0, 255, 255, 0.5);
+    --vitra-shadow-glow-strong: 0 0 40px rgba(0, 255, 255, 0.8);
+  }
+
+  /* --- EARTH THEME --- */
+  [data-theme="earth"] {
+    /* Colors - Warm natural tones */
+    --vitra-color-bg: #f5e6d3;
+    --vitra-color-surface: rgba(139, 90, 43, 0.08);
+    --vitra-color-surface-hover: rgba(139, 90, 43, 0.12);
+    --vitra-color-surface-active: rgba(139, 90, 43, 0.18);
+    --vitra-color-border: rgba(139, 90, 43, 0.2);
+    --vitra-color-border-hover: rgba(139, 90, 43, 0.35);
+    --vitra-color-accent: #8b5a2b;
+    --vitra-color-accent-hover: #a0714a;
+    --vitra-color-accent-active: #6b4423;
+    --vitra-color-text-primary: rgba(62, 39, 18, 0.95);
+    --vitra-color-text-secondary: rgba(62, 39, 18, 0.7);
+    --vitra-color-text-tertiary: rgba(62, 39, 18, 0.5);
+    --vitra-color-text-inverse: #f5e6d3;
+    --vitra-color-success: #556b2f;
+    --vitra-color-warning: #cd853f;
+    --vitra-color-error: #8b0000;
+    --vitra-color-info: #4682b4;
+
+    /* Shadows - Earthy shadows */
+    --vitra-shadow-subtle: 0 1px 3px rgba(62, 39, 18, 0.1);
+    --vitra-shadow-medium: 0 4px 12px rgba(62, 39, 18, 0.15);
+    --vitra-shadow-elevated: 0 8px 32px rgba(62, 39, 18, 0.2);
+    --vitra-shadow-glow: 0 0 20px rgba(139, 90, 43, 0.2);
+    --vitra-shadow-glow-strong: 0 0 40px rgba(139, 90, 43, 0.3);
+  }
+
+  /* --- MONO THEME --- */
+  [data-theme="mono"] {
+    /* Colors - Grayscale only */
+    --vitra-color-bg: #f5f5f5;
+    --vitra-color-surface: rgba(0, 0, 0, 0.05);
+    --vitra-color-surface-hover: rgba(0, 0, 0, 0.08);
+    --vitra-color-surface-active: rgba(0, 0, 0, 0.12);
+    --vitra-color-border: rgba(0, 0, 0, 0.15);
+    --vitra-color-border-hover: rgba(0, 0, 0, 0.25);
+    --vitra-color-accent: #505050;
+    --vitra-color-accent-hover: #707070;
+    --vitra-color-accent-active: #303030;
+    --vitra-color-text-primary: rgba(0, 0, 0, 0.95);
+    --vitra-color-text-secondary: rgba(0, 0, 0, 0.7);
+    --vitra-color-text-tertiary: rgba(0, 0, 0, 0.5);
+    --vitra-color-text-inverse: #f5f5f5;
+    --vitra-color-success: #404040;
+    --vitra-color-warning: #606060;
+    --vitra-color-error: #202020;
+    --vitra-color-info: #505050;
+
+    /* Shadows - Gray shadows */
+    --vitra-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.2);
+    --vitra-shadow-glow: 0 0 20px rgba(80, 80, 80, 0.2);
+    --vitra-shadow-glow-strong: 0 0 40px rgba(80, 80, 80, 0.3);
+  }
+
+  /* --- MIDNIGHT THEME --- */
+  [data-theme="midnight"] {
+    /* Colors - Deep blue-purple */
+    --vitra-color-bg: #0f0b1a;
+    --vitra-color-surface: rgba(106, 90, 205, 0.08);
+    --vitra-color-surface-hover: rgba(106, 90, 205, 0.12);
+    --vitra-color-surface-active: rgba(106, 90, 205, 0.18);
+    --vitra-color-border: rgba(106, 90, 205, 0.25);
+    --vitra-color-border-hover: rgba(106, 90, 205, 0.4);
+    --vitra-color-accent: #6a5acd;
+    --vitra-color-accent-hover: #7b68ee;
+    --vitra-color-accent-active: #483d8b;
+    --vitra-color-text-primary: rgba(230, 230, 250, 0.95);
+    --vitra-color-text-secondary: rgba(230, 230, 250, 0.7);
+    --vitra-color-text-tertiary: rgba(230, 230, 250, 0.5);
+    --vitra-color-text-inverse: #0f0b1a;
+    --vitra-color-success: #90ee90;
+    --vitra-color-warning: #ffd700;
+    --vitra-color-error: #ff1493;
+    --vitra-color-info: #00bfff;
+
+    /* Shadows - Purple glow effects */
+    --vitra-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.5);
+    --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.6);
+    --vitra-shadow-glow: 0 0 20px rgba(106, 90, 205, 0.4);
+    --vitra-shadow-glow-strong: 0 0 40px rgba(106, 90, 205, 0.6);
+  }
+
+  /* --- AUTO THEME --- */
+  /* Uses prefers-color-scheme to auto-detect system preference */
+  [data-theme="auto"] {
+    /* Default to dark (matches base tokens) */
+    --vitra-color-bg: #0f0f14;
+    --vitra-color-surface: rgba(255, 255, 255, 0.05);
+    --vitra-color-surface-hover: rgba(255, 255, 255, 0.08);
+    --vitra-color-surface-active: rgba(255, 255, 255, 0.12);
+    --vitra-color-border: rgba(255, 255, 255, 0.12);
+    --vitra-color-border-hover: rgba(255, 255, 255, 0.2);
+    --vitra-color-accent: #6c63ff;
+    --vitra-color-accent-hover: #7b73ff;
+    --vitra-color-accent-active: #5a52e0;
+    --vitra-color-text-primary: rgba(255, 255, 255, 0.95);
+    --vitra-color-text-secondary: rgba(255, 255, 255, 0.7);
+    --vitra-color-text-tertiary: rgba(255, 255, 255, 0.5);
+    --vitra-color-text-inverse: #0f0f14;
+    --vitra-color-success: #10b981;
+    --vitra-color-warning: #f59e0b;
+    --vitra-color-error: #ef4444;
+    --vitra-color-info: #3b82f6;
+
+    /* Shadows */
+    --vitra-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --vitra-shadow-glow: 0 0 20px rgba(108, 99, 255, 0.3);
+    --vitra-shadow-glow-strong: 0 0 40px rgba(108, 99, 255, 0.5);
+  }
+
+  /* Auto theme: light preference */
+  @media (prefers-color-scheme: light) {
+    [data-theme="auto"] {
+      --vitra-color-bg: #ffffff;
+      --vitra-color-surface: rgba(0, 0, 0, 0.05);
+      --vitra-color-surface-hover: rgba(0, 0, 0, 0.08);
+      --vitra-color-surface-active: rgba(0, 0, 0, 0.12);
+      --vitra-color-border: rgba(0, 0, 0, 0.12);
+      --vitra-color-border-hover: rgba(0, 0, 0, 0.2);
+      --vitra-color-text-primary: rgba(0, 0, 0, 0.95);
+      --vitra-color-text-secondary: rgba(0, 0, 0, 0.7);
+      --vitra-color-text-tertiary: rgba(0, 0, 0, 0.5);
+      --vitra-color-text-inverse: #ffffff;
+
+      --vitra-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.08);
+      --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.12);
+      --vitra-shadow-glow: 0 0 20px rgba(108, 99, 255, 0.2);
+      --vitra-shadow-glow-strong: 0 0 40px rgba(108, 99, 255, 0.3);
+    }
+  }
+}
