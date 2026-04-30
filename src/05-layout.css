@@ -88,4 +88,88 @@
   .vitra-container-fluid {
     max-width: 100%;
   }
+
+  /* --- GRID SYSTEM --- */
+  /* CSS Grid utilities with column variants and gap utilities */
+
+  .vitra-grid {
+    display: grid;
+    gap: var(--vitra-space-3); /* Default gap: 1.5rem (24px) */
+  }
+
+  /* Grid column variants */
+  .vitra-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .vitra-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .vitra-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* Responsive grid variants */
+  /* 2 columns on medium+ screens */
+  @media (min-width: 768px) {
+    .vitra-grid-md-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .vitra-grid-md-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .vitra-grid-md-4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* 3 columns on large+ screens */
+  @media (min-width: 1024px) {
+    .vitra-grid-lg-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .vitra-grid-lg-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .vitra-grid-lg-4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* --- GRID GAP UTILITIES --- */
+  /* Using spacing tokens for consistent gaps */
+
+  .vitra-grid-gap-1 {
+    gap: var(--vitra-space-1); /* 8px */
+  }
+
+  .vitra-grid-gap-2 {
+    gap: var(--vitra-space-2); /* 16px */
+  }
+
+  .vitra-grid-gap-3 {
+    gap: var(--vitra-space-3); /* 24px */
+  }
+
+  .vitra-grid-gap-4 {
+    gap: var(--vitra-space-4); /* 32px */
+  }
+
+  .vitra-grid-gap-5 {
+    gap: var(--vitra-space-5); /* 40px */
+  }
+
+  .vitra-grid-gap-6 {
+    gap: var(--vitra-space-6); /* 48px */
+  }
+
+  /* Fluid gap using clamp() */
+  .vitra-grid-gap-fluid {
+    gap: var(--vitra-fluid-space-3); /* clamp(1rem, 3vw, 1.5rem) */
+  }
 }
