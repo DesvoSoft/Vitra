@@ -17,12 +17,11 @@
 
   /* --- GLASS BASE CLASS --- */
   /* Core glassmorphism effect with configurable blur */
-  .vitra-glass {
-    /* Semi-transparent surface using token */
-    background: var(--vitra-color-surface);
 
-    /* Default medium blur using token */
-    backdrop-filter: blur(var(--vitra-blur-md));
+  /* Fallback: solid background for browsers without backdrop-filter support */
+  .vitra-glass {
+    /* Semi-transparent surface as base (fallback for no backdrop-filter) */
+    background: var(--vitra-color-surface);
 
     /* Subtle border using color token */
     border: 1px solid var(--vitra-color-border);
@@ -32,5 +31,16 @@
 
     /* Default border radius */
     border-radius: var(--vitra-radius-md);
+  }
+
+  /* Enhanced: backdrop-filter support detection */
+  @supports (backdrop-filter: blur(4px)) {
+    .vitra-glass {
+      /* More transparent background since blur provides the glass effect */
+      background: rgba(255, 255, 255, 0.08);
+
+      /* Apply backdrop blur using token */
+      backdrop-filter: blur(var(--vitra-blur-md));
+    }
   }
 }
