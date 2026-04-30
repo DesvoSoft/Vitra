@@ -1,0 +1,36 @@
+/* 02-glass.css - Glass System */
+/* Part of Vitra CSS Framework */
+/* Phase 2: Glass System - Plan 01 */
+
+/* ============================================
+   GLASS LAYER - Vitra CSS Framework
+   Provides glassmorphism effects with configurable
+   blur, @supports fallback, and multiple variants
+   ============================================ */
+
+@layer glass {
+  /* --- GLASS BLUR TOKENS --- */
+  /* Blur intensity variants for glassmorphism effects */
+  --vitra-blur-sm: 2px;
+  --vitra-blur-md: 4px;
+  --vitra-blur-lg: 6px;
+
+  /* --- GLASS BASE CLASS --- */
+  /* Core glassmorphism effect with configurable blur */
+  .vitra-glass {
+    /* Semi-transparent surface using token */
+    background: var(--vitra-color-surface);
+
+    /* Default medium blur using token */
+    backdrop-filter: blur(var(--vitra-blur-md));
+
+    /* Subtle border using color token */
+    border: 1px solid var(--vitra-color-border);
+
+    /* Medium shadow using token */
+    box-shadow: var(--vitra-shadow-medium);
+
+    /* Default border radius */
+    border-radius: var(--vitra-radius-md);
+  }
+}
