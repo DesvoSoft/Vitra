@@ -68,6 +68,20 @@
     }
   }
 
+  // Global toggle function for the button in index.html
+  window.toggleTheme = function() {
+    if (window.Vitra && Vitra.theme) {
+      const nextTheme = Vitra.theme.toggle();
+      
+      // Update UI
+      const selector = document.getElementById('theme-selector');
+      if (selector) selector.value = nextTheme;
+      
+      updateThemeDisplay(nextTheme);
+      showNotification(`Theme toggled to: ${nextTheme}`);
+    }
+  };
+
   function updateThemeDisplay(themeName) {
     const themeDisplay = document.getElementById('current-theme-name');
     if (!themeDisplay) return;

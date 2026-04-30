@@ -40,14 +40,8 @@
     <div class="vitra-navbar-actions">
       <select id="theme-selector" class="vitra-select" style="min-width: 150px;">
         <option value="auto">Auto (System)</option>
-        <option value="default">Default</option>
         <option value="light">Light</option>
         <option value="dark">Dark</option>
-        <option value="pastel">Pastel</option>
-        <option value="neon">Neon</option>
-        <option value="earth">Earth</option>
-        <option value="mono">Mono</option>
-        <option value="midnight">Midnight</option>
       </select>
 
       <button class="vitra-burger" aria-label="Toggle menu">
@@ -89,7 +83,7 @@
       <button class="vitra-btn vitra-btn-solid vitra-btn-lg" onclick="Vitra.particles.spawn(10, {container: '#particle-demo-area'})">
         Test Particles
       </button>
-      <button class="vitra-btn vitra-btn-glass vitra-btn-lg" onclick="Vitra.theme.toggle('light', 'dark')">
+      <button class="vitra-btn vitra-btn-glass vitra-btn-lg" onclick="toggleTheme()">
         Toggle Theme
       </button>
       <button class="vitra-btn vitra-btn-ghost vitra-btn-lg" data-vitra-modal-open="demo-modal">
