@@ -14,28 +14,8 @@ const Vitra = (() => {
 
   // Valid theme names
   const VALID_THEMES = [
-    'default',
     'light',
-    'light-dark',
-    'light-soft',
     'dark',
-    'dark-light',
-    'dark-deep',
-    'pastel',
-    'pastel-dark',
-    'pastel-light',
-    'neon',
-    'neon-dark',
-    'neon-light',
-    'earth',
-    'earth-dark',
-    'earth-light',
-    'mono',
-    'mono-dark',
-    'mono-light',
-    'midnight',
-    'midnight-dark',
-    'midnight-light',
     'auto'
   ];
 
@@ -51,11 +31,11 @@ const Vitra = (() => {
 
     /**
      * Get the current theme from DOM
-     * @returns {string} Current theme name or 'default'
+     * @returns {string} Current theme name or 'auto'
      */
     get() {
       const html = document.documentElement;
-      return html.dataset.theme || 'default';
+      return html.dataset.theme || 'auto';
     },
 
     /**
@@ -86,48 +66,22 @@ const Vitra = (() => {
     },
 
     /**
-     * Toggle between themes (smart: toggles current theme's light/dark variants)
-     * @param {string} themeA - First theme (default: 'light')
-     * @param {string} themeB - Second theme (default: 'dark')
+     * Toggle between light and dark themes
      * @returns {string} The new active theme
      */
-    toggle(themeA = 'light', themeB = 'dark') {
+    toggle() {
       const current = this.get();
-      
-      // Smart toggle: check if current theme has a light/dark variant
-      const darkVariants = ['dark', 'dark-light', 'dark-deep', 'pastel-dark', 'neon-dark', 'earth-dark', 'mono-dark', 'midnight', 'midnight-dark'];
-      const lightVariants = ['light', 'light-dark', 'light-soft', 'pastel', 'pastel-light', 'neon', 'neon-light', 'earth', 'earth-light', 'mono', 'mono-light', 'midnight-light'];
-      
-      // If current is a dark variant, switch to its light version
-      if (darkVariants.includes(current)) {
-        // Find the base theme name and switch to light variant
-        let nextTheme = themeA;
-        if (current.startsWith('pastel')) nextTheme = 'pastel';
-        else if (current.startsWith('neon')) nextTheme = 'neon';
-        else if (current.startsWith('earth')) nextTheme = 'earth';
-        else if (current.startsWith('mono')) nextTheme = 'mono';
-        else if (current.startsWith('midnight')) nextTheme = 'midnight-light';
-        else if (current.startsWith('dark')) nextTheme = 'light';
-        this.set(nextTheme);
-        return nextTheme;
+      let next;
+
+      if (current === 'auto') {
+        // If auto, switch to the opposite of current system preference
+        const effective = this.getEffective();
+        next = effective === 'dark' ? 'light' : 'dark';
+      } else {
+        // Otherwise simple flip
+        next = current === 'dark' ? 'light' : 'dark';
       }
-      
-      // If current is a light variant, switch to its dark version
-      if (lightVariants.includes(current)) {
-        // Find the base theme name and switch to dark variant
-        let nextTheme = themeB;
-        if (current.startsWith('pastel')) nextTheme = 'pastel-dark';
-        else if (current.startsWith('neon')) nextTheme = 'neon-dark';
-        else if (current.startsWith('earth')) nextTheme = 'earth-dark';
-        else if (current.startsWith('mono')) nextTheme = 'mono-dark';
-        else if (current.startsWith('midnight')) nextTheme = 'midnight';
-        else if (current.startsWith('light')) nextTheme = 'dark';
-        this.set(nextTheme);
-        return nextTheme;
-      }
-      
-      // Fallback: toggle between the two provided themes
-      const next = current === themeA ? themeB : themeA;
+
       this.set(next);
       return next;
     },
