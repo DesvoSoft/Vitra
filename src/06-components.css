@@ -390,6 +390,219 @@
   }
 
   /* ============================================
+      FORM ELEMENTS (COMP-03)
+      Input, select, textarea with .vitra-input, toggle switches
+      ============================================ */
+
+  /* --- INPUT BASE --- */
+  /* Base styles for input, select, textarea */
+  .vitra-input,
+  input.vitra-input,
+  select.vitra-input,
+  textarea.vitra-input {
+    /* Display and layout */
+    display: block;
+    width: 100%;
+
+    /* Typography */
+    font-family: var(--vitra-font-family);
+    font-size: var(--vitra-font-size-base);
+    line-height: var(--vitra-line-height-normal);
+    color: var(--vitra-color-text-primary);
+
+    /* Spacing */
+    padding: var(--vitra-space-2) var(--vitra-space-3);
+
+    /* Border and radius */
+    border: 1px solid var(--vitra-color-border);
+    border-radius: var(--vitra-radius-md);
+    background-color: var(--vitra-color-surface);
+
+    /* Smooth transitions */
+    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+
+    /* Ensure proper box model */
+    box-sizing: border-box;
+
+    /* Remove default styling */
+    outline: none;
+  }
+
+  /* Textarea specific */
+  textarea.vitra-input {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  /* Select specific */
+  select.vitra-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--vitra-space-3) center;
+    padding-right: calc(var(--vitra-space-3) * 3);
+  }
+
+  /* --- INPUT STATES --- */
+
+  /* Hover state */
+  .vitra-input:hover:not(:disabled):not(:focus) {
+    border-color: var(--vitra-color-border-hover);
+  }
+
+  /* Focus state - accessibility */
+  .vitra-input:focus {
+    border-color: var(--vitra-color-accent);
+    box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+  }
+
+  /* Disabled state */
+  .vitra-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: rgba(255, 255, 255, 0.02);
+  }
+
+  /* Placeholder styling */
+  .vitra-input::placeholder {
+    color: var(--vitra-color-text-tertiary);
+  }
+
+  /* --- INPUT SIZE VARIANTS --- */
+
+  /* Small input */
+  .vitra-input-sm {
+    padding: var(--vitra-space-1) var(--vitra-space-2);
+    font-size: var(--vitra-font-size-sm);
+  }
+
+  /* Large input */
+  .vitra-input-lg {
+    padding: var(--vitra-space-3) var(--vitra-space-4);
+    font-size: var(--vitra-font-size-lg);
+  }
+
+  /* --- INPUT GROUP --- */
+  /* Container for input with addons or icons */
+  .vitra-input-group {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .vitra-input-group .vitra-input {
+    flex: 1;
+    border-radius: 0;
+  }
+
+  .vitra-input-group .vitra-input:first-child {
+    border-radius: var(--vitra-radius-md) 0 0 var(--vitra-radius-md);
+  }
+
+  .vitra-input-group .vitra-input:last-child {
+    border-radius: 0 var(--vitra-radius-md) var(--vitra-radius-md) 0;
+  }
+
+  .vitra-input-group-prepend,
+  .vitra-input-group-append {
+    display: flex;
+    align-items: center;
+    padding: var(--vitra-space-2) var(--vitra-space-3);
+    background-color: var(--vitra-color-surface);
+    border: 1px solid var(--vitra-color-border);
+    color: var(--vitra-color-text-secondary);
+    font-size: var(--vitra-font-size-sm);
+  }
+
+  .vitra-input-group-prepend {
+    border-right: none;
+    border-radius: var(--vitra-radius-md) 0 0 var(--vitra-radius-md);
+  }
+
+  .vitra-input-group-append {
+    border-left: none;
+    border-radius: 0 var(--vitra-radius-md) var(--vitra-radius-md) 0;
+  }
+
+  /* --- TOGGLE SWITCH --- */
+  /* Toggle switch using checkbox input */
+  .vitra-toggle {
+    /* Hide the default checkbox */
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .vitra-toggle-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--vitra-space-2);
+    cursor: pointer;
+    font-size: var(--vitra-font-size-base);
+    color: var(--vitra-color-text-primary);
+    user-select: none;
+  }
+
+  .vitra-toggle-label::before {
+    content: '';
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    background-color: var(--vitra-color-surface);
+    border: 1px solid var(--vitra-color-border);
+    border-radius: var(--vitra-radius-full);
+    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+    position: relative;
+  }
+
+  .vitra-toggle-label::after {
+    content: '';
+    position: absolute;
+    left: 3px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    background-color: var(--vitra-color-text-secondary);
+    border-radius: var(--vitra-radius-full);
+    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+  }
+
+  /* Toggle checked state */
+  .vitra-toggle:checked + .vitra-toggle-label::before {
+    background-color: var(--vitra-color-accent);
+    border-color: var(--vitra-color-accent);
+  }
+
+  .vitra-toggle:checked + .vitra-toggle-label::after {
+    left: calc(100% - 21px);
+    background-color: white;
+  }
+
+  /* Toggle focus state */
+  .vitra-toggle:focus-visible + .vitra-toggle-label::before {
+    box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+  }
+
+  /* Toggle disabled state */
+  .vitra-toggle:disabled + .vitra-toggle-label {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* --- prefers-reduced-motion --- */
+  @media (prefers-reduced-motion: reduce) {
+    .vitra-input,
+    select.vitra-input,
+    textarea.vitra-input,
+    .vitra-toggle-label::before,
+    .vitra-toggle-label::after {
+      transition: none;
+    }
+  }
+
+  /* ============================================
       MODALS (COMP-05)
       Overlay, content, focus management
       ============================================ */
