@@ -1,7 +1,8 @@
 # ===========================================
 # GSD Workflow Files
 # ===========================================
-.planning/
+# .planning/ is tracked for project documentation
+# agent/ is excluded (temporary files)
 agent/
 
 # ===========================================
