@@ -134,4 +134,58 @@
     --vitra-motion-delay: 500ms;
     animation-delay: var(--vitra-motion-delay);
   }
+
+  /* ============================================
+     HOVER INTERACTIONS
+     Smooth transitions on hover states
+     Uses CSS transitions with token easings
+     ============================================ */
+
+  /* Hover Lift - subtle upward translation */
+  .vitra-hover-lift {
+    transition: transform var(--vitra-duration-normal, 250ms) var(--vitra-ease-out, cubic-bezier(0, 0, 0.2, 1));
+  }
+
+  .vitra-hover-lift:hover {
+    transform: translateY(-4px);
+  }
+
+  .vitra-hover-lift:focus-visible {
+    transform: translateY(-4px);
+  }
+
+  /* Hover Glow - accent-colored box-shadow */
+  .vitra-hover-glow {
+    transition: box-shadow var(--vitra-duration-normal, 250ms) var(--vitra-ease-out, cubic-bezier(0, 0, 0.2, 1));
+  }
+
+  .vitra-hover-glow:hover {
+    box-shadow: var(--vitra-shadow-glow, 0 0 20px rgba(108, 99, 255, 0.3));
+  }
+
+  .vitra-hover-glow:focus-visible {
+    box-shadow: var(--vitra-shadow-glow, 0 0 20px rgba(108, 99, 255, 0.3));
+  }
+
+  /* Hover Accent Line - pseudo-element line effect */
+  .vitra-hover-accent-line {
+    position: relative;
+    transition: color var(--vitra-duration-normal, 250ms) var(--vitra-ease-out, cubic-bezier(0, 0, 0.2, 1));
+  }
+
+  .vitra-hover-accent-line::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--vitra-color-accent, #6c63ff);
+    transition: width var(--vitra-duration-normal, 250ms) var(--vitra-ease-out, cubic-bezier(0, 0, 0.2, 1));
+  }
+
+  .vitra-hover-accent-line:hover::before,
+  .vitra-hover-accent-line:focus-visible::before {
+    width: 100%;
+  }
 }
