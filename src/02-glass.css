@@ -16,6 +16,10 @@
     --vitra-blur-md: 4px;
     --vitra-blur-lg: 6px;
 
+    /* --- GLASS BACKGROUND TOKENS --- */
+    --vitra-glass-bg: rgba(255, 255, 255, 0.08);
+    --vitra-glass-bg-fallback: var(--vitra-color-surface);
+
     /* --- GLASS BORDER TOKENS --- */
     /* Configurable border properties for glass components */
     --vitra-border-width: 1px;
@@ -23,46 +27,34 @@
     --vitra-border-color: var(--vitra-color-border);
   }
 
-  /* --- GLASS BASE CLASS --- */
-  /* Core glassmorphism effect with configurable blur */
-
-  /* Fallback: solid background for browsers without backdrop-filter support */
+  /* Base glass class with solid fallback */
   .vitra-glass {
-    /* Semi-transparent surface as base (fallback for no backdrop-filter) */
-    background: var(--vitra-color-surface);
-
-    /* Configurable border using --vitra-border-* tokens */
+    /* Fallback for browsers without backdrop-filter */
+    background: var(--vitra-glass-bg-fallback);
     border: var(--vitra-border-width) var(--vitra-border-style) var(--vitra-border-color);
-
-    /* Shadow using --vitra-shadow-* token */
     box-shadow: var(--vitra-shadow-medium);
-
-    /* Default border radius */
     border-radius: var(--vitra-radius-md);
   }
 
-  /* Enhanced: backdrop-filter support detection */
+  /* Enhanced glass effect using backdrop-filter */
   @supports (backdrop-filter: blur(4px)) {
     .vitra-glass {
-      /* More transparent background since blur provides the glass effect */
-      background: rgba(255, 255, 255, 0.08);
-
-      /* Apply backdrop blur using token */
+      background: var(--vitra-glass-bg);
       backdrop-filter: blur(var(--vitra-blur-md));
     }
   }
 
-  /* --- BLUR VARIANTS --- */
+  /* High-contrast solid fallback for browsers explicitly lacking support */
+  @supports not (backdrop-filter: blur(1px)) {
+    .vitra-glass {
+      background: var(--vitra-color-surface-alt, #ffffff);
+      opacity: 1;
+    }
+  }
 
   /* Small blur variant (2px) */
   .vitra-glass-sm {
     backdrop-filter: blur(var(--vitra-blur-sm));
-  }
-
-  @supports (backdrop-filter: blur(4px)) {
-    .vitra-glass-sm {
-      backdrop-filter: blur(var(--vitra-blur-sm));
-    }
   }
 
   /* Medium blur variant (4px) - default, same as base */
@@ -70,20 +62,8 @@
     backdrop-filter: blur(var(--vitra-blur-md));
   }
 
-  @supports (backdrop-filter: blur(4px)) {
-    .vitra-glass-md {
-      backdrop-filter: blur(var(--vitra-blur-md));
-    }
-  }
-
   /* Large blur variant (6px) */
   .vitra-glass-lg {
     backdrop-filter: blur(var(--vitra-blur-lg));
-  }
-
-  @supports (backdrop-filter: blur(4px)) {
-    .vitra-glass-lg {
-      backdrop-filter: blur(var(--vitra-blur-lg));
-    }
   }
 }

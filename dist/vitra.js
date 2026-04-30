@@ -587,39 +587,31 @@ var Vitra = (() => {
           };
         })();
         const _parseDataConfig = () => {
-          const elements = document.querySelectorAll("[data-config]");
-          elements.forEach((el) => {
-            try {
-              const config = JSON.parse(el.getAttribute("data-config"));
-              if (config.theme) {
-                if (config.theme.init) {
-                  Vitra.theme.init(config.theme.options || {});
-                }
-              }
-              if (config.particles) {
-                if (config.particles.spawn) {
-                  Vitra.particles.spawn(
-                    config.particles.spawn.count || 10,
-                    config.particles.spawn.options || {}
-                  );
-                }
-              }
-              if (config.reveal) {
-                if (config.reveal.init) {
-                  Vitra.reveal.init(config.reveal.options || {});
-                }
-              }
-              if (config.modal) {
-              }
-              if (config.tooltip) {
-                if (config.tooltip.init) {
-                  Vitra.tooltip.init();
-                }
-              }
-            } catch (e) {
-              console.warn("[Vitra] Failed to parse data-config:", e.message);
+          const el = document.querySelector("[data-config]");
+          if (!el) return;
+          try {
+            const config = JSON.parse(el.getAttribute("data-config"));
+            if (config.theme) {
+              const themeOptions = typeof config.theme === "object" ? config.theme : {};
+              Vitra.theme.init(themeOptions);
             }
-          });
+            if (config.particles) {
+              if (config.particles === true) {
+                Vitra.particles.init();
+              } else if (typeof config.particles === "object") {
+                Vitra.particles.spawn(config.particles.count || 10, config.particles);
+              }
+            }
+            if (config.reveal) {
+              const revealOptions = typeof config.reveal === "object" ? config.reveal : {};
+              Vitra.reveal.init(revealOptions);
+            }
+            if (config.tooltip !== false) {
+              Vitra.tooltip.init();
+            }
+          } catch (e) {
+            console.warn("[Vitra] Failed to parse data-config:", e.message);
+          }
         };
         if (typeof document !== "undefined") {
           if (document.readyState === "loading") {

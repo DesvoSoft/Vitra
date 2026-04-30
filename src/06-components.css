@@ -65,7 +65,7 @@
 
   @supports (backdrop-filter: blur(4px)) {
     .vitra-btn-glass {
-      background: rgba(255, 255, 255, 0.08);
+      background: var(--vitra-glass-bg);
       backdrop-filter: blur(var(--vitra-blur-md));
     }
   }
@@ -255,7 +255,7 @@
 
   @supports (backdrop-filter: blur(4px)) {
     .vitra-card-glass {
-      background: rgba(255, 255, 255, 0.08);
+      background: var(--vitra-glass-bg);
       backdrop-filter: blur(var(--vitra-blur-md));
     }
   }
@@ -641,7 +641,7 @@
 
   @supports (backdrop-filter: blur(4px)) {
     .vitra-navbar-glass {
-      background: rgba(255, 255, 255, 0.08);
+      background: var(--vitra-glass-bg);
       backdrop-filter: blur(var(--vitra-blur-md));
     }
   }
