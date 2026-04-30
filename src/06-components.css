@@ -31,7 +31,7 @@
     text-decoration: none;
 
     /* Spacing */
-    padding: var(--vitra-space-2) var(--vitra-space-3);
+    padding: var(--vitra-space-1) var(--vitra-space-3);
 
     /* Border and radius */
     border: 1px solid transparent;
@@ -162,13 +162,13 @@
 
   /* Small button */
   .vitra-btn-sm {
-    padding: var(--vitra-space-1) var(--vitra-space-2);
+    padding: calc(var(--vitra-space-1) / 2) var(--vitra-space-2);
     font-size: var(--vitra-font-size-sm);
   }
 
   /* Large button */
   .vitra-btn-lg {
-    padding: var(--vitra-space-3) var(--vitra-space-4);
+    padding: var(--vitra-space-2) var(--vitra-space-4);
     font-size: var(--vitra-font-size-lg);
   }
 
@@ -659,21 +659,23 @@
     text-decoration: none;
 
     /* Smooth transitions */
-    transition: opacity var(--vitra-duration-fast) var(--vitra-ease-default);
+    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+    
+    /* Hover glow effect */
+    text-shadow: 0 0 10px rgba(var(--vitra-color-accent-rgb), 0);
   }
 
   .vitra-navbar-brand:hover {
-    opacity: 0.8;
+    opacity: 1;
+    color: var(--vitra-color-accent);
+    text-shadow: 0 0 10px rgba(var(--vitra-color-accent-rgb), 0.3);
   }
 
   /* --- NAVBAR LINKS --- */
   .vitra-navbar-links {
-    display: flex;
+    display: none;
     align-items: center;
     gap: var(--vitra-space-2);
-
-    /* Responsive hide on mobile */
-    display: none;
   }
 
   @media (min-width: 768px) {

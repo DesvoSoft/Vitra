@@ -25,6 +25,7 @@
     initMotionDemo();
     initTabs();
     initModalDemo();
+    initNavigation();
 
     console.log('[Vitra Demo] Interactive demo initialized');
   }
@@ -361,5 +362,34 @@
         }
       }, 300);
     }, 3000);
+  }
+
+  // ==================== Mobile Navigation ====================
+  function initNavigation() {
+    const burger = document.querySelector('.vitra-burger');
+    const drawer = document.querySelector('.vitra-drawer');
+    const drawerClose = document.querySelector('.vitra-drawer-close');
+    const drawerLinks = document.querySelectorAll('.vitra-drawer .vitra-navbar-link');
+
+    if (!burger || !drawer) return;
+
+    burger.addEventListener('click', () => {
+      burger.classList.toggle('active');
+      drawer.classList.toggle('open');
+    });
+
+    if (drawerClose) {
+      drawerClose.addEventListener('click', () => {
+        burger.classList.remove('active');
+        drawer.classList.remove('open');
+      });
+    }
+
+    drawerLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        burger.classList.remove('active');
+        drawer.classList.remove('open');
+      });
+    });
   }
 })();

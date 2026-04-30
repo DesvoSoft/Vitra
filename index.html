@@ -13,125 +13,13 @@
   <link rel="stylesheet" href="demo.css">
 
   <style>
-    /* Inline critical styles for demo page */
-    .demo-hero {
-      min-height: 60vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: var(--vitra-space-8, 2rem);
-      position: relative;
+    /* Critical layout fixes for demo */
+    :root {
+      scroll-behavior: smooth;
     }
-
-    .demo-section {
-      padding: var(--vitra-space-8, 2rem) var(--vitra-space-4, 1rem);
-      margin: var(--vitra-space-8, 2rem) auto;
-      max-width: 1200px;
-    }
-
-    .demo-section-title {
-      font-size: var(--vitra-font-size-3xl, 1.875rem);
-      margin-bottom: var(--vitra-space-6, 1.5rem);
-      padding-bottom: var(--vitra-space-4, 1rem);
-      border-bottom: 2px solid var(--vitra-color-border, rgba(0,0,0,0.12));
-    }
-
-    .demo-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: var(--vitra-space-4, 1rem);
-      margin: var(--vitra-space-6, 1.5rem) 0;
-    }
-
-    .demo-controls {
-      background: var(--vitra-color-surface, rgba(0,0,0,0.05));
-      border: 1px solid var(--vitra-color-border, rgba(0,0,0,0.12));
-      border-radius: var(--vitra-radius-lg, 8px);
-      padding: var(--vitra-space-4, 1rem);
-      margin: var(--vitra-space-4, 1rem) 0;
-    }
-
-    .demo-control-group {
-      margin-bottom: var(--vitra-space-4, 1rem);
-    }
-
-    .demo-control-group:last-child {
-      margin-bottom: 0;
-    }
-
-    .demo-label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: var(--vitra-space-2, 0.5rem);
-      color: var(--vitra-color-text-primary, #000);
-    }
-
-    .demo-footer {
-      text-align: center;
-      padding: var(--vitra-space-8, 2rem);
-      margin-top: var(--vitra-space-8, 2rem);
-      border-top: 1px solid var(--vitra-color-border, rgba(0,0,0,0.12));
-      color: var(--vitra-color-text-secondary, rgba(0,0,0,0.7));
-    }
-
-    /* Particle container for demo */
-    #particle-demo-area {
-      position: relative;
-      min-height: 300px;
-      border: 2px dashed var(--vitra-color-border, rgba(0,0,0,0.12));
-      border-radius: var(--vitra-radius-lg, 8px);
-      padding: var(--vitra-space-4, 1rem);
-      overflow: hidden;
-    }
-
-    /* Component showcase items */
-    .component-showcase {
-      padding: var(--vitra-space-4, 1rem);
-      border: 1px solid var(--vitra-color-border, rgba(0,0,0,0.12));
-      border-radius: var(--vitra-radius-md, 4px);
-      background: var(--vitra-color-surface, rgba(0,0,0,0.05));
-    }
-
-    .component-showcase h3 {
-      margin-top: 0;
-      font-size: var(--vitra-font-size-lg, 1.125rem);
-    }
-
-    /* Motion demo items */
-    .motion-demo-item {
-      padding: var(--vitra-space-6, 1.5rem);
-      margin: var(--vitra-space-4, 1rem) 0;
-      background: var(--vitra-color-surface, rgba(0,0,0,0.05));
-      border-radius: var(--vitra-radius-md, 4px);
-      border: 1px solid var(--vitra-color-border, rgba(0,0,0,0.12));
-    }
-
-    /* Theme preview swatches */
-    .theme-swatches {
-      display: flex;
-      gap: var(--vitra-space-2, 0.5rem);
-      flex-wrap: wrap;
-      margin-top: var(--vitra-space-2, 0.5rem);
-    }
-
-    .theme-swatch {
-      width: 40px;
-      height: 40px;
-      border-radius: var(--vitra-radius-sm, 4px);
-      border: 2px solid var(--vitra-color-border, rgba(0,0,0,0.12));
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-
-    .theme-swatch:hover {
-      transform: scale(1.1);
-    }
-
-    .theme-swatch.active {
-      border-color: var(--vitra-color-accent, #6c63ff);
-      box-shadow: 0 0 0 2px var(--vitra-color-accent, #6c63ff);
+    
+    section[id] {
+      scroll-margin-top: 80px;
     }
   </style>
 </head>
@@ -161,8 +49,32 @@
         <option value="mono">Mono</option>
         <option value="midnight">Midnight</option>
       </select>
+
+      <button class="vitra-burger" aria-label="Toggle menu">
+        <span class="vitra-burger-line"></span>
+        <span class="vitra-burger-line"></span>
+        <span class="vitra-burger-line"></span>
+      </button>
     </div>
   </nav>
+
+  <!-- Mobile Drawer -->
+  <aside class="vitra-drawer vitra-drawer-glass">
+    <div class="vitra-drawer-header">
+      <h3 class="vitra-drawer-title">Vitra CSS</h3>
+      <button class="vitra-drawer-close">&times;</button>
+    </div>
+    <div class="vitra-drawer-body">
+      <nav class="vitra-flex vitra-flex-col vitra-gap-2">
+        <a href="#tokens" class="vitra-navbar-link">Tokens</a>
+        <a href="#glass" class="vitra-navbar-link">Glass</a>
+        <a href="#particles" class="vitra-navbar-link">Particles</a>
+        <a href="#motion" class="vitra-navbar-link">Motion</a>
+        <a href="#layout" class="vitra-navbar-link">Layout</a>
+        <a href="#components" class="vitra-navbar-link">Components</a>
+      </nav>
+    </div>
+  </aside>
 
   <!-- Hero Section -->
   <section class="demo-hero vitra-glass-subtle">

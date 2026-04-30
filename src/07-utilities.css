@@ -224,6 +224,23 @@
   .vitra-mx-auto { margin-left: auto; margin-right: auto; }
   .vitra-my-auto { margin-top: auto; margin-bottom: auto; }
 
+  /* Centering helpers */
+  .vitra-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .vitra-center-y {
+    display: flex;
+    align-items: center;
+  }
+
+  .vitra-center-x {
+    display: flex;
+    justify-content: center;
+  }
+
   /* ============================================
      FLEX UTILITIES
      Align items, justify content, gap
