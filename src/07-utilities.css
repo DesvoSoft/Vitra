@@ -306,4 +306,80 @@
   /* Display Flex */
   .vitra-flex { display: flex; }
   .vitra-inline-flex { display: inline-flex; }
+
+  /* ============================================
+     TEXT UTILITIES
+     Size, weight, alignment, truncate
+     Uses typography tokens
+     ============================================ */
+
+  /* Font Size using token values */
+  .vitra-text-xs { font-size: var(--vitra-font-size-xs); }
+  .vitra-text-sm { font-size: var(--vitra-font-size-sm); }
+  .vitra-text-base { font-size: var(--vitra-font-size-base); }
+  .vitra-text-lg { font-size: var(--vitra-font-size-lg); }
+  .vitra-text-xl { font-size: var(--vitra-font-size-xl); }
+  .vitra-text-2xl { font-size: var(--vitra-font-size-2xl); }
+  .vitra-text-3xl { font-size: var(--vitra-font-size-3xl); }
+  .vitra-text-4xl { font-size: var(--vitra-font-size-4xl); }
+
+  /* Font Weight using token values */
+  .vitra-text-normal { font-weight: var(--vitra-font-weight-normal); }
+  .vitra-text-medium { font-weight: var(--vitra-font-weight-medium); }
+  .vitra-text-semibold { font-weight: var(--vitra-font-weight-semibold); }
+  .vitra-text-bold { font-weight: var(--vitra-font-weight-bold); }
+
+  /* Text Alignment */
+  .vitra-text-left { text-align: left; }
+  .vitra-text-center { text-align: center; }
+  .vitra-text-right { text-align: right; }
+  .vitra-text-justify { text-align: justify; }
+
+  /* Line Height using token values */
+  .vitra-leading-tight { line-height: var(--vitra-line-height-tight); }
+  .vitra-leading-normal { line-height: var(--vitra-line-height-normal); }
+  .vitra-leading-relaxed { line-height: var(--vitra-line-height-relaxed); }
+
+  /* Text Wrap/Truncate */
+  .vitra-text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .vitra-text-wrap { white-space: normal; }
+  .vitra-text-nowrap { white-space: nowrap; }
+  .vitra-text-pre-wrap { white-space: pre-wrap; }
+
+  /* Text Color using token values */
+  .vitra-text-primary { color: var(--vitra-color-text-primary); }
+  .vitra-text-secondary { color: var(--vitra-color-text-secondary); }
+  .vitra-text-tertiary { color: var(--vitra-color-text-tertiary); }
+  .vitra-text-accent { color: var(--vitra-color-accent); }
+  .vitra-text-success { color: var(--vitra-color-success); }
+  .vitra-text-warning { color: var(--vitra-color-warning); }
+  .vitra-text-error { color: var(--vitra-color-error); }
+  .vitra-text-info { color: var(--vitra-color-info); }
+
+  /* Font Family */
+  .vitra-font-sans { font-family: var(--vitra-font-family); }
+  .vitra-font-mono { font-family: var(--vitra-font-mono); }
+
+  /* Letter Spacing */
+  .vitra-tracking-tight { letter-spacing: -0.025em; }
+  .vitra-tracking-normal { letter-spacing: 0; }
+  .vitra-tracking-wide { letter-spacing: 0.025em; }
+  .vitra-tracking-wider { letter-spacing: 0.05em; }
+  .vitra-tracking-widest { letter-spacing: 0.1em; }
+
+  /* Text Decoration */
+  .vitra-underline { text-decoration: underline; }
+  .vitra-line-through { text-decoration: line-through; }
+  .vitra-no-underline { text-decoration: none; }
+
+  /* Text Transform */
+  .vitra-uppercase { text-transform: uppercase; }
+  .vitra-lowercase { text-transform: lowercase; }
+  .vitra-capitalize { text-transform: capitalize; }
+  .vitra-normal-case { text-transform: none; }
 }
