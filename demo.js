@@ -331,7 +331,7 @@
       right: 20px;
       padding: 12px 20px;
       border-radius: var(--vitra-radius-md, 8px);
-      z-index: 10000;
+      z-index: 1000;
       font-size: var(--vitra-font-size-sm, 0.875rem);
       animation: slideIn 0.3s ease;
       max-width: 300px;

@@ -66,4 +66,16 @@
   .vitra-glass-lg {
     backdrop-filter: blur(var(--vitra-blur-lg));
   }
+
+  /* Subtle glass variant - lighter blur and transparency */
+  .vitra-glass-subtle {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(var(--vitra-color-border-rgb, 200, 200, 200), 0.3);
+  }
+
+  @supports (backdrop-filter: blur(4px)) {
+    .vitra-glass-subtle {
+      backdrop-filter: blur(var(--vitra-blur-sm));
+    }
+  }
 }

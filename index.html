@@ -25,7 +25,7 @@
 </head>
 <body>
   <!-- Navigation -->
-  <nav class="vitra-navbar vitra-glass" style="position: sticky; top: 0; z-index: 1000;">
+  <nav class="vitra-navbar vitra-glass" style="position: sticky; top: 0; z-index: 1000;" role="navigation" aria-label="Main navigation">
     <div class="vitra-navbar-brand">
       <strong>Vitra CSS</strong> Demo
     </div>
@@ -38,8 +38,11 @@
       <a href="#components" class="vitra-navbar-link">Components</a>
     </div>
     <div class="vitra-navbar-actions">
-      <select id="theme-selector" class="vitra-select" style="min-width: 150px;">
-        <option value="" disabled selected>Select Variant</option>
+      <select id="theme-selector" class="vitra-input" style="min-width: 150px;">
+        <option value="" disabled selected>Select Theme</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+        <option value="auto">Auto</option>
         <option value="pastel">Pastel</option>
         <option value="neon">Neon</option>
         <option value="earth">Earth</option>
@@ -56,7 +59,7 @@
   </nav>
 
   <!-- Mobile Drawer -->
-  <aside class="vitra-drawer vitra-drawer-glass">
+  <aside class="vitra-drawer vitra-drawer-glass" role="dialog" aria-label="Mobile navigation menu">
     <div class="vitra-drawer-header">
       <h3 class="vitra-drawer-title">Vitra CSS</h3>
       <button class="vitra-drawer-close">&times;</button>
@@ -447,21 +450,20 @@
           </div>
           <div>
             <label class="vitra-label">Toggle Switch</label>
-            <label class="vitra-toggle">
-              <input type="checkbox" id="demo-toggle">
-              <span class="vitra-toggle-slider"></span>
-              <span class="vitra-toggle-label">Enable feature</span>
+            <label class="vitra-toggle-label">
+              <input type="checkbox" id="demo-toggle" class="vitra-toggle">
+              <span>Enable feature</span>
             </label>
           </div>
           <div>
             <label class="vitra-label">Radio Group</label>
             <label class="vitra-radio">
               <input type="radio" name="demo-radio" value="1">
-              <span class="vitra-radio-label">Option A</span>
+              <span>Option A</span>
             </label>
             <label class="vitra-radio" style="margin-left: var(--vitra-space-4, 1rem);">
               <input type="radio" name="demo-radio" value="2">
-              <span class="vitra-radio-label">Option B</span>
+              <span>Option B</span>
             </label>
           </div>
         </div>
@@ -503,10 +505,10 @@
     </div>
 
     <!-- Modal: Small -->
-    <div id="demo-modal" class="vitra-modal" aria-hidden="true">
+    <div id="demo-modal" class="vitra-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
       <div class="vitra-modal-content" style="max-width: 400px;">
         <div class="vitra-modal-header">
-          <h3>Demo Modal</h3>
+          <h3 id="demo-modal-title">Demo Modal</h3>
           <button class="vitra-btn vitra-btn-ghost vitra-btn-sm" data-vitra-modal-close>&times;</button>
         </div>
         <div class="vitra-modal-body">
@@ -521,10 +523,10 @@
     </div>
 
     <!-- Modal: Large -->
-    <div id="demo-modal-lg" class="vitra-modal" aria-hidden="true">
+    <div id="demo-modal-lg" class="vitra-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="demo-modal-lg-title">
       <div class="vitra-modal-content" style="max-width: 800px;">
         <div class="vitra-modal-header">
-          <h3>Large Modal</h3>
+          <h3 id="demo-modal-lg-title">Large Modal</h3>
           <button class="vitra-btn vitra-btn-ghost vitra-btn-sm" data-vitra-modal-close>&times;</button>
         </div>
         <div class="vitra-modal-body">

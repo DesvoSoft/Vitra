@@ -319,6 +319,18 @@ body {
   .vitra-glass-lg {
     backdrop-filter: blur(var(--vitra-blur-lg));
   }
+
+  /* Subtle glass variant - lighter blur and transparency */
+  .vitra-glass-subtle {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(var(--vitra-color-border-rgb, 200, 200, 200), 0.3);
+  }
+
+  @supports (backdrop-filter: blur(4px)) {
+    .vitra-glass-subtle {
+      backdrop-filter: blur(var(--vitra-blur-sm));
+    }
+  }
 }
 
 
@@ -1790,6 +1802,44 @@ body {
     }
   }
 
+  /* --- RADIO BUTTON --- */
+  .vitra-radio {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--vitra-space-2);
+    cursor: pointer;
+    font-size: var(--vitra-font-size-base);
+    color: var(--vitra-color-text-primary);
+    user-select: none;
+  }
+
+  .vitra-radio input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--vitra-color-accent);
+  }
+
+  .vitra-radio:hover {
+    color: var(--vitra-color-text-primary);
+  }
+
+  .vitra-radio input[type="radio"]:focus-visible {
+    outline: 2px solid var(--vitra-color-accent);
+    outline-offset: 2px;
+  }
+
+  .vitra-radio input[type="radio"]:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .vitra-radio:has(input[type="radio"]:disabled) {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
   /* ============================================
       NAVIGATION (COMP-04)
       Navbar, mobile drawer, burger with animation
@@ -2970,7 +3020,8 @@ body {
 
   /* --- TAB ITEM --- */
   /* Individual tab button */
-  .vitra-tab {
+  .vitra-tab,
+  .vitra-tabs-tab {
     /* Button reset */
     background: none;
     border: none;
@@ -2991,19 +3042,23 @@ body {
     transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
   }
 
-  .vitra-tab:hover {
+  .vitra-tab:hover,
+  .vitra-tabs-tab:hover {
     color: var(--vitra-color-text-primary);
     background-color: var(--vitra-color-surface-hover);
   }
 
-  .vitra-tab:focus-visible {
+  .vitra-tab:focus-visible,
+  .vitra-tabs-tab:focus-visible {
     outline: 2px solid var(--vitra-color-accent);
     outline-offset: -2px;
   }
 
   /* --- TAB ACTIVE STATE --- */
   .vitra-tab.vitra-active,
-  .vitra-tab[aria-selected="true"] {
+  .vitra-tab[aria-selected="true"],
+  .vitra-tabs-tab.vitra-tabs-tab-active,
+  .vitra-tabs-tab[aria-selected="true"] {
     color: var(--vitra-color-accent);
     border-bottom-color: var(--vitra-color-accent);
     font-weight: var(--vitra-font-weight-semibold);
@@ -3039,7 +3094,8 @@ body {
 
   /* --- TAB PANEL --- */
   /* Content panel for tabs */
-  .vitra-tab-panel {
+  .vitra-tab-panel,
+  .vitra-tabs-panel {
     /* Hidden by default */
     display: none;
 
@@ -3051,7 +3107,8 @@ body {
     transition: opacity var(--vitra-duration-normal) var(--vitra-ease-default);
   }
 
-  .vitra-tab-panel.vitra-active {
+  .vitra-tab-panel.vitra-active,
+  .vitra-tabs-panel.vitra-active {
     display: block;
     opacity: 1;
   }
@@ -3630,27 +3687,7 @@ body {
   .vitra-text-error { color: var(--vitra-color-error); }
   .vitra-text-info { color: var(--vitra-color-info); }
 
-  /* Font Family */
-  .vitra-font-sans { font-family: var(--vitra-font-family); }
-  .vitra-font-mono { font-family: var(--vitra-font-mono); }
-
-  /* Letter Spacing */
-  .vitra-tracking-tight { letter-spacing: -0.025em; }
-  .vitra-tracking-normal { letter-spacing: 0; }
-  .vitra-tracking-wide { letter-spacing: 0.025em; }
-  .vitra-tracking-wider { letter-spacing: 0.05em; }
-  .vitra-tracking-widest { letter-spacing: 0.1em; }
-
-  /* Text Decoration */
-  .vitra-underline { text-decoration: underline; }
-  .vitra-line-through { text-decoration: line-through; }
-  .vitra-no-underline { text-decoration: none; }
-
-  /* Text Transform */
-  .vitra-uppercase { text-transform: uppercase; }
-  .vitra-lowercase { text-transform: lowercase; }
-  .vitra-capitalize { text-transform: capitalize; }
-  .vitra-normal-case { text-transform: none; }
+  .vitra-text-muted { color: var(--vitra-color-text-tertiary); }
 
   /* ============================================
      STATE UTILITIES

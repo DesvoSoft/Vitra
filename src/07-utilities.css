@@ -378,27 +378,7 @@
   .vitra-text-error { color: var(--vitra-color-error); }
   .vitra-text-info { color: var(--vitra-color-info); }
 
-  /* Font Family */
-  .vitra-font-sans { font-family: var(--vitra-font-family); }
-  .vitra-font-mono { font-family: var(--vitra-font-mono); }
-
-  /* Letter Spacing */
-  .vitra-tracking-tight { letter-spacing: -0.025em; }
-  .vitra-tracking-normal { letter-spacing: 0; }
-  .vitra-tracking-wide { letter-spacing: 0.025em; }
-  .vitra-tracking-wider { letter-spacing: 0.05em; }
-  .vitra-tracking-widest { letter-spacing: 0.1em; }
-
-  /* Text Decoration */
-  .vitra-underline { text-decoration: underline; }
-  .vitra-line-through { text-decoration: line-through; }
-  .vitra-no-underline { text-decoration: none; }
-
-  /* Text Transform */
-  .vitra-uppercase { text-transform: uppercase; }
-  .vitra-lowercase { text-transform: lowercase; }
-  .vitra-capitalize { text-transform: capitalize; }
-  .vitra-normal-case { text-transform: none; }
+  .vitra-text-muted { color: var(--vitra-color-text-tertiary); }
 
   /* ============================================
      STATE UTILITIES
