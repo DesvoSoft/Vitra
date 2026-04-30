@@ -60,4 +60,39 @@
       background-position: 0% 50%;
     }
   }
+
+  /* ============================================
+     REVEAL CLASSES
+     Base class + directional variants
+     Uses vitra-fade-up keyframe by default
+     ============================================ */
+
+  /* Base reveal class - initial hidden state */
+  .vitra-reveal {
+    opacity: 0;
+    animation-fill-mode: both;
+  }
+
+  /* Reveal Up - fade in while sliding up */
+  .vitra-reveal-up {
+    animation-name: vitra-fade-up;
+    animation-duration: var(--vitra-duration-normal, 250ms);
+    animation-timing-function: var(--vitra-ease-out, cubic-bezier(0, 0, 0.2, 1));
+  }
+
+  /* Reveal Left - fade in while sliding from left */
+  .vitra-reveal-left {
+    animation-name: vitra-fade-up;
+    animation-duration: var(--vitra-duration-normal, 250ms);
+    animation-timing-function: var(--vitra-ease-out, cubic-bezier(0, 0, 0.2, 1));
+    transform: translateX(-20px);
+  }
+
+  /* Reveal Scale - fade in with scale up */
+  .vitra-reveal-scale {
+    animation-name: vitra-fade-up;
+    animation-duration: var(--vitra-duration-normal, 250ms);
+    animation-timing-function: var(--vitra-ease-out, cubic-bezier(0, 0, 0.2, 1));
+    transform: scale(0.95);
+  }
 }
