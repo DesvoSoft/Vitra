@@ -335,4 +335,105 @@
       align-items: center;
     }
   }
+
+  /* --- FLUID SPACING UTILITIES --- */
+  /* Responsive spacing using clamp() for smooth scaling */
+
+  /* Fluid margin utilities */
+  .vitra-m-fluid-1 {
+    margin: var(--vitra-fluid-space-1);
+  }
+
+  .vitra-m-fluid-2 {
+    margin: var(--vitra-fluid-space-2);
+  }
+
+  .vitra-m-fluid-3 {
+    margin: var(--vitra-fluid-space-3);
+  }
+
+  .vitra-m-fluid-4 {
+    margin: var(--vitra-fluid-space-4);
+  }
+
+  /* Fluid padding utilities */
+  .vitra-p-fluid-1 {
+    padding: var(--vitra-fluid-space-1);
+  }
+
+  .vitra-p-fluid-2 {
+    padding: var(--vitra-fluid-space-2);
+  }
+
+  .vitra-p-fluid-3 {
+    padding: var(--vitra-fluid-space-3);
+  }
+
+  .vitra-p-fluid-4 {
+    padding: var(--vitra-fluid-space-4);
+  }
+
+  /* Fluid directional spacing */
+  /* Margin top/bottom */
+  .vitra-mt-fluid-3 {
+    margin-top: var(--vitra-fluid-space-3);
+  }
+
+  .vitra-mb-fluid-3 {
+    margin-bottom: var(--vitra-fluid-space-3);
+  }
+
+  .vitra-my-fluid-3 {
+    margin-top: var(--vitra-fluid-space-3);
+    margin-bottom: var(--vitra-fluid-space-3);
+  }
+
+  /* Padding top/bottom */
+  .vitra-pt-fluid-3 {
+    padding-top: var(--vitra-fluid-space-3);
+  }
+
+  .vitra-pb-fluid-3 {
+    padding-bottom: var(--vitra-fluid-space-3);
+  }
+
+  .vitra-py-fluid-3 {
+    padding-top: var(--vitra-fluid-space-3);
+    padding-bottom: var(--vitra-fluid-space-3);
+  }
+
+  /* Fluid gap for flex/grid children */
+  .vitra-gap-fluid-3 {
+    gap: var(--vitra-fluid-space-3);
+  }
+
+  .vitra-gap-fluid-4 {
+    gap: var(--vitra-fluid-space-4);
+  }
+
+  /* Fluid width utilities */
+  .vitra-w-fluid {
+    width: clamp(200px, 50vw, 800px);
+  }
+
+  .vitra-max-w-fluid {
+    max-width: clamp(280px, 85vw, 1200px);
+  }
+
+  /* Fluid font size utilities */
+  .vitra-text-fluid-sm {
+    font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+  }
+
+  .vitra-text-fluid-base {
+    font-size: clamp(0.875rem, 2vw, 1rem);
+  }
+
+  .vitra-text-fluid-lg {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+  }
+
+  .vitra-text-fluid-xl {
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+  }
 }
