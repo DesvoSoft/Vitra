@@ -3,7 +3,7 @@
 /* Phase 1: Tokens & Themes - Plan 01 */
 
 /* Define cascade layer order */
-@layer tokens, glass, particles, motion, layout, components, utilities;
+@layer tokens, glass, particles, layout, motion, components, utilities;
 
 /* Tokens layer - immutable design tokens */
 @layer tokens {
