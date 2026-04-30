@@ -440,4 +440,170 @@
     color: var(--vitra-color-text-inverse);
     font-weight: var(--vitra-font-weight-semibold);
   }
+
+  /* ============================================
+     TOOLTIPS (COMP-07)
+     Positioned tooltips with arrow pseudo-element
+     ============================================ */
+
+  /* --- TOOLTIP BASE --- */
+  /* Tooltip container - wraps target element */
+  .vitra-tooltip {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* --- TOOLTIP CONTENT --- */
+  /* The actual tooltip text/content */
+  .vitra-tooltip::before {
+    content: attr(data-tooltip);
+
+    /* Position absolutely relative to container */
+    position: absolute;
+    z-index: 9999;
+
+    /* Base styling using tokens */
+    background-color: var(--vitra-color-bg);
+    color: var(--vitra-color-text-primary);
+    border: 1px solid var(--vitra-color-border);
+    border-radius: var(--vitra-radius-sm);
+    padding: var(--vitra-space-1) var(--vitra-space-2);
+
+    /* Typography */
+    font-size: var(--vitra-font-size-sm);
+    font-weight: var(--vitra-font-weight-normal);
+    line-height: var(--vitra-line-height-normal);
+    white-space: nowrap;
+
+    /* Hidden by default */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    /* Smooth transition */
+    transition: opacity var(--vitra-duration-fast) var(--vitra-ease-default),
+                visibility var(--vitra-duration-fast) var(--vitra-ease-default);
+  }
+
+  /* --- TOOLTIP ARROW --- */
+  /* Arrow pseudo-element */
+  .vitra-tooltip::after {
+    content: '';
+
+    /* Position absolutely */
+    position: absolute;
+    z-index: 9999;
+
+    /* Arrow shape using borders */
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent;
+
+    /* Hidden by default */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    /* Smooth transition */
+    transition: opacity var(--vitra-duration-fast) var(--vitra-ease-default),
+                visibility var(--vitra-duration-fast) var(--vitra-ease-default);
+  }
+
+  /* --- TOOLTIP POSITIONING --- */
+
+  /* Top tooltip (default) */
+  .vitra-tooltip::before {
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .vitra-tooltip::after {
+    bottom: calc(100% + 3px);
+    left: 50%;
+    transform: translateX(-50%);
+    border-top-color: var(--vitra-color-bg);
+    border-bottom: none;
+  }
+
+  /* Bottom tooltip */
+  .vitra-tooltip[data-position="bottom"]::before {
+    top: calc(100% + 8px);
+    bottom: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .vitra-tooltip[data-position="bottom"]::after {
+    top: calc(100% + 3px);
+    bottom: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    border-bottom-color: var(--vitra-color-bg);
+    border-top: none;
+  }
+
+  /* Left tooltip */
+  .vitra-tooltip[data-position="left"]::before {
+    right: calc(100% + 8px);
+    bottom: auto;
+    left: auto;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .vitra-tooltip[data-position="left"]::after {
+    right: calc(100% + 3px);
+    bottom: auto;
+    left: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    border-left-color: var(--vitra-color-bg);
+    border-right: none;
+  }
+
+  /* Right tooltip */
+  .vitra-tooltip[data-position="right"]::before {
+    left: calc(100% + 8px);
+    bottom: auto;
+    right: auto;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .vitra-tooltip[data-position="right"]::after {
+    left: calc(100% + 3px);
+    bottom: auto;
+    right: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    border-right-color: var(--vitra-color-bg);
+    border-left: none;
+  }
+
+  /* --- TOOLTIP SHOW ON HOVER --- */
+  .vitra-tooltip:hover::before,
+  .vitra-tooltip:hover::after {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* --- TOOLTIP WITH DELAY --- */
+  .vitra-tooltip[data-delay="short"]:hover::before,
+  .vitra-tooltip[data-delay="short"]:hover::after {
+    transition-delay: 100ms;
+  }
+
+  .vitra-tooltip[data-delay="long"]:hover::before,
+  .vitra-tooltip[data-delay="long"]:hover::after {
+    transition-delay: 500ms;
+  }
+
+  /* --- prefers-reduced-motion --- */
+  @media (prefers-reduced-motion: reduce) {
+    .vitra-tooltip::before,
+    .vitra-tooltip::after {
+      transition: none;
+    }
+  }
 }
