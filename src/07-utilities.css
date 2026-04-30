@@ -1,0 +1,226 @@
+/* 07-utilities.css - Utility Classes */
+/* Part of Vitra CSS Framework */
+/* Phase 4: Layout & Utilities - Plan 02 */
+
+/* ============================================
+   UTILITIES LAYER - Vitra CSS Framework
+   Spacing, flex, text, and state utilities
+   using token values from the tokens layer
+   ============================================ */
+
+@layer utilities {
+  /* ============================================
+     SPACING UTILITIES
+     Margin and padding using token values
+     Directional variants: t, r, b, l, x, y
+     ============================================ */
+
+  /* --- MARGIN UTILITIES --- */
+
+  /* All sides margin */
+  .vitra-m-1 { margin: var(--vitra-space-1); }
+  .vitra-m-2 { margin: var(--vitra-space-2); }
+  .vitra-m-3 { margin: var(--vitra-space-3); }
+  .vitra-m-4 { margin: var(--vitra-space-4); }
+  .vitra-m-5 { margin: var(--vitra-space-5); }
+  .vitra-m-6 { margin: var(--vitra-space-6); }
+  .vitra-m-7 { margin: var(--vitra-space-7); }
+  .vitra-m-8 { margin: var(--vitra-space-8); }
+  .vitra-m-9 { margin: var(--vitra-space-9); }
+  .vitra-m-10 { margin: var(--vitra-space-10); }
+  .vitra-m-11 { margin: var(--vitra-space-11); }
+  .vitra-m-12 { margin: var(--vitra-space-12); }
+
+  /* Margin Top */
+  .vitra-mt-1 { margin-top: var(--vitra-space-1); }
+  .vitra-mt-2 { margin-top: var(--vitra-space-2); }
+  .vitra-mt-3 { margin-top: var(--vitra-space-3); }
+  .vitra-mt-4 { margin-top: var(--vitra-space-4); }
+  .vitra-mt-5 { margin-top: var(--vitra-space-5); }
+  .vitra-mt-6 { margin-top: var(--vitra-space-6); }
+  .vitra-mt-7 { margin-top: var(--vitra-space-7); }
+  .vitra-mt-8 { margin-top: var(--vitra-space-8); }
+  .vitra-mt-9 { margin-top: var(--vitra-space-9); }
+  .vitra-mt-10 { margin-top: var(--vitra-space-10); }
+  .vitra-mt-11 { margin-top: var(--vitra-space-11); }
+  .vitra-mt-12 { margin-top: var(--vitra-space-12); }
+
+  /* Margin Right */
+  .vitra-mr-1 { margin-right: var(--vitra-space-1); }
+  .vitra-mr-2 { margin-right: var(--vitra-space-2); }
+  .vitra-mr-3 { margin-right: var(--vitra-space-3); }
+  .vitra-mr-4 { margin-right: var(--vitra-space-4); }
+  .vitra-mr-5 { margin-right: var(--vitra-space-5); }
+  .vitra-mr-6 { margin-right: var(--vitra-space-6); }
+  .vitra-mr-7 { margin-right: var(--vitra-space-7); }
+  .vitra-mr-8 { margin-right: var(--vitra-space-8); }
+  .vitra-mr-9 { margin-right: var(--vitra-space-9); }
+  .vitra-mr-10 { margin-right: var(--vitra-space-10); }
+  .vitra-mr-11 { margin-right: var(--vitra-space-11); }
+  .vitra-mr-12 { margin-right: var(--vitra-space-12); }
+
+  /* Margin Bottom */
+  .vitra-mb-1 { margin-bottom: var(--vitra-space-1); }
+  .vitra-mb-2 { margin-bottom: var(--vitra-space-2); }
+  .vitra-mb-3 { margin-bottom: var(--vitra-space-3); }
+  .vitra-mb-4 { margin-bottom: var(--vitra-space-4); }
+  .vitra-mb-5 { margin-bottom: var(--vitra-space-5); }
+  .vitra-mb-6 { margin-bottom: var(--vitra-space-6); }
+  .vitra-mb-7 { margin-bottom: var(--vitra-space-7); }
+  .vitra-mb-8 { margin-bottom: var(--vitra-space-8); }
+  .vitra-mb-9 { margin-bottom: var(--vitra-space-9); }
+  .vitra-mb-10 { margin-bottom: var(--vitra-space-10); }
+  .vitra-mb-11 { margin-bottom: var(--vitra-space-11); }
+  .vitra-mb-12 { margin-bottom: var(--vitra-space-12); }
+
+  /* Margin Left */
+  .vitra-ml-1 { margin-left: var(--vitra-space-1); }
+  .vitra-ml-2 { margin-left: var(--vitra-space-2); }
+  .vitra-ml-3 { margin-left: var(--vitra-space-3); }
+  .vitra-ml-4 { margin-left: var(--vitra-space-4); }
+  .vitra-ml-5 { margin-left: var(--vitra-space-5); }
+  .vitra-ml-6 { margin-left: var(--vitra-space-6); }
+  .vitra-ml-7 { margin-left: var(--vitra-space-7); }
+  .vitra-ml-8 { margin-left: var(--vitra-space-8); }
+  .vitra-ml-9 { margin-left: var(--vitra-space-9); }
+  .vitra-ml-10 { margin-left: var(--vitra-space-10); }
+  .vitra-ml-11 { margin-left: var(--vitra-space-11); }
+  .vitra-ml-12 { margin-left: var(--vitra-space-12); }
+
+  /* Margin Horizontal (x-axis) */
+  .vitra-mx-1 { margin-left: var(--vitra-space-1); margin-right: var(--vitra-space-1); }
+  .vitra-mx-2 { margin-left: var(--vitra-space-2); margin-right: var(--vitra-space-2); }
+  .vitra-mx-3 { margin-left: var(--vitra-space-3); margin-right: var(--vitra-space-3); }
+  .vitra-mx-4 { margin-left: var(--vitra-space-4); margin-right: var(--vitra-space-4); }
+  .vitra-mx-5 { margin-left: var(--vitra-space-5); margin-right: var(--vitra-space-5); }
+  .vitra-mx-6 { margin-left: var(--vitra-space-6); margin-right: var(--vitra-space-6); }
+  .vitra-mx-7 { margin-left: var(--vitra-space-7); margin-right: var(--vitra-space-7); }
+  .vitra-mx-8 { margin-left: var(--vitra-space-8); margin-right: var(--vitra-space-8); }
+  .vitra-mx-9 { margin-left: var(--vitra-space-9); margin-right: var(--vitra-space-9); }
+  .vitra-mx-10 { margin-left: var(--vitra-space-10); margin-right: var(--vitra-space-10); }
+  .vitra-mx-11 { margin-left: var(--vitra-space-11); margin-right: var(--vitra-space-11); }
+  .vitra-mx-12 { margin-left: var(--vitra-space-12); margin-right: var(--vitra-space-12); }
+
+  /* Margin Vertical (y-axis) */
+  .vitra-my-1 { margin-top: var(--vitra-space-1); margin-bottom: var(--vitra-space-1); }
+  .vitra-my-2 { margin-top: var(--vitra-space-2); margin-bottom: var(--vitra-space-2); }
+  .vitra-my-3 { margin-top: var(--vitra-space-3); margin-bottom: var(--vitra-space-3); }
+  .vitra-my-4 { margin-top: var(--vitra-space-4); margin-bottom: var(--vitra-space-4); }
+  .vitra-my-5 { margin-top: var(--vitra-space-5); margin-bottom: var(--vitra-space-5); }
+  .vitra-my-6 { margin-top: var(--vitra-space-6); margin-bottom: var(--vitra-space-6); }
+  .vitra-my-7 { margin-top: var(--vitra-space-7); margin-bottom: var(--vitra-space-7); }
+  .vitra-my-8 { margin-top: var(--vitra-space-8); margin-bottom: var(--vitra-space-8); }
+  .vitra-my-9 { margin-top: var(--vitra-space-9); margin-bottom: var(--vitra-space-9); }
+  .vitra-my-10 { margin-top: var(--vitra-space-10); margin-bottom: var(--vitra-space-10); }
+  .vitra-my-11 { margin-top: var(--vitra-space-11); margin-bottom: var(--vitra-space-11); }
+  .vitra-my-12 { margin-top: var(--vitra-space-12); margin-bottom: var(--vitra-space-12); }
+
+  /* --- PADDING UTILITIES --- */
+
+  /* All sides padding */
+  .vitra-p-1 { padding: var(--vitra-space-1); }
+  .vitra-p-2 { padding: var(--vitra-space-2); }
+  .vitra-p-3 { padding: var(--vitra-space-3); }
+  .vitra-p-4 { padding: var(--vitra-space-4); }
+  .vitra-p-5 { padding: var(--vitra-space-5); }
+  .vitra-p-6 { padding: var(--vitra-space-6); }
+  .vitra-p-7 { padding: var(--vitra-space-7); }
+  .vitra-p-8 { padding: var(--vitra-space-8); }
+  .vitra-p-9 { padding: var(--vitra-space-9); }
+  .vitra-p-10 { padding: var(--vitra-space-10); }
+  .vitra-p-11 { padding: var(--vitra-space-11); }
+  .vitra-p-12 { padding: var(--vitra-space-12); }
+
+  /* Padding Top */
+  .vitra-pt-1 { padding-top: var(--vitra-space-1); }
+  .vitra-pt-2 { padding-top: var(--vitra-space-2); }
+  .vitra-pt-3 { padding-top: var(--vitra-space-3); }
+  .vitra-pt-4 { padding-top: var(--vitra-space-4); }
+  .vitra-pt-5 { padding-top: var(--vitra-space-5); }
+  .vitra-pt-6 { padding-top: var(--vitra-space-6); }
+  .vitra-pt-7 { padding-top: var(--vitra-space-7); }
+  .vitra-pt-8 { padding-top: var(--vitra-space-8); }
+  .vitra-pt-9 { padding-top: var(--vitra-space-9); }
+  .vitra-pt-10 { padding-top: var(--vitra-space-10); }
+  .vitra-pt-11 { padding-top: var(--vitra-space-11); }
+  .vitra-pt-12 { padding-top: var(--vitra-space-12); }
+
+  /* Padding Right */
+  .vitra-pr-1 { padding-right: var(--vitra-space-1); }
+  .vitra-pr-2 { padding-right: var(--vitra-space-2); }
+  .vitra-pr-3 { padding-right: var(--vitra-space-3); }
+  .vitra-pr-4 { padding-right: var(--vitra-space-4); }
+  .vitra-pr-5 { padding-right: var(--vitra-space-5); }
+  .vitra-pr-6 { padding-right: var(--vitra-space-6); }
+  .vitra-pr-7 { padding-right: var(--vitra-space-7); }
+  .vitra-pr-8 { padding-right: var(--vitra-space-8); }
+  .vitra-pr-9 { padding-right: var(--vitra-space-9); }
+  .vitra-pr-10 { padding-right: var(--vitra-space-10); }
+  .vitra-pr-11 { padding-right: var(--vitra-space-11); }
+  .vitra-pr-12 { padding-right: var(--vitra-space-12); }
+
+  /* Padding Bottom */
+  .vitra-pb-1 { padding-bottom: var(--vitra-space-1); }
+  .vitra-pb-2 { padding-bottom: var(--vitra-space-2); }
+  .vitra-pb-3 { padding-bottom: var(--vitra-space-3); }
+  .vitra-pb-4 { padding-bottom: var(--vitra-space-4); }
+  .vitra-pb-5 { padding-bottom: var(--vitra-space-5); }
+  .vitra-pb-6 { padding-bottom: var(--vitra-space-6); }
+  .vitra-pb-7 { padding-bottom: var(--vitra-space-7); }
+  .vitra-pb-8 { padding-bottom: var(--vitra-space-8); }
+  .vitra-pb-9 { padding-bottom: var(--vitra-space-9); }
+  .vitra-pb-10 { padding-bottom: var(--vitra-space-10); }
+  .vitra-pb-11 { padding-bottom: var(--vitra-space-11); }
+  .vitra-pb-12 { padding-bottom: var(--vitra-space-12); }
+
+  /* Padding Left */
+  .vitra-pl-1 { padding-left: var(--vitra-space-1); }
+  .vitra-pl-2 { padding-left: var(--vitra-space-2); }
+  .vitra-pl-3 { padding-left: var(--vitra-space-3); }
+  .vitra-pl-4 { padding-left: var(--vitra-space-4); }
+  .vitra-pl-5 { padding-left: var(--vitra-space-5); }
+  .vitra-pl-6 { padding-left: var(--vitra-space-6); }
+  .vitra-pl-7 { padding-left: var(--vitra-space-7); }
+  .vitra-pl-8 { padding-left: var(--vitra-space-8); }
+  .vitra-pl-9 { padding-left: var(--vitra-space-9); }
+  .vitra-pl-10 { padding-left: var(--vitra-space-10); }
+  .vitra-pl-11 { padding-left: var(--vitra-space-11); }
+  .vitra-pl-12 { padding-left: var(--vitra-space-12); }
+
+  /* Padding Horizontal (x-axis) */
+  .vitra-px-1 { padding-left: var(--vitra-space-1); padding-right: var(--vitra-space-1); }
+  .vitra-px-2 { padding-left: var(--vitra-space-2); padding-right: var(--vitra-space-2); }
+  .vitra-px-3 { padding-left: var(--vitra-space-3); padding-right: var(--vitra-space-3); }
+  .vitra-px-4 { padding-left: var(--vitra-space-4); padding-right: var(--vitra-space-4); }
+  .vitra-px-5 { padding-left: var(--vitra-space-5); padding-right: var(--vitra-space-5); }
+  .vitra-px-6 { padding-left: var(--vitra-space-6); padding-right: var(--vitra-space-6); }
+  .vitra-px-7 { padding-left: var(--vitra-space-7); padding-right: var(--vitra-space-7); }
+  .vitra-px-8 { padding-left: var(--vitra-space-8); padding-right: var(--vitra-space-8); }
+  .vitra-px-9 { padding-left: var(--vitra-space-9); padding-right: var(--vitra-space-9); }
+  .vitra-px-10 { padding-left: var(--vitra-space-10); padding-right: var(--vitra-space-10); }
+  .vitra-px-11 { padding-left: var(--vitra-space-11); padding-right: var(--vitra-space-11); }
+  .vitra-px-12 { padding-left: var(--vitra-space-12); padding-right: var(--vitra-space-12); }
+
+  /* Padding Vertical (y-axis) */
+  .vitra-py-1 { padding-top: var(--vitra-space-1); padding-bottom: var(--vitra-space-1); }
+  .vitra-py-2 { padding-top: var(--vitra-space-2); padding-bottom: var(--vitra-space-2); }
+  .vitra-py-3 { padding-top: var(--vitra-space-3); padding-bottom: var(--vitra-space-3); }
+  .vitra-py-4 { padding-top: var(--vitra-space-4); padding-bottom: var(--vitra-space-4); }
+  .vitra-py-5 { padding-top: var(--vitra-space-5); padding-bottom: var(--vitra-space-5); }
+  .vitra-py-6 { padding-top: var(--vitra-space-6); padding-bottom: var(--vitra-space-6); }
+  .vitra-py-7 { padding-top: var(--vitra-space-7); padding-bottom: var(--vitra-space-7); }
+  .vitra-py-8 { padding-top: var(--vitra-space-8); padding-bottom: var(--vitra-space-8); }
+  .vitra-py-9 { padding-top: var(--vitra-space-9); padding-bottom: var(--vitra-space-9); }
+  .vitra-py-10 { padding-top: var(--vitra-space-10); padding-bottom: var(--vitra-space-10); }
+  .vitra-py-11 { padding-top: var(--vitra-space-11); padding-bottom: var(--vitra-space-11); }
+  .vitra-py-12 { padding-top: var(--vitra-space-12); padding-bottom: var(--vitra-space-12); }
+
+  /* Auto margin utilities */
+  .vitra-m-auto { margin: auto; }
+  .vitra-mt-auto { margin-top: auto; }
+  .vitra-mr-auto { margin-right: auto; }
+  .vitra-mb-auto { margin-bottom: auto; }
+  .vitra-ml-auto { margin-left: auto; }
+  .vitra-mx-auto { margin-left: auto; margin-right: auto; }
+  .vitra-my-auto { margin-top: auto; margin-bottom: auto; }
+}
