@@ -1,26 +1,26 @@
-# ✨ Vitra CSS Framework
+# Vitra CSS Framework
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
 [![Version](https://img.shields.io/badge/version-1.1.0-blue)](https://github.com/DesvoSoft/Vitra)
 [![License](https://img.shields.io/badge/license-Internal-red)](https://github.com/DesvoSoft/Vitra)
 
-**Vitra** is a high-performance, premium CSS framework engineered for modern web applications. It specializes in **Glassmorphism**, **Motion Design**, and **Interactive Particles**, providing a sophisticated aesthetic out of the box with zero external dependencies.
+Vitra is a high-performance, premium CSS framework engineered for modern web applications. It specializes in Glassmorphism, Motion Design, and Interactive Particles, providing a sophisticated aesthetic out of the box with zero external dependencies.
 
 ---
 
-## 💎 Why Vitra?
+## Why Vitra?
 
-Unlike generic utility-first frameworks, Vitra is built with a specific aesthetic philosophy: **Depth and Motion**. It eliminates CSS boilerplate while enforcing a strict, maintainable architecture.
+Unlike generic utility-first frameworks, Vitra is built with a specific aesthetic philosophy: Depth and Motion. It eliminates CSS boilerplate while enforcing a strict, maintainable architecture.
 
--   **🎨 Glass-First Design:** Optimized backdrop-filter effects with robust `@supports` fallbacks for all browsers.
--   **⚡ Strict @layer Architecture:** Predictable cascade management using modern CSS layers.
--   **🎭 Motion Engine:** High-performance animations that automatically respect `prefers-reduced-motion`.
--   **✨ Particle System:** Native CSS/JS hybrid particles with built-in performance limits.
--   **🌓 Smart Theming:** Zero-config Light, Dark, and Auto modes with system-level synchronization.
+-   Glass-First Design: Optimized backdrop-filter effects with robust @supports fallbacks for all browsers.
+-   Strict @layer Architecture: Predictable cascade management using modern CSS layers.
+-   Motion Engine: High-performance animations that automatically respect prefers-reduced-motion.
+-   Particle System: Native CSS/JS hybrid particles with built-in performance limits.
+-   Smart Theming: Zero-config Light, Dark, and Auto modes with system-level synchronization.
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Installation
 
@@ -48,23 +48,23 @@ Link the production-ready assets in your HTML:
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
-Vitra uses a strict **@layer cascade** to prevent specificity leaks and ensure consistent styling across large projects.
+Vitra uses a strict @layer cascade to prevent specificity leaks and ensure consistent styling across large projects.
 
-1.  `tokens`: Immutable design primitives (colors, spacing, shadows).
-2.  `glass`: The core glassmorphism engine.
-3.  `particles`: Background effects and glow systems.
-4.  `layout`: Structural utilities (Flex, Grid, Container).
-5.  `motion`: Animation engine and reveal logic.
-6.  `components`: Premium UI elements (Buttons, Cards, Forms).
-7.  `utilities`: High-precedence helper classes.
+1.  tokens: Immutable design primitives (colors, spacing, shadows).
+2.  glass: The core glassmorphism engine.
+3.  particles: Background effects and glow systems.
+4.  layout: Structural utilities (Flex, Grid, Container).
+5.  motion: Animation engine and reveal logic.
+6.  components: Premium UI elements (Buttons, Cards, Forms).
+7.  utilities: High-precedence helper classes.
 
 ---
 
-## 🎨 Themes & Glassmorphism
+## Themes & Glassmorphism
 
-Vitra supports three core theme modes: `light`, `dark`, and `auto`.
+Vitra supports three core theme modes: light, dark, and auto. It also includes several specialized variants like Pastel, Neon, Earth, Mono, and Midnight.
 
 ```html
 <!-- Apply a theme -->
@@ -79,9 +79,9 @@ Vitra supports three core theme modes: `light`, `dark`, and `auto`.
 
 ---
 
-## 🛠️ JS API
+## JS API
 
-The Vitra JS API is modular and declarative. You can configure it via `data-config` on the script tag or use the global `Vitra` object.
+The Vitra JS API is modular and declarative. You can configure it via data-config on the script tag or use the global Vitra object.
 
 ### Theme Control
 ```javascript
@@ -100,7 +100,7 @@ Vitra.particles.spawn(15, {
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 Vitra/
@@ -119,22 +119,22 @@ Vitra/
 
 ---
 
-## ♿ Accessibility & Performance
+## Accessibility & Performance
 
--   **Reduced Motion:** All transitions and animations are automatically disabled if `prefers-reduced-motion` is detected.
--   **Resource Safety:** Particle counts are capped (15 on mobile, 40 on desktop) to ensure 60fps performance on all devices.
--   **Semantic HTML:** All components are designed with accessibility and screen readers in mind.
+-   Reduced Motion: All transitions and animations are automatically disabled if prefers-reduced-motion is detected.
+-   Resource Safety: Particle counts are capped (15 on mobile, 40 on desktop) to ensure 60fps performance on all devices.
+-   Semantic HTML: All components are designed with accessibility and screen readers in mind.
 
 ---
 
-## 📜 Documentation
+## Documentation
 
 For deep dives into the framework, check the internal documentation:
--   [Theming Guide](docs/themes.md)
--   [Integration & API](docs/integration.md)
--   [Browser Compatibility](docs/compatibility.md)
+-   Theming Guide (docs/themes.md)
+-   Integration & API (docs/integration.md)
+-   Browser Compatibility (docs/compatibility.md)
 
 ---
 
-Developed and maintained by **DesvoSoft**.  
-*Internal Use Only.*
+Developed and maintained by DesvoSoft.  
+Internal Use Only.
