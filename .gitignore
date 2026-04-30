@@ -12,9 +12,7 @@ node_modules/
 # ===========================================
 # Build & Distribution
 # ===========================================
-dist/vitra.css
-dist/vitra.min.css
-dist/*.map
+# Keep dist/ files for demo branch deployment
 
 # ===========================================
 # OS & Editor Files
