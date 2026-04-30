@@ -1,0 +1,26 @@
+{
+  "name": "vitra-css",
+  "version": "1.0.0",
+  "description": "A lightweight CSS framework focused on glassmorphism, configurable particles with glow effects, and smooth motion",
+  "main": "dist/vitra.js",
+  "style": "dist/vitra.css",
+  "scripts": {
+    "build:css": "node scripts/build-css.js",
+    "build:js": "esbuild src/vitra.js --bundle --outfile=dist/vitra.js --format=esm --sourcemap",
+    "build": "npm run build:css && npm run build:js",
+    "dev": "npx serve ."
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.2",
+    "lightningcss": "^1.32.0"
+  },
+  "keywords": [
+    "css",
+    "framework",
+    "glassmorphism",
+    "particles",
+    "motion"
+  ],
+  "author": "DesvoSoft",
+  "license": "ISC"
+}
