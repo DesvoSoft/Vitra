@@ -603,6 +603,332 @@
   }
 
   /* ============================================
+      NAVIGATION (COMP-04)
+      Navbar, mobile drawer, burger with animation
+      ============================================ */
+
+  /* --- NAVBAR BASE --- */
+  /* Responsive navbar with token values */
+  .vitra-navbar {
+    /* Display and layout */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--vitra-space-3);
+
+    /* Spacing */
+    padding: var(--vitra-space-3) var(--vitra-space-4);
+
+    /* Colors */
+    background-color: var(--vitra-color-surface);
+    border-bottom: 1px solid var(--vitra-color-border);
+    color: var(--vitra-color-text-primary);
+
+    /* Positioning */
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    /* Ensure proper box model */
+    box-sizing: border-box;
+  }
+
+  /* Glass navbar variant */
+  .vitra-navbar-glass {
+    background: var(--vitra-color-surface);
+    backdrop-filter: none;
+  }
+
+  @supports (backdrop-filter: blur(4px)) {
+    .vitra-navbar-glass {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(var(--vitra-blur-md));
+    }
+  }
+
+  /* --- NAVBAR BRAND --- */
+  .vitra-navbar-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--vitra-space-2);
+
+    /* Typography */
+    font-size: var(--vitra-font-size-xl);
+    font-weight: var(--vitra-font-weight-bold);
+    color: var(--vitra-color-text-primary);
+    text-decoration: none;
+
+    /* Smooth transitions */
+    transition: opacity var(--vitra-duration-fast) var(--vitra-ease-default);
+  }
+
+  .vitra-navbar-brand:hover {
+    opacity: 0.8;
+  }
+
+  /* --- NAVBAR LINKS --- */
+  .vitra-navbar-links {
+    display: flex;
+    align-items: center;
+    gap: var(--vitra-space-2);
+
+    /* Responsive hide on mobile */
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .vitra-navbar-links {
+      display: flex;
+    }
+  }
+
+  .vitra-navbar-link {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--vitra-space-2) var(--vitra-space-3);
+    color: var(--vitra-color-text-secondary);
+    text-decoration: none;
+    font-size: var(--vitra-font-size-base);
+    border-radius: var(--vitra-radius-md);
+
+    /* Smooth transitions */
+    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+  }
+
+  .vitra-navbar-link:hover {
+    color: var(--vitra-color-text-primary);
+    background-color: var(--vitra-color-surface-hover);
+  }
+
+  .vitra-navbar-link.active {
+    color: var(--vitra-color-accent);
+    background-color: rgba(108, 99, 255, 0.1);
+  }
+
+  .vitra-navbar-link:focus-visible {
+    outline: 2px solid var(--vitra-color-accent);
+    outline-offset: 2px;
+  }
+
+  /* --- NAVBAR ACTIONS --- */
+  .vitra-navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--vitra-space-2);
+  }
+
+  /* --- BURGER BUTTON --- */
+  /* Animated hamburger menu button */
+  .vitra-burger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+
+    /* Sizing */
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+
+    /* Styling */
+    background: transparent;
+    border: none;
+    cursor: pointer;
+
+    /* Position for animation */
+    position: relative;
+
+    /* Smooth transitions */
+    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+  }
+
+  @media (min-width: 768px) {
+    .vitra-burger {
+      display: none;
+    }
+  }
+
+  /* Burger lines */
+  .vitra-burger-line {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background-color: var(--vitra-color-text-primary);
+    border-radius: var(--vitra-radius-full);
+
+    /* Animation properties */
+    transition: all var(--vitra-duration-normal) var(--vitra-ease-out);
+    transform-origin: center;
+  }
+
+  /* Burger active state (X icon) */
+  .vitra-burger.active .vitra-burger-line:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .vitra-burger.active .vitra-burger-line:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+
+  .vitra-burger.active .vitra-burger-line:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  .vitra-burger:focus-visible {
+    outline: 2px solid var(--vitra-color-accent);
+    outline-offset: 2px;
+  }
+
+  /* --- DRAWER --- */
+  /* Mobile slide-out drawer */
+  .vitra-drawer {
+    /* Position fixed off-screen by default */
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    max-width: 320px;
+    height: 100vh;
+    z-index: 999;
+
+    /* Styling */
+    background-color: var(--vitra-color-bg);
+    border-left: 1px solid var(--vitra-color-border);
+    box-shadow: var(--vitra-shadow-elevated);
+
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+    padding: var(--vitra-space-4);
+
+    /* Smooth slide animation */
+    transition: right var(--vitra-duration-normal) var(--vitra-ease-out);
+
+    /* Overflow scroll */
+    overflow-y: auto;
+  }
+
+  /* Drawer open state */
+  .vitra-drawer.open {
+    right: 0;
+  }
+
+  /* Drawer glass variant */
+  .vitra-drawer-glass {
+    background: var(--vitra-color-surface);
+  }
+
+  @supports (backdrop-filter: blur(4px)) {
+    .vitra-drawer-glass {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(var(--vitra-blur-md));
+    }
+  }
+
+  /* --- DRAWER HEADER --- */
+  .vitra-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: var(--vitra-space-3);
+    margin-bottom: var(--vitra-space-3);
+    border-bottom: 1px solid var(--vitra-color-border);
+  }
+
+  .vitra-drawer-title {
+    font-size: var(--vitra-font-size-lg);
+    font-weight: var(--vitra-font-weight-semibold);
+    color: var(--vitra-color-text-primary);
+    margin: 0;
+  }
+
+  .vitra-drawer-close {
+    background: none;
+    border: none;
+    color: var(--vitra-color-text-secondary);
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--vitra-radius-sm);
+
+    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+  }
+
+  .vitra-drawer-close:hover {
+    background-color: var(--vitra-color-surface-hover);
+    color: var(--vitra-color-text-primary);
+  }
+
+  /* --- DRAWER BODY --- */
+  .vitra-drawer-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--vitra-space-2);
+  }
+
+  .vitra-drawer-link {
+    display: flex;
+    align-items: center;
+    padding: var(--vitra-space-2) var(--vitra-space-3);
+    color: var(--vitra-color-text-secondary);
+    text-decoration: none;
+    border-radius: var(--vitra-radius-md);
+
+    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+  }
+
+  .vitra-drawer-link:hover {
+    color: var(--vitra-color-text-primary);
+    background-color: var(--vitra-color-surface-hover);
+  }
+
+  .vitra-drawer-link.active {
+    color: var(--vitra-color-accent);
+    background-color: rgba(108, 99, 255, 0.1);
+  }
+
+  /* --- DRAWER OVERLAY --- */
+  .vitra-drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--vitra-duration-normal) var(--vitra-ease-out);
+  }
+
+  .vitra-drawer-overlay.open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* --- prefers-reduced-motion --- */
+  @media (prefers-reduced-motion: reduce) {
+    .vitra-navbar,
+    .vitra-burger-line,
+    .vitra-drawer,
+    .vitra-drawer-overlay {
+      transition: none;
+    }
+
+    .vitra-burger.active .vitra-burger-line:nth-child(1),
+    .vitra-burger.active .vitra-burger-line:nth-child(2),
+    .vitra-burger.active .vitra-burger-line:nth-child(3) {
+      transition: none;
+    }
+  }
+
+  /* ============================================
       MODALS (COMP-05)
       Overlay, content, focus management
       ============================================ */
