@@ -1031,4 +1031,302 @@
       transition: none;
     }
   }
+
+  /* ============================================
+     TABS (COMP-09)
+     Tab navigation with active state
+     ============================================ */
+
+  /* --- TABS CONTAINER --- */
+  /* Horizontal tab navigation container */
+  .vitra-tabs {
+    /* Flexbox layout */
+    display: flex;
+    gap: 0;
+
+    /* Border bottom to separate from content */
+    border-bottom: 2px solid var(--vitra-color-border);
+
+    /* Spacing */
+    margin-bottom: var(--vitra-space-3);
+  }
+
+  /* --- TAB ITEM --- */
+  /* Individual tab button */
+  .vitra-tab {
+    /* Button reset */
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    /* Padding and typography */
+    padding: var(--vitra-space-2) var(--vitra-space-3);
+    font-family: var(--vitra-font-family);
+    font-size: var(--vitra-font-size-base);
+    font-weight: var(--vitra-font-weight-medium);
+    color: var(--vitra-color-text-secondary);
+
+    /* Border bottom (hidden by default) */
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px; /* Offset container border */
+
+    /* Transition */
+    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+  }
+
+  .vitra-tab:hover {
+    color: var(--vitra-color-text-primary);
+    background-color: var(--vitra-color-surface-hover);
+  }
+
+  .vitra-tab:focus-visible {
+    outline: 2px solid var(--vitra-color-accent);
+    outline-offset: -2px;
+  }
+
+  /* --- TAB ACTIVE STATE --- */
+  .vitra-tab.vitra-active,
+  .vitra-tab[aria-selected="true"] {
+    color: var(--vitra-color-accent);
+    border-bottom-color: var(--vitra-color-accent);
+    font-weight: var(--vitra-font-weight-semibold);
+  }
+
+  /* --- TABS VERTICAL --- */
+  /* Vertical tab navigation */
+  .vitra-tabs-vertical {
+    flex-direction: column;
+    border-bottom: none;
+    border-right: 2px solid var(--vitra-color-border);
+
+    /* Spacing */
+    margin-bottom: 0;
+    margin-right: var(--vitra-space-3);
+  }
+
+  .vitra-tabs-vertical .vitra-tab {
+    border-bottom: none;
+    border-right: 2px solid transparent;
+    margin-bottom: 0;
+    margin-right: -2px; /* Offset container border */
+
+    /* Text alignment */
+    text-align: left;
+  }
+
+  .vitra-tabs-vertical .vitra-tab.vitra-active,
+  .vitra-tabs-vertical .vitra-tab[aria-selected="true"] {
+    border-bottom-color: transparent;
+    border-right-color: var(--vitra-color-accent);
+  }
+
+  /* --- TAB PANEL --- */
+  /* Content panel for tabs */
+  .vitra-tab-panel {
+    /* Hidden by default */
+    display: none;
+
+    /* Padding */
+    padding: var(--vitra-space-3) 0;
+
+    /* Animation */
+    opacity: 0;
+    transition: opacity var(--vitra-duration-normal) var(--vitra-ease-default);
+  }
+
+  .vitra-tab-panel.vitra-active {
+    display: block;
+    opacity: 1;
+  }
+
+  /* --- TABS SIZE VARIANTS --- */
+
+  /* Small tabs */
+  .vitra-tabs-sm .vitra-tab {
+    padding: var(--vitra-space-1) var(--vitra-space-2);
+    font-size: var(--vitra-font-size-sm);
+  }
+
+  /* Large tabs */
+  .vitra-tabs-lg .vitra-tab {
+    padding: var(--vitra-space-3) var(--vitra-space-4);
+    font-size: var(--vitra-font-size-lg);
+  }
+
+  /* --- prefers-reduced-motion --- */
+  @media (prefers-reduced-motion: reduce) {
+    .vitra-tab,
+    .vitra-tab-panel {
+      transition: none;
+    }
+  }
+
+  /* ============================================
+     PROGRESS (COMP-09)
+     Progress bars with striped animation
+     ============================================ */
+
+  /* --- PROGRESS CONTAINER --- */
+  /* Container for progress bar */
+  .vitra-progress {
+    /* Full width by default */
+    width: 100%;
+
+    /* Track styling */
+    height: 8px;
+    background-color: var(--vitra-color-surface);
+    border-radius: var(--vitra-radius-full);
+
+    /* Overflow hidden for rounded corners */
+    overflow: hidden;
+
+    /* Spacing */
+    margin: var(--vitra-space-2) 0;
+  }
+
+  /* --- PROGRESS BAR --- */
+  /* The filled portion of the progress bar */
+  .vitra-progress-bar {
+    /* Height matches container */
+    height: 100%;
+
+    /* Fill color */
+    background-color: var(--vitra-color-accent);
+
+    /* Rounded corners */
+    border-radius: var(--vitra-radius-full);
+
+    /* Transition for smooth value changes */
+    transition: width var(--vitra-duration-normal) var(--vitra-ease-out);
+
+    /* Position relative for striped overlay */
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* --- PROGRESS BAR STRIPED --- */
+  /* Diagonal stripes using gradient */
+  .vitra-progress-bar-striped {
+    background-image: linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.15) 25%,
+      transparent 25%,
+      transparent 50%,
+      rgba(255, 255, 255, 0.15) 50%,
+      rgba(255, 255, 255, 0.15) 75%,
+      transparent 75%,
+      transparent
+    );
+    background-size: 1rem 1rem;
+  }
+
+  /* --- PROGRESS BAR ANIMATED --- */
+  /* Animated stripes */
+  .vitra-progress-bar-animated {
+    animation: vitra-progress-bar-stripes var(--vitra-duration-slower) linear infinite;
+  }
+
+  /* Keyframes for animated stripes */
+  @keyframes vitra-progress-bar-stripes {
+    0% {
+      background-position: 1rem 0;
+    }
+    100% {
+      background-position: 0 0;
+    }
+  }
+
+  /* --- PROGRESS SIZE VARIANTS --- */
+
+  /* Small progress bar */
+  .vitra-progress-sm {
+    height: 4px;
+  }
+
+  .vitra-progress-sm .vitra-progress-bar {
+    background-size: 0.5rem 0.5rem;
+  }
+
+  /* Large progress bar */
+  .vitra-progress-lg {
+    height: 12px;
+  }
+
+  .vitra-progress-lg .vitra-progress-bar {
+    background-size: 1.5rem 1.5rem;
+  }
+
+  /* --- PROGRESS COLOR VARIANTS --- */
+
+  /* Success progress */
+  .vitra-progress-success .vitra-progress-bar {
+    background-color: var(--vitra-color-success);
+  }
+
+  /* Warning progress */
+  .vitra-progress-warning .vitra-progress-bar {
+    background-color: var(--vitra-color-warning);
+  }
+
+  /* Error progress */
+  .vitra-progress-error .vitra-progress-bar {
+    background-color: var(--vitra-color-error);
+  }
+
+  /* Info progress */
+  .vitra-progress-info .vitra-progress-bar {
+    background-color: var(--vitra-color-info);
+  }
+
+  /* --- PROGRESS WITH LABEL --- */
+  /* Container with label support */
+  .vitra-progress-container {
+    display: flex;
+    align-items: center;
+    gap: var(--vitra-space-2);
+  }
+
+  .vitra-progress-label {
+    font-size: var(--vitra-font-size-sm);
+    color: var(--vitra-color-text-secondary);
+    min-width: 60px;
+  }
+
+  .vitra-progress-value {
+    font-size: var(--vitra-font-size-sm);
+    color: var(--vitra-color-text-primary);
+    font-weight: var(--vitra-font-weight-semibold);
+    min-width: 40px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* --- PROGRESS INDETERMINATE --- */
+  /* Indeterminate animation (unknown progress) */
+  .vitra-progress-indeterminate .vitra-progress-bar {
+    width: 50%;
+    animation: vitra-progress-indeterminate var(--vitra-duration-slower) ease-in-out infinite;
+  }
+
+  @keyframes vitra-progress-indeterminate {
+    0% {
+      transform: translateX(-100%);
+    }
+    50% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  /* --- prefers-reduced-motion --- */
+  @media (prefers-reduced-motion: reduce) {
+    .vitra-progress-bar,
+    .vitra-progress-bar-animated,
+    .vitra-progress-indeterminate .vitra-progress-bar {
+      transition: none;
+      animation: none;
+    }
+  }
 }
