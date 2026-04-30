@@ -21,6 +21,7 @@
   --vitra-color-border: rgba(255, 255, 255, 0.12);
   --vitra-color-border-hover: rgba(255, 255, 255, 0.2);
   --vitra-color-accent: #6c63ff;
+  --vitra-color-accent-rgb: 108, 99, 255;
   --vitra-color-accent-hover: #7b73ff;
   --vitra-color-accent-active: #5a52e0;
   --vitra-color-text-primary: rgba(255, 255, 255, 0.95);

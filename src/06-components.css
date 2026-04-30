@@ -78,7 +78,7 @@
   }
 
   .vitra-btn-ghost:hover {
-    background-color: rgba(108, 99, 255, 0.1);
+    background-color: rgba(var(--vitra-color-accent-rgb),  0.1);
   }
 
   /* Solid variant - default accent (explicit) */
@@ -453,7 +453,7 @@
   /* Focus state - accessibility */
   .vitra-input:focus {
     border-color: var(--vitra-color-accent);
-    box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+    box-shadow: 0 0 0 3px rgba(var(--vitra-color-accent-rgb),  0.2);
   }
 
   /* Disabled state */
@@ -582,7 +582,7 @@
 
   /* Toggle focus state */
   .vitra-toggle:focus-visible + .vitra-toggle-label::before {
-    box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+    box-shadow: 0 0 0 3px rgba(var(--vitra-color-accent-rgb),  0.2);
   }
 
   /* Toggle disabled state */
@@ -702,7 +702,7 @@
 
   .vitra-navbar-link.active {
     color: var(--vitra-color-accent);
-    background-color: rgba(108, 99, 255, 0.1);
+    background-color: rgba(var(--vitra-color-accent-rgb),  0.1);
   }
 
   .vitra-navbar-link:focus-visible {
@@ -890,7 +890,7 @@
 
   .vitra-drawer-link.active {
     color: var(--vitra-color-accent);
-    background-color: rgba(108, 99, 255, 0.1);
+    background-color: rgba(var(--vitra-color-accent-rgb),  0.1);
   }
 
   /* --- DRAWER OVERLAY --- */
