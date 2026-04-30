@@ -16,7 +16,12 @@ const Vitra = (() => {
   const VALID_THEMES = [
     'light',
     'dark',
-    'auto'
+    'auto',
+    'pastel',
+    'neon',
+    'earth',
+    'mono',
+    'midnight'
   ];
 
   // Cache for prefers-color-scheme media query
