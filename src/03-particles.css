@@ -135,4 +135,64 @@
     left: 50%;
     transform: translate(-50%, -50%);
   }
+
+  /* --- PERFORMANCE LIMITS --- */
+  /* Device-specific particle limits for performance optimization */
+
+  /* Mobile: limit to 15 particles for better performance */
+  @media (max-width: 768px) {
+    :root {
+      --vitra-particle-count: 15;
+    }
+
+    .vitra-particle,
+    .vitra-particles-emoji {
+      /* Reduce particle size on mobile for better performance */
+      --vitra-particle-size: 3px;
+    }
+
+    .vitra-particles-emoji {
+      font-size: calc(var(--vitra-particle-size) * 3);
+    }
+
+    /* Reduce animation complexity on mobile */
+    .vitra-particle,
+    .vitra-particles-emoji {
+      animation-duration: calc(var(--vitra-particle-speed) * 1.5);
+    }
+  }
+
+  /* Desktop: limit to 40 particles for richer experience */
+  @media (min-width: 769px) {
+    :root {
+      --vitra-particle-count: 40;
+    }
+  }
+
+  /* --- ACCESSIBILITY: Reduced Motion --- */
+  /* Disable animations for users who prefer reduced motion */
+
+  @media (prefers-reduced-motion: reduce) {
+    .vitra-particle,
+    .vitra-particles-emoji {
+      /* Disable all animations */
+      animation: none !important;
+
+      /* Reduce visual complexity */
+      opacity: 0.3;
+    }
+
+    /* Disable glow effects for reduced motion */
+    .vitra-particle-glow-sm,
+    .vitra-particle-glow-md,
+    .vitra-particle-glow-lg {
+      box-shadow: none !important;
+    }
+
+    .vitra-particle[data-glow="sm"],
+    .vitra-particle[data-glow="md"],
+    .vitra-particle[data-glow="lg"] {
+      box-shadow: none !important;
+    }
+  }
 }
