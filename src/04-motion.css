@@ -1,0 +1,63 @@
+/* 04-motion.css - Motion Engine */
+/* Part of Vitra CSS Framework */
+/* Phase 3: Particles & Motion - Plan 02 */
+
+/* ============================================
+   MOTION LAYER - Vitra CSS Framework
+   Keyframes, reveal classes, delay utilities,
+   hover interactions, and reduced motion support
+   ============================================ */
+
+@layer motion {
+  /* ============================================
+     BASE KEYFRAMES
+     Uses CSS variables for durations/easings
+     ============================================ */
+
+  /* Fade Up - element fades in while sliding up */
+  @keyframes vitra-fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Shimmer - subtle light sweep effect */
+  @keyframes vitra-shimmer {
+    0% {
+      background-position: -200% center;
+    }
+    100% {
+      background-position: 200% center;
+    }
+  }
+
+  /* Breathe - subtle scale pulse */
+  @keyframes vitra-breathe {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    50% {
+      transform: scale(1.05);
+      opacity: 1;
+    }
+  }
+
+  /* Gradient Shift - animated gradient background */
+  @keyframes vitra-gradient-shift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+}
