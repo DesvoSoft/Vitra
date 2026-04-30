@@ -279,11 +279,11 @@ const Vitra = (() => {
 
       for (let i = 0; i < actualCount; i++) {
         const particle = document.createElement('div');
-        particle.className = 'vitra-particle vitra-particle-js';
+        particle.className = 'vitra-particle';
 
         if (emoji) {
           particle.setAttribute('data-emoji', emoji);
-          particle.className = 'vitra-particles-emoji vitra-particles-emoji-js';
+          particle.className = 'vitra-particles-emoji';
           particle.style.fontSize = `${size * 4}px`;
           particle.textContent = emoji;
         } else {
@@ -488,7 +488,8 @@ const Vitra = (() => {
         closeOnEsc = true
       } = options;
 
-      const modalEl = typeof target === 'string' ? document.querySelector(target) : target;
+      const selector = typeof target === 'string' ? (target.startsWith('#') || target.startsWith('.') ? target : '#' + target) : null;
+      const modalEl = selector ? document.querySelector(selector) : (typeof target === 'object' ? target : null);
 
       if (!modalEl) {
         console.warn('[Vitra Modal] Modal element not found');
