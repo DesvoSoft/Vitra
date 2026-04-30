@@ -10,6 +10,14 @@
 
 @layer motion {
   /* ============================================
+     MOTION DELAY VARIABLE
+     Default defined here; override with utility classes
+     ============================================ */
+  :root {
+    --vitra-motion-delay: 0ms;
+  }
+
+  /* ============================================
      BASE KEYFRAMES
      Uses CSS variables for durations/easings
      ============================================ */
@@ -94,5 +102,36 @@
     animation-duration: var(--vitra-duration-normal, 250ms);
     animation-timing-function: var(--vitra-ease-out, cubic-bezier(0, 0, 0.2, 1));
     transform: scale(0.95);
+  }
+
+  /* ============================================
+     DELAY UTILITIES
+     Uses --vitra-motion-delay variable
+     Applied via animation-delay
+     ============================================ */
+
+  .vitra-delay-100 {
+    --vitra-motion-delay: 100ms;
+    animation-delay: var(--vitra-motion-delay);
+  }
+
+  .vitra-delay-200 {
+    --vitra-motion-delay: 200ms;
+    animation-delay: var(--vitra-motion-delay);
+  }
+
+  .vitra-delay-300 {
+    --vitra-motion-delay: 300ms;
+    animation-delay: var(--vitra-motion-delay);
+  }
+
+  .vitra-delay-400 {
+    --vitra-motion-delay: 400ms;
+    animation-delay: var(--vitra-motion-delay);
+  }
+
+  .vitra-delay-500 {
+    --vitra-motion-delay: 500ms;
+    animation-delay: var(--vitra-motion-delay);
   }
 }
