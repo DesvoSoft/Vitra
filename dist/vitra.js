@@ -68,13 +68,37 @@ var Vitra = (() => {
             return true;
           },
           /**
-           * Toggle between two themes (useful for light/dark switches)
-           * @param {string} themeA - First theme
-           * @param {string} themeB - Second theme
+           * Toggle between themes (smart: toggles current theme's light/dark variants)
+           * @param {string} themeA - First theme (default: 'light')
+           * @param {string} themeB - Second theme (default: 'dark')
            * @returns {string} The new active theme
            */
           toggle(themeA = "light", themeB = "dark") {
             const current = this.get();
+            const darkVariants = ["dark", "dark-light", "dark-deep", "pastel-dark", "neon-dark", "earth-dark", "mono-dark", "midnight", "midnight-dark"];
+            const lightVariants = ["light", "light-dark", "light-soft", "pastel", "pastel-light", "neon", "neon-light", "earth", "earth-light", "mono", "mono-light", "midnight-light"];
+            if (darkVariants.includes(current)) {
+              let nextTheme = themeA;
+              if (current.startsWith("pastel")) nextTheme = "pastel";
+              else if (current.startsWith("neon")) nextTheme = "neon";
+              else if (current.startsWith("earth")) nextTheme = "earth";
+              else if (current.startsWith("mono")) nextTheme = "mono";
+              else if (current.startsWith("midnight")) nextTheme = "midnight-light";
+              else if (current.startsWith("dark")) nextTheme = "light";
+              this.set(nextTheme);
+              return nextTheme;
+            }
+            if (lightVariants.includes(current)) {
+              let nextTheme = themeB;
+              if (current.startsWith("pastel")) nextTheme = "pastel-dark";
+              else if (current.startsWith("neon")) nextTheme = "neon-dark";
+              else if (current.startsWith("earth")) nextTheme = "earth-dark";
+              else if (current.startsWith("mono")) nextTheme = "mono-dark";
+              else if (current.startsWith("midnight")) nextTheme = "midnight";
+              else if (current.startsWith("light")) nextTheme = "dark";
+              this.set(nextTheme);
+              return nextTheme;
+            }
             const next = current === themeA ? themeB : themeA;
             this.set(next);
             return next;
