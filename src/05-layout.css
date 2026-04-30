@@ -1,0 +1,91 @@
+/* 05-layout.css - Layout System */
+/* Part of Vitra CSS Framework */
+/* Phase 4: Layout & Utilities - Plan 01 */
+
+/* ============================================
+   LAYOUT LAYER - Vitra CSS Framework
+   Responsive container, grid, flex utilities,
+   and fluid spacing with clamp()
+   ============================================ */
+
+@layer layout {
+  /* --- LAYOUT TOKENS --- */
+  /* Responsive breakpoints */
+  --vitra-breakpoint-md: 768px;
+  --vitra-breakpoint-lg: 1024px;
+  --vitra-breakpoint-xl: 1280px;
+
+  /* Container max-widths at each breakpoint */
+  --vitra-container-sm: 100%;
+  --vitra-container-md: 720px;
+  --vitra-container-lg: 960px;
+  --vitra-container-xl: 1200px;
+
+  /* Fluid spacing scale using clamp() */
+  --vitra-fluid-space-1: clamp(0.25rem, 1vw, 0.5rem);    /* 4-8px */
+  --vitra-fluid-space-2: clamp(0.5rem, 2vw, 1rem);        /* 8-16px */
+  --vitra-fluid-space-3: clamp(1rem, 3vw, 1.5rem);        /* 16-24px */
+  --vitra-fluid-space-4: clamp(1.25rem, 4vw, 2rem);       /* 20-32px */
+  --vitra-fluid-space-5: clamp(1.5rem, 5vw, 2.5rem);     /* 24-40px */
+  --vitra-fluid-space-6: clamp(2rem, 6vw, 3rem);          /* 32-48px */
+
+  /* --- CONTAINER SYSTEM --- */
+  /* Responsive container with max-width breakpoints and fluid padding */
+
+  .vitra-container {
+    /* Full width by default */
+    width: 100%;
+
+    /* Responsive max-width using breakpoints */
+    max-width: var(--vitra-container-sm);
+
+    /* Fluid padding using clamp() for responsive spacing */
+    padding-left: var(--vitra-fluid-space-3);
+    padding-right: var(--vitra-fluid-space-3);
+
+    /* Center the container */
+    margin-left: auto;
+    margin-right: auto;
+
+    /* Ensure padding doesn't affect width calculation */
+    box-sizing: border-box;
+  }
+
+  /* Responsive max-width at medium breakpoint (768px+) */
+  @media (min-width: 768px) {
+    .vitra-container {
+      max-width: var(--vitra-container-md);
+    }
+  }
+
+  /* Responsive max-width at large breakpoint (1024px+) */
+  @media (min-width: 1024px) {
+    .vitra-container {
+      max-width: var(--vitra-container-lg);
+    }
+  }
+
+  /* Responsive max-width at extra-large breakpoint (1280px+) */
+  @media (min-width: 1280px) {
+    .vitra-container {
+      max-width: var(--vitra-container-xl);
+    }
+  }
+
+  /* --- CONTAINER SIZE VARIANTS --- */
+
+  /* Small container - narrower content */
+  .vitra-container-sm {
+    max-width: var(--vitra-container-md);
+  }
+
+  /* Large container - wider content */
+  .vitra-container-lg {
+    max-width: var(--vitra-container-xl);
+  }
+
+  /* Full-width container - no max-width constraint */
+  .vitra-container-fluid {
+    max-width: 100%;
+  }
+}
