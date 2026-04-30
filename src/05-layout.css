@@ -172,4 +172,167 @@
   .vitra-grid-gap-fluid {
     gap: var(--vitra-fluid-space-3); /* clamp(1rem, 3vw, 1.5rem) */
   }
+
+  /* --- FLEX UTILITIES --- */
+  /* Flexbox utilities with justify, align, and direction variants */
+
+  .vitra-flex {
+    display: flex;
+    gap: var(--vitra-space-2); /* Default gap: 1rem (16px) */
+  }
+
+  /* Flex direction variants */
+  .vitra-flex-row {
+    flex-direction: row;
+  }
+
+  .vitra-flex-row-reverse {
+    flex-direction: row-reverse;
+  }
+
+  .vitra-flex-col {
+    flex-direction: column;
+  }
+
+  .vitra-flex-col-reverse {
+    flex-direction: column-reverse;
+  }
+
+  /* Justify content variants */
+  .vitra-justify-start {
+    justify-content: flex-start;
+  }
+
+  .vitra-justify-end {
+    justify-content: flex-end;
+  }
+
+  .vitra-justify-center {
+    justify-content: center;
+  }
+
+  .vitra-justify-between {
+    justify-content: space-between;
+  }
+
+  .vitra-justify-around {
+    justify-content: space-around;
+  }
+
+  .vitra-justify-evenly {
+    justify-content: space-evenly;
+  }
+
+  /* Align items variants */
+  .vitra-items-start {
+    align-items: flex-start;
+  }
+
+  .vitra-items-end {
+    align-items: flex-end;
+  }
+
+  .vitra-items-center {
+    align-items: center;
+  }
+
+  .vitra-items-baseline {
+    align-items: baseline;
+  }
+
+  .vitra-items-stretch {
+    align-items: stretch;
+  }
+
+  /* Align content variants (for multi-line flex) */
+  .vitra-content-start {
+    align-content: flex-start;
+  }
+
+  .vitra-content-end {
+    align-content: flex-end;
+  }
+
+  .vitra-content-center {
+    align-content: center;
+  }
+
+  .vitra-content-between {
+    align-content: space-between;
+  }
+
+  .vitra-content-around {
+    align-content: space-around;
+  }
+
+  .vitra-content-stretch {
+    align-content: stretch;
+  }
+
+  /* Flex wrap variants */
+  .vitra-flex-wrap {
+    flex-wrap: wrap;
+  }
+
+  .vitra-flex-wrap-reverse {
+    flex-wrap: wrap-reverse;
+  }
+
+  .vitra-flex-nowrap {
+    flex-wrap: nowrap;
+  }
+
+  /* Flex grow/shrink utilities */
+  .vitra-flex-1 {
+    flex: 1 1 0%;
+  }
+
+  .vitra-flex-auto {
+    flex: 1 1 auto;
+  }
+
+  .vitra-flex-initial {
+    flex: 0 1 auto;
+  }
+
+  .vitra-flex-none {
+    flex: none;
+  }
+
+  /* Responsive flex variants */
+  @media (min-width: 768px) {
+    .vitra-md-flex-row {
+      flex-direction: row;
+    }
+
+    .vitra-md-flex-col {
+      flex-direction: column;
+    }
+
+    .vitra-md-justify-center {
+      justify-content: center;
+    }
+
+    .vitra-md-items-center {
+      align-items: center;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .vitra-lg-flex-row {
+      flex-direction: row;
+    }
+
+    .vitra-lg-flex-col {
+      flex-direction: column;
+    }
+
+    .vitra-lg-justify-between {
+      justify-content: space-between;
+    }
+
+    .vitra-lg-items-center {
+      align-items: center;
+    }
+  }
 }
