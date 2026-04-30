@@ -10,9 +10,201 @@
 
 @layer components {
   /* ============================================
-     MODALS (COMP-05)
-     Overlay, content, focus management
-     ============================================ */
+      BUTTONS (COMP-01)
+      Base button with glass, ghost, solid, gradient variants
+      ============================================ */
+
+  /* --- BUTTON BASE --- */
+  /* Core button styles with token values */
+  .vitra-btn {
+    /* Display and layout */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--vitra-space-1);
+
+    /* Typography */
+    font-family: var(--vitra-font-family);
+    font-size: var(--vitra-font-size-base);
+    font-weight: var(--vitra-font-weight-medium);
+    line-height: var(--vitra-line-height-normal);
+    text-decoration: none;
+
+    /* Spacing */
+    padding: var(--vitra-space-2) var(--vitra-space-3);
+
+    /* Border and radius */
+    border: 1px solid transparent;
+    border-radius: var(--vitra-radius-md);
+
+    /* Colors - default: solid accent */
+    background-color: var(--vitra-color-accent);
+    color: var(--vitra-color-text-inverse);
+
+    /* Cursor and interaction */
+    cursor: pointer;
+    user-select: none;
+
+    /* Smooth transitions */
+    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+
+    /* Ensure proper box model */
+    box-sizing: border-box;
+  }
+
+  /* --- BUTTON VARIANTS --- */
+
+  /* Glass variant - uses glassmorphism effect */
+  .vitra-btn-glass {
+    /* Glass surface styling */
+    background: var(--vitra-color-surface);
+    border-color: var(--vitra-color-border);
+    color: var(--vitra-color-text-primary);
+    box-shadow: var(--vitra-shadow-medium);
+  }
+
+  @supports (backdrop-filter: blur(4px)) {
+    .vitra-btn-glass {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(var(--vitra-blur-md));
+    }
+  }
+
+  /* Ghost variant - transparent with border */
+  .vitra-btn-ghost {
+    background-color: transparent;
+    border-color: var(--vitra-color-accent);
+    color: var(--vitra-color-accent);
+  }
+
+  .vitra-btn-ghost:hover {
+    background-color: rgba(108, 99, 255, 0.1);
+  }
+
+  /* Solid variant - default accent (explicit) */
+  .vitra-btn-solid {
+    background-color: var(--vitra-color-accent);
+    color: var(--vitra-color-text-inverse);
+    border-color: transparent;
+  }
+
+  /* Gradient variant - gradient background */
+  .vitra-btn-gradient {
+    background: linear-gradient(135deg, var(--vitra-color-accent), var(--vitra-color-accent-hover));
+    color: var(--vitra-color-text-inverse);
+    border-color: transparent;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Shimmer effect on gradient button */
+  .vitra-btn-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    transition: left var(--vitra-duration-slow) var(--vitra-ease-out);
+  }
+
+  .vitra-btn-gradient:hover::before {
+    left: 100%;
+  }
+
+  /* --- BUTTON STATES --- */
+
+  /* Hover state - all variants */
+  .vitra-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: var(--vitra-shadow-elevated);
+  }
+
+  .vitra-btn-glass:hover:not(:disabled) {
+    background-color: var(--vitra-color-surface-hover);
+    border-color: var(--vitra-color-border-hover);
+  }
+
+  .vitra-btn-solid:hover:not(:disabled) {
+    background-color: var(--vitra-color-accent-hover);
+  }
+
+  .vitra-btn-gradient:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--vitra-color-accent-hover), var(--vitra-color-accent-active));
+  }
+
+  /* Focus-visible state - accessibility */
+  .vitra-btn:focus-visible {
+    outline: 2px solid var(--vitra-color-accent);
+    outline-offset: 2px;
+  }
+
+  /* Active state - pressed effect */
+  .vitra-btn:active:not(:disabled) {
+    transform: translateY(0);
+    transition-duration: var(--vitra-duration-fast);
+  }
+
+  /* Disabled state */
+  .vitra-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  /* --- BUTTON SIZE VARIANTS --- */
+
+  /* Small button */
+  .vitra-btn-sm {
+    padding: var(--vitra-space-1) var(--vitra-space-2);
+    font-size: var(--vitra-font-size-sm);
+  }
+
+  /* Large button */
+  .vitra-btn-lg {
+    padding: var(--vitra-space-3) var(--vitra-space-4);
+    font-size: var(--vitra-font-size-lg);
+  }
+
+  /* --- BUTTON WITH ICON --- */
+  .vitra-btn-icon {
+    padding: var(--vitra-space-2);
+    aspect-ratio: 1;
+  }
+
+  .vitra-btn-icon.vitra-btn-sm {
+    padding: var(--vitra-space-1);
+  }
+
+  .vitra-btn-icon.vitra-btn-lg {
+    padding: var(--vitra-space-3);
+  }
+
+  /* --- prefers-reduced-motion --- */
+  @media (prefers-reduced-motion: reduce) {
+    .vitra-btn {
+      transition: none;
+    }
+
+    .vitra-btn:hover:not(:disabled) {
+      transform: none;
+    }
+
+    .vitra-btn-gradient::before {
+      display: none;
+    }
+  }
+
+  /* ============================================
+      MODALS (COMP-05)
+      Overlay, content, focus management
+      ============================================ */
 
   /* --- MODAL OVERLAY --- */
   /* Full-screen backdrop overlay for modal dialogs */
@@ -603,6 +795,239 @@
   @media (prefers-reduced-motion: reduce) {
     .vitra-tooltip::before,
     .vitra-tooltip::after {
+      transition: none;
+    }
+  }
+
+  /* ============================================
+     SLIDERS (COMP-08)
+     CSS scroll-snap base with styled thumb/track
+     ============================================ */
+
+  /* --- SLIDER CONTAINER --- */
+  /* Container for slider component */
+  .vitra-slider {
+    /* Flexbox layout */
+    display: flex;
+    align-items: center;
+    gap: var(--vitra-space-2);
+
+    /* Full width by default */
+    width: 100%;
+
+    /* Prevent text selection during drag */
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* --- SLIDER TRACK CONTAINER --- */
+  /* Wrapper for track and thumb */
+  .vitra-slider-track-container {
+    position: relative;
+    flex: 1;
+    height: 32px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* --- SLIDER TRACK --- */
+  /* The track (background bar) */
+  .vitra-slider-track {
+    /* Full width */
+    width: 100%;
+    height: 4px;
+
+    /* Styling using tokens */
+    background-color: var(--vitra-color-surface);
+    border-radius: var(--vitra-radius-full);
+
+    /* Position relative for thumb positioning */
+    position: relative;
+    overflow: visible;
+  }
+
+  /* --- SLIDER FILL (FILLED PORTION) --- */
+  /* Shows progress/filled portion of track */
+  .vitra-slider-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+
+    /* Fill color using accent token */
+    background-color: var(--vitra-color-accent);
+    border-radius: var(--vitra-radius-full);
+
+    /* Transition for smooth value changes */
+    transition: width var(--vitra-duration-fast) var(--vitra-ease-default);
+  }
+
+  /* --- SLIDER THUMB --- */
+  /* The draggable handle */
+  .vitra-slider-thumb {
+    /* Circular thumb */
+    width: 20px;
+    height: 20px;
+
+    /* Position absolutely on the track */
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    /* Styling using tokens */
+    background-color: var(--vitra-color-accent);
+    border: 2px solid var(--vitra-color-bg);
+    border-radius: var(--vitra-radius-full);
+    box-shadow: var(--vitra-shadow-subtle);
+
+    /* Cursor */
+    cursor: grab;
+
+    /* Transition */
+    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+  }
+
+  .vitra-slider-thumb:hover {
+    background-color: var(--vitra-color-accent-hover);
+    box-shadow: var(--vitra-shadow-medium);
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+
+  .vitra-slider-thumb:active,
+  .vitra-slider-thumb.vitra-active {
+    cursor: grabbing;
+    background-color: var(--vitra-color-accent-active);
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+
+  .vitra-slider-thumb:focus-visible {
+    outline: 2px solid var(--vitra-color-accent);
+    outline-offset: 2px;
+  }
+
+  /* --- SLIDER VALUE DISPLAY --- */
+  /* Optional value label */
+  .vitra-slider-value {
+    min-width: 40px;
+    text-align: center;
+    font-size: var(--vitra-font-size-sm);
+    color: var(--vitra-color-text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* --- SLIDER WITH LABELS --- */
+  .vitra-slider[data-label="true"] .vitra-slider-track {
+    /* Space for labels */
+    margin-top: var(--vitra-space-2);
+    margin-bottom: var(--vitra-space-2);
+  }
+
+  /* --- SLIDER SIZE VARIANTS --- */
+
+  /* Small slider */
+  .vitra-slider-sm .vitra-slider-thumb {
+    width: 16px;
+    height: 16px;
+  }
+
+  .vitra-slider-sm .vitra-slider-track {
+    height: 3px;
+  }
+
+  /* Large slider */
+  .vitra-slider-lg .vitra-slider-thumb {
+    width: 24px;
+    height: 24px;
+  }
+
+  .vitra-slider-lg .vitra-slider-track {
+    height: 6px;
+  }
+
+  /* --- SLIDER DISABLED STATE --- */
+  .vitra-slider[disabled],
+  .vitra-slider[data-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .vitra-slider[disabled] .vitra-slider-thumb,
+  .vitra-slider[data-disabled="true"] .vitra-slider-thumb {
+    cursor: not-allowed;
+    background-color: var(--vitra-color-text-tertiary);
+  }
+
+  /* --- SLIDER WITH TICKS --- */
+  /* Container for tick marks */
+  .vitra-slider-ticks {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px; /* Half thumb width */
+    margin-top: var(--vitra-space-1);
+  }
+
+  .vitra-slider-tick {
+    width: 1px;
+    height: 8px;
+    background-color: var(--vitra-color-border);
+  }
+
+  /* --- CSS SCROLL-SNAP BASE --- */
+  /* Alternative: horizontal scroll-snap slider (for touch devices) */
+  .vitra-slider-scroll {
+    /* Horizontal scrolling container */
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+
+    /* Styling */
+    gap: var(--vitra-space-2);
+    padding: var(--vitra-space-2) 0;
+
+    /* Hide scrollbar */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .vitra-slider-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Scroll-snap items */
+  .vitra-slider-scroll-item {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+
+    /* Styling */
+    min-width: 60px;
+    padding: var(--vitra-space-2);
+    background-color: var(--vitra-color-surface);
+    border: 1px solid var(--vitra-color-border);
+    border-radius: var(--vitra-radius-md);
+    text-align: center;
+
+    /* Cursor */
+    cursor: pointer;
+
+    /* Transition */
+    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+  }
+
+  .vitra-slider-scroll-item:hover {
+    background-color: var(--vitra-color-surface-hover);
+  }
+
+  .vitra-slider-scroll-item.vitra-active {
+    background-color: var(--vitra-color-accent);
+    color: var(--vitra-color-text-inverse);
+    border-color: var(--vitra-color-accent);
+  }
+
+  /* --- prefers-reduced-motion --- */
+  @media (prefers-reduced-motion: reduce) {
+    .vitra-slider-fill,
+    .vitra-slider-thumb,
+    .vitra-slider-scroll-item {
       transition: none;
     }
   }
