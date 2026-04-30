@@ -9,17 +9,19 @@
    ============================================ */
 
 @layer glass {
-  /* --- GLASS BLUR TOKENS --- */
-  /* Blur intensity variants for glassmorphism effects */
-  --vitra-blur-sm: 2px;
-  --vitra-blur-md: 4px;
-  --vitra-blur-lg: 6px;
+  :root {
+    /* --- GLASS BLUR TOKENS --- */
+    /* Blur intensity variants for glassmorphism effects */
+    --vitra-blur-sm: 2px;
+    --vitra-blur-md: 4px;
+    --vitra-blur-lg: 6px;
 
-  /* --- GLASS BORDER TOKENS --- */
-  /* Configurable border properties for glass components */
-  --vitra-border-width: 1px;
-  --vitra-border-style: solid;
-  --vitra-border-color: var(--vitra-color-border);
+    /* --- GLASS BORDER TOKENS --- */
+    /* Configurable border properties for glass components */
+    --vitra-border-width: 1px;
+    --vitra-border-style: solid;
+    --vitra-border-color: var(--vitra-color-border);
+  }
 
   /* --- GLASS BASE CLASS --- */
   /* Core glassmorphism effect with configurable blur */

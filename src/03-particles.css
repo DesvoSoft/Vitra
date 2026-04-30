@@ -9,13 +9,15 @@
    ============================================ */
 
 @layer particles {
-  /* --- PARTICLE BASE TOKENS --- */
-  /* Configurable particle properties via CSS variables */
-  --vitra-particle-count: 20;
-  --vitra-particle-color: var(--vitra-color-accent, #6c63ff);
-  --vitra-particle-size: 4px;
-  --vitra-particle-speed: 3s;
-  --vitra-particle-glow: 0;
+  :root {
+    /* --- PARTICLE BASE TOKENS --- */
+    /* Configurable particle properties via CSS variables */
+    --vitra-particle-count: 20;
+    --vitra-particle-color: var(--vitra-color-accent, #6c63ff);
+    --vitra-particle-size: 4px;
+    --vitra-particle-speed: 3s;
+    --vitra-particle-glow: 0;
+  }
 
   /* --- PARTICLE BASE CLASS --- */
   /* Configurable particle system with CSS variable controls */

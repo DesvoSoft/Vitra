@@ -633,96 +633,98 @@
 /* Phase 1: Tokens & Themes - Plan 01 */
 
 /* Define cascade layer order */
-@layer tokens, glass, particles, layout, components, utilities;
+@layer tokens, glass, particles, motion, layout, components, utilities;
 
 /* Tokens layer - immutable design tokens */
 @layer tokens {
-  /* ============================================
-     CORE TOKENS - Vitra CSS Framework
-     All tokens use --vitra- prefix
-     Immutable: defined once, overridden only in themes
-     ============================================ */
+  :root {
+    /* ============================================
+       CORE TOKENS - Vitra CSS Framework
+       All tokens use --vitra- prefix
+       Immutable: defined once, overridden only in themes
+       ============================================ */
 
-  /* --- Colors --- */
-  --vitra-color-bg: #0f0f14;
-  --vitra-color-surface: rgba(255, 255, 255, 0.05);
-  --vitra-color-surface-hover: rgba(255, 255, 255, 0.08);
-  --vitra-color-surface-active: rgba(255, 255, 255, 0.12);
-  --vitra-color-border: rgba(255, 255, 255, 0.12);
-  --vitra-color-border-hover: rgba(255, 255, 255, 0.2);
-  --vitra-color-accent: #6c63ff;
-  --vitra-color-accent-rgb: 108, 99, 255;
-  --vitra-color-accent-hover: #7b73ff;
-  --vitra-color-accent-active: #5a52e0;
-  --vitra-color-text-primary: rgba(255, 255, 255, 0.95);
-  --vitra-color-text-secondary: rgba(255, 255, 255, 0.7);
-  --vitra-color-text-tertiary: rgba(255, 255, 255, 0.5);
-  --vitra-color-text-inverse: #0f0f14;
-  --vitra-color-success: #10b981;
-  --vitra-color-warning: #f59e0b;
-  --vitra-color-error: #ef4444;
-  --vitra-color-info: #3b82f6;
+    /* --- Colors --- */
+    --vitra-color-bg: #0f0f14;
+    --vitra-color-surface: rgba(255, 255, 255, 0.05);
+    --vitra-color-surface-hover: rgba(255, 255, 255, 0.08);
+    --vitra-color-surface-active: rgba(255, 255, 255, 0.12);
+    --vitra-color-border: rgba(255, 255, 255, 0.12);
+    --vitra-color-border-hover: rgba(255, 255, 255, 0.2);
+    --vitra-color-accent: #6c63ff;
+    --vitra-color-accent-rgb: 108, 99, 255;
+    --vitra-color-accent-hover: #7b73ff;
+    --vitra-color-accent-active: #5a52e0;
+    --vitra-color-text-primary: rgba(255, 255, 255, 0.95);
+    --vitra-color-text-secondary: rgba(255, 255, 255, 0.7);
+    --vitra-color-text-tertiary: rgba(255, 255, 255, 0.5);
+    --vitra-color-text-inverse: #0f0f14;
+    --vitra-color-success: #10b981;
+    --vitra-color-warning: #f59e0b;
+    --vitra-color-error: #ef4444;
+    --vitra-color-info: #3b82f6;
 
-  /* --- Spacing (base unit: 8px) --- */
-  --vitra-space-1: 0.5rem;   /* 8px */
-  --vitra-space-2: 1rem;     /* 16px */
-  --vitra-space-3: 1.5rem;   /* 24px */
-  --vitra-space-4: 2rem;     /* 32px */
-  --vitra-space-5: 2.5rem;   /* 40px */
-  --vitra-space-6: 3rem;     /* 48px */
-  --vitra-space-7: 3.5rem;   /* 56px */
-  --vitra-space-8: 4rem;     /* 64px */
-  --vitra-space-9: 4.5rem;   /* 72px */
-  --vitra-space-10: 5rem;    /* 80px */
-  --vitra-space-11: 5.5rem;  /* 88px */
-  --vitra-space-12: 6rem;    /* 96px */
+    /* --- Spacing (base unit: 8px) --- */
+    --vitra-space-1: 0.5rem;   /* 8px */
+    --vitra-space-2: 1rem;     /* 16px */
+    --vitra-space-3: 1.5rem;   /* 24px */
+    --vitra-space-4: 2rem;     /* 32px */
+    --vitra-space-5: 2.5rem;   /* 40px */
+    --vitra-space-6: 3rem;     /* 48px */
+    --vitra-space-7: 3.5rem;   /* 56px */
+    --vitra-space-8: 4rem;     /* 64px */
+    --vitra-space-9: 4.5rem;   /* 72px */
+    --vitra-space-10: 5rem;    /* 80px */
+    --vitra-space-11: 5.5rem;  /* 88px */
+    --vitra-space-12: 6rem;    /* 96px */
 
-  /* --- Radius --- */
-  --vitra-radius-sm: 0.25rem;   /* 4px */
-  --vitra-radius-md: 0.5rem;    /* 8px */
-  --vitra-radius-lg: 0.75rem;   /* 12px */
-  --vitra-radius-xl: 1rem;      /* 16px */
-  --vitra-radius-full: 9999px;
+    /* --- Radius --- */
+    --vitra-radius-sm: 0.25rem;   /* 4px */
+    --vitra-radius-md: 0.5rem;    /* 8px */
+    --vitra-radius-lg: 0.75rem;   /* 12px */
+    --vitra-radius-xl: 1rem;      /* 16px */
+    --vitra-radius-full: 9999px;
 
-  /* --- Shadows --- */
-  --vitra-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.12);
-  --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
-  --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.2);
-  --vitra-shadow-glow: 0 0 20px rgba(108, 99, 255, 0.3);
-  --vitra-shadow-glow-strong: 0 0 40px rgba(108, 99, 255, 0.5);
+    /* --- Shadows --- */
+    --vitra-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.12);
+    --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.2);
+    --vitra-shadow-glow: 0 0 20px rgba(108, 99, 255, 0.3);
+    --vitra-shadow-glow-strong: 0 0 40px rgba(108, 99, 255, 0.5);
 
-  /* --- Typography --- */
-  --vitra-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --vitra-font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+    /* --- Typography --- */
+    --vitra-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --vitra-font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
 
-  --vitra-font-size-xs: 0.75rem;   /* 12px */
-  --vitra-font-size-sm: 0.875rem;  /* 14px */
-  --vitra-font-size-base: 1rem;    /* 16px */
-  --vitra-font-size-lg: 1.125rem;  /* 18px */
-  --vitra-font-size-xl: 1.25rem;  /* 20px */
-  --vitra-font-size-2xl: 1.5rem;  /* 24px */
-  --vitra-font-size-3xl: 1.875rem; /* 30px */
-  --vitra-font-size-4xl: 2.25rem;  /* 36px */
+    --vitra-font-size-xs: 0.75rem;   /* 12px */
+    --vitra-font-size-sm: 0.875rem;  /* 14px */
+    --vitra-font-size-base: 1rem;    /* 16px */
+    --vitra-font-size-lg: 1.125rem;  /* 18px */
+    --vitra-font-size-xl: 1.25rem;  /* 20px */
+    --vitra-font-size-2xl: 1.5rem;  /* 24px */
+    --vitra-font-size-3xl: 1.875rem; /* 30px */
+    --vitra-font-size-4xl: 2.25rem;  /* 36px */
 
-  --vitra-font-weight-normal: 400;
-  --vitra-font-weight-medium: 500;
-  --vitra-font-weight-semibold: 600;
-  --vitra-font-weight-bold: 700;
+    --vitra-font-weight-normal: 400;
+    --vitra-font-weight-medium: 500;
+    --vitra-font-weight-semibold: 600;
+    --vitra-font-weight-bold: 700;
 
-  --vitra-line-height-tight: 1.25;
-  --vitra-line-height-normal: 1.5;
-  --vitra-line-height-relaxed: 1.75;
+    --vitra-line-height-tight: 1.25;
+    --vitra-line-height-normal: 1.5;
+    --vitra-line-height-relaxed: 1.75;
 
-  /* --- Motion --- */
-  --vitra-ease-default: cubic-bezier(0.4, 0, 0.2, 1);
-  --vitra-ease-in: cubic-bezier(0.4, 0, 1, 1);
-  --vitra-ease-out: cubic-bezier(0, 0, 0.2, 1);
-  --vitra-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    /* --- Motion --- */
+    --vitra-ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+    --vitra-ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --vitra-ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --vitra-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
-  --vitra-duration-fast: 150ms;
-  --vitra-duration-normal: 250ms;
-  --vitra-duration-slow: 350ms;
-  --vitra-duration-slower: 500ms;
+    --vitra-duration-fast: 150ms;
+    --vitra-duration-normal: 250ms;
+    --vitra-duration-slow: 350ms;
+    --vitra-duration-slower: 500ms;
+  }
 }
 
 /* Base body styles using token values */
@@ -750,17 +752,19 @@ body {
    ============================================ */
 
 @layer glass {
-  /* --- GLASS BLUR TOKENS --- */
-  /* Blur intensity variants for glassmorphism effects */
-  --vitra-blur-sm: 2px;
-  --vitra-blur-md: 4px;
-  --vitra-blur-lg: 6px;
+  :root {
+    /* --- GLASS BLUR TOKENS --- */
+    /* Blur intensity variants for glassmorphism effects */
+    --vitra-blur-sm: 2px;
+    --vitra-blur-md: 4px;
+    --vitra-blur-lg: 6px;
 
-  /* --- GLASS BORDER TOKENS --- */
-  /* Configurable border properties for glass components */
-  --vitra-border-width: 1px;
-  --vitra-border-style: solid;
-  --vitra-border-color: var(--vitra-color-border);
+    /* --- GLASS BORDER TOKENS --- */
+    /* Configurable border properties for glass components */
+    --vitra-border-width: 1px;
+    --vitra-border-style: solid;
+    --vitra-border-color: var(--vitra-color-border);
+  }
 
   /* --- GLASS BASE CLASS --- */
   /* Core glassmorphism effect with configurable blur */
@@ -840,13 +844,15 @@ body {
    ============================================ */
 
 @layer particles {
-  /* --- PARTICLE BASE TOKENS --- */
-  /* Configurable particle properties via CSS variables */
-  --vitra-particle-count: 20;
-  --vitra-particle-color: var(--vitra-color-accent, #6c63ff);
-  --vitra-particle-size: 4px;
-  --vitra-particle-speed: 3s;
-  --vitra-particle-glow: 0;
+  :root {
+    /* --- PARTICLE BASE TOKENS --- */
+    /* Configurable particle properties via CSS variables */
+    --vitra-particle-count: 20;
+    --vitra-particle-color: var(--vitra-color-accent, #6c63ff);
+    --vitra-particle-size: 4px;
+    --vitra-particle-speed: 3s;
+    --vitra-particle-glow: 0;
+  }
 
   /* --- PARTICLE BASE CLASS --- */
   /* Configurable particle system with CSS variable controls */
@@ -1716,7 +1722,7 @@ body {
     text-decoration: none;
 
     /* Spacing */
-    padding: var(--vitra-space-2) var(--vitra-space-3);
+    padding: var(--vitra-space-1) var(--vitra-space-3);
 
     /* Border and radius */
     border: 1px solid transparent;
@@ -1847,13 +1853,13 @@ body {
 
   /* Small button */
   .vitra-btn-sm {
-    padding: var(--vitra-space-1) var(--vitra-space-2);
+    padding: calc(var(--vitra-space-1) / 2) var(--vitra-space-2);
     font-size: var(--vitra-font-size-sm);
   }
 
   /* Large button */
   .vitra-btn-lg {
-    padding: var(--vitra-space-3) var(--vitra-space-4);
+    padding: var(--vitra-space-2) var(--vitra-space-4);
     font-size: var(--vitra-font-size-lg);
   }
 
@@ -2344,21 +2350,23 @@ body {
     text-decoration: none;
 
     /* Smooth transitions */
-    transition: opacity var(--vitra-duration-fast) var(--vitra-ease-default);
+    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+    
+    /* Hover glow effect */
+    text-shadow: 0 0 10px rgba(var(--vitra-color-accent-rgb), 0);
   }
 
   .vitra-navbar-brand:hover {
-    opacity: 0.8;
+    opacity: 1;
+    color: var(--vitra-color-accent);
+    text-shadow: 0 0 10px rgba(var(--vitra-color-accent-rgb), 0.3);
   }
 
   /* --- NAVBAR LINKS --- */
   .vitra-navbar-links {
-    display: flex;
+    display: none;
     align-items: center;
     gap: var(--vitra-space-2);
-
-    /* Responsive hide on mobile */
-    display: none;
   }
 
   @media (min-width: 768px) {
@@ -3970,6 +3978,23 @@ body {
   .vitra-ml-auto { margin-left: auto; }
   .vitra-mx-auto { margin-left: auto; margin-right: auto; }
   .vitra-my-auto { margin-top: auto; margin-bottom: auto; }
+
+  /* Centering helpers */
+  .vitra-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .vitra-center-y {
+    display: flex;
+    align-items: center;
+  }
+
+  .vitra-center-x {
+    display: flex;
+    justify-content: center;
+  }
 
   /* ============================================
      FLEX UTILITIES
