@@ -202,6 +202,194 @@
   }
 
   /* ============================================
+      CARDS (COMP-02)
+      Base card with basic, glass, hover, stacked variants
+      ============================================ */
+
+  /* --- CARD BASE --- */
+  /* Core card styles with token values */
+  .vitra-card {
+    /* Display and layout */
+    display: flex;
+    flex-direction: column;
+
+    /* Spacing */
+    padding: var(--vitra-space-4);
+    gap: var(--vitra-space-3);
+
+    /* Border and radius */
+    border: 1px solid var(--vitra-color-border);
+    border-radius: var(--vitra-radius-lg);
+
+    /* Colors - default: basic surface */
+    background-color: var(--vitra-color-surface);
+    color: var(--vitra-color-text-primary);
+
+    /* Shadow */
+    box-shadow: var(--vitra-shadow-medium);
+
+    /* Smooth transitions */
+    transition: all var(--vitra-duration-normal) var(--vitra-ease-out);
+
+    /* Ensure proper box model */
+    box-sizing: border-box;
+
+    /* Position for stacked variant */
+    position: relative;
+  }
+
+  /* --- CARD VARIANTS --- */
+
+  /* Basic variant - explicit surface styling */
+  .vitra-card-basic {
+    background-color: var(--vitra-color-surface);
+    border-color: var(--vitra-color-border);
+  }
+
+  /* Glass variant - uses glassmorphism effect */
+  .vitra-card-glass {
+    background: var(--vitra-color-surface);
+    border-color: var(--vitra-color-border);
+    box-shadow: var(--vitra-shadow-medium);
+  }
+
+  @supports (backdrop-filter: blur(4px)) {
+    .vitra-card-glass {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(var(--vitra-blur-md));
+    }
+  }
+
+  /* Hover variant - interactive card with lift effect */
+  .vitra-card-hover {
+    cursor: pointer;
+  }
+
+  .vitra-card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--vitra-shadow-elevated);
+    border-color: var(--vitra-color-border-hover);
+  }
+
+  .vitra-card-hover:focus-visible {
+    outline: 2px solid var(--vitra-color-accent);
+    outline-offset: 2px;
+  }
+
+  /* Stacked variant - layered card effect */
+  .vitra-card-stacked {
+    background-color: var(--vitra-color-surface);
+    box-shadow:
+      var(--vitra-shadow-medium),
+      0 8px 0 -4px rgba(255, 255, 255, 0.03),
+      0 16px 0 -8px rgba(255, 255, 255, 0.02);
+  }
+
+  .vitra-card-stacked:hover {
+    transform: translateY(-2px);
+  }
+
+  /* --- CARD ELEMENTS --- */
+
+  /* Card header */
+  .vitra-card-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--vitra-space-1);
+    margin-bottom: var(--vitra-space-2);
+  }
+
+  /* Card title */
+  .vitra-card-title {
+    font-size: var(--vitra-font-size-xl);
+    font-weight: var(--vitra-font-weight-semibold);
+    color: var(--vitra-color-text-primary);
+    line-height: var(--vitra-line-height-tight);
+    margin: 0;
+  }
+
+  /* Card subtitle */
+  .vitra-card-subtitle {
+    font-size: var(--vitra-font-size-sm);
+    color: var(--vitra-color-text-secondary);
+    line-height: var(--vitra-line-height-normal);
+    margin: 0;
+  }
+
+  /* Card body */
+  .vitra-card-body {
+    flex: 1;
+    color: var(--vitra-color-text-secondary);
+    line-height: var(--vitra-line-height-normal);
+  }
+
+  /* Card footer */
+  .vitra-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--vitra-space-2);
+    margin-top: var(--vitra-space-3);
+    padding-top: var(--vitra-space-3);
+    border-top: 1px solid var(--vitra-color-border);
+  }
+
+  /* Card image */
+  .vitra-card-image {
+    width: calc(100% + var(--vitra-space-4) * 2);
+    margin: calc(-1 * var(--vitra-space-4)) calc(-1 * var(--vitra-space-4)) var(--vitra-space-3);
+    border-radius: var(--vitra-radius-lg) var(--vitra-radius-lg) 0 0;
+    overflow: hidden;
+  }
+
+  .vitra-card-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* --- CARD SIZE VARIANTS --- */
+
+  /* Small card */
+  .vitra-card-sm {
+    padding: var(--vitra-space-3);
+    gap: var(--vitra-space-2);
+  }
+
+  .vitra-card-sm .vitra-card-image {
+    width: calc(100% + var(--vitra-space-3) * 2);
+    margin: calc(-1 * var(--vitra-space-3)) calc(-1 * var(--vitra-space-3)) var(--vitra-space-2);
+  }
+
+  /* Large card */
+  .vitra-card-lg {
+    padding: var(--vitra-space-5);
+    gap: var(--vitra-space-4);
+  }
+
+  .vitra-card-lg .vitra-card-image {
+    width: calc(100% + var(--vitra-space-5) * 2);
+    margin: calc(-1 * var(--vitra-space-5)) calc(-1 * var(--vitra-space-5)) var(--vitra-space-4);
+  }
+
+  /* --- prefers-reduced-motion --- */
+  @media (prefers-reduced-motion: reduce) {
+    .vitra-card,
+    .vitra-card-hover,
+    .vitra-card-stacked {
+      transition: none;
+    }
+
+    .vitra-card-hover:hover {
+      transform: none;
+    }
+
+    .vitra-card-stacked:hover {
+      transform: none;
+    }
+  }
+
+  /* ============================================
       MODALS (COMP-05)
       Overlay, content, focus management
       ============================================ */
