@@ -79,4 +79,60 @@
   .vitra-particle[data-glow="lg"] {
     box-shadow: 0 0 15px var(--vitra-particle-color), 0 0 30px var(--vitra-particle-color), 0 0 45px rgba(108, 99, 255, 0.4);
   }
+
+  /* --- EMOJI PARTICLES --- */
+  /* Emoji-based particles using data-emoji attribute */
+
+  .vitra-particles-emoji {
+    /* Use emoji as content via data-emoji attribute */
+    display: inline-block;
+    font-size: calc(var(--vitra-particle-size) * 4);
+    animation: vitra-particle-float var(--vitra-particle-speed) ease-in-out infinite;
+    line-height: 1;
+  }
+
+  /* Render emoji from data-emoji attribute */
+  .vitra-particles-emoji::before {
+    content: attr(data-emoji);
+    display: inline-block;
+  }
+
+  /* Random positioning classes for emoji particles */
+  .vitra-particles-emoji[data-pos="random"] {
+    position: absolute;
+    top: calc(var(--random-y, 0) * 100%);
+    left: calc(var(--random-x, 0) * 100%);
+  }
+
+  /* Preset positions for common use cases */
+  .vitra-particles-emoji[data-pos="top-left"] {
+    position: absolute;
+    top: 10%;
+    left: 10%;
+  }
+
+  .vitra-particles-emoji[data-pos="top-right"] {
+    position: absolute;
+    top: 10%;
+    right: 10%;
+  }
+
+  .vitra-particles-emoji[data-pos="bottom-left"] {
+    position: absolute;
+    bottom: 10%;
+    left: 10%;
+  }
+
+  .vitra-particles-emoji[data-pos="bottom-right"] {
+    position: absolute;
+    bottom: 10%;
+    right: 10%;
+  }
+
+  .vitra-particles-emoji[data-pos="center"] {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
