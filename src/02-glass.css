@@ -15,6 +15,16 @@
   --vitra-blur-md: 4px;
   --vitra-blur-lg: 6px;
 
+  /* --- GLASS BORDER TOKENS --- */
+  /* Configurable border properties for glass components */
+  --vitra-glass-border-width: 1px;
+  --vitra-glass-border-style: solid;
+  --vitra-glass-border-color: var(--vitra-color-border);
+
+  /* --- GLASS SHADOW TOKENS --- */
+  /* Configurable shadow for glass components */
+  --vitra-glass-shadow: var(--vitra-shadow-medium);
+
   /* --- GLASS BASE CLASS --- */
   /* Core glassmorphism effect with configurable blur */
 
@@ -23,11 +33,11 @@
     /* Semi-transparent surface as base (fallback for no backdrop-filter) */
     background: var(--vitra-color-surface);
 
-    /* Subtle border using color token */
-    border: 1px solid var(--vitra-color-border);
+    /* Configurable border using glass-specific tokens */
+    border: var(--vitra-glass-border-width) var(--vitra-glass-border-style) var(--vitra-glass-border-color);
 
-    /* Medium shadow using token */
-    box-shadow: var(--vitra-shadow-medium);
+    /* Configurable shadow using glass-specific token */
+    box-shadow: var(--vitra-glass-shadow);
 
     /* Default border radius */
     border-radius: var(--vitra-radius-md);
