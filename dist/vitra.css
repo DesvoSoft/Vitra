@@ -367,18 +367,18 @@
   --vitra-duration-normal: 250ms;
   --vitra-duration-slow: 350ms;
   --vitra-duration-slower: 500ms;
+}
 
-  /* Base body styles using token values */
-  body {
-    background-color: var(--vitra-color-bg);
-    color: var(--vitra-color-text-primary);
-    font-family: var(--vitra-font-family);
-    font-size: var(--vitra-font-size-base);
-    line-height: var(--vitra-line-height-normal);
-    margin: 0;
-    transition: background-color var(--vitra-duration-normal) var(--vitra-ease-default),
-                color var(--vitra-duration-normal) var(--vitra-ease-default);
-  }
+/* Base body styles using token values */
+body {
+  background-color: var(--vitra-color-bg);
+  color: var(--vitra-color-text-primary);
+  font-family: var(--vitra-font-family);
+  font-size: var(--vitra-font-size-base);
+  line-height: var(--vitra-line-height-normal);
+  margin: 0;
+  transition: background-color var(--vitra-duration-normal) var(--vitra-ease-default),
+             color var(--vitra-duration-normal) var(--vitra-ease-default);
 }
 
 
