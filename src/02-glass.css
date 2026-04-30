@@ -43,4 +43,39 @@
       backdrop-filter: blur(var(--vitra-blur-md));
     }
   }
+
+  /* --- BLUR VARIANTS --- */
+
+  /* Small blur variant (2px) */
+  .vitra-glass-sm {
+    backdrop-filter: blur(var(--vitra-blur-sm));
+  }
+
+  @supports (backdrop-filter: blur(4px)) {
+    .vitra-glass-sm {
+      backdrop-filter: blur(var(--vitra-blur-sm));
+    }
+  }
+
+  /* Medium blur variant (4px) - default, same as base */
+  .vitra-glass-md {
+    backdrop-filter: blur(var(--vitra-blur-md));
+  }
+
+  @supports (backdrop-filter: blur(4px)) {
+    .vitra-glass-md {
+      backdrop-filter: blur(var(--vitra-blur-md));
+    }
+  }
+
+  /* Large blur variant (6px) */
+  .vitra-glass-lg {
+    backdrop-filter: blur(var(--vitra-blur-lg));
+  }
+
+  @supports (backdrop-filter: blur(4px)) {
+    .vitra-glass-lg {
+      backdrop-filter: blur(var(--vitra-blur-lg));
+    }
+  }
 }
