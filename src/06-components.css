@@ -1,0 +1,203 @@
+/* 06-components.css - Components Layer */
+/* Part of Vitra CSS Framework */
+/* Phase 5: Components - Plan 02 */
+
+/* ============================================
+   COMPONENTS LAYER - Vitra CSS Framework
+   Advanced UI components with accessibility
+   and token-only styling
+   ============================================ */
+
+@layer components {
+  /* ============================================
+     MODALS (COMP-05)
+     Overlay, content, focus management
+     ============================================ */
+
+  /* --- MODAL OVERLAY --- */
+  /* Full-screen backdrop overlay for modal dialogs */
+  .vitra-modal-overlay {
+    /* Position fixed to cover entire viewport */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    /* Semi-transparent dark backdrop */
+    background-color: rgba(0, 0, 0, 0.6);
+
+    /* Ensure overlay appears above all content */
+    z-index: 1000;
+
+    /* Flexbox centering for modal content */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Smooth fade-in animation */
+    opacity: 0;
+    transition: opacity var(--vitra-duration-normal) var(--vitra-ease-out);
+
+    /* Prevent background scrolling */
+    overflow: hidden;
+  }
+
+  /* Show state for modal overlay */
+  .vitra-modal-overlay[open],
+  .vitra-modal-overlay.vitra-modal-open {
+    opacity: 1;
+  }
+
+  /* --- MODAL CONTENT --- */
+  /* Container for modal dialog content */
+  .vitra-modal-content {
+    /* Surface styling using token values */
+    background-color: var(--vitra-color-surface);
+    border: 1px solid var(--vitra-color-border);
+    border-radius: var(--vitra-radius-lg);
+    box-shadow: var(--vitra-shadow-elevated);
+
+    /* Spacing using token values */
+    padding: var(--vitra-space-4);
+    margin: var(--vitra-space-3);
+
+    /* Responsive width constraints */
+    max-width: 90vw;
+    width: 500px;
+    max-height: 80vh;
+
+    /* Scrollable content if needed */
+    overflow-y: auto;
+
+    /* Initial state for animation */
+    transform: translateY(-20px);
+    transition: transform var(--vitra-duration-normal) var(--vitra-ease-out);
+  }
+
+  /* Animate in when overlay is open */
+  .vitra-modal-overlay[open] .vitra-modal-content,
+  .vitra-modal-overlay.vitra-modal-open .vitra-modal-content {
+    transform: translateY(0);
+  }
+
+  /* --- MODAL HEADER --- */
+  .vitra-modal-header {
+    /* Flexbox layout for header content */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    /* Spacing */
+    margin-bottom: var(--vitra-space-3);
+
+    /* Typography */
+    font-size: var(--vitra-font-size-xl);
+    font-weight: var(--vitra-font-weight-semibold);
+    color: var(--vitra-color-text-primary);
+  }
+
+  /* --- MODAL BODY --- */
+  .vitra-modal-body {
+    /* Spacing */
+    margin-bottom: var(--vitra-space-3);
+
+    /* Typography */
+    color: var(--vitra-color-text-secondary);
+    line-height: var(--vitra-line-height-normal);
+  }
+
+  /* --- MODAL FOOTER --- */
+  .vitra-modal-footer {
+    /* Flexbox layout for footer buttons */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--vitra-space-2);
+
+    /* Spacing */
+    margin-top: var(--vitra-space-3);
+    padding-top: var(--vitra-space-3);
+    border-top: 1px solid var(--vitra-color-border);
+  }
+
+  /* --- MODAL CLOSE BUTTON --- */
+  .vitra-modal-close {
+    /* Button reset */
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    /* Sizing */
+    width: 32px;
+    height: 32px;
+
+    /* Flexbox for icon centering */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Styling */
+    color: var(--vitra-color-text-secondary);
+    border-radius: var(--vitra-radius-sm);
+
+    /* Transition */
+    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+  }
+
+  .vitra-modal-close:hover {
+    color: var(--vitra-color-text-primary);
+    background-color: var(--vitra-color-surface-hover);
+  }
+
+  .vitra-modal-close:focus-visible {
+    outline: 2px solid var(--vitra-color-accent);
+    outline-offset: 2px;
+  }
+
+  /* --- MODAL SIZE VARIANTS --- */
+
+  /* Small modal */
+  .vitra-modal-sm .vitra-modal-content {
+    width: 400px;
+    padding: var(--vitra-space-3);
+  }
+
+  /* Large modal */
+  .vitra-modal-lg .vitra-modal-content {
+    width: 800px;
+    padding: var(--vitra-space-5);
+  }
+
+  /* Full-width modal */
+  .vitra-modal-full .vitra-modal-content {
+    width: 95vw;
+    max-width: 1200px;
+    height: 90vh;
+  }
+
+  /* --- FOCUS TRAP PREPARATION --- */
+  /* Informational comment: Focus trap logic will be handled by JS */
+  /* These styles ensure proper focus visibility within modal */
+  .vitra-modal-overlay:focus {
+    outline: none;
+  }
+
+  .vitra-modal-content:focus {
+    outline: none;
+  }
+
+  /* Ensure focusable elements are visible */
+  .vitra-modal-content *:focus-visible {
+    outline: 2px solid var(--vitra-color-accent);
+    outline-offset: 2px;
+  }
+
+  /* --- prefers-reduced-motion --- */
+  @media (prefers-reduced-motion: reduce) {
+    .vitra-modal-overlay,
+    .vitra-modal-content {
+      transition: none;
+    }
+  }
+}
