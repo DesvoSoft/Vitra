@@ -13,12 +13,26 @@ var Vitra = (() => {
         const VALID_THEMES = [
           "default",
           "light",
+          "light-dark",
+          "light-soft",
           "dark",
+          "dark-light",
+          "dark-deep",
           "pastel",
+          "pastel-dark",
+          "pastel-light",
           "neon",
+          "neon-dark",
+          "neon-light",
           "earth",
+          "earth-dark",
+          "earth-light",
           "mono",
+          "mono-dark",
+          "mono-light",
           "midnight",
+          "midnight-dark",
+          "midnight-light",
           "auto"
         ];
         let _prefersDarkMedia = null;

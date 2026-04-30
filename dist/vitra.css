@@ -43,6 +43,54 @@
     --vitra-shadow-glow-strong: 0 0 40px rgba(108, 99, 255, 0.3);
   }
 
+  /* Light theme - dark variant */
+  [data-theme="light-dark"] {
+    --vitra-color-bg: #f0f0f0;
+    --vitra-color-surface: rgba(0, 0, 0, 0.08);
+    --vitra-color-surface-hover: rgba(0, 0, 0, 0.12);
+    --vitra-color-surface-active: rgba(0, 0, 0, 0.16);
+    --vitra-color-border: rgba(0, 0, 0, 0.2);
+    --vitra-color-border-hover: rgba(0, 0, 0, 0.3);
+    --vitra-color-accent: #5a52e0;
+    --vitra-color-accent-hover: #6c63ff;
+    --vitra-color-accent-active: #483d8b;
+    --vitra-color-text-primary: rgba(0, 0, 0, 0.9);
+    --vitra-color-text-secondary: rgba(0, 0, 0, 0.65);
+    --vitra-color-text-tertiary: rgba(0, 0, 0, 0.4);
+    --vitra-color-text-inverse: #ffffff;
+    --vitra-color-success: #059669;
+    --vitra-color-warning: #d97706;
+    --vitra-color-error: #dc2626;
+    --vitra-color-info: #2563eb;
+    --vitra-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.12);
+    --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.18);
+  }
+
+  /* Light theme - soft variant */
+  [data-theme="light-soft"] {
+    --vitra-color-bg: #fafafa;
+    --vitra-color-surface: rgba(0, 0, 0, 0.03);
+    --vitra-color-surface-hover: rgba(0, 0, 0, 0.06);
+    --vitra-color-surface-active: rgba(0, 0, 0, 0.09);
+    --vitra-color-border: rgba(0, 0, 0, 0.08);
+    --vitra-color-border-hover: rgba(0, 0, 0, 0.15);
+    --vitra-color-accent: #8b73ff;
+    --vitra-color-accent-hover: #9b83ff;
+    --vitra-color-accent-active: #7b63ff;
+    --vitra-color-text-primary: rgba(0, 0, 0, 0.85);
+    --vitra-color-text-secondary: rgba(0, 0, 0, 0.6);
+    --vitra-color-text-tertiary: rgba(0, 0, 0, 0.4);
+    --vitra-color-text-inverse: #ffffff;
+    --vitra-color-success: #34d399;
+    --vitra-color-warning: #fbbf24;
+    --vitra-color-error: #f87171;
+    --vitra-color-info: #60a5fa;
+    --vitra-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+
   /* --- DARK THEME --- */
   [data-theme="dark"] {
     /* Colors - Dark background, light text */
@@ -70,6 +118,54 @@
     --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.5);
     --vitra-shadow-glow: 0 0 20px rgba(108, 99, 255, 0.3);
     --vitra-shadow-glow-strong: 0 0 40px rgba(108, 99, 255, 0.5);
+  }
+
+  /* Dark theme - light variant */
+  [data-theme="dark-light"] {
+    --vitra-color-bg: #1a1a2e;
+    --vitra-color-surface: rgba(255, 255, 255, 0.08);
+    --vitra-color-surface-hover: rgba(255, 255, 255, 0.12);
+    --vitra-color-surface-active: rgba(255, 255, 255, 0.16);
+    --vitra-color-border: rgba(255, 255, 255, 0.15);
+    --vitra-color-border-hover: rgba(255, 255, 255, 0.25);
+    --vitra-color-accent: #7b73ff;
+    --vitra-color-accent-hover: #8b83ff;
+    --vitra-color-accent-active: #6c63ff;
+    --vitra-color-text-primary: rgba(255, 255, 255, 0.9);
+    --vitra-color-text-secondary: rgba(255, 255, 255, 0.65);
+    --vitra-color-text-tertiary: rgba(255, 255, 255, 0.4);
+    --vitra-color-text-inverse: #1a1a2e;
+    --vitra-color-success: #34d399;
+    --vitra-color-warning: #fbbf24;
+    --vitra-color-error: #f87171;
+    --vitra-color-info: #60a5fa;
+    --vitra-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.2);
+    --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Dark theme - deep variant */
+  [data-theme="dark-deep"] {
+    --vitra-color-bg: #050510;
+    --vitra-color-surface: rgba(255, 255, 255, 0.03);
+    --vitra-color-surface-hover: rgba(255, 255, 255, 0.05);
+    --vitra-color-surface-active: rgba(255, 255, 255, 0.08);
+    --vitra-color-border: rgba(255, 255, 255, 0.08);
+    --vitra-color-border-hover: rgba(255, 255, 255, 0.15);
+    --vitra-color-accent: #5a52e0;
+    --vitra-color-accent-hover: #6c63ff;
+    --vitra-color-accent-active: #483d8b;
+    --vitra-color-text-primary: rgba(255, 255, 255, 0.98);
+    --vitra-color-text-secondary: rgba(255, 255, 255, 0.75);
+    --vitra-color-text-tertiary: rgba(255, 255, 255, 0.55);
+    --vitra-color-text-inverse: #050510;
+    --vitra-color-success: #059669;
+    --vitra-color-warning: #d97706;
+    --vitra-color-error: #dc2626;
+    --vitra-color-info: #2563eb;
+    --vitra-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.5);
+    --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.6);
   }
 
   /* --- PASTEL THEME --- */
@@ -101,6 +197,58 @@
     --vitra-shadow-glow-strong: 0 0 40px rgba(255, 182, 193, 0.4);
   }
 
+  /* Pastel theme - dark variant */
+  [data-theme="pastel-dark"] {
+    --vitra-color-bg: #2a1a2a;
+    --vitra-color-surface: rgba(255, 182, 193, 0.08);
+    --vitra-color-surface-hover: rgba(255, 182, 193, 0.12);
+    --vitra-color-surface-active: rgba(255, 182, 193, 0.18);
+    --vitra-color-border: rgba(200, 162, 200, 0.2);
+    --vitra-color-border-hover: rgba(200, 162, 200, 0.35);
+    --vitra-color-accent: #ffc0cb;
+    --vitra-color-accent-hover: #ffb6c1;
+    --vitra-color-accent-active: #db7093;
+    --vitra-color-text-primary: rgba(255, 182, 193, 0.95);
+    --vitra-color-text-secondary: rgba(255, 182, 193, 0.7);
+    --vitra-color-text-tertiary: rgba(255, 182, 193, 0.5);
+    --vitra-color-text-inverse: #2a1a2a;
+    --vitra-color-success: #90ee90;
+    --vitra-color-warning: #fffacd;
+    --vitra-color-error: #ff69b4;
+    --vitra-color-info: #b0e0e6;
+    --vitra-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.2);
+    --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.25);
+    --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --vitra-shadow-glow: 0 0 20px rgba(255, 182, 193, 0.4);
+    --vitra-shadow-glow-strong: 0 0 40px rgba(255, 182, 193, 0.6);
+  }
+
+  /* Pastel theme - light variant */
+  [data-theme="pastel-light"] {
+    --vitra-color-bg: #fffafa;
+    --vitra-color-surface: rgba(255, 182, 193, 0.08);
+    --vitra-color-surface-hover: rgba(255, 182, 193, 0.12);
+    --vitra-color-surface-active: rgba(255, 182, 193, 0.18);
+    --vitra-color-border: rgba(200, 162, 200, 0.15);
+    --vitra-color-border-hover: rgba(200, 162, 200, 0.25);
+    --vitra-color-accent: #ffb6c1;
+    --vitra-color-accent-hover: #ffc0cb;
+    --vitra-color-accent-active: #ff69b4;
+    --vitra-color-text-primary: rgba(80, 60, 80, 0.85);
+    --vitra-color-text-secondary: rgba(80, 60, 80, 0.6);
+    --vitra-color-text-tertiary: rgba(80, 60, 80, 0.4);
+    --vitra-color-text-inverse: #fffafa;
+    --vitra-color-success: #98fb98;
+    --vitra-color-warning: #fffacd;
+    --vitra-color-error: #ffc0cb;
+    --vitra-color-info: #add8e6;
+    --vitra-shadow-subtle: 0 1px 3px rgba(200, 162, 200, 0.08);
+    --vitra-shadow-medium: 0 4px 12px rgba(200, 162, 200, 0.12);
+    --vitra-shadow-elevated: 0 8px 32px rgba(200, 162, 200, 0.15);
+    --vitra-shadow-glow: 0 0 20px rgba(255, 182, 193, 0.2);
+    --vitra-shadow-glow-strong: 0 0 40px rgba(255, 182, 193, 0.3);
+  }
+
   /* --- NEON THEME --- */
   [data-theme="neon"] {
     /* Colors - Bright glowing accents */
@@ -121,13 +269,65 @@
     --vitra-color-warning: #ffff00;
     --vitra-color-error: #ff00ff;
     --vitra-color-info: #00aaff;
-
+    
     /* Shadows - Strong glow effects */
-    --vitra-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.5);
-    --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.6);
-    --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.7);
+    --vitra-shadow-subtle: 0 1px 3px rgba(0, 255, 255, 0.2);
+    --vitra-shadow-medium: 0 4px 12px rgba(0, 255, 255, 0.3);
+    --vitra-shadow-elevated: 0 8px 32px rgba(0, 255, 255, 0.4);
     --vitra-shadow-glow: 0 0 20px rgba(0, 255, 255, 0.5);
     --vitra-shadow-glow-strong: 0 0 40px rgba(0, 255, 255, 0.8);
+  }
+
+  /* Neon theme - dark variant */
+  [data-theme="neon-dark"] {
+    --vitra-color-bg: #000005;
+    --vitra-color-surface: rgba(0, 255, 255, 0.03);
+    --vitra-color-surface-hover: rgba(0, 255, 255, 0.06);
+    --vitra-color-surface-active: rgba(0, 255, 255, 0.1);
+    --vitra-color-border: rgba(0, 255, 255, 0.2);
+    --vitra-color-border-hover: rgba(0, 255, 255, 0.35);
+    --vitra-color-accent: #00ccaa;
+    --vitra-color-accent-hover: #00ffff;
+    --vitra-color-accent-active: #00ffaa;
+    --vitra-color-text-primary: rgba(0, 255, 255, 0.9);
+    --vitra-color-text-secondary: rgba(0, 255, 255, 0.65);
+    --vitra-color-text-tertiary: rgba(0, 255, 255, 0.4);
+    --vitra-color-text-inverse: #000005;
+    --vitra-color-success: #00cc00;
+    --vitra-color-warning: #cccc00;
+    --vitra-color-error: #cc00cc;
+    --vitra-color-info: #0088cc;
+    --vitra-shadow-subtle: 0 1px 3px rgba(0, 255, 255, 0.15);
+    --vitra-shadow-medium: 0 4px 12px rgba(0, 255, 255, 0.2);
+    --vitra-shadow-elevated: 0 8px 32px rgba(0, 255, 255, 0.3);
+    --vitra-shadow-glow: 0 0 20px rgba(0, 255, 255, 0.4);
+    --vitra-shadow-glow-strong: 0 0 40px rgba(0, 255, 255, 0.6);
+  }
+
+  /* Neon theme - light variant */
+  [data-theme="neon-light"] {
+    --vitra-color-bg: #f0ffff;
+    --vitra-color-surface: rgba(0, 255, 255, 0.08);
+    --vitra-color-surface-hover: rgba(0, 255, 255, 0.12);
+    --vitra-color-surface-active: rgba(0, 255, 255, 0.18);
+    --vitra-color-border: rgba(0, 200, 200, 0.25);
+    --vitra-color-border-hover: rgba(0, 200, 200, 0.4);
+    --vitra-color-accent: #00aaaa;
+    --vitra-color-accent-hover: #00cccc;
+    --vitra-color-accent-active: #008888;
+    --vitra-color-text-primary: rgba(0, 100, 100, 0.95);
+    --vitra-color-text-secondary: rgba(0, 100, 100, 0.7);
+    --vitra-color-text-tertiary: rgba(0, 100, 100, 0.5);
+    --vitra-color-text-inverse: #f0ffff;
+    --vitra-color-success: #00aa00;
+    --vitra-color-warning: #aaaa00;
+    --vitra-color-error: #aa00aa;
+    --vitra-color-info: #0088aa;
+    --vitra-shadow-subtle: 0 1px 3px rgba(0, 200, 200, 0.1);
+    --vitra-shadow-medium: 0 4px 12px rgba(0, 200, 200, 0.15);
+    --vitra-shadow-elevated: 0 8px 32px rgba(0, 200, 200, 0.2);
+    --vitra-shadow-glow: 0 0 20px rgba(0, 200, 200, 0.3);
+    --vitra-shadow-glow-strong: 0 0 40px rgba(0, 200, 200, 0.5);
   }
 
   /* --- EARTH THEME --- */
@@ -159,6 +359,58 @@
     --vitra-shadow-glow-strong: 0 0 40px rgba(139, 90, 43, 0.3);
   }
 
+  /* Earth theme - dark variant */
+  [data-theme="earth-dark"] {
+    --vitra-color-bg: #3d2b1a;
+    --vitra-color-surface: rgba(245, 230, 211, 0.08);
+    --vitra-color-surface-hover: rgba(245, 230, 211, 0.12);
+    --vitra-color-surface-active: rgba(245, 230, 211, 0.18);
+    --vitra-color-border: rgba(245, 230, 211, 0.2);
+    --vitra-color-border-hover: rgba(245, 230, 211, 0.35);
+    --vitra-color-accent: #a0714a;
+    --vitra-color-accent-hover: #8b5a2b;
+    --vitra-color-accent-active: #6b4423;
+    --vitra-color-text-primary: rgba(245, 230, 211, 0.95);
+    --vitra-color-text-secondary: rgba(245, 230, 211, 0.7);
+    --vitra-color-text-tertiary: rgba(245, 230, 211, 0.5);
+    --vitra-color-text-inverse: #3d2b1a;
+    --vitra-color-success: #6b8e23;
+    --vitra-color-warning: #daa520;
+    --vitra-color-error: #cd5c5c;
+    --vitra-color-info: #5f9ea0;
+    --vitra-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --vitra-shadow-glow: 0 0 20px rgba(139, 90, 43, 0.4);
+    --vitra-shadow-glow-strong: 0 0 40px rgba(139, 90, 43, 0.6);
+  }
+
+  /* Earth theme - light variant */
+  [data-theme="earth-light"] {
+    --vitra-color-bg: #fff8f0;
+    --vitra-color-surface: rgba(139, 90, 43, 0.05);
+    --vitra-color-surface-hover: rgba(139, 90, 43, 0.08);
+    --vitra-color-surface-active: rgba(139, 90, 43, 0.12);
+    --vitra-color-border: rgba(139, 90, 43, 0.12);
+    --vitra-color-border-hover: rgba(139, 90, 43, 0.2);
+    --vitra-color-accent: #8b5a2b;
+    --vitra-color-accent-hover: #a0714a;
+    --vitra-color-accent-active: #6b4423;
+    --vitra-color-text-primary: rgba(62, 39, 18, 0.9);
+    --vitra-color-text-secondary: rgba(62, 39, 18, 0.65);
+    --vitra-color-text-tertiary: rgba(62, 39, 18, 0.4);
+    --vitra-color-text-inverse: #fff8f0;
+    --vitra-color-success: #556b2f;
+    --vitra-color-warning: #cd853f;
+    --vitra-color-error: #8b0000;
+    --vitra-color-info: #4682b4;
+    --vitra-shadow-subtle: 0 1px 3px rgba(62, 39, 18, 0.08);
+    --vitra-shadow-medium: 0 4px 12px rgba(62, 39, 18, 0.1);
+    --vitra-shadow-elevated: 0 8px 32px rgba(62, 39, 18, 0.12);
+    --vitra-shadow-glow: 0 0 20px rgba(139, 90, 43, 0.15);
+    --vitra-shadow-glow-strong: 0 0 40px rgba(139, 90, 43, 0.25);
+  }
+
   /* --- MONO THEME --- */
   [data-theme="mono"] {
     /* Colors - Grayscale only */
@@ -188,6 +440,58 @@
     --vitra-shadow-glow-strong: 0 0 40px rgba(80, 80, 80, 0.3);
   }
 
+  /* Mono theme - dark variant */
+  [data-theme="mono-dark"] {
+    --vitra-color-bg: #1a1a1a;
+    --vitra-color-surface: rgba(255, 255, 255, 0.05);
+    --vitra-color-surface-hover: rgba(255, 255, 255, 0.08);
+    --vitra-color-surface-active: rgba(255, 255, 255, 0.12);
+    --vitra-color-border: rgba(255, 255, 255, 0.12);
+    --vitra-color-border-hover: rgba(255, 255, 255, 0.2);
+    --vitra-color-accent: #707070;
+    --vitra-color-accent-hover: #909090;
+    --vitra-color-accent-active: #505050;
+    --vitra-color-text-primary: rgba(255, 255, 255, 0.95);
+    --vitra-color-text-secondary: rgba(255, 255, 255, 0.7);
+    --vitra-color-text-tertiary: rgba(255, 255, 255, 0.5);
+    --vitra-color-text-inverse: #1a1a1a;
+    --vitra-color-success: #505050;
+    --vitra-color-warning: #808080;
+    --vitra-color-error: #303030;
+    --vitra-color-info: #606060;
+    --vitra-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --vitra-shadow-glow: 0 0 20px rgba(80, 80, 80, 0.3);
+    --vitra-shadow-glow-strong: 0 0 40px rgba(80, 80, 80, 0.5);
+  }
+
+  /* Mono theme - light variant */
+  [data-theme="mono-light"] {
+    --vitra-color-bg: #ffffff;
+    --vitra-color-surface: rgba(0, 0, 0, 0.03);
+    --vitra-color-surface-hover: rgba(0, 0, 0, 0.05);
+    --vitra-color-surface-active: rgba(0, 0, 0, 0.08);
+    --vitra-color-border: rgba(0, 0, 0, 0.1);
+    --vitra-color-border-hover: rgba(0, 0, 0, 0.18);
+    --vitra-color-accent: #404040;
+    --vitra-color-accent-hover: #505050;
+    --vitra-color-accent-active: #303030;
+    --vitra-color-text-primary: rgba(0, 0, 0, 0.95);
+    --vitra-color-text-secondary: rgba(0, 0, 0, 0.7);
+    --vitra-color-text-tertiary: rgba(0, 0, 0, 0.5);
+    --vitra-color-text-inverse: #ffffff;
+    --vitra-color-success: #303030;
+    --vitra-color-warning: #505050;
+    --vitra-color-error: #101010;
+    --vitra-color-info: #404040;
+    --vitra-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.06);
+    --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.1);
+    --vitra-shadow-glow: 0 0 20px rgba(80, 80, 80, 0.15);
+    --vitra-shadow-glow-strong: 0 0 40px rgba(80, 80, 80, 0.25);
+  }
+
   /* --- MIDNIGHT THEME --- */
   [data-theme="midnight"] {
     /* Colors - Deep blue-purple */
@@ -215,6 +519,58 @@
     --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.6);
     --vitra-shadow-glow: 0 0 20px rgba(106, 90, 205, 0.4);
     --vitra-shadow-glow-strong: 0 0 40px rgba(106, 90, 205, 0.6);
+  }
+
+  /* Midnight theme - dark variant */
+  [data-theme="midnight-dark"] {
+    --vitra-color-bg: #050510;
+    --vitra-color-surface: rgba(106, 90, 205, 0.05);
+    --vitra-color-surface-hover: rgba(106, 90, 205, 0.08);
+    --vitra-color-surface-active: rgba(106, 90, 205, 0.12);
+    --vitra-color-border: rgba(106, 90, 205, 0.15);
+    --vitra-color-border-hover: rgba(106, 90, 205, 0.25);
+    --vitra-color-accent: #483d8b;
+    --vitra-color-accent-hover: #6a5acd;
+    --vitra-color-accent-active: #7b68ee;
+    --vitra-color-text-primary: rgba(230, 230, 250, 0.98);
+    --vitra-color-text-secondary: rgba(230, 230, 250, 0.75);
+    --vitra-color-text-tertiary: rgba(230, 230, 250, 0.55);
+    --vitra-color-text-inverse: #050510;
+    --vitra-color-success: #059669;
+    --vitra-color-warning: #d97706;
+    --vitra-color-error: #dc2626;
+    --vitra-color-info: #2563eb;
+    --vitra-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.5);
+    --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.6);
+    --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.7);
+    --vitra-shadow-glow: 0 0 20px rgba(106, 90, 205, 0.6);
+    --vitra-shadow-glow-strong: 0 0 40px rgba(106, 90, 205, 0.8);
+  }
+
+  /* Midnight theme - light variant */
+  [data-theme="midnight-light"] {
+    --vitra-color-bg: #f0f0ff;
+    --vitra-color-surface: rgba(106, 90, 205, 0.08);
+    --vitra-color-surface-hover: rgba(106, 90, 205, 0.12);
+    --vitra-color-surface-active: rgba(106, 90, 205, 0.18);
+    --vitra-color-border: rgba(106, 90, 205, 0.2);
+    --vitra-color-border-hover: rgba(106, 90, 205, 0.35);
+    --vitra-color-accent: #7b68ee;
+    --vitra-color-accent-hover: #6a5acd;
+    --vitra-color-accent-active: #483d8b;
+    --vitra-color-text-primary: rgba(15, 11, 26, 0.95);
+    --vitra-color-text-secondary: rgba(15, 11, 26, 0.7);
+    --vitra-color-text-tertiary: rgba(15, 11, 26, 0.5);
+    --vitra-color-text-inverse: #f0f0ff;
+    --vitra-color-success: #34d399;
+    --vitra-color-warning: #fbbf24;
+    --vitra-color-error: #f87171;
+    --vitra-color-info: #60a5fa;
+    --vitra-shadow-subtle: 0 1px 3px rgba(15, 11, 26, 0.1);
+    --vitra-shadow-medium: 0 4px 12px rgba(15, 11, 26, 0.15);
+    --vitra-shadow-elevated: 0 8px 32px rgba(15, 11, 26, 0.2);
+    --vitra-shadow-glow: 0 0 20px rgba(106, 90, 205, 0.3);
+    --vitra-shadow-glow-strong: 0 0 40px rgba(106, 90, 205, 0.5);
   }
 
   /* --- AUTO THEME --- */
