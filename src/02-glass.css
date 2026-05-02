@@ -43,6 +43,10 @@
     .vitra-glass {
       background: var(--vitra-glass-bg);
       backdrop-filter: blur(var(--vitra-blur-md));
+      box-shadow: 
+        var(--vitra-shadow-medium),
+        inset 0 1px 1px hsla(0, 0%, 100%, 0.1),
+        inset 0 -1px 1px hsla(0, 0%, 0%, 0.1);
     }
 
     /* Specular highlight (inner border) for realism */
@@ -51,15 +55,16 @@
       position: absolute;
       inset: 0;
       border-radius: inherit;
-      padding: 1px;
+      padding: 1.5px;
       background: linear-gradient(
         135deg,
-        hsla(0, 0%, 100%, 0.1),
-        transparent 50%,
-        hsla(0, 0%, 100%, 0.05)
+        hsla(0, 0%, 100%, 0.2),
+        transparent 40%,
+        hsla(0, 0%, 100%, 0.1)
       );
       mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       mask-composite: exclude;
+      -webkit-mask-composite: xor;
       pointer-events: none;
     }
   }

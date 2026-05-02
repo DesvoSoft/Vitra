@@ -14,24 +14,34 @@
 }
 
 body {
-  background: linear-gradient(90deg, var(--vitra-color-bg), hsl(var(--vitra-color-accent-h), 20%, 8%));
+  background: linear-gradient(180deg, var(--vitra-color-bg), hsl(var(--vitra-color-accent-h), 20%, 6%));
   background-attachment: fixed;
   min-height: 100vh;
+  position: relative;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%);
+  pointer-events: none;
+  z-index: -2;
 }
 
 .demo-hero::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150%;
+  height: 150%;
   background: radial-gradient(
-    ellipse at center,
-    var(--vitra-color-accent, #6c63ff) 0%,
-    transparent 70%
+    circle at center,
+    hsla(var(--vitra-color-accent-h), 100%, 70%, 0.15) 0%,
+    transparent 60%
   );
-  opacity: 0.05;
   pointer-events: none;
   z-index: -1;
 }
