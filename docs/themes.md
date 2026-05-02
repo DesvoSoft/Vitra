@@ -4,18 +4,16 @@ Complete guide to using and customizing the 8 preset themes in Vitra CSS Framewo
 
 ## Overview
 
-Vitra includes **8 preset themes** that can be applied via the `data-theme` attribute or JavaScript API. Each theme overrides the core design tokens to create a unique visual experience.
+Vitra includes **7 preset themes** that can be applied via the `data-theme` attribute or JavaScript API. Each theme overrides the core design tokens to create a unique visual experience.
 
 | Theme | Name | Description |
 |-------|------|-------------|
-| `default` | Default (Dark) | Dark background (#0f0f14) with purple accent (#6c63ff) |
 | `light` | Light | Light background (#ffffff) with dark text |
-| `dark` | Dark | Dark background (#0f0f14) with light text |
+| `dark` | Dark | Dark background (#06060a) with light text |
 | `pastel` | Pastel | Soft muted colors with pink accents |
 | `neon` | Neon | Bright glowing accents on deep black background |
-| `earth` | Earth | Warm natural tones with brown accents |
-| `mono` | Mono | Grayscale-only theme |
-| `midnight` | Midnight | Deep blue-purple theme |
+| `ocean` | Ocean | Deep blue-toned theme with cyan accents |
+| `emerald` | Emerald | Rich green-toned theme with soft glows |
 | `auto` | Auto-Detect | Uses `prefers-color-scheme` to detect system preference |
 
 ## Quick Start
@@ -77,7 +75,7 @@ Bright theme with dark text on light background.
 
 **Key Tokens:**
 ```css
-[data-theme="light"] {
+html[data-theme="light"] {
   --vitra-color-bg: #ffffff;
   --vitra-color-surface: rgba(0, 0, 0, 0.05);
   --vitra-color-text-primary: rgba(0, 0, 0, 0.95);
@@ -97,8 +95,8 @@ Dark background with light text (explicit).
 
 **Key Tokens:**
 ```css
-[data-theme="dark"] {
-  --vitra-color-bg: #0f0f14;
+html[data-theme="dark"] {
+  --vitra-color-bg: #06060a;
   --vitra-color-surface: rgba(255, 255, 255, 0.05);
   --vitra-color-text-primary: rgba(255, 255, 255, 0.95);
   --vitra-color-accent: #6c63ff;
@@ -223,14 +221,14 @@ Automatically detects the user's system theme preference via `prefers-color-sche
 
 **Implementation:**
 ```css
-[data-theme="auto"] {
+html[data-theme="auto"] {
   /* Default to dark */
-  --vitra-color-bg: #0f0f14;
+  --vitra-color-bg: #06060a;
   /* ... other dark theme tokens ... */
 }
 
 @media (prefers-color-scheme: light) {
-  [data-theme="auto"] {
+  html[data-theme="auto"] {
     --vitra-color-bg: #ffffff;
     /* ... light theme tokens ... */
   }
@@ -321,7 +319,7 @@ Returns an array of valid theme names.
 
 ```javascript
 const themes = Vitra.theme.getValidThemes();
-// Returns: ['default', 'light', 'dark', 'pastel', 'neon', 'earth', 'mono', 'midnight', 'auto']
+// Returns: ['light', 'dark', 'pastel', 'neon', 'ocean', 'emerald', 'auto']
 ```
 
 ---
@@ -401,7 +399,7 @@ You can create custom themes by adding a new `[data-theme="custom-name"]` block 
 
 ```css
 /* Custom theme example */
-[data-theme="brand"] {
+html[data-theme="brand"] {
   --vitra-color-bg: #your-bg-color;
   --vitra-color-surface: rgba(...);
   --vitra-color-accent: #your-accent;
