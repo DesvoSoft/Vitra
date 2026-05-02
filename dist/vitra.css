@@ -1582,7 +1582,29 @@ a:hover {
   .vitra-input-glass {
     background: hsla(0, 0%, 100%, 0.03);
     backdrop-filter: blur(var(--vitra-blur-md));
-    border-color: hsla(0, 0%, 100%, 0.1);
+    border-color: hsla(0, 0%, 100%, 0.15);
+    color: var(--vitra-color-text-primary);
+  }
+
+  /* Custom Select Styling */
+  select.vitra-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+    padding-right: 2.5rem;
+    cursor: pointer;
+  }
+
+  /* Dark theme adjustment for select arrow */
+  [data-theme="dark"] select.vitra-input,
+  :root select.vitra-input {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  }
+
+  [data-theme="light"] select.vitra-input {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='black'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
   }
 
   /* --- TOGGLE SWITCH --- */

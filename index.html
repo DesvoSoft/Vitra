@@ -26,33 +26,35 @@
 <body>
   <!-- Navigation -->
   <nav class="vitra-navbar vitra-glass" style="position: sticky; top: 0; z-index: 1000;" role="navigation" aria-label="Main navigation">
-    <div class="vitra-navbar-brand">
-      <strong>Vitra CSS</strong> Demo
-    </div>
-    <div class="vitra-navbar-links">
-      <a href="#tokens" class="vitra-navbar-link">Tokens</a>
-      <a href="#glass" class="vitra-navbar-link">Glass</a>
-      <a href="#particles" class="vitra-navbar-link">Particles</a>
-      <a href="#motion" class="vitra-navbar-link">Motion</a>
-      <a href="#layout" class="vitra-navbar-link">Layout</a>
-      <a href="#components" class="vitra-navbar-link">Components</a>
-    </div>
-    <div class="vitra-navbar-actions">
-      <select id="theme-selector" class="vitra-input vitra-input-glass" style="min-width: 140px;">
-        <option value="light">Light</option>
-        <option value="dark">Dark</option>
-        <option value="auto">Auto</option>
-        <option value="pastel">Pastel</option>
-        <option value="neon">Neon</option>
-        <option value="ocean">Ocean</option>
-        <option value="emerald">Emerald</option>
-      </select>
+    <div class="vitra-container vitra-flex vitra-justify-between vitra-items-center">
+      <div class="vitra-navbar-brand">
+        <strong>Vitra CSS</strong> Demo
+      </div>
+      <div class="vitra-navbar-links">
+        <a href="#tokens" class="vitra-navbar-link">Tokens</a>
+        <a href="#glass" class="vitra-navbar-link">Glass</a>
+        <a href="#particles" class="vitra-navbar-link">Particles</a>
+        <a href="#motion" class="vitra-navbar-link">Motion</a>
+        <a href="#layout" class="vitra-navbar-link">Layout</a>
+        <a href="#components" class="vitra-navbar-link">Components</a>
+      </div>
+      <div class="vitra-navbar-actions">
+        <select id="theme-selector" class="vitra-input vitra-input-glass" style="min-width: 140px;">
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+          <option value="auto">Auto</option>
+          <option value="pastel">Pastel</option>
+          <option value="neon">Neon</option>
+          <option value="ocean">Ocean</option>
+          <option value="emerald">Emerald</option>
+        </select>
 
-      <button class="vitra-burger" aria-label="Toggle menu">
-        <span class="vitra-burger-line"></span>
-        <span class="vitra-burger-line"></span>
-        <span class="vitra-burger-line"></span>
-      </button>
+        <button class="vitra-burger" aria-label="Toggle menu">
+          <span class="vitra-burger-line"></span>
+          <span class="vitra-burger-line"></span>
+          <span class="vitra-burger-line"></span>
+        </button>
+      </div>
     </div>
   </nav>
 
@@ -76,31 +78,34 @@
 
   <!-- Hero Section -->
   <section class="demo-hero vitra-glass-subtle">
-    <h1 class="vitra-text-4xl vitra-mb-4">
-      Vitra CSS Interactive Demo
-    </h1>
-    <p class="vitra-text-xl vitra-text-secondary vitra-mx-auto" style="max-width: 650px;">
-      Experience the complete Vitra CSS framework with live theme switching,
-      configurable particles, glassmorphism effects, and interactive components.
-    </p>
-    <div class="vitra-flex vitra-justify-center vitra-gap-4 vitra-flex-wrap vitra-mt-6">
-      <button class="vitra-btn vitra-btn-solid vitra-btn-lg" onclick="Vitra.particles.spawn(10, {container: '#particle-demo-area'})">
-        Test Particles
-      </button>
-      <button class="vitra-btn vitra-btn-glass vitra-btn-lg" onclick="toggleTheme()">
-        Toggle Theme
-      </button>
-      <button class="vitra-btn vitra-btn-ghost vitra-btn-lg" data-vitra-modal-open="demo-modal">
-        Open Modal
-      </button>
-    </div>
-    <div id="current-theme-display" class="vitra-mt-4 vitra-text-sm vitra-text-tertiary">
-      Current theme: <strong id="current-theme-name" class="vitra-text-primary">Auto</strong>
+    <div class="vitra-container vitra-text-center">
+      <h1 class="vitra-text-4xl vitra-mb-4">
+        Vitra CSS Interactive Demo
+      </h1>
+      <p class="vitra-text-xl vitra-text-secondary vitra-mx-auto" style="max-width: 650px;">
+        Experience the complete Vitra CSS framework with live theme switching,
+        configurable particles, glassmorphism effects, and interactive components.
+      </p>
+      <div class="vitra-flex vitra-justify-center vitra-gap-4 vitra-flex-wrap vitra-mt-6">
+        <button class="vitra-btn vitra-btn-solid vitra-btn-lg" onclick="Vitra.particles.spawn(10, {container: '#particle-demo-area'})">
+          Test Particles
+        </button>
+        <button class="vitra-btn vitra-btn-glass vitra-btn-lg" onclick="toggleTheme()">
+          Toggle Theme
+        </button>
+        <button class="vitra-btn vitra-btn-ghost vitra-btn-lg" data-vitra-modal-open="demo-modal">
+          Open Modal
+        </button>
+      </div>
+      <div id="current-theme-display" class="vitra-mt-4 vitra-text-sm vitra-text-tertiary">
+        Current theme: <strong id="current-theme-name" class="vitra-text-primary">Auto</strong>
+      </div>
     </div>
   </section>
 
   <!-- Tokens Section -->
   <section id="tokens" class="demo-section vitra-reveal">
+    <div class="vitra-container">
     <h2 class="demo-section-title">Design Tokens</h2>
     <p>Vitra CSS uses CSS custom properties (variables) with the <code>--vitra-</code> prefix for all design tokens.</p>
 
@@ -155,7 +160,8 @@
 
   <!-- Glass Section -->
   <section id="glass" class="demo-section vitra-reveal">
-    <h2 class="demo-section-title">Glassmorphism</h2>
+    <div class="vitra-container">
+      <h2 class="demo-section-title">Glassmorphism</h2>
     <p>Beautiful frosted glass effects with automatic fallbacks for browsers without <code>backdrop-filter</code> support.</p>
 
     <div class="demo-grid">
@@ -215,6 +221,7 @@
 
   <!-- Particles Section -->
   <section id="particles" class="demo-section vitra-reveal">
+    <div class="vitra-container">
     <h2 class="demo-section-title">Configurable Particles</h2>
     <p>Add beautiful floating particles with glow effects. Configurable via JavaScript API or data attributes.</p>
 
@@ -287,6 +294,7 @@
 
   <!-- Motion Section -->
   <section id="motion" class="demo-section vitra-reveal">
+    <div class="vitra-container">
     <h2 class="demo-section-title">Motion & Animations</h2>
     <p>Smooth reveal animations, hover interactions, and full <code>prefers-reduced-motion</code> support.</p>
 
@@ -342,6 +350,7 @@
 
   <!-- Layout Section -->
   <section id="layout" class="demo-section vitra-reveal">
+    <div class="vitra-container">
     <h2 class="demo-section-title">Layout Utilities</h2>
     <p>Fluid containers, responsive grids, flex utilities, and clamp()-based spacing.</p>
 
@@ -380,6 +389,7 @@
 
   <!-- Components Section -->
   <section id="components" class="demo-section vitra-reveal">
+    <div class="vitra-container">
     <h2 class="demo-section-title">Component Showcase</h2>
     <p>All Vitra CSS components with token-only styling, glass variants, and accessibility built-in.</p>
 
@@ -436,7 +446,7 @@
           </div>
           <div>
             <label class="vitra-label" for="demo-select">Select Menu</label>
-            <select id="demo-select" class="vitra-select">
+            <select id="demo-select" class="vitra-input vitra-input-glass">
               <option>Option 1</option>
               <option>Option 2</option>
               <option>Option 3</option>

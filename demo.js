@@ -70,15 +70,22 @@
 
   // Global toggle function for the button in index.html
   window.toggleTheme = function() {
+    console.log('[Vitra Demo] Toggle requested');
     if (window.Vitra && Vitra.theme) {
       const nextTheme = Vitra.theme.toggle();
+      console.log('[Vitra Demo] Toggled to:', nextTheme);
       
       // Update UI
       const selector = document.getElementById('theme-selector');
-      if (selector) selector.value = nextTheme;
+      if (selector) {
+        selector.value = nextTheme;
+        console.log('[Vitra Demo] Selector updated to:', nextTheme);
+      }
       
       updateThemeDisplay(nextTheme);
       showNotification(`Theme toggled to: ${nextTheme}`);
+    } else {
+      console.error('[Vitra Demo] Vitra theme API not available');
     }
   };
 
