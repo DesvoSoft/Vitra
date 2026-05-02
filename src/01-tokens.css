@@ -132,5 +132,41 @@ h1, h2, h3, h4, h5, h6 {
   line-height: var(--vitra-line-height-tight);
   color: var(--vitra-color-text-primary);
   margin: 0;
+  letter-spacing: -0.02em;
+}
+
+/* Global Link Styles */
+a {
+  color: var(--vitra-color-accent);
+  text-decoration: none;
+  transition: all var(--vitra-duration-normal) var(--vitra-ease-luxury);
+}
+
+a:hover {
+  color: var(--vitra-color-accent-hover);
+  opacity: 0.8;
+}
+
+.vitra-link {
+  position: relative;
+  display: inline-block;
+}
+
+.vitra-link::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background-color: currentColor;
+  transform-origin: bottom right;
+  transition: transform var(--vitra-duration-normal) var(--vitra-ease-luxury);
+}
+
+.vitra-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
 }
 

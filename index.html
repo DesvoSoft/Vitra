@@ -38,10 +38,14 @@
       <a href="#components" class="vitra-navbar-link">Components</a>
     </div>
     <div class="vitra-navbar-actions">
-      <select id="theme-selector" class="vitra-input vitra-input-glass" style="min-width: 130px;">
+      <select id="theme-selector" class="vitra-input vitra-input-glass" style="min-width: 140px;">
         <option value="light">Light</option>
         <option value="dark">Dark</option>
         <option value="auto">Auto</option>
+        <option value="pastel">Pastel</option>
+        <option value="neon">Neon</option>
+        <option value="ocean">Ocean</option>
+        <option value="emerald">Emerald</option>
       </select>
 
       <button class="vitra-burger" aria-label="Toggle menu">
@@ -72,14 +76,14 @@
 
   <!-- Hero Section -->
   <section class="demo-hero vitra-glass-subtle">
-    <h1 style="font-size: var(--vitra-font-size-4xl, 2.25rem); margin-bottom: var(--vitra-space-4, 1rem);">
+    <h1 class="vitra-text-4xl vitra-mb-4">
       Vitra CSS Interactive Demo
     </h1>
-    <p style="font-size: var(--vitra-font-size-xl, 1.25rem); color: var(--vitra-color-text-secondary, rgba(0,0,0,0.7)); max-width: 600px;">
+    <p class="vitra-text-xl vitra-text-secondary vitra-mx-auto" style="max-width: 650px;">
       Experience the complete Vitra CSS framework with live theme switching,
       configurable particles, glassmorphism effects, and interactive components.
     </p>
-    <div style="margin-top: var(--vitra-space-6, 1.5rem); display: flex; gap: var(--vitra-space-4, 1rem); flex-wrap: wrap; justify-content: center;">
+    <div class="vitra-flex vitra-justify-center vitra-gap-4 vitra-flex-wrap vitra-mt-6">
       <button class="vitra-btn vitra-btn-solid vitra-btn-lg" onclick="Vitra.particles.spawn(10, {container: '#particle-demo-area'})">
         Test Particles
       </button>
@@ -90,8 +94,8 @@
         Open Modal
       </button>
     </div>
-    <div id="current-theme-display" style="margin-top: var(--vitra-space-4, 1rem); font-size: var(--vitra-font-size-sm, 0.875rem); color: var(--vitra-color-text-tertiary, rgba(0,0,0,0.5));">
-      Current theme: <strong id="current-theme-name">Auto</strong>
+    <div id="current-theme-display" class="vitra-mt-4 vitra-text-sm vitra-text-tertiary">
+      Current theme: <strong id="current-theme-name" class="vitra-text-primary">Auto</strong>
     </div>
   </section>
 

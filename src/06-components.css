@@ -27,7 +27,7 @@
     line-height: var(--vitra-line-height-tight);
     text-decoration: none;
 
-    padding: var(--vitra-space-2) var(--vitra-space-4);
+    padding: var(--vitra-space-2) var(--vitra-space-3);
     border: 1px solid transparent;
     border-radius: var(--vitra-radius-md);
 
@@ -128,8 +128,8 @@
   .vitra-card {
     display: flex;
     flex-direction: column;
-    padding: var(--vitra-space-4);
-    gap: var(--vitra-space-3);
+    padding: var(--vitra-space-3) var(--vitra-space-4);
+    gap: var(--vitra-space-2);
 
     border: 1px solid var(--vitra-color-border);
     border-radius: var(--vitra-radius-lg);
@@ -242,8 +242,8 @@
 
   /* Large card */
   .vitra-card-lg {
-    padding: var(--vitra-space-5);
-    gap: var(--vitra-space-4);
+    padding: var(--vitra-space-4);
+    gap: var(--vitra-space-3);
   }
 
   .vitra-card-lg .vitra-card-image {
@@ -1670,5 +1670,149 @@
       transition: none;
       animation: none;
     }
+  }
+
+  /* ============================================
+      NAVIGATION (COMP-04)
+      Navbar, links, brand, and burger menu
+      ============================================ */
+
+  .vitra-navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--vitra-space-2) var(--vitra-space-6);
+    width: 100%;
+    box-sizing: border-box;
+    transition: all var(--vitra-duration-normal) var(--vitra-ease-luxury);
+  }
+
+  .vitra-navbar-brand {
+    font-family: var(--vitra-font-heading);
+    font-size: var(--vitra-font-size-xl);
+    font-weight: var(--vitra-font-weight-bold);
+    color: var(--vitra-color-text-primary);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+
+  .vitra-navbar-links {
+    display: none;
+    gap: var(--vitra-space-4);
+  }
+
+  @media (min-width: 768px) {
+    .vitra-navbar-links {
+      display: flex;
+    }
+  }
+
+  .vitra-navbar-link {
+    color: var(--vitra-color-text-secondary);
+    font-weight: var(--vitra-font-weight-medium);
+    font-size: var(--vitra-font-size-sm);
+    transition: color var(--vitra-duration-fast) var(--vitra-ease-luxury);
+  }
+
+  .vitra-navbar-link:hover {
+    color: var(--vitra-color-text-primary);
+  }
+
+  .vitra-navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--vitra-space-3);
+  }
+
+  /* --- BURGER MENU --- */
+  .vitra-burger {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 18px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+  }
+
+  @media (min-width: 768px) {
+    .vitra-burger {
+      display: none;
+    }
+  }
+
+  .vitra-burger-line {
+    width: 100%;
+    height: 2px;
+    background-color: var(--vitra-color-text-primary);
+    border-radius: 1px;
+    transition: all var(--vitra-duration-normal) var(--vitra-ease-luxury);
+  }
+
+  .vitra-burger.active .vitra-burger-line:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+
+  .vitra-burger.active .vitra-burger-line:nth-child(2) {
+    opacity: 0;
+  }
+
+  .vitra-burger.active .vitra-burger-line:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+
+  /* ============================================
+      DRAWER (COMP-05)
+      Mobile navigation drawer
+      ============================================ */
+
+  .vitra-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 280px;
+    z-index: 2000;
+    background-color: var(--vitra-color-bg);
+    padding: var(--vitra-space-6) var(--vitra-space-4);
+    transform: translateX(100%);
+    transition: transform var(--vitra-duration-normal) var(--vitra-ease-luxury);
+    box-shadow: var(--vitra-shadow-elevated);
+    display: flex;
+    flex-direction: column;
+    gap: var(--vitra-space-4);
+  }
+
+  .vitra-drawer.open {
+    transform: translateX(0);
+  }
+
+  .vitra-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--vitra-space-4);
+  }
+
+  .vitra-drawer-title {
+    margin: 0;
+    font-size: var(--vitra-font-size-xl);
+  }
+
+  .vitra-drawer-close {
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    color: var(--vitra-color-text-primary);
+    cursor: pointer;
+  }
+
+  .vitra-drawer-glass {
+    background: hsla(var(--vitra-color-accent-h), 20%, 5%, 0.8);
+    backdrop-filter: blur(var(--vitra-blur-lg));
+    border-left: 1px solid hsla(0, 0%, 100%, 0.1);
   }
 }

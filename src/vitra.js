@@ -12,7 +12,7 @@ const Vitra = (() => {
   // Storage key for localStorage persistence
   const STORAGE_KEY = 'vitra-theme';
 
-  const VALID_THEMES = ['light', 'dark', 'auto'];
+  const VALID_THEMES = ['light', 'dark', 'auto', 'pastel', 'neon', 'ocean', 'emerald'];
 
   // Cache for prefers-color-scheme media query
   let _prefersDarkMedia = null;
@@ -57,6 +57,10 @@ const Vitra = (() => {
         }
       }
 
+      if (themeName === 'auto') {
+        theme._watchSystemTheme();
+      }
+
       return true;
     },
 
@@ -68,13 +72,16 @@ const Vitra = (() => {
       const current = this.get();
       let next;
 
-      if (current === 'auto') {
-        // If auto, switch to the opposite of current system preference
+      if (current === 'light') {
+        next = 'dark';
+      } else if (current === 'dark') {
+        next = 'light';
+      } else if (current === 'auto') {
         const effective = this.getEffective();
         next = effective === 'dark' ? 'light' : 'dark';
       } else {
-        // Otherwise simple flip
-        next = current === 'dark' ? 'light' : 'dark';
+        // If in a special theme, toggle back to light/dark based on contrast or just default to light
+        next = 'light';
       }
 
       this.set(next);

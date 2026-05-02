@@ -55,9 +55,52 @@
     --vitra-glass-bg: hsla(0, 0%, 100%, 0.03);
   }
 
+  /* --- PASTEL THEME --- */
+  [data-theme="pastel"] {
+    --vitra-color-bg: hsl(300, 30%, 98%);
+    --vitra-color-surface: hsla(300, 100%, 80%, 0.1);
+    --vitra-color-accent-h: 320;
+    --vitra-color-accent-s: 70%;
+    --vitra-color-accent-l: 65%;
+    --vitra-color-text-primary: hsl(300, 20%, 20%);
+    --vitra-color-text-secondary: hsl(300, 10%, 40%);
+  }
+
+  /* --- NEON THEME --- */
+  [data-theme="neon"] {
+    --vitra-color-bg: hsl(260, 30%, 2%);
+    --vitra-color-surface: hsla(180, 100%, 50%, 0.05);
+    --vitra-color-accent-h: 180;
+    --vitra-color-accent-s: 100%;
+    --vitra-color-accent-l: 50%;
+    --vitra-color-text-primary: hsl(180, 100%, 95%);
+    --vitra-color-text-secondary: hsl(180, 50%, 70%);
+  }
+
+  /* --- OCEAN THEME --- */
+  [data-theme="ocean"] {
+    --vitra-color-bg: hsl(210, 30%, 4%);
+    --vitra-color-surface: hsla(210, 100%, 60%, 0.05);
+    --vitra-color-accent-h: 200;
+    --vitra-color-accent-s: 90%;
+    --vitra-color-accent-l: 55%;
+    --vitra-color-text-primary: hsl(210, 100%, 95%);
+    --vitra-color-text-secondary: hsl(210, 40%, 75%);
+  }
+
+  /* --- EMERALD THEME --- */
+  [data-theme="emerald"] {
+    --vitra-color-bg: hsl(160, 20%, 3%);
+    --vitra-color-surface: hsla(160, 100%, 50%, 0.05);
+    --vitra-color-accent-h: 155;
+    --vitra-color-accent-s: 80%;
+    --vitra-color-accent-l: 45%;
+    --vitra-color-text-primary: hsl(160, 100%, 95%);
+    --vitra-color-text-secondary: hsl(160, 40%, 75%);
+  }
+
   /* --- AUTO THEME --- */
   [data-theme="auto"] {
-    /* Inherits from Dark by default in :root, but we can be explicit here */
     --vitra-color-bg: hsl(240, 15%, 4%);
   }
 

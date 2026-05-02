@@ -10,7 +10,7 @@ var Vitra = (() => {
       var Vitra = (() => {
         "use strict";
         const STORAGE_KEY = "vitra-theme";
-        const VALID_THEMES = ["light", "dark", "auto"];
+        const VALID_THEMES = ["light", "dark", "auto", "pastel", "neon", "ocean", "emerald"];
         let _prefersDarkMedia = null;
         let _prefersLightMedia = null;
         const theme = {
@@ -41,6 +41,9 @@ var Vitra = (() => {
                 console.warn("[Vitra Theme] Could not save theme to localStorage:", e.message);
               }
             }
+            if (themeName === "auto") {
+              theme._watchSystemTheme();
+            }
             return true;
           },
           /**
@@ -50,11 +53,15 @@ var Vitra = (() => {
           toggle() {
             const current = this.get();
             let next;
-            if (current === "auto") {
+            if (current === "light") {
+              next = "dark";
+            } else if (current === "dark") {
+              next = "light";
+            } else if (current === "auto") {
               const effective = this.getEffective();
               next = effective === "dark" ? "light" : "dark";
             } else {
-              next = current === "dark" ? "light" : "dark";
+              next = "light";
             }
             this.set(next);
             return next;

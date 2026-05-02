@@ -56,9 +56,52 @@
     --vitra-glass-bg: hsla(0, 0%, 100%, 0.03);
   }
 
+  /* --- PASTEL THEME --- */
+  [data-theme="pastel"] {
+    --vitra-color-bg: hsl(300, 30%, 98%);
+    --vitra-color-surface: hsla(300, 100%, 80%, 0.1);
+    --vitra-color-accent-h: 320;
+    --vitra-color-accent-s: 70%;
+    --vitra-color-accent-l: 65%;
+    --vitra-color-text-primary: hsl(300, 20%, 20%);
+    --vitra-color-text-secondary: hsl(300, 10%, 40%);
+  }
+
+  /* --- NEON THEME --- */
+  [data-theme="neon"] {
+    --vitra-color-bg: hsl(260, 30%, 2%);
+    --vitra-color-surface: hsla(180, 100%, 50%, 0.05);
+    --vitra-color-accent-h: 180;
+    --vitra-color-accent-s: 100%;
+    --vitra-color-accent-l: 50%;
+    --vitra-color-text-primary: hsl(180, 100%, 95%);
+    --vitra-color-text-secondary: hsl(180, 50%, 70%);
+  }
+
+  /* --- OCEAN THEME --- */
+  [data-theme="ocean"] {
+    --vitra-color-bg: hsl(210, 30%, 4%);
+    --vitra-color-surface: hsla(210, 100%, 60%, 0.05);
+    --vitra-color-accent-h: 200;
+    --vitra-color-accent-s: 90%;
+    --vitra-color-accent-l: 55%;
+    --vitra-color-text-primary: hsl(210, 100%, 95%);
+    --vitra-color-text-secondary: hsl(210, 40%, 75%);
+  }
+
+  /* --- EMERALD THEME --- */
+  [data-theme="emerald"] {
+    --vitra-color-bg: hsl(160, 20%, 3%);
+    --vitra-color-surface: hsla(160, 100%, 50%, 0.05);
+    --vitra-color-accent-h: 155;
+    --vitra-color-accent-s: 80%;
+    --vitra-color-accent-l: 45%;
+    --vitra-color-text-primary: hsl(160, 100%, 95%);
+    --vitra-color-text-secondary: hsl(160, 40%, 75%);
+  }
+
   /* --- AUTO THEME --- */
   [data-theme="auto"] {
-    /* Inherits from Dark by default in :root, but we can be explicit here */
     --vitra-color-bg: hsl(240, 15%, 4%);
   }
 
@@ -208,6 +251,42 @@ h1, h2, h3, h4, h5, h6 {
   line-height: var(--vitra-line-height-tight);
   color: var(--vitra-color-text-primary);
   margin: 0;
+  letter-spacing: -0.02em;
+}
+
+/* Global Link Styles */
+a {
+  color: var(--vitra-color-accent);
+  text-decoration: none;
+  transition: all var(--vitra-duration-normal) var(--vitra-ease-luxury);
+}
+
+a:hover {
+  color: var(--vitra-color-accent-hover);
+  opacity: 0.8;
+}
+
+.vitra-link {
+  position: relative;
+  display: inline-block;
+}
+
+.vitra-link::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background-color: currentColor;
+  transform-origin: bottom right;
+  transition: transform var(--vitra-duration-normal) var(--vitra-ease-luxury);
+}
+
+.vitra-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
 }
 
 
@@ -1226,7 +1305,7 @@ h1, h2, h3, h4, h5, h6 {
     line-height: var(--vitra-line-height-tight);
     text-decoration: none;
 
-    padding: var(--vitra-space-2) var(--vitra-space-4);
+    padding: var(--vitra-space-2) var(--vitra-space-3);
     border: 1px solid transparent;
     border-radius: var(--vitra-radius-md);
 
@@ -1327,8 +1406,8 @@ h1, h2, h3, h4, h5, h6 {
   .vitra-card {
     display: flex;
     flex-direction: column;
-    padding: var(--vitra-space-4);
-    gap: var(--vitra-space-3);
+    padding: var(--vitra-space-3) var(--vitra-space-4);
+    gap: var(--vitra-space-2);
 
     border: 1px solid var(--vitra-color-border);
     border-radius: var(--vitra-radius-lg);
@@ -1441,8 +1520,8 @@ h1, h2, h3, h4, h5, h6 {
 
   /* Large card */
   .vitra-card-lg {
-    padding: var(--vitra-space-5);
-    gap: var(--vitra-space-4);
+    padding: var(--vitra-space-4);
+    gap: var(--vitra-space-3);
   }
 
   .vitra-card-lg .vitra-card-image {
@@ -2869,6 +2948,150 @@ h1, h2, h3, h4, h5, h6 {
       transition: none;
       animation: none;
     }
+  }
+
+  /* ============================================
+      NAVIGATION (COMP-04)
+      Navbar, links, brand, and burger menu
+      ============================================ */
+
+  .vitra-navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--vitra-space-2) var(--vitra-space-6);
+    width: 100%;
+    box-sizing: border-box;
+    transition: all var(--vitra-duration-normal) var(--vitra-ease-luxury);
+  }
+
+  .vitra-navbar-brand {
+    font-family: var(--vitra-font-heading);
+    font-size: var(--vitra-font-size-xl);
+    font-weight: var(--vitra-font-weight-bold);
+    color: var(--vitra-color-text-primary);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+
+  .vitra-navbar-links {
+    display: none;
+    gap: var(--vitra-space-4);
+  }
+
+  @media (min-width: 768px) {
+    .vitra-navbar-links {
+      display: flex;
+    }
+  }
+
+  .vitra-navbar-link {
+    color: var(--vitra-color-text-secondary);
+    font-weight: var(--vitra-font-weight-medium);
+    font-size: var(--vitra-font-size-sm);
+    transition: color var(--vitra-duration-fast) var(--vitra-ease-luxury);
+  }
+
+  .vitra-navbar-link:hover {
+    color: var(--vitra-color-text-primary);
+  }
+
+  .vitra-navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--vitra-space-3);
+  }
+
+  /* --- BURGER MENU --- */
+  .vitra-burger {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 18px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+  }
+
+  @media (min-width: 768px) {
+    .vitra-burger {
+      display: none;
+    }
+  }
+
+  .vitra-burger-line {
+    width: 100%;
+    height: 2px;
+    background-color: var(--vitra-color-text-primary);
+    border-radius: 1px;
+    transition: all var(--vitra-duration-normal) var(--vitra-ease-luxury);
+  }
+
+  .vitra-burger.active .vitra-burger-line:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+
+  .vitra-burger.active .vitra-burger-line:nth-child(2) {
+    opacity: 0;
+  }
+
+  .vitra-burger.active .vitra-burger-line:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+
+  /* ============================================
+      DRAWER (COMP-05)
+      Mobile navigation drawer
+      ============================================ */
+
+  .vitra-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 280px;
+    z-index: 2000;
+    background-color: var(--vitra-color-bg);
+    padding: var(--vitra-space-6) var(--vitra-space-4);
+    transform: translateX(100%);
+    transition: transform var(--vitra-duration-normal) var(--vitra-ease-luxury);
+    box-shadow: var(--vitra-shadow-elevated);
+    display: flex;
+    flex-direction: column;
+    gap: var(--vitra-space-4);
+  }
+
+  .vitra-drawer.open {
+    transform: translateX(0);
+  }
+
+  .vitra-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--vitra-space-4);
+  }
+
+  .vitra-drawer-title {
+    margin: 0;
+    font-size: var(--vitra-font-size-xl);
+  }
+
+  .vitra-drawer-close {
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    color: var(--vitra-color-text-primary);
+    cursor: pointer;
+  }
+
+  .vitra-drawer-glass {
+    background: hsla(var(--vitra-color-accent-h), 20%, 5%, 0.8);
+    backdrop-filter: blur(var(--vitra-blur-lg));
+    border-left: 1px solid hsla(0, 0%, 100%, 0.1);
   }
 }
 
