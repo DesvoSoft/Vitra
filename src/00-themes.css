@@ -15,61 +15,46 @@
 
   /* --- LIGHT THEME --- */
   [data-theme="light"] {
-    /* Colors - Light background, dark text */
-    --vitra-color-bg: #ffffff;
-    --vitra-color-surface: rgba(0, 0, 0, 0.05);
-    --vitra-color-surface-hover: rgba(0, 0, 0, 0.08);
-    --vitra-color-surface-active: rgba(0, 0, 0, 0.12);
-    --vitra-color-border: rgba(0, 0, 0, 0.12);
-    --vitra-color-border-hover: rgba(0, 0, 0, 0.2);
-    --vitra-color-accent: #6c63ff;
-    --vitra-color-accent-hover: #7b73ff;
-    --vitra-color-accent-active: #5a52e0;
-    --vitra-color-text-primary: rgba(0, 0, 0, 0.95);
-    --vitra-color-text-secondary: rgba(0, 0, 0, 0.7);
-    --vitra-color-text-tertiary: rgba(0, 0, 0, 0.5);
-    --vitra-color-text-inverse: #ffffff;
-    --vitra-color-success: #10b981;
-    --vitra-color-warning: #f59e0b;
-    --vitra-color-error: #ef4444;
-    --vitra-color-info: #3b82f6;
+    --vitra-color-bg: hsl(0, 0%, 100%);
+    --vitra-color-surface: hsla(0, 0%, 0%, 0.04);
+    --vitra-color-surface-hover: hsla(0, 0%, 0%, 0.08);
+    --vitra-color-surface-active: hsla(0, 0%, 0%, 0.12);
+    --vitra-color-border: hsla(0, 0%, 0%, 0.1);
+    --vitra-color-border-hover: hsla(0, 0%, 0%, 0.2);
+    
+    --vitra-color-text-primary: hsla(0, 0%, 0%, 0.95);
+    --vitra-color-text-secondary: hsla(0, 0%, 0%, 0.7);
+    --vitra-color-text-tertiary: hsla(0, 0%, 0%, 0.5);
+    --vitra-color-text-inverse: hsl(0, 0%, 100%);
 
-    /* Shadows - Lighter for light theme */
-    --vitra-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.08);
-    --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
-    --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.12);
-    --vitra-shadow-glow: 0 0 20px rgba(108, 99, 255, 0.2);
-    --vitra-shadow-glow-strong: 0 0 40px rgba(108, 99, 255, 0.3);
+    --vitra-shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --vitra-shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --vitra-shadow-elevated: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    
+    --vitra-glass-bg: hsla(0, 0%, 100%, 0.7); /* More opaque for light theme glass */
   }
 
   /* --- DARK THEME --- */
   [data-theme="dark"] {
-    /* Colors - Dark background, light text */
-    --vitra-color-bg: #0f0f14;
-    --vitra-color-surface: rgba(255, 255, 255, 0.05);
-    --vitra-color-surface-hover: rgba(255, 255, 255, 0.08);
-    --vitra-color-surface-active: rgba(255, 255, 255, 0.12);
-    --vitra-color-border: rgba(255, 255, 255, 0.12);
-    --vitra-color-border-hover: rgba(255, 255, 255, 0.2);
-    --vitra-color-accent: #6c63ff;
-    --vitra-color-accent-hover: #7b73ff;
-    --vitra-color-accent-active: #5a52e0;
-    --vitra-color-text-primary: rgba(255, 255, 255, 0.95);
-    --vitra-color-text-secondary: rgba(255, 255, 255, 0.7);
-    --vitra-color-text-tertiary: rgba(255, 255, 255, 0.5);
-    --vitra-color-text-inverse: #0f0f14;
-    --vitra-color-success: #10b981;
-    --vitra-color-warning: #f59e0b;
-    --vitra-color-error: #ef4444;
-    --vitra-color-info: #3b82f6;
+    --vitra-color-bg: hsl(240, 15%, 4%);
+    --vitra-color-surface: hsla(0, 0%, 100%, 0.05);
+    --vitra-color-surface-hover: hsla(0, 0%, 100%, 0.08);
+    --vitra-color-surface-active: hsla(0, 0%, 100%, 0.12);
+    --vitra-color-border: hsla(0, 0%, 100%, 0.1);
+    --vitra-color-border-hover: hsla(0, 0%, 100%, 0.2);
+    
+    --vitra-color-text-primary: hsla(0, 0%, 100%, 0.95);
+    --vitra-color-text-secondary: hsla(0, 0%, 100%, 0.7);
+    --vitra-color-text-tertiary: hsla(0, 0%, 100%, 0.5);
+    --vitra-color-text-inverse: hsl(240, 15%, 4%);
 
-    /* Shadows - Glow effects for dark theme */
-    --vitra-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --vitra-shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.3);
     --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.4);
-    --vitra-shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.5);
-    --vitra-shadow-glow: 0 0 20px rgba(108, 99, 255, 0.3);
-    --vitra-shadow-glow-strong: 0 0 40px rgba(108, 99, 255, 0.5);
+    --vitra-shadow-elevated: 0 10px 32px rgba(0, 0, 0, 0.5);
+    
+    --vitra-glass-bg: hsla(0, 0%, 100%, 0.03);
   }
+
 
   /* --- PASTEL THEME --- */
   [data-theme="pastel"] {
