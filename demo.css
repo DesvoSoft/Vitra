@@ -33,7 +33,7 @@
 /* Section spacing and styling */
 .demo-section {
   position: relative;
-  padding: var(--vitra-space-8) 0;
+  padding: var(--vitra-space-8) var(--vitra-space-4);
   margin: var(--vitra-space-4) 0;
 }
 
