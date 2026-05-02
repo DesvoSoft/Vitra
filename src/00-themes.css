@@ -31,7 +31,7 @@
     --vitra-shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     --vitra-shadow-elevated: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     
-    --vitra-glass-bg: hsla(0, 0%, 100%, 0.7); /* More opaque for light theme glass */
+    --vitra-glass-bg: hsla(0, 0%, 100%, 0.7);
   }
 
   /* --- DARK THEME --- */
@@ -55,67 +55,18 @@
     --vitra-glass-bg: hsla(0, 0%, 100%, 0.03);
   }
 
-
-  /* --- PASTEL THEME --- */
-  [data-theme="pastel"] {
-    --vitra-color-bg: #f9f7f7;
-    --vitra-color-surface: rgba(255, 182, 193, 0.15);
-    --vitra-color-accent: #ffb6c1;
-    --vitra-color-text-primary: rgba(80, 60, 80, 0.95);
-    --vitra-color-text-secondary: rgba(80, 60, 80, 0.7);
-  }
-
-  /* --- NEON THEME --- */
-  [data-theme="neon"] {
-    --vitra-color-bg: #0a0a0f;
-    --vitra-color-surface: rgba(0, 255, 255, 0.05);
-    --vitra-color-accent: #00ffff;
-    --vitra-color-text-primary: rgba(0, 255, 255, 0.95);
-    --vitra-color-text-secondary: rgba(0, 255, 255, 0.7);
-  }
-
-  /* --- EARTH THEME --- */
-  [data-theme="earth"] {
-    --vitra-color-bg: #f5e6d3;
-    --vitra-color-surface: rgba(139, 90, 43, 0.08);
-    --vitra-color-accent: #8b5a2b;
-    --vitra-color-text-primary: rgba(62, 39, 18, 0.95);
-    --vitra-color-text-secondary: rgba(62, 39, 18, 0.7);
-  }
-
-  /* --- MONO THEME --- */
-  [data-theme="mono"] {
-    --vitra-color-bg: #f5f5f5;
-    --vitra-color-surface: rgba(0, 0, 0, 0.05);
-    --vitra-color-accent: #505050;
-    --vitra-color-text-primary: rgba(0, 0, 0, 0.95);
-    --vitra-color-text-secondary: rgba(0, 0, 0, 0.7);
-  }
-
-  /* --- MIDNIGHT THEME --- */
-  [data-theme="midnight"] {
-    --vitra-color-bg: #0f0b1a;
-    --vitra-color-surface: rgba(106, 90, 205, 0.08);
-    --vitra-color-accent: #6a5acd;
-    --vitra-color-text-primary: rgba(230, 230, 250, 0.95);
-    --vitra-color-text-secondary: rgba(230, 230, 250, 0.7);
-  }
-
   /* --- AUTO THEME --- */
   [data-theme="auto"] {
-    --vitra-color-bg: #0f0f14;
-    --vitra-color-surface: rgba(255, 255, 255, 0.05);
-    --vitra-color-accent: #6c63ff;
-    --vitra-color-text-primary: rgba(255, 255, 255, 0.95);
-    --vitra-color-text-secondary: rgba(255, 255, 255, 0.7);
+    /* Inherits from Dark by default in :root, but we can be explicit here */
+    --vitra-color-bg: hsl(240, 15%, 4%);
   }
 
   @media (prefers-color-scheme: light) {
     [data-theme="auto"] {
-      --vitra-color-bg: #ffffff;
-      --vitra-color-surface: rgba(0, 0, 0, 0.05);
-      --vitra-color-text-primary: rgba(0, 0, 0, 0.95);
-      --vitra-color-text-secondary: rgba(0, 0, 0, 0.7);
+      --vitra-color-bg: hsl(0, 0%, 100%);
+      --vitra-color-surface: hsla(0, 0%, 0%, 0.04);
+      --vitra-color-text-primary: hsla(0, 0%, 0%, 0.95);
+      --vitra-color-text-secondary: hsla(0, 0%, 0%, 0.7);
     }
   }
 }

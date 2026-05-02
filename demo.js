@@ -92,15 +92,6 @@
     } else {
       themeDisplay.textContent = themeName.charAt(0).toUpperCase() + themeName.slice(1);
     }
-
-    // Update active state on theme swatches if they exist
-    const swatches = document.querySelectorAll('.theme-swatch');
-    swatches.forEach(swatch => {
-      swatch.classList.remove('active');
-      if (swatch.getAttribute('data-theme') === themeName) {
-        swatch.classList.add('active');
-      }
-    });
   }
 
   // ==================== Particle Controls ====================

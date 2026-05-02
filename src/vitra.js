@@ -12,17 +12,7 @@ const Vitra = (() => {
   // Storage key for localStorage persistence
   const STORAGE_KEY = 'vitra-theme';
 
-  // Valid theme names
-  const VALID_THEMES = [
-    'light',
-    'dark',
-    'auto',
-    'pastel',
-    'neon',
-    'earth',
-    'mono',
-    'midnight'
-  ];
+  const VALID_THEMES = ['light', 'dark', 'auto'];
 
   // Cache for prefers-color-scheme media query
   let _prefersDarkMedia = null;
@@ -170,20 +160,18 @@ const Vitra = (() => {
 
       const media = window.matchMedia('(prefers-color-scheme: dark)');
 
-      // Modern browsers
+      const handleChange = () => {
+        if (theme.get() === 'auto') {
+          // Re-apply auto to trigger potential CSS changes
+          const html = document.documentElement;
+          html.dataset.theme = 'auto';
+        }
+      };
+
       if (typeof media.addEventListener === 'function') {
-        media.addEventListener('change', (e) => {
-          // Only react if current theme is 'auto'
-          if (theme.get() === 'auto') {
-            // Force re-evaluation by re-setting the attribute
-            const html = document.documentElement;
-            const currentTheme = html.dataset.theme;
-            html.dataset.theme = '';
-            // Trigger reflow
-            void html.offsetHeight;
-            html.dataset.theme = currentTheme;
-          }
-        });
+        media.addEventListener('change', handleChange);
+      } else if (typeof media.addListener === 'function') {
+        media.addListener(handleChange);
       }
     },
 

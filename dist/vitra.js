@@ -10,16 +10,7 @@ var Vitra = (() => {
       var Vitra = (() => {
         "use strict";
         const STORAGE_KEY = "vitra-theme";
-        const VALID_THEMES = [
-          "light",
-          "dark",
-          "auto",
-          "pastel",
-          "neon",
-          "earth",
-          "mono",
-          "midnight"
-        ];
+        const VALID_THEMES = ["light", "dark", "auto"];
         let _prefersDarkMedia = null;
         let _prefersLightMedia = null;
         const theme = {
@@ -129,16 +120,16 @@ var Vitra = (() => {
           _watchSystemTheme() {
             if (!window.matchMedia) return;
             const media = window.matchMedia("(prefers-color-scheme: dark)");
+            const handleChange = () => {
+              if (theme.get() === "auto") {
+                const html = document.documentElement;
+                html.dataset.theme = "auto";
+              }
+            };
             if (typeof media.addEventListener === "function") {
-              media.addEventListener("change", (e) => {
-                if (theme.get() === "auto") {
-                  const html = document.documentElement;
-                  const currentTheme = html.dataset.theme;
-                  html.dataset.theme = "";
-                  void html.offsetHeight;
-                  html.dataset.theme = currentTheme;
-                }
-              });
+              media.addEventListener("change", handleChange);
+            } else if (typeof media.addListener === "function") {
+              media.addListener(handleChange);
             }
           },
           /**
