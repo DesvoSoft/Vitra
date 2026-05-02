@@ -15,7 +15,8 @@
 
   /* --- LIGHT THEME --- */
   html[data-theme="light"] {
-    --vitra-color-bg: hsl(0, 0%, 100%);
+    --vitra-color-bg: hsl(210, 20%, 98%);
+    --vitra-bg-accent: hsl(210, 20%, 94%);
     --vitra-color-surface: hsla(0, 0%, 0%, 0.04);
     --vitra-color-surface-hover: hsla(0, 0%, 0%, 0.08);
     --vitra-color-surface-active: hsla(0, 0%, 0%, 0.12);
@@ -31,12 +32,13 @@
     --vitra-shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     --vitra-shadow-elevated: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     
-    --vitra-glass-bg: hsla(0, 0%, 100%, 0.15);
+    --vitra-glass-bg: hsla(0, 0%, 100%, 0.4);
   }
 
   /* --- DARK THEME --- */
   html[data-theme="dark"] {
     --vitra-color-bg: hsl(240, 15%, 4%);
+    --vitra-bg-accent: hsl(var(--vitra-color-accent-h), 20%, 6%);
     --vitra-color-surface: hsla(0, 0%, 100%, 0.05);
     --vitra-color-surface-hover: hsla(0, 0%, 100%, 0.08);
     --vitra-color-surface-active: hsla(0, 0%, 100%, 0.12);
@@ -58,6 +60,7 @@
   /* --- PASTEL THEME --- */
   html[data-theme="pastel"] {
     --vitra-color-bg: hsl(300, 30%, 98%);
+    --vitra-bg-accent: hsl(300, 30%, 92%);
     --vitra-color-surface: hsla(300, 100%, 80%, 0.1);
     --vitra-color-accent-h: 320;
     --vitra-color-accent-s: 70%;
@@ -70,6 +73,7 @@
   /* --- NEON THEME --- */
   html[data-theme="neon"] {
     --vitra-color-bg: hsl(260, 30%, 2%);
+    --vitra-bg-accent: hsl(260, 30%, 5%);
     --vitra-color-surface: hsla(180, 100%, 50%, 0.05);
     --vitra-color-accent-h: 180;
     --vitra-color-accent-s: 100%;
@@ -82,6 +86,7 @@
   /* --- OCEAN THEME --- */
   html[data-theme="ocean"] {
     --vitra-color-bg: hsl(210, 30%, 4%);
+    --vitra-bg-accent: hsl(210, 30%, 8%);
     --vitra-color-surface: hsla(210, 100%, 60%, 0.05);
     --vitra-color-accent-h: 200;
     --vitra-color-accent-s: 90%;
@@ -93,6 +98,7 @@
   /* --- EMERALD THEME --- */
   html[data-theme="emerald"] {
     --vitra-color-bg: hsl(160, 20%, 3%);
+    --vitra-bg-accent: hsl(160, 40%, 6%);
     --vitra-color-surface: hsla(160, 100%, 50%, 0.05);
     --vitra-color-accent-h: 155;
     --vitra-color-accent-s: 80%;
