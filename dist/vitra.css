@@ -207,7 +207,7 @@ a:hover {
     --vitra-shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     --vitra-shadow-elevated: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     
-    --vitra-glass-bg: hsla(0, 0%, 100%, 0.7);
+    --vitra-glass-bg: hsla(0, 0%, 100%, 0.15);
   }
 
   /* --- DARK THEME --- */
@@ -228,7 +228,7 @@ a:hover {
     --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.4);
     --vitra-shadow-elevated: 0 10px 32px rgba(0, 0, 0, 0.5);
     
-    --vitra-glass-bg: hsla(0, 0%, 100%, 0.03);
+    --vitra-glass-bg: hsla(0, 0%, 100%, 0.05);
   }
 
   /* --- PASTEL THEME --- */
@@ -240,6 +240,7 @@ a:hover {
     --vitra-color-accent-l: 65%;
     --vitra-color-text-primary: hsl(300, 20%, 20%);
     --vitra-color-text-secondary: hsl(300, 10%, 40%);
+    --vitra-glass-bg: hsla(300, 100%, 100%, 0.1);
   }
 
   /* --- NEON THEME --- */
@@ -251,6 +252,7 @@ a:hover {
     --vitra-color-accent-l: 50%;
     --vitra-color-text-primary: hsl(180, 100%, 95%);
     --vitra-color-text-secondary: hsl(180, 50%, 70%);
+    --vitra-glass-bg: hsla(180, 100%, 50%, 0.05);
   }
 
   /* --- OCEAN THEME --- */
@@ -306,10 +308,10 @@ a:hover {
   :root {
     /* --- GLASS BLUR TOKENS --- */
     /* Increased blur intensity for premium frosted feel */
-    --vitra-blur-sm: 8px;
-    --vitra-blur-md: 16px;
-    --vitra-blur-lg: 32px;
-    --vitra-blur-xl: 48px;
+    --vitra-blur-sm: 12px;
+    --vitra-blur-md: 24px;
+    --vitra-blur-lg: 48px;
+    --vitra-blur-xl: 64px;
 
     /* --- GLASS BACKGROUND TOKENS --- */
     --vitra-glass-bg: hsla(0, 0%, 100%, 0.03);

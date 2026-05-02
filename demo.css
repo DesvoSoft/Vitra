@@ -13,6 +13,12 @@
   overflow: hidden;
 }
 
+body {
+  background: linear-gradient(90deg, var(--vitra-color-bg), hsl(var(--vitra-color-accent-h), 20%, 8%));
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
 .demo-hero::before {
   content: '';
   position: absolute;
@@ -33,8 +39,9 @@
 /* Section spacing and styling */
 .demo-section {
   position: relative;
-  padding: var(--vitra-space-8) 0;
+  padding: var(--vitra-space-8) var(--vitra-space-4);
   margin: var(--vitra-space-4) 0;
+  border-bottom: 1px solid hsla(var(--vitra-color-accent-h), 100%, 70%, 0.05);
 }
 
 .demo-section:nth-child(even) {

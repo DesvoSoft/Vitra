@@ -31,7 +31,7 @@
     --vitra-shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     --vitra-shadow-elevated: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     
-    --vitra-glass-bg: hsla(0, 0%, 100%, 0.7);
+    --vitra-glass-bg: hsla(0, 0%, 100%, 0.15);
   }
 
   /* --- DARK THEME --- */
@@ -52,7 +52,7 @@
     --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.4);
     --vitra-shadow-elevated: 0 10px 32px rgba(0, 0, 0, 0.5);
     
-    --vitra-glass-bg: hsla(0, 0%, 100%, 0.03);
+    --vitra-glass-bg: hsla(0, 0%, 100%, 0.05);
   }
 
   /* --- PASTEL THEME --- */
@@ -64,6 +64,7 @@
     --vitra-color-accent-l: 65%;
     --vitra-color-text-primary: hsl(300, 20%, 20%);
     --vitra-color-text-secondary: hsl(300, 10%, 40%);
+    --vitra-glass-bg: hsla(300, 100%, 100%, 0.1);
   }
 
   /* --- NEON THEME --- */
@@ -75,6 +76,7 @@
     --vitra-color-accent-l: 50%;
     --vitra-color-text-primary: hsl(180, 100%, 95%);
     --vitra-color-text-secondary: hsl(180, 50%, 70%);
+    --vitra-glass-bg: hsla(180, 100%, 50%, 0.05);
   }
 
   /* --- OCEAN THEME --- */
