@@ -14,7 +14,7 @@
   /* Default theme matches the base token values */
 
   /* --- LIGHT THEME --- */
-  [data-theme="light"] {
+  html[data-theme="light"] {
     --vitra-color-bg: hsl(0, 0%, 100%);
     --vitra-color-surface: hsla(0, 0%, 0%, 0.04);
     --vitra-color-surface-hover: hsla(0, 0%, 0%, 0.08);
@@ -35,7 +35,7 @@
   }
 
   /* --- DARK THEME --- */
-  [data-theme="dark"] {
+  html[data-theme="dark"] {
     --vitra-color-bg: hsl(240, 15%, 4%);
     --vitra-color-surface: hsla(0, 0%, 100%, 0.05);
     --vitra-color-surface-hover: hsla(0, 0%, 100%, 0.08);
@@ -56,7 +56,7 @@
   }
 
   /* --- PASTEL THEME --- */
-  [data-theme="pastel"] {
+  html[data-theme="pastel"] {
     --vitra-color-bg: hsl(300, 30%, 98%);
     --vitra-color-surface: hsla(300, 100%, 80%, 0.1);
     --vitra-color-accent-h: 320;
@@ -67,7 +67,7 @@
   }
 
   /* --- NEON THEME --- */
-  [data-theme="neon"] {
+  html[data-theme="neon"] {
     --vitra-color-bg: hsl(260, 30%, 2%);
     --vitra-color-surface: hsla(180, 100%, 50%, 0.05);
     --vitra-color-accent-h: 180;
@@ -78,7 +78,7 @@
   }
 
   /* --- OCEAN THEME --- */
-  [data-theme="ocean"] {
+  html[data-theme="ocean"] {
     --vitra-color-bg: hsl(210, 30%, 4%);
     --vitra-color-surface: hsla(210, 100%, 60%, 0.05);
     --vitra-color-accent-h: 200;
@@ -89,7 +89,7 @@
   }
 
   /* --- EMERALD THEME --- */
-  [data-theme="emerald"] {
+  html[data-theme="emerald"] {
     --vitra-color-bg: hsl(160, 20%, 3%);
     --vitra-color-surface: hsla(160, 100%, 50%, 0.05);
     --vitra-color-accent-h: 155;
@@ -100,12 +100,12 @@
   }
 
   /* --- AUTO THEME --- */
-  [data-theme="auto"] {
+  html[data-theme="auto"] {
     --vitra-color-bg: hsl(240, 15%, 4%);
   }
 
   @media (prefers-color-scheme: light) {
-    [data-theme="auto"] {
+    html[data-theme="auto"] {
       --vitra-color-bg: hsl(0, 0%, 100%);
       --vitra-color-surface: hsla(0, 0%, 0%, 0.04);
       --vitra-color-text-primary: hsla(0, 0%, 0%, 0.95);

@@ -22,3 +22,11 @@
 - [x] Adjust component paddings in `src/06-components.css`.
 - [x] Clean up `index.html` layout and demo-specific CSS.
 - [x] Implement missing Navbar and Drawer components in framework.
+
+## Analysis of Manual CSS (Next Features)
+Based on the manual CSS used in `demo.css`, the following should be moved to the core framework:
+1. **Vitra Section Component**: A `.vitra-section` class with vertical fluid padding and internal container support.
+2. **Hero Pattern System**: Utility classes for background patterns and gradients (e.g., `.vitra-bg-radial-accent`).
+3. **Motion Stagger Utilities**: More granular delay classes for grid items (up to 12 items).
+4. **Enhanced Badges**: Variants for "outline" and "pill" styles.
+5. **Interactive Dropdowns**: A JavaScript-powered custom dropdown component to replace native `<select>` for full styling.

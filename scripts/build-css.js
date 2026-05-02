@@ -9,8 +9,8 @@ const lightningcss = require('lightningcss');
 
 // Define source files in layer order
 const sourceFiles = [
-  '00-themes.css',    // Theme definitions (needs to be early for token overrides)
-  '01-tokens.css',    // Foundation tokens layer
+  '01-tokens.css',    // Foundation tokens layer (Base)
+  '00-themes.css',    // Theme definitions (Overrides base tokens)
   '02-glass.css',     // Glass layer
   '03-particles.css', // Particles layer
   '04-motion.css',    // Motion layer
