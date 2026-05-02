@@ -64,7 +64,7 @@ Vitra uses a strict @layer cascade to prevent specificity leaks and ensure consi
 
 ## Themes & Glassmorphism
 
-Vitra supports three core theme modes: light, dark, and auto. It also includes several specialized variants like Pastel, Neon, Earth, Mono, and Midnight.
+Vitra supports three core theme modes: light, dark, and auto. It also includes several premium variants: Pastel, Neon, Ocean, and Emerald.
 
 ```html
 <!-- Apply a theme -->
