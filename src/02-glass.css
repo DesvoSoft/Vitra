@@ -11,20 +11,20 @@
 @layer glass {
   :root {
     /* --- GLASS BLUR TOKENS --- */
-    /* Blur intensity variants for glassmorphism effects */
-    --vitra-blur-sm: 2px;
-    --vitra-blur-md: 4px;
-    --vitra-blur-lg: 6px;
+    /* Increased blur intensity for premium frosted feel */
+    --vitra-blur-sm: 8px;
+    --vitra-blur-md: 16px;
+    --vitra-blur-lg: 32px;
+    --vitra-blur-xl: 48px;
 
     /* --- GLASS BACKGROUND TOKENS --- */
-    --vitra-glass-bg: rgba(255, 255, 255, 0.08);
+    --vitra-glass-bg: hsla(0, 0%, 100%, 0.03);
     --vitra-glass-bg-fallback: var(--vitra-color-surface);
 
     /* --- GLASS BORDER TOKENS --- */
-    /* Configurable border properties for glass components */
     --vitra-border-width: 1px;
     --vitra-border-style: solid;
-    --vitra-border-color: var(--vitra-color-border);
+    --vitra-border-color: hsla(0, 0%, 100%, 0.1);
   }
 
   /* Base glass class with solid fallback */
@@ -34,6 +34,8 @@
     border: var(--vitra-border-width) var(--vitra-border-style) var(--vitra-border-color);
     box-shadow: var(--vitra-shadow-medium);
     border-radius: var(--vitra-radius-md);
+    position: relative;
+    overflow: hidden;
   }
 
   /* Enhanced glass effect using backdrop-filter */
@@ -42,29 +44,40 @@
       background: var(--vitra-glass-bg);
       backdrop-filter: blur(var(--vitra-blur-md));
     }
-  }
 
-  /* High-contrast solid fallback for browsers explicitly lacking support */
-  @supports not (backdrop-filter: blur(1px)) {
-    .vitra-glass {
-      background: var(--vitra-color-surface-alt, #ffffff);
-      opacity: 1;
+    /* Specular highlight (inner border) for realism */
+    .vitra-glass::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(
+        135deg,
+        hsla(0, 0%, 100%, 0.1),
+        transparent 50%,
+        hsla(0, 0%, 100%, 0.05)
+      );
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      pointer-events: none;
     }
   }
 
-  /* Small blur variant (2px) */
-  .vitra-glass-sm {
-    backdrop-filter: blur(var(--vitra-blur-sm));
-  }
+  /* Glass Variants */
+  .vitra-glass-sm { backdrop-filter: blur(var(--vitra-blur-sm)); }
+  .vitra-glass-md { backdrop-filter: blur(var(--vitra-blur-md)); }
+  .vitra-glass-lg { backdrop-filter: blur(var(--vitra-blur-lg)); }
+  .vitra-glass-xl { backdrop-filter: blur(var(--vitra-blur-xl)); }
 
-  /* Medium blur variant (4px) - default, same as base */
-  .vitra-glass-md {
-    backdrop-filter: blur(var(--vitra-blur-md));
-  }
-
-  /* Large blur variant (6px) */
-  .vitra-glass-lg {
-    backdrop-filter: blur(var(--vitra-blur-lg));
+  /* Reflective Surface (Luxury addition) */
+  .vitra-glass-reflect {
+    background: linear-gradient(
+      135deg,
+      hsla(0, 0%, 100%, 0.05) 0%,
+      hsla(0, 0%, 100%, 0.01) 50%,
+      hsla(0, 0%, 100%, 0.05) 100%
+    );
   }
 
   /* Subtle glass variant - lighter blur and transparency */
@@ -79,3 +92,4 @@
     }
   }
 }
+
