@@ -12,10 +12,10 @@
   :root {
     /* --- GLASS BLUR TOKENS --- */
     /* Increased blur intensity for premium frosted feel */
-    --vitra-blur-sm: 8px;
-    --vitra-blur-md: 16px;
-    --vitra-blur-lg: 32px;
-    --vitra-blur-xl: 48px;
+    --vitra-blur-sm: 12px;
+    --vitra-blur-md: 24px;
+    --vitra-blur-lg: 48px;
+    --vitra-blur-xl: 64px;
 
     /* --- GLASS BACKGROUND TOKENS --- */
     --vitra-glass-bg: hsla(0, 0%, 100%, 0.03);
