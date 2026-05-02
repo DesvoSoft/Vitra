@@ -30,3 +30,4 @@ Based on the manual CSS used in `demo.css`, the following should be moved to the
 3. **Motion Stagger Utilities**: More granular delay classes for grid items (up to 12 items).
 4. **Enhanced Badges**: Variants for "outline" and "pill" styles.
 5. **Interactive Dropdowns**: A JavaScript-powered custom dropdown component to replace native `<select>` for full styling.
+6. **Theme-aware Backgrounds**: Core support for `--vitra-bg-accent` to facilitate dynamic layouts.

@@ -14,7 +14,7 @@
 }
 
 body {
-  background: linear-gradient(180deg, var(--vitra-color-bg), hsl(var(--vitra-color-accent-h), 20%, 6%));
+  background: linear-gradient(180deg, var(--vitra-color-bg), var(--vitra-bg-accent, hsl(var(--vitra-color-accent-h), 20%, 6%)));
   background-attachment: fixed;
   min-height: 100vh;
   position: relative;
@@ -72,8 +72,85 @@ body::after {
 }
 
 /* ============================================
-   Theme Swatches
+   Navigation Improvements
    ============================================ */
+.vitra-navbar {
+  margin: var(--vitra-space-4) auto;
+  width: 95%;
+  max-width: 1400px;
+  border-radius: var(--vitra-radius-full);
+  border: 1px solid hsla(0, 0%, 100%, 0.1);
+  box-shadow: var(--vitra-shadow-elevated);
+}
+
+.vitra-navbar-link {
+  font-weight: var(--vitra-font-weight-medium);
+  letter-spacing: 0.02em;
+  opacity: 0.7;
+}
+
+.vitra-navbar-link:hover {
+  opacity: 1;
+  color: var(--vitra-color-accent);
+}
+
+/* ============================================
+   Footer Overhaul
+   ============================================ */
+.demo-footer {
+  margin-top: var(--vitra-space-12);
+  padding: var(--vitra-space-12) 0 var(--vitra-space-6);
+  background: hsla(var(--vitra-color-accent-h), 20%, 4%, 0.5);
+  backdrop-filter: blur(var(--vitra-blur-lg));
+  border-top: 1px solid hsla(0, 0%, 100%, 0.05);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--vitra-space-8);
+  margin-bottom: var(--vitra-space-8);
+}
+
+.footer-brand {
+  font-size: var(--vitra-font-size-xl);
+  font-weight: var(--vitra-font-weight-bold);
+  margin-bottom: var(--vitra-space-4);
+}
+
+.footer-links h4 {
+  margin-bottom: var(--vitra-space-4);
+  color: var(--vitra-color-accent);
+  font-size: var(--vitra-font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links li {
+  margin-bottom: var(--vitra-space-2);
+}
+
+.footer-links a {
+  opacity: 0.6;
+  font-size: var(--vitra-font-size-sm);
+}
+
+.footer-links a:hover {
+  opacity: 1;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: var(--vitra-space-6);
+  border-top: 1px solid hsla(0, 0%, 100%, 0.05);
+  font-size: var(--vitra-font-size-xs);
+  opacity: 0.4;
+}
 
 .theme-swatches {
   display: flex;
