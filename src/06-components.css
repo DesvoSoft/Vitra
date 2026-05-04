@@ -338,7 +338,7 @@
 
   select.vitra-input {
     appearance: none;
-    padding-right: 2.5rem;
+    padding-inline-end: 2.5rem;
     cursor: pointer;
   }
 
@@ -870,7 +870,7 @@
     height: 6px;
     border-radius: 50%;
     background-color: currentColor;
-    margin-right: var(--vitra-space-1);
+    margin-inline-end: var(--vitra-space-1);
   }
 
   /* --- AVATAR BASE --- */
@@ -953,11 +953,11 @@
 
   .vitra-avatar-group .vitra-avatar {
     border: 2px solid var(--vitra-color-bg, #0f0f14);
-    margin-left: -8px;
+    margin-inline-start: -8px;
   }
 
   .vitra-avatar-group .vitra-avatar:first-child {
-    margin-left: 0;
+    margin-inline-start: 0;
   }
 
   /* --- AVATAR WITH STATUS --- */
@@ -1483,14 +1483,14 @@
 
     /* Spacing */
     margin-bottom: 0;
-    margin-right: var(--vitra-space-3);
+    margin-inline-end: var(--vitra-space-3);
   }
 
   .vitra-tabs-vertical .vitra-tab {
     border-bottom: none;
     border-right: 2px solid transparent;
     margin-bottom: 0;
-    margin-right: -2px; /* Offset container border */
+    margin-inline-end: -2px; /* Offset container border */
 
     /* Text alignment */
     text-align: left;
@@ -1955,5 +1955,62 @@
     background: hsla(0, 0%, 100%, 0.08);
     color: var(--vitra-color-text-primary);
     outline: none;
+  }
+
+  /* ============================================
+      FORM VALIDATION (COMP-12)
+      Input validation states and animations
+      ============================================ */
+
+  .vitra-input-valid {
+    border-color: var(--vitra-color-success, #10b981) !important;
+  }
+
+  .vitra-input-valid:focus {
+    box-shadow: 0 0 0 2px hsla(160, 84%, 39%, 0.2) !important;
+  }
+
+  .vitra-input-invalid {
+    border-color: var(--vitra-color-error, #ef4444) !important;
+    animation: vitra-shake 0.4s ease-in-out;
+  }
+
+  .vitra-input-invalid:focus {
+    box-shadow: 0 0 0 2px hsla(0, 84%, 60%, 0.2) !important;
+  }
+
+  @keyframes vitra-shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+  }
+
+  /* ============================================
+      SPOTLIGHT HOVER (COMP-13)
+      Magnetic hover effect for cards
+      ============================================ */
+
+  .vitra-spotlight {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vitra-spotlight::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      600px circle at var(--mouse-x, 0) var(--mouse-y, 0),
+      hsla(var(--vitra-color-accent-h, 250), 100%, 70%, 0.1),
+      transparent 40%
+    );
+    z-index: 1;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+  }
+
+  .vitra-spotlight:hover::before {
+    opacity: 1;
   }
 }

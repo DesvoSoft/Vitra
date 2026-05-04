@@ -146,9 +146,10 @@ var Vitra = (() => {
            */
           _isLocalStorageAvailable() {
             try {
+              if (typeof window === "undefined" || !window.localStorage) return false;
               const test = "__vitra_test__";
-              localStorage.setItem(test, test);
-              localStorage.removeItem(test);
+              window.localStorage.setItem(test, test);
+              window.localStorage.removeItem(test);
               return true;
             } catch (e) {
               return false;
@@ -454,7 +455,9 @@ var Vitra = (() => {
               tooltipEl.style.borderRadius = "var(--vitra-radius-sm, 4px)";
               tooltipEl.style.padding = "var(--vitra-space-1, 4px) var(--vitra-space-2, 8px)";
               tooltipEl.style.fontSize = "var(--vitra-font-size-sm, 0.875rem)";
-              tooltipEl.style.whiteSpace = "nowrap";
+              tooltipEl.style.whiteSpace = "normal";
+              tooltipEl.style.wordWrap = "break-word";
+              tooltipEl.style.maxWidth = "90vw";
               tooltipEl.style.pointerEvents = "none";
               tooltipEl.style.opacity = "0";
               tooltipEl.style.transition = "opacity 0.2s ease";
@@ -636,12 +639,32 @@ var Vitra = (() => {
             document.addEventListener("DOMContentLoaded", () => {
               _parseDataConfig();
               dropdown.init();
+              spotlight.init();
             });
           } else {
             _parseDataConfig();
             dropdown.init();
+            spotlight.init();
           }
         }
+        const spotlight = /* @__PURE__ */ (() => {
+          let initialized = false;
+          const init = () => {
+            if (initialized) return;
+            document.addEventListener("mousemove", (e) => {
+              const spotlights = document.querySelectorAll(".vitra-spotlight");
+              spotlights.forEach((el) => {
+                const rect = el.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                el.style.setProperty("--mouse-x", `${x}px`);
+                el.style.setProperty("--mouse-y", `${y}px`);
+              });
+            });
+            initialized = true;
+          };
+          return { init };
+        })();
         return {
           theme,
           particles,
@@ -649,7 +672,8 @@ var Vitra = (() => {
           modal,
           tooltip,
           toast,
-          dropdown
+          dropdown,
+          spotlight
         };
       })();
       if (typeof module !== "undefined" && module.exports) {

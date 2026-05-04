@@ -44,10 +44,10 @@ Use jsDelivr to load the minified files. We strongly recommend using a fixed ver
 
 ```html
 <!-- High-performance CSS (Fixed version with SRI) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.2.0/dist/vitra.min.css" integrity="sha256-RV2dZNi+HJxvKeb8AdDrsZV1mWz6oqAMSneODNdsIl0=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.2.0/dist/vitra.min.css" integrity="sha256-SgZY5apaP48KO2UquhWXH0TJQ9qQbAyM9PagKnSS6iI=" crossorigin="anonymous">
 
 <!-- Optional: Modular JS Engine (Fixed version with SRI) -->
-<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.2.0/dist/vitra.min.js" integrity="sha256-6s2xLqcZaX8RKfLG/tjPjNs/rJuWVgwz+8Lfz662jv8=" crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.2.0/dist/vitra.min.js" integrity="sha256-nLbPlWz+rimhFqBHQMaRifl0D4sfTiod6aTxky5epFc=" crossorigin="anonymous" defer></script>
 ```
 
 > **Note:** You can use `@latest` instead of `@1.2.0` for testing the most recent updates, but this is **not recommended** for production as breaking changes could affect your site.

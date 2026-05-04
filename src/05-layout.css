@@ -40,12 +40,12 @@
     max-width: var(--vitra-container-sm);
 
     /* Fluid padding using clamp() for responsive spacing */
-    padding-left: var(--vitra-fluid-space-3);
-    padding-right: var(--vitra-fluid-space-3);
+    padding-inline-start: var(--vitra-fluid-space-3);
+    padding-inline-end: var(--vitra-fluid-space-3);
 
     /* Center the container */
-    margin-left: auto;
-    margin-right: auto;
+    margin-inline-start: auto;
+    margin-inline-end: auto;
 
     /* Ensure padding doesn't affect width calculation */
     box-sizing: border-box;
@@ -435,5 +435,36 @@
 
   .vitra-text-fluid-xl {
     font-size: clamp(1.25rem, 3vw, 1.5rem);
+  }
+
+  /* --- VITRA BLOCKS (Layouts Pre-construidos) --- */
+  
+  .vitra-section {
+    position: relative;
+    padding-block-start: var(--vitra-space-12, 4rem);
+    padding-block-end: var(--vitra-space-12, 4rem);
+    width: 100%;
+  }
+
+  .vitra-hero {
+    position: relative;
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-block-start: var(--vitra-space-16, 6rem);
+    padding-block-end: var(--vitra-space-16, 6rem);
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .vitra-footer {
+    position: relative;
+    padding-block-start: var(--vitra-space-12, 4rem);
+    padding-block-end: var(--vitra-space-8, 2rem);
+    background: var(--vitra-color-surface, rgba(0, 0, 0, 0.02));
+    border-block-start: 1px solid var(--vitra-color-border, rgba(0, 0, 0, 0.1));
+    margin-block-start: auto;
   }
 }
