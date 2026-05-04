@@ -1,7 +1,7 @@
 # Vitra CSS Framework
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
-[![Version](https://img.shields.io/badge/version-1.1.0-blue)](https://github.com/DesvoSoft/Vitra)
+[![Version](https://img.shields.io/badge/version-1.2.0-blue)](https://github.com/DesvoSoft/Vitra)
 [![License](https://img.shields.io/badge/license-Internal-red)](https://github.com/DesvoSoft/Vitra)
 
 Vitra is a high-performance, premium CSS framework engineered for modern web applications. It specializes in Glassmorphism, Motion Design, and Interactive Particles, providing a sophisticated aesthetic out of the box with zero external dependencies.
@@ -40,17 +40,17 @@ You can use Vitra by installing it locally, or via a free CDN (jsDelivr) for ins
 
 #### Option A: Via CDN (Recommended for production)
 
-Use jsDelivr to load the minified files. We strongly recommend using a fixed version (e.g., `@1.0.0`) and including Subresource Integrity (SRI) hashes to guarantee security and stability.
+Use jsDelivr to load the minified files. We strongly recommend using a fixed version (e.g., `@1.2.0`) and including Subresource Integrity (SRI) hashes to guarantee security and stability.
 
 ```html
 <!-- High-performance CSS (Fixed version with SRI) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.0.0/dist/vitra.min.css" integrity="sha256-u1O0o2wXyg/ELfnLwYdnnjqehCA/vzg6tKIv+18qEwE=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.2.0/dist/vitra.min.css" integrity="sha256-RV2dZNi+HJxvKeb8AdDrsZV1mWz6oqAMSneODNdsIl0=" crossorigin="anonymous">
 
 <!-- Optional: Modular JS Engine (Fixed version with SRI) -->
-<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.0.0/dist/vitra.min.js" integrity="sha256-5ug5NXLIhKVuI0SItqAYELVBu8UGK3y6TEd0qbZzW/s=" crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.2.0/dist/vitra.min.js" integrity="sha256-6s2xLqcZaX8RKfLG/tjPjNs/rJuWVgwz+8Lfz662jv8=" crossorigin="anonymous" defer></script>
 ```
 
-> **Note:** You can use `@latest` instead of `@1.0.0` for testing the most recent updates, but this is **not recommended** for production as breaking changes could affect your site.
+> **Note:** You can use `@latest` instead of `@1.2.0` for testing the most recent updates, but this is **not recommended** for production as breaking changes could affect your site.
 
 #### Option B: Local Assets
 

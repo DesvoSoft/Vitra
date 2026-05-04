@@ -14,14 +14,14 @@ Vitra CSS es un framework de diseño premium centrado en la estética **glassmor
 Para usar Vitra, recomendamos utilizar la red de distribución jsDelivr. Incluye los archivos consolidados y minificados (`.min`) asegurando la versión e integridad (SRI).
 
 ```html
-<!-- Core CSS (Ejemplo apuntando a la versión fija 1.0.0) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.0.0/dist/vitra.min.css" integrity="sha256-u1O0o2wXyg/ELfnLwYdnnjqehCA/vzg6tKIv+18qEwE=" crossorigin="anonymous">
+<!-- Core CSS (Ejemplo apuntando a la versión fija 1.2.0) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.2.0/dist/vitra.min.css" integrity="sha256-RV2dZNi+HJxvKeb8AdDrsZV1mWz6oqAMSneODNdsIl0=" crossorigin="anonymous">
 
 <!-- Core JS -->
-<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.0.0/dist/vitra.min.js" integrity="sha256-5ug5NXLIhKVuI0SItqAYELVBu8UGK3y6TEd0qbZzW/s=" crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.2.0/dist/vitra.min.js" integrity="sha256-6s2xLqcZaX8RKfLG/tjPjNs/rJuWVgwz+8Lfz662jv8=" crossorigin="anonymous" defer></script>
 ```
 
-> **Nota para Agentes**: Utiliza siempre versiones fijas (ej. `@1.0.0`) y asegúrate de incluir atributos `integrity` (SRI) en producción. Puedes omitir la versión para obtener `@latest` en entornos de prueba locales. Siempre apunta a los archivos dentro de la carpeta `dist/` (`dist/vitra.min.css` y `dist/vitra.min.js`).
+> **Nota para Agentes**: Utiliza siempre versiones fijas (ej. `@1.2.0`) y asegúrate de incluir atributos `integrity` (SRI) en producción. Puedes omitir la versión para obtener `@latest` en entornos de prueba locales. Siempre apunta a los archivos dentro de la carpeta `dist/` (`dist/vitra.min.css` y `dist/vitra.min.js`).
 
 ## 💎 Glassmorphism
 

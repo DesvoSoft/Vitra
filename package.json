@@ -1,6 +1,6 @@
 {
   "name": "vitra-css",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "A lightweight CSS framework focused on glassmorphism, configurable particles with glow effects, and smooth motion",
   "main": "dist/vitra.js",
   "style": "dist/vitra.css",

@@ -549,6 +549,61 @@ var Vitra = (() => {
             init
           };
         })();
+        const toast = /* @__PURE__ */ (() => {
+          let _container = null;
+          const _ensureContainer = () => {
+            if (!_container) {
+              _container = document.createElement("div");
+              _container.className = "vitra-toast-container";
+              document.body.appendChild(_container);
+            }
+            return _container;
+          };
+          const show = (message, options = {}) => {
+            const { type = "default", duration = 3e3 } = options;
+            const container = _ensureContainer();
+            const el = document.createElement("div");
+            el.className = `vitra-toast`;
+            if (type !== "default") {
+              el.classList.add(`vitra-toast-${type}`);
+            }
+            el.innerHTML = `<span>${message}</span>`;
+            container.appendChild(el);
+            setTimeout(() => el.classList.add("show"), 10);
+            if (duration > 0) {
+              setTimeout(() => {
+                el.classList.remove("show");
+                setTimeout(() => {
+                  if (el.parentNode === container) {
+                    container.removeChild(el);
+                  }
+                }, 300);
+              }, duration);
+            }
+            return el;
+          };
+          return { show };
+        })();
+        const dropdown = /* @__PURE__ */ (() => {
+          const init = () => {
+            document.addEventListener("click", (e) => {
+              const toggle = e.target.closest("[data-vitra-dropdown-toggle]");
+              document.querySelectorAll(".vitra-dropdown.open").forEach((dd) => {
+                if (!toggle || dd !== toggle.closest(".vitra-dropdown")) {
+                  dd.classList.remove("open");
+                }
+              });
+              if (toggle) {
+                e.preventDefault();
+                const dropdown2 = toggle.closest(".vitra-dropdown");
+                if (dropdown2) {
+                  dropdown2.classList.toggle("open");
+                }
+              }
+            });
+          };
+          return { init };
+        })();
         const _parseDataConfig = () => {
           const el = document.querySelector("[data-config]");
           if (!el) return;
@@ -580,9 +635,11 @@ var Vitra = (() => {
           if (document.readyState === "loading") {
             document.addEventListener("DOMContentLoaded", () => {
               _parseDataConfig();
+              dropdown.init();
             });
           } else {
             _parseDataConfig();
+            dropdown.init();
           }
         }
         return {
@@ -590,7 +647,9 @@ var Vitra = (() => {
           particles,
           reveal,
           modal,
-          tooltip
+          tooltip,
+          toast,
+          dropdown
         };
       })();
       if (typeof module !== "undefined" && module.exports) {

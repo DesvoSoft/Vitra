@@ -1607,24 +1607,37 @@ a:hover {
   }
 
   /* Custom Select Styling */
+  .vitra-select-wrapper {
+    position: relative;
+    display: block;
+    width: 100%;
+  }
+  
+  .vitra-select-wrapper::after {
+    content: '';
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1rem;
+    height: 1rem;
+    background-color: var(--vitra-color-text-primary);
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-position: center;
+    mask-size: contain;
+    -webkit-mask-size: contain;
+    pointer-events: none;
+    transition: background-color var(--vitra-duration-normal) var(--vitra-ease-luxury);
+  }
+
   select.vitra-input {
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 1rem;
     padding-right: 2.5rem;
     cursor: pointer;
-  }
-
-  /* Dark theme adjustment for select arrow */
-  [data-theme="dark"] select.vitra-input,
-  :root select.vitra-input {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-  }
-
-  [data-theme="light"] select.vitra-input {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='black'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
   }
 
   /* Style the options list as much as possible */
@@ -3141,6 +3154,105 @@ a:hover {
     background: hsla(var(--vitra-color-accent-h), 20%, 5%, 0.8);
     backdrop-filter: blur(var(--vitra-blur-lg));
     border-left: 1px solid hsla(0, 0%, 100%, 0.1);
+  }
+
+  /* ============================================
+      TOASTS (COMP-10)
+      Toast notifications system
+      ============================================ */
+
+  .vitra-toast-container {
+    position: fixed;
+    bottom: var(--vitra-space-4);
+    right: var(--vitra-space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--vitra-space-2);
+    z-index: 9999;
+    pointer-events: none;
+  }
+
+  .vitra-toast {
+    background: hsla(240, 15%, 8%, 0.85);
+    backdrop-filter: blur(var(--vitra-blur-md));
+    border: 1px solid hsla(0, 0%, 100%, 0.1);
+    border-radius: var(--vitra-radius-md);
+    padding: var(--vitra-space-3) var(--vitra-space-4);
+    color: var(--vitra-color-text-primary);
+    box-shadow: var(--vitra-shadow-elevated);
+    display: flex;
+    align-items: center;
+    gap: var(--vitra-space-3);
+    min-width: 250px;
+    max-width: 350px;
+    transform: translateX(120%);
+    opacity: 0;
+    transition: all var(--vitra-duration-normal) var(--vitra-ease-luxury);
+    pointer-events: auto;
+  }
+
+  .vitra-toast.show {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  .vitra-toast-success { border-left: 4px solid var(--vitra-color-success); }
+  .vitra-toast-error { border-left: 4px solid var(--vitra-color-error); }
+  .vitra-toast-info { border-left: 4px solid var(--vitra-color-info); }
+
+  /* ============================================
+      DROPDOWNS (COMP-11)
+      Custom UI Dropdowns
+      ============================================ */
+
+  .vitra-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .vitra-dropdown-menu {
+    position: absolute;
+    top: calc(100% + var(--vitra-space-2));
+    left: 0;
+    min-width: 200px;
+    background: hsla(240, 15%, 8%, 0.9);
+    backdrop-filter: blur(var(--vitra-blur-lg));
+    border: 1px solid hsla(0, 0%, 100%, 0.1);
+    border-radius: var(--vitra-radius-md);
+    box-shadow: var(--vitra-shadow-elevated);
+    padding: var(--vitra-space-2) 0;
+    opacity: 0;
+    transform: translateY(-10px);
+    visibility: hidden;
+    transition: all var(--vitra-duration-fast) var(--vitra-ease-out);
+    z-index: 1000;
+  }
+
+  .vitra-dropdown.open .vitra-dropdown-menu {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+  }
+
+  .vitra-dropdown-item {
+    display: block;
+    width: 100%;
+    padding: var(--vitra-space-2) var(--vitra-space-4);
+    background: transparent;
+    border: none;
+    text-align: left;
+    color: var(--vitra-color-text-secondary);
+    font-family: var(--vitra-font-family);
+    font-size: var(--vitra-font-size-sm);
+    cursor: pointer;
+    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+  }
+
+  .vitra-dropdown-item:hover,
+  .vitra-dropdown-item:focus-visible {
+    background: hsla(0, 0%, 100%, 0.08);
+    color: var(--vitra-color-text-primary);
+    outline: none;
   }
 }
 

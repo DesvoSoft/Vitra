@@ -801,6 +801,92 @@ const Vitra = (() => {
   })();
 
   // =========================================================================
+  // TOAST MODULE
+  // Toast notifications with glassmorphism
+  // =========================================================================
+
+  const toast = (() => {
+    let _container = null;
+
+    const _ensureContainer = () => {
+      if (!_container) {
+        _container = document.createElement('div');
+        _container.className = 'vitra-toast-container';
+        document.body.appendChild(_container);
+      }
+      return _container;
+    };
+
+    /**
+     * Show a toast notification
+     * @param {string} message - The message to display
+     * @param {Object} options - Options (type: 'success'|'error'|'info'|'default', duration: number)
+     */
+    const show = (message, options = {}) => {
+      const { type = 'default', duration = 3000 } = options;
+      const container = _ensureContainer();
+
+      const el = document.createElement('div');
+      el.className = `vitra-toast`;
+      if (type !== 'default') {
+        el.classList.add(`vitra-toast-${type}`);
+      }
+
+      el.innerHTML = `<span>${message}</span>`;
+      container.appendChild(el);
+
+      // Trigger animation
+      setTimeout(() => el.classList.add('show'), 10);
+
+      // Remove after duration
+      if (duration > 0) {
+        setTimeout(() => {
+          el.classList.remove('show');
+          setTimeout(() => {
+            if (el.parentNode === container) {
+              container.removeChild(el);
+            }
+          }, 300); // Wait for transition
+        }, duration);
+      }
+
+      return el;
+    };
+
+    return { show };
+  })();
+
+  // =========================================================================
+  // DROPDOWN MODULE
+  // Custom dropdowns with A11y support
+  // =========================================================================
+
+  const dropdown = (() => {
+    const init = () => {
+      document.addEventListener('click', (e) => {
+        const toggle = e.target.closest('[data-vitra-dropdown-toggle]');
+        
+        // Close all other dropdowns
+        document.querySelectorAll('.vitra-dropdown.open').forEach(dd => {
+          if (!toggle || dd !== toggle.closest('.vitra-dropdown')) {
+            dd.classList.remove('open');
+          }
+        });
+
+        if (toggle) {
+          e.preventDefault();
+          const dropdown = toggle.closest('.vitra-dropdown');
+          if (dropdown) {
+            dropdown.classList.toggle('open');
+          }
+        }
+      });
+    };
+
+    return { init };
+  })();
+
+  // =========================================================================
   // DATA-CONFIG PARSER
   // Parse data-config attributes for module configuration
   // =========================================================================
@@ -847,9 +933,11 @@ const Vitra = (() => {
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => {
         _parseDataConfig();
+        dropdown.init();
       });
     } else {
       _parseDataConfig();
+      dropdown.init();
     }
   }
 
@@ -859,7 +947,9 @@ const Vitra = (() => {
     particles,
     reveal,
     modal,
-    tooltip
+    tooltip,
+    toast,
+    dropdown
   };
 })();
 
