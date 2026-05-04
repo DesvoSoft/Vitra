@@ -32,27 +32,37 @@
 
   // ==================== Theme Selector ====================
   function initThemeSelector() {
-    const selector = document.getElementById('theme-selector');
     const themeDisplay = document.getElementById('current-theme-name');
+    const themeItems = document.querySelectorAll('.theme-dropdown-item');
 
-    if (!selector || !themeDisplay) return;
+    if (!themeDisplay) return;
 
     // Set initial value based on current theme
     const currentTheme = Vitra.theme.get();
-    selector.value = currentTheme;
     updateThemeDisplay(currentTheme);
 
     // Handle theme changes
-    selector.addEventListener('change', function (e) {
-      const selectedTheme = e.target.value;
-      const success = Vitra.theme.set(selectedTheme);
+    themeItems.forEach(item => {
+      item.addEventListener('click', function (e) {
+        e.preventDefault();
+        const selectedTheme = this.getAttribute('data-theme-value');
+        const success = Vitra.theme.set(selectedTheme);
 
-      if (success) {
-        updateThemeDisplay(selectedTheme);
-        showNotification(`Theme changed to: ${selectedTheme}`);
-      } else {
-        showNotification(`Invalid theme: ${selectedTheme}`, 'error');
-      }
+        if (success) {
+          updateThemeDisplay(selectedTheme);
+          if (window.Vitra && Vitra.toast) {
+            Vitra.toast.show(`Theme changed to: ${selectedTheme}`, { type: 'success' });
+          }
+        } else {
+          if (window.Vitra && Vitra.toast) {
+            Vitra.toast.show(`Invalid theme: ${selectedTheme}`, { type: 'error' });
+          }
+        }
+        
+        // Close dropdown
+        const dropdown = this.closest('.vitra-dropdown');
+        if (dropdown) dropdown.classList.remove('open');
+      });
     });
 
     // Also update when system theme changes (for 'auto' mode)
@@ -75,15 +85,10 @@
       const nextTheme = Vitra.theme.toggle();
       console.log('[Vitra Demo] Toggled to:', nextTheme);
       
-      // Update UI
-      const selector = document.getElementById('theme-selector');
-      if (selector) {
-        selector.value = nextTheme;
-        console.log('[Vitra Demo] Selector updated to:', nextTheme);
-      }
-      
       updateThemeDisplay(nextTheme);
-      showNotification(`Theme toggled to: ${nextTheme}`);
+      if (Vitra.toast) {
+        Vitra.toast.show(`Theme toggled to: ${nextTheme}`, { type: 'success' });
+      }
     } else {
       console.error('[Vitra Demo] Vitra theme API not available');
     }
@@ -183,9 +188,9 @@
     });
 
     if (spawned > 0) {
-      showNotification(`Spawned ${spawned} particles`);
+      if (window.Vitra && Vitra.toast) Vitra.toast.show(`Spawned ${spawned} particles`, { type: 'success' });
     } else {
-      showNotification('No particles spawned (check limits or reduced motion)', 'warning');
+      if (window.Vitra && Vitra.toast) Vitra.toast.show('No particles spawned (check limits or reduced motion)', { type: 'warning' });
     }
 
     updateParticleInfo();
@@ -193,7 +198,7 @@
 
   window.destroyParticles = function () {
     const destroyed = Vitra.particles.destroy();
-    showNotification(`Destroyed ${destroyed} particles`);
+    if (window.Vitra && Vitra.toast) Vitra.toast.show(`Destroyed ${destroyed} particles`, { type: 'info' });
     updateParticleInfo();
   };
 
@@ -231,7 +236,7 @@
     });
 
     if (spawned > 0) {
-      showNotification(`Spawned ${spawned} ${emoji} particles`);
+      if (window.Vitra && Vitra.toast) Vitra.toast.show(`Spawned ${spawned} ${emoji} particles`, { type: 'success' });
     }
 
     updateParticleInfo();
@@ -318,63 +323,7 @@
     });
   }
 
-  // ==================== Utilities ====================
-  function showNotification(message, type = 'success') {
-    // Create a simple notification
-    const notification = document.createElement('div');
-    notification.className = 'vitra-glass';
-    notification.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 12px 20px;
-      border-radius: var(--vitra-radius-md, 8px);
-      z-index: 1000;
-      font-size: var(--vitra-font-size-sm, 0.875rem);
-      animation: slideIn 0.3s ease;
-      max-width: 300px;
-    `;
 
-    // Set background color based on type
-    if (type === 'error') {
-      notification.style.borderLeft = '4px solid var(--vitra-color-error, #ef4444)';
-    } else if (type === 'warning') {
-      notification.style.borderLeft = '4px solid var(--vitra-color-warning, #f59e0b)';
-    } else {
-      notification.style.borderLeft = '4px solid var(--vitra-color-success, #10b981)';
-    }
-
-    notification.textContent = message;
-
-    // Add animation keyframes if not exists
-    if (!document.getElementById('demo-notification-styles')) {
-      const style = document.createElement('style');
-      style.id = 'demo-notification-styles';
-      style.textContent = `
-        @keyframes slideIn {
-          from { transform: translateX(100%); opacity: 0; }
-          to { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes slideOut {
-          from { transform: translateX(0); opacity: 1; }
-          to { transform: translateX(100%); opacity: 0; }
-        }
-      `;
-      document.head.appendChild(style);
-    }
-
-    document.body.appendChild(notification);
-
-    // Auto-remove after 3 seconds
-    setTimeout(() => {
-      notification.style.animation = 'slideOut 0.3s ease';
-      setTimeout(() => {
-        if (notification.parentNode) {
-          notification.parentNode.removeChild(notification);
-        }
-      }, 300);
-    }, 3000);
-  }
 
   // ==================== Mobile Navigation ====================
   function initNavigation() {

@@ -14,19 +14,13 @@
 }
 
 body {
-  background: linear-gradient(180deg, var(--vitra-color-bg), var(--vitra-bg-accent, hsl(var(--vitra-color-accent-h), 20%, 6%)));
+  background-color: var(--vitra-color-bg);
+  background-image: 
+    radial-gradient(at 0% 0%, hsla(var(--vitra-color-accent-h), 100%, 70%, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(var(--vitra-color-info-h, 200), 100%, 70%, 0.1) 0px, transparent 50%);
   background-attachment: fixed;
   min-height: 100vh;
   position: relative;
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%);
-  pointer-events: none;
-  z-index: -2;
 }
 
 .demo-hero::before {
@@ -39,8 +33,8 @@ body::after {
   height: 150%;
   background: radial-gradient(
     circle at center,
-    hsla(var(--vitra-color-accent-h), 100%, 70%, 0.15) 0%,
-    transparent 60%
+    hsla(var(--vitra-color-accent-h), 100%, 70%, 0.1) 0%,
+    transparent 50%
   );
   pointer-events: none;
   z-index: -1;
@@ -49,16 +43,8 @@ body::after {
 /* Section spacing and styling */
 .demo-section {
   position: relative;
-  padding: var(--vitra-space-8) var(--vitra-space-4);
-  margin: var(--vitra-space-4) 0;
+  padding: var(--vitra-space-12) 0;
   border-bottom: 1px solid hsla(var(--vitra-color-accent-h), 100%, 70%, 0.05);
-}
-
-.demo-section:nth-child(even) {
-  background: var(--vitra-color-surface, rgba(0, 0, 0, 0.02));
-  padding-left: var(--vitra-space-4);
-  padding-right: var(--vitra-space-4);
-  border-radius: var(--vitra-radius-xl);
 }
 
 /* Component showcase cards */
@@ -75,12 +61,11 @@ body::after {
    Navigation Improvements
    ============================================ */
 .vitra-navbar {
-  margin: var(--vitra-space-4) auto;
-  width: 95%;
-  max-width: 1400px;
-  border-radius: var(--vitra-radius-full);
-  border: 1px solid hsla(0, 0%, 100%, 0.1);
-  box-shadow: var(--vitra-shadow-elevated);
+  width: 100%;
+  border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
+  background: hsla(240, 15%, 8%, 0.7);
+  backdrop-filter: blur(var(--vitra-blur-lg));
+  -webkit-backdrop-filter: blur(var(--vitra-blur-lg));
 }
 
 .vitra-navbar-link {
@@ -353,44 +338,7 @@ pre code {
   font-family: 'Courier New', Courier, monospace;
 }
 
-/* ============================================
-   Notification Styles (from demo.js)
-   ============================================ */
 
-.vitra-notification {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  padding: 12px 20px;
-  border-radius: var(--vitra-radius-md, 8px);
-  z-index: 10000;
-  font-size: var(--vitra-font-size-sm, 0.875rem);
-  animation: slideIn 0.3s ease;
-  max-width: 300px;
-  box-shadow: var(--vitra-shadow-elevated, 0 8px 32px rgba(0, 0, 0, 0.12));
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideOut {
-  from {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-}
 
 /* ============================================
    Responsive Adjustments

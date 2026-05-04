@@ -25,7 +25,7 @@
 </head>
 <body>
   <!-- Navigation -->
-  <nav class="vitra-navbar vitra-glass" style="position: sticky; top: 0; z-index: 1000;" role="navigation" aria-label="Main navigation">
+  <nav class="vitra-navbar" style="position: sticky; top: 0; z-index: 1000;" role="navigation" aria-label="Main navigation">
     <div class="vitra-container vitra-flex vitra-justify-between vitra-items-center">
       <div class="vitra-navbar-brand">
         <span class="vitra-text-gradient">Vitra CSS</span>
@@ -39,15 +39,21 @@
         <a href="#components" class="vitra-navbar-link">Components</a>
       </div>
       <div class="vitra-navbar-actions">
-        <select id="theme-selector" class="vitra-input vitra-input-glass" style="min-width: 140px;">
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
-          <option value="auto">Auto</option>
-          <option value="pastel">Pastel</option>
-          <option value="neon">Neon</option>
-          <option value="ocean">Ocean</option>
-          <option value="emerald">Emerald</option>
-        </select>
+        <div class="vitra-dropdown">
+          <button class="vitra-btn vitra-btn-glass vitra-btn-sm" data-vitra-dropdown-toggle>
+            Theme: <span id="current-theme-name">Auto</span>
+            <svg style="width: 16px; height: 16px; margin-left: 0.5rem;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div class="vitra-dropdown-menu">
+            <button class="vitra-dropdown-item theme-dropdown-item" data-theme-value="light">Light</button>
+            <button class="vitra-dropdown-item theme-dropdown-item" data-theme-value="dark">Dark</button>
+            <button class="vitra-dropdown-item theme-dropdown-item" data-theme-value="auto">Auto</button>
+            <button class="vitra-dropdown-item theme-dropdown-item" data-theme-value="pastel">Pastel</button>
+            <button class="vitra-dropdown-item theme-dropdown-item" data-theme-value="neon">Neon</button>
+            <button class="vitra-dropdown-item theme-dropdown-item" data-theme-value="ocean">Ocean</button>
+            <button class="vitra-dropdown-item theme-dropdown-item" data-theme-value="emerald">Emerald</button>
+          </div>
+        </div>
 
         <button class="vitra-burger" aria-label="Toggle menu">
           <span class="vitra-burger-line"></span>
@@ -97,9 +103,7 @@
           Open Modal
         </button>
       </div>
-      <div id="current-theme-display" class="vitra-mt-4 vitra-text-sm vitra-text-tertiary">
-        Current theme: <strong id="current-theme-name" class="vitra-text-primary">Auto</strong>
-      </div>
+
     </div>
   </section>
 
@@ -139,7 +143,7 @@
 
       <div class="component-showcase">
         <h3>Border Radius</h3>
-        <div style="display: flex; gap: var(--vitra-space-4, 1rem); flex-wrap: wrap;">
+<div class="vitra-flex vitra-gap-4 vitra-flex-wrap">
           <div style="width: 60px; height: 60px; background: var(--vitra-color-accent); border-radius: var(--vitra-radius-sm);" title="radius-sm"></div>
           <div style="width: 60px; height: 60px; background: var(--vitra-color-accent); border-radius: var(--vitra-radius-md);" title="radius-md"></div>
           <div style="width: 60px; height: 60px; background: var(--vitra-color-accent); border-radius: var(--vitra-radius-lg);" title="radius-lg"></div>
@@ -149,7 +153,7 @@
 
       <div class="component-showcase">
         <h3>Shadow Tokens</h3>
-        <div style="display: flex; gap: var(--vitra-space-4, 1rem); flex-wrap: wrap;">
+<div class="vitra-flex vitra-gap-4 vitra-flex-wrap">
           <div style="width: 80px; height: 80px; background: var(--vitra-color-bg); box-shadow: var(--vitra-shadow-subtle); border-radius: var(--vitra-radius-md);" title="shadow-subtle"></div>
           <div style="width: 80px; height: 80px; background: var(--vitra-color-bg); box-shadow: var(--vitra-shadow-medium); border-radius: var(--vitra-radius-md);" title="shadow-medium"></div>
           <div style="width: 80px; height: 80px; background: var(--vitra-color-bg); box-shadow: var(--vitra-shadow-elevated); border-radius: var(--vitra-radius-md);" title="shadow-elevated"></div>
@@ -256,7 +260,7 @@
 
       <div class="demo-control-group">
         <label class="demo-label">Emoji Particles</label>
-        <div style="display: flex; gap: var(--vitra-space-2, 0.5rem); flex-wrap: wrap;">
+<div class="vitra-flex vitra-gap-2 vitra-flex-wrap">
           <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" onclick="spawnEmojiParticles('✨')">✨ Sparkles</button>
           <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" onclick="spawnEmojiParticles('🔮')">🔮 Magic</button>
           <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" onclick="spawnEmojiParticles('💫')">💫 Stars</button>
@@ -396,18 +400,18 @@
     <!-- Buttons -->
     <div class="component-showcase">
       <h3>Buttons</h3>
-      <div style="display: flex; flex-wrap: wrap; gap: var(--vitra-space-2, 0.5rem);">
+<div class="vitra-flex vitra-gap-2 vitra-flex-wrap">
         <button class="vitra-btn vitra-btn-solid">Solid</button>
         <button class="vitra-btn vitra-btn-ghost">Ghost</button>
         <button class="vitra-btn vitra-btn-glass">Glass</button>
         <button class="vitra-btn vitra-btn-gradient">Gradient</button>
       </div>
-      <div style="display: flex; flex-wrap: wrap; gap: var(--vitra-space-2, 0.5rem); margin-top: var(--vitra-space-2, 0.5rem);">
+<div class="vitra-flex vitra-gap-2 vitra-flex-wrap vitra-mt-2">
         <button class="vitra-btn vitra-btn-solid vitra-btn-sm">Small</button>
         <button class="vitra-btn vitra-btn-solid">Default</button>
         <button class="vitra-btn vitra-btn-solid vitra-btn-lg">Large</button>
       </div>
-      <div style="display: flex; flex-wrap: wrap; gap: var(--vitra-space-2, 0.5rem); margin-top: var(--vitra-space-2, 0.5rem);">
+<div class="vitra-flex vitra-gap-2 vitra-flex-wrap vitra-mt-2">
         <button class="vitra-btn vitra-btn-solid" disabled>Disabled</button>
         <button class="vitra-btn vitra-btn-ghost" disabled>Ghost Disabled</button>
       </div>
@@ -439,7 +443,7 @@
     <div style="margin-top: var(--vitra-space-6, 1.5rem);">
       <h3>Form Elements</h3>
       <div class="component-showcase">
-        <div style="display: flex; flex-direction: column; gap: var(--vitra-space-4, 1rem);">
+<div class="vitra-flex vitra-flex-col vitra-gap-4">
           <div>
             <label class="vitra-label" for="demo-input">Input Field</label>
             <input type="text" id="demo-input" class="vitra-input" placeholder="Enter text here...">
@@ -551,7 +555,7 @@
     <div style="margin-top: var(--vitra-space-6, 1.5rem);">
       <h3>Tooltips</h3>
       <div class="component-showcase">
-        <div style="display: flex; gap: var(--vitra-space-4, 1rem); flex-wrap: wrap;">
+<div class="vitra-flex vitra-gap-4 vitra-flex-wrap">
           <button class="vitra-btn vitra-btn-ghost" data-vitra-tooltip="Top tooltip" data-vitra-tooltip-position="top">
             Hover for Top Tip
           </button>
@@ -644,7 +648,7 @@
     <div style="margin-top: var(--vitra-space-6, 1.5rem);">
       <h3>Badges</h3>
       <div class="component-showcase">
-        <div style="display: flex; flex-wrap: wrap; gap: var(--vitra-space-2, 0.5rem); align-items: center;">
+<div class="vitra-flex vitra-gap-2 vitra-flex-wrap vitra-items-center">
           <span class="vitra-badge">Default</span>
           <span class="vitra-badge vitra-badge-primary">Primary</span>
           <span class="vitra-badge vitra-badge-success">Success</span>
@@ -746,7 +750,7 @@
     <div style="margin-top: var(--vitra-space-6, 1.5rem);">
       <h3>Tooltips</h3>
       <div class="component-showcase">
-        <div style="display: flex; gap: var(--vitra-space-4, 1rem); flex-wrap: wrap;">
+<div class="vitra-flex vitra-gap-4 vitra-flex-wrap">
           <button class="vitra-btn vitra-btn-ghost" data-vitra-tooltip="Top tooltip" data-vitra-tooltip-position="top">
             Hover for Top Tip
           </button>
@@ -839,7 +843,7 @@
     <div style="margin-top: var(--vitra-space-6, 1.5rem);">
       <h3>Badges</h3>
       <div class="component-showcase">
-        <div style="display: flex; flex-wrap: wrap; gap: var(--vitra-space-2, 0.5rem); align-items: center;">
+<div class="vitra-flex vitra-gap-2 vitra-flex-wrap vitra-items-center">
           <span class="vitra-badge">Default</span>
           <span class="vitra-badge vitra-badge-primary">Primary</span>
           <span class="vitra-badge vitra-badge-success">Success</span>
@@ -847,7 +851,7 @@
           <span class="vitra-badge vitra-badge-error">Error</span>
           <span class="vitra-badge vitra-badge-info">Info</span>
         </div>
-        <div style="display: flex; flex-wrap: wrap; gap: var(--vitra-space-2, 0.5rem); margin-top: var(--vitra-space-2, 0.5rem); align-items: center;">
+<div class="vitra-flex vitra-gap-2 vitra-flex-wrap vitra-items-center vitra-mt-2">
           <span class="vitra-badge vitra-badge-sm">Small</span>
           <span class="vitra-badge">Default</span>
           <span class="vitra-badge vitra-badge-lg">Large</span>
@@ -859,7 +863,7 @@
     <div style="margin-top: var(--vitra-space-6, 1.5rem);">
       <h3>Avatars</h3>
       <div class="component-showcase">
-        <div style="display: flex; flex-wrap: wrap; gap: var(--vitra-space-4, 1rem); align-items: center;">
+<div class="vitra-flex vitra-gap-4 vitra-flex-wrap vitra-items-center">
           <div class="vitra-avatar" style="width: 40px; height: 40px; background: var(--vitra-color-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">JD</div>
           <div class="vitra-avatar" style="width: 48px; height: 48px; background: var(--vitra-color-success); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">AB</div>
           <div class="vitra-avatar" style="width: 64px; height: 64px; background: var(--vitra-color-warning); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">CD</div>
