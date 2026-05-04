@@ -6,7 +6,7 @@
   "style": "dist/vitra.css",
   "scripts": {
     "build:css": "node scripts/build-css.js",
-    "build:js": "esbuild src/vitra.js --bundle --outfile=dist/vitra.js --format=iife --global-name=Vitra --sourcemap",
+    "build:js": "esbuild src/vitra.js --bundle --outfile=dist/vitra.js --format=iife --global-name=Vitra --sourcemap && esbuild src/vitra.js --bundle --minify --outfile=dist/vitra.min.js --format=iife --global-name=Vitra --sourcemap",
     "build": "npm run build:css && npm run build:js",
     "dev": "npx serve ."
   },

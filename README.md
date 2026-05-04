@@ -36,14 +36,32 @@ npm run build
 
 ### 2. Basic Setup
 
-Link the production-ready assets in your HTML:
+You can use Vitra by installing it locally, or via a free CDN (jsDelivr) for instant global delivery.
+
+#### Option A: Via CDN (Recommended for production)
+
+Use jsDelivr to load the minified files. We strongly recommend using a fixed version (e.g., `@1.0.0`) and including Subresource Integrity (SRI) hashes to guarantee security and stability.
+
+```html
+<!-- High-performance CSS (Fixed version with SRI) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.0.0/dist/vitra.min.css" integrity="sha256-u1O0o2wXyg/ELfnLwYdnnjqehCA/vzg6tKIv+18qEwE=" crossorigin="anonymous">
+
+<!-- Optional: Modular JS Engine (Fixed version with SRI) -->
+<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.0.0/dist/vitra.min.js" integrity="sha256-5ug5NXLIhKVuI0SItqAYELVBu8UGK3y6TEd0qbZzW/s=" crossorigin="anonymous" defer></script>
+```
+
+> **Note:** You can use `@latest` instead of `@1.0.0` for testing the most recent updates, but this is **not recommended** for production as breaking changes could affect your site.
+
+#### Option B: Local Assets
+
+If you built the framework locally, link the assets in your HTML:
 
 ```html
 <!-- High-performance CSS -->
 <link rel="stylesheet" href="dist/vitra.min.css">
 
 <!-- Optional: Modular JS Engine -->
-<script src="dist/vitra.js" defer data-config='{"theme":"auto"}'></script>
+<script src="dist/vitra.min.js" defer data-config='{"theme":"auto"}'></script>
 ```
 
 ---
