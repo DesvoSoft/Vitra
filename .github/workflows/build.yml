@@ -2,7 +2,7 @@ name: Build and Validate
 
 on:
   push:
-    branches: [ "main", "demo" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
