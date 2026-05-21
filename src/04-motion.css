@@ -198,6 +198,7 @@
   /* Hover Lift - subtle upward translation */
   .vitra-hover-lift {
     transition: transform var(--vitra-duration-normal, 250ms) var(--vitra-ease-out, cubic-bezier(0, 0, 0.2, 1));
+    will-change: transform;
   }
 
   .vitra-hover-lift:hover {
@@ -270,6 +271,7 @@
       var(--vitra-color-bg);
     background-size: 200% 200%;
     animation: vitra-mesh-shift 16s ease-in-out infinite;
+    will-change: background-position;
   }
 
   /* --- Floating Glow Orb --- */
@@ -293,6 +295,7 @@
     pointer-events: none;
     filter: blur(80px);
     opacity: 0.12;
+    will-change: transform;
   }
 
   .vitra-glow-orb-1 {
@@ -343,6 +346,7 @@
     background-clip: text;
     color: transparent;
     animation: vitra-text-shift 6s ease-in-out infinite;
+    will-change: background-position;
   }
 
   /* --- Animated Gradient Border --- */
@@ -373,6 +377,7 @@
       hsl(var(--vitra-color-accent-h) 100% 70%)
     );
     animation: vitra-border-rotate 4s linear infinite;
+    will-change: transform;
   }
 
   .vitra-border-glow::after {
@@ -393,6 +398,68 @@
   .vitra-hero-spotlight .vitra-gradient-bg {
     position: absolute;
     z-index: 0;
+  }
+
+  /* ============================================
+     HIGH CONTRAST SUPPORT
+     Accessibility: increase contrast for users who
+     prefer stronger visual distinctions
+     ============================================ */
+
+  @media (prefers-contrast: more) {
+    .vitra-glass,
+    .vitra-glass-subtle,
+    .vitra-glass-sm,
+    .vitra-glass-md,
+    .vitra-glass-lg,
+    .vitra-glass-xl,
+    .vitra-navbar-glass,
+    .vitra-drawer-glass {
+      background: var(--vitra-color-surface) !important;
+      backdrop-filter: none !important;
+      border-color: var(--vitra-color-border-hover) !important;
+    }
+
+    .vitra-gradient-text {
+      background: none !important;
+      color: var(--vitra-color-accent) !important;
+      -webkit-background-clip: unset !important;
+      background-clip: unset !important;
+    }
+
+    .vitra-gradient-bg {
+      background: var(--vitra-color-bg) !important;
+      animation: none !important;
+    }
+
+    .vitra-glow-orb {
+      display: none !important;
+    }
+
+    .vitra-border-glow::before {
+      animation: none !important;
+    }
+
+    .vitra-border-glow::after {
+      background: var(--vitra-color-bg) !important;
+    }
+
+    .vitra-glass::after {
+      display: none !important;
+    }
+
+    .vitra-text-secondary {
+      opacity: 1 !important;
+    }
+
+    .vitra-badge,
+    .vitra-badge-glass {
+      border: 2px solid currentcolor;
+    }
+
+    .vitra-btn-glass {
+      border-width: 2px;
+    }
   }
 
   /* ============================================

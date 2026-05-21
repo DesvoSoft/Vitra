@@ -460,10 +460,28 @@ const Vitra = (() => {
       _revealedElements = [];
     };
 
+    /**
+     * Destroy reveal module - disconnect observer, clean up DOM
+     */
+    const destroy = () => {
+      if (_observer) {
+        _observer.disconnect();
+        _observer = null;
+      }
+      _revealedElements.forEach(el => {
+        el.style.opacity = '';
+        el.style.transform = '';
+        el.style.transition = '';
+        el.classList.remove('vitra-revealed');
+      });
+      _revealedElements = [];
+    };
+
     return {
       init,
       count,
-      reset
+      reset,
+      destroy
     };
   })();
 
@@ -641,9 +659,20 @@ const Vitra = (() => {
       }
     };
 
+    /**
+     * Destroy modal module - close and clean up
+     */
+    const destroy = () => {
+      if (_activeModal) {
+        close();
+      }
+      document.removeEventListener('keydown', _handleEsc);
+    };
+
     return {
       open,
-      close
+      close,
+      destroy
     };
   })();
 
@@ -843,10 +872,24 @@ const Vitra = (() => {
       });
     };
 
+    /**
+     * Destroy tooltip module - hide and unbind all
+     */
+    const destroy = () => {
+      hide();
+      const elements = document.querySelectorAll('[data-vitra-tooltip]');
+      elements.forEach(el => {
+        // Clone and replace to remove all event listeners
+        const clone = el.cloneNode(true);
+        el.parentNode.replaceChild(clone, el);
+      });
+    };
+
     return {
       show,
       hide,
-      init
+      init,
+      destroy
     };
   })();
 
@@ -913,38 +956,48 @@ const Vitra = (() => {
 
   const dropdown = (() => {
     const _supportsPopover = typeof HTMLElement !== 'undefined' && 'showPopover' in HTMLElement.prototype;
+    let _initialized = false;
 
-    const init = () => {
-      document.addEventListener('click', (e) => {
-        const toggle = e.target.closest('[data-vitra-dropdown-toggle]');
-        const dropdown = toggle ? toggle.closest('.vitra-dropdown') : null;
-        const menu = dropdown ? dropdown.querySelector('.vitra-dropdown-menu') : null;
+    const _clickHandler = (e) => {
+      const toggle = e.target.closest('[data-vitra-dropdown-toggle]');
+      const dropdown = toggle ? toggle.closest('.vitra-dropdown') : null;
+      const menu = dropdown ? dropdown.querySelector('.vitra-dropdown-menu') : null;
 
-        if (_supportsPopover && menu && menu.hasAttribute('popover')) {
-          // Popover API handles close-on-outside-click automatically
-          if (toggle) {
-            e.preventDefault();
-            menu.togglePopover();
+      if (_supportsPopover && menu && menu.hasAttribute('popover')) {
+        // Popover API handles close-on-outside-click automatically
+        if (toggle) {
+          e.preventDefault();
+          menu.togglePopover();
+        }
+      } else {
+        // Fallback: close all other dropdowns
+        document.querySelectorAll('.vitra-dropdown.open').forEach(dd => {
+          if (!toggle || dd !== dropdown) {
+            dd.classList.remove('open');
           }
-        } else {
-          // Fallback: close all other dropdowns
-          document.querySelectorAll('.vitra-dropdown.open').forEach(dd => {
-            if (!toggle || dd !== dropdown) {
-              dd.classList.remove('open');
-            }
-          });
+        });
 
-          if (toggle) {
-            e.preventDefault();
-            if (dropdown) {
-              dropdown.classList.toggle('open');
-            }
+        if (toggle) {
+          e.preventDefault();
+          if (dropdown) {
+            dropdown.classList.toggle('open');
           }
         }
-      });
+      }
     };
 
-    return { init };
+    const init = () => {
+      if (_initialized) return;
+      document.addEventListener('click', _clickHandler);
+      _initialized = true;
+    };
+
+    const destroy = () => {
+      document.removeEventListener('click', _clickHandler);
+      _initialized = false;
+    };
+
+    return { init, destroy };
   })();
 
   // =========================================================================
@@ -954,10 +1007,11 @@ const Vitra = (() => {
   const spotlight = (() => {
     let initialized = false;
     let _rafId = null;
+    let _handleMove = null;
 
     const init = () => {
       if (initialized) return;
-      const handleMove = (e) => {
+      _handleMove = (e) => {
         if (_rafId) return;
         _rafId = requestAnimationFrame(() => {
           _rafId = null;
@@ -971,11 +1025,23 @@ const Vitra = (() => {
           });
         });
       };
-      document.addEventListener('mousemove', handleMove, { passive: true });
+      document.addEventListener('mousemove', _handleMove, { passive: true });
       initialized = true;
     };
 
-    return { init };
+    const destroy = () => {
+      if (_handleMove) {
+        document.removeEventListener('mousemove', _handleMove);
+        _handleMove = null;
+      }
+      if (_rafId) {
+        cancelAnimationFrame(_rafId);
+        _rafId = null;
+      }
+      initialized = false;
+    };
+
+    return { init, destroy };
   })();
 
   // =========================================================================
@@ -1020,6 +1086,19 @@ const Vitra = (() => {
     }
   };
 
+  // Flash prevention: restore saved theme before paint
+  (() => {
+    try {
+      if (typeof window === 'undefined' || !window.localStorage) return;
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved && VALID_THEMES.includes(saved)) {
+        document.documentElement.dataset.theme = saved;
+      }
+    } catch (e) {
+      // Silently fail
+    }
+  })();
+
   // Auto-initialize on DOMContentLoaded
   if (typeof document !== 'undefined') {
     if (document.readyState === 'loading') {
@@ -1035,6 +1114,16 @@ const Vitra = (() => {
     }
   }
 
+  // Global destroy: clean up all modules
+  const destroyAll = () => {
+    reveal.destroy();
+    modal.destroy();
+    tooltip.destroy();
+    dropdown.destroy();
+    spotlight.destroy();
+    particles.destroy();
+  };
+
   // Public API
   return {
     theme,
@@ -1044,7 +1133,8 @@ const Vitra = (() => {
     tooltip,
     toast,
     dropdown,
-    spotlight
+    spotlight,
+    destroyAll
   };
 })();
 

@@ -446,6 +446,7 @@
     background: hsl(var(--vitra-color-accent-h) 20% 5% / 70%);
     backdrop-filter: blur(var(--vitra-blur-md));
     border-bottom-color: hsl(0deg 0% 100% / 10%);
+    z-index: 100;
   }
 
   /* --- NAVBAR BRAND --- */
@@ -463,6 +464,75 @@
   .vitra-navbar-brand:hover {
     color: var(--vitra-color-accent);
     text-shadow: 0 0 15px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 40%);
+  }
+
+  /* --- NAVBAR LINKS --- */
+  .vitra-navbar-links {
+    display: flex;
+    align-items: center;
+    gap: var(--vitra-space-1);
+  }
+
+  .vitra-navbar-link {
+    font-weight: var(--vitra-font-weight-medium);
+    letter-spacing: 0.02em;
+    opacity: 0.7;
+    transition: opacity var(--vitra-duration-fast) var(--vitra-ease-default),
+                color var(--vitra-duration-fast) var(--vitra-ease-default);
+  }
+
+  .vitra-navbar-link:hover {
+    opacity: 1;
+    color: var(--vitra-color-accent);
+  }
+
+  /* --- BURGER ICON (Mobile Menu Toggle) --- */
+  .vitra-burger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 28px;
+    height: 28px;
+    padding: 3px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    z-index: 101;
+  }
+
+  .vitra-burger-line {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: var(--vitra-color-text-primary, #fff);
+    border-radius: 2px;
+    transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+                opacity 0.2s ease;
+    transform-origin: center;
+  }
+
+  .vitra-burger.active .vitra-burger-line:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .vitra-burger.active .vitra-burger-line:nth-child(2) {
+    opacity: 0;
+  }
+
+  .vitra-burger.active .vitra-burger-line:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  @media (max-width: 768px) {
+    .vitra-navbar-links {
+      display: none;
+    }
+
+    .vitra-burger {
+      display: flex;
+    }
   }
 
   /* --- DRAWER --- */
@@ -2313,6 +2383,15 @@
 
     .vitra-skeleton-shimmer {
       animation: none;
+    }
+
+    .vitra-burger-line {
+      transition: none;
+    }
+
+    .vitra-burger.active .vitra-burger-line:nth-child(1),
+    .vitra-burger.active .vitra-burger-line:nth-child(3) {
+      transform: none;
     }
   }
 

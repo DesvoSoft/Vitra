@@ -62,7 +62,7 @@ try {
     code: code,
     minify: true,
     sourceMap: true,
-    errorRecovery: true, // Ignore invalid rules
+    errorRecovery: false, // Fail on invalid rules
     targets: {
       // Support last 2 versions of major browsers
       chrome: (120 << 16),

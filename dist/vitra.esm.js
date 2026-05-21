@@ -326,10 +326,24 @@ var require_vitra = __commonJS({
           });
           _revealedElements = [];
         };
+        const destroy = () => {
+          if (_observer) {
+            _observer.disconnect();
+            _observer = null;
+          }
+          _revealedElements.forEach((el) => {
+            el.style.opacity = "";
+            el.style.transform = "";
+            el.style.transition = "";
+            el.classList.remove("vitra-revealed");
+          });
+          _revealedElements = [];
+        };
         return {
           init,
           count,
-          reset
+          reset,
+          destroy
         };
       })();
       const modal = /* @__PURE__ */ (() => {
@@ -439,9 +453,16 @@ var require_vitra = __commonJS({
             close();
           }
         };
+        const destroy = () => {
+          if (_activeModal) {
+            close();
+          }
+          document.removeEventListener("keydown", _handleEsc);
+        };
         return {
           open,
-          close
+          close,
+          destroy
         };
       })();
       const tooltip = /* @__PURE__ */ (() => {
@@ -581,10 +602,19 @@ var require_vitra = __commonJS({
             el.addEventListener("blur", () => hide(el));
           });
         };
+        const destroy = () => {
+          hide();
+          const elements = document.querySelectorAll("[data-vitra-tooltip]");
+          elements.forEach((el) => {
+            const clone = el.cloneNode(true);
+            el.parentNode.replaceChild(clone, el);
+          });
+        };
         return {
           show,
           hide,
-          init
+          init,
+          destroy
         };
       })();
       const toast = /* @__PURE__ */ (() => {
@@ -624,39 +654,48 @@ var require_vitra = __commonJS({
       })();
       const dropdown = (() => {
         const _supportsPopover = typeof HTMLElement !== "undefined" && "showPopover" in HTMLElement.prototype;
-        const init = () => {
-          document.addEventListener("click", (e) => {
-            const toggle = e.target.closest("[data-vitra-dropdown-toggle]");
-            const dropdown2 = toggle ? toggle.closest(".vitra-dropdown") : null;
-            const menu = dropdown2 ? dropdown2.querySelector(".vitra-dropdown-menu") : null;
-            if (_supportsPopover && menu && menu.hasAttribute("popover")) {
-              if (toggle) {
-                e.preventDefault();
-                menu.togglePopover();
+        let _initialized = false;
+        const _clickHandler = (e) => {
+          const toggle = e.target.closest("[data-vitra-dropdown-toggle]");
+          const dropdown2 = toggle ? toggle.closest(".vitra-dropdown") : null;
+          const menu = dropdown2 ? dropdown2.querySelector(".vitra-dropdown-menu") : null;
+          if (_supportsPopover && menu && menu.hasAttribute("popover")) {
+            if (toggle) {
+              e.preventDefault();
+              menu.togglePopover();
+            }
+          } else {
+            document.querySelectorAll(".vitra-dropdown.open").forEach((dd) => {
+              if (!toggle || dd !== dropdown2) {
+                dd.classList.remove("open");
               }
-            } else {
-              document.querySelectorAll(".vitra-dropdown.open").forEach((dd) => {
-                if (!toggle || dd !== dropdown2) {
-                  dd.classList.remove("open");
-                }
-              });
-              if (toggle) {
-                e.preventDefault();
-                if (dropdown2) {
-                  dropdown2.classList.toggle("open");
-                }
+            });
+            if (toggle) {
+              e.preventDefault();
+              if (dropdown2) {
+                dropdown2.classList.toggle("open");
               }
             }
-          });
+          }
         };
-        return { init };
+        const init = () => {
+          if (_initialized) return;
+          document.addEventListener("click", _clickHandler);
+          _initialized = true;
+        };
+        const destroy = () => {
+          document.removeEventListener("click", _clickHandler);
+          _initialized = false;
+        };
+        return { init, destroy };
       })();
       const spotlight = /* @__PURE__ */ (() => {
         let initialized = false;
         let _rafId = null;
+        let _handleMove = null;
         const init = () => {
           if (initialized) return;
-          const handleMove = (e) => {
+          _handleMove = (e) => {
             if (_rafId) return;
             _rafId = requestAnimationFrame(() => {
               _rafId = null;
@@ -670,10 +709,21 @@ var require_vitra = __commonJS({
               });
             });
           };
-          document.addEventListener("mousemove", handleMove, { passive: true });
+          document.addEventListener("mousemove", _handleMove, { passive: true });
           initialized = true;
         };
-        return { init };
+        const destroy = () => {
+          if (_handleMove) {
+            document.removeEventListener("mousemove", _handleMove);
+            _handleMove = null;
+          }
+          if (_rafId) {
+            cancelAnimationFrame(_rafId);
+            _rafId = null;
+          }
+          initialized = false;
+        };
+        return { init, destroy };
       })();
       const _parseDataConfig = () => {
         const el = document.querySelector("[data-config]");
@@ -702,6 +752,16 @@ var require_vitra = __commonJS({
           console.warn("[Vitra] Failed to parse data-config:", e.message);
         }
       };
+      (() => {
+        try {
+          if (typeof window === "undefined" || !window.localStorage) return;
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (saved && VALID_THEMES.includes(saved)) {
+            document.documentElement.dataset.theme = saved;
+          }
+        } catch (e) {
+        }
+      })();
       if (typeof document !== "undefined") {
         if (document.readyState === "loading") {
           document.addEventListener("DOMContentLoaded", () => {
@@ -715,6 +775,14 @@ var require_vitra = __commonJS({
           spotlight.init();
         }
       }
+      const destroyAll = () => {
+        reveal.destroy();
+        modal.destroy();
+        tooltip.destroy();
+        dropdown.destroy();
+        spotlight.destroy();
+        particles.destroy();
+      };
       return {
         theme,
         particles,
@@ -723,7 +791,8 @@ var require_vitra = __commonJS({
         tooltip,
         toast,
         dropdown,
-        spotlight
+        spotlight,
+        destroyAll
       };
     })();
     if (typeof module !== "undefined" && module.exports) {

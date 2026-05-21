@@ -101,6 +101,16 @@
     --vitra-font-size-2xl: 1.5rem;   /* 24px */
     --vitra-font-size-3xl: 2rem;     /* 32px */
     --vitra-font-size-4xl: 3rem;     /* 48px */
+    --vitra-font-size-5xl: 3.75rem;  /* 60px */
+
+    /* Responsive heading scale */
+    --vitra-h1-size: clamp(2rem, 5vw, var(--vitra-font-size-5xl));
+    --vitra-h2-size: clamp(1.5rem, 4vw, var(--vitra-font-size-4xl));
+    --vitra-h3-size: clamp(1.25rem, 3vw, var(--vitra-font-size-2xl));
+    --vitra-h4-size: clamp(1.125rem, 2.5vw, var(--vitra-font-size-xl));
+    --vitra-h5-size: var(--vitra-font-size-lg);
+    --vitra-h6-size: var(--vitra-font-size-base);
+
     --vitra-font-weight-normal: 400;
     --vitra-font-weight-medium: 500;
     --vitra-font-weight-semibold: 600;
@@ -134,14 +144,57 @@
                 color var(--vitra-duration-normal) var(--vitra-ease-luxury);
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1 {
     font-family: var(--vitra-font-heading);
     font-weight: var(--vitra-font-weight-bold);
     line-height: var(--vitra-line-height-tight);
     color: var(--vitra-color-text-primary);
     margin: 0;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
+    font-size: var(--vitra-h1-size);
   }
+
+  h2 {
+    font-family: var(--vitra-font-heading);
+    font-weight: var(--vitra-font-weight-bold);
+    line-height: var(--vitra-line-height-tight);
+    color: var(--vitra-color-text-primary);
+    margin: 0;
+    letter-spacing: -0.03em;
+    font-size: var(--vitra-h2-size);
+  }
+
+  h3 {
+    font-family: var(--vitra-font-heading);
+    font-weight: var(--vitra-font-weight-semibold);
+    line-height: var(--vitra-line-height-tight);
+    color: var(--vitra-color-text-primary);
+    margin: 0;
+    letter-spacing: -0.02em;
+    font-size: var(--vitra-h3-size);
+  }
+
+  h4 {
+    font-family: var(--vitra-font-heading);
+    font-weight: var(--vitra-font-weight-semibold);
+    line-height: var(--vitra-line-height-tight);
+    color: var(--vitra-color-text-primary);
+    margin: 0;
+    letter-spacing: -0.02em;
+    font-size: var(--vitra-h4-size);
+  }
+
+  h5, h6 {
+    font-family: var(--vitra-font-heading);
+    font-weight: var(--vitra-font-weight-semibold);
+    line-height: var(--vitra-line-height-tight);
+    color: var(--vitra-color-text-primary);
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  h5 { font-size: var(--vitra-h5-size); }
+  h6 { font-size: var(--vitra-h6-size); }
 
   /* Global Link Styles */
   a {
@@ -219,6 +272,7 @@
     --vitra-shadow-medium: 0 4px 6px -1px rgb(0 0 0 / 10%);
     --vitra-shadow-elevated: 0 10px 15px -3px rgb(0 0 0 / 10%);
     --vitra-glass-bg: hsl(0deg 0% 100% / 40%);
+    color-scheme: light;
   }
 
   /* --- DARK THEME --- */
@@ -238,6 +292,7 @@
     --vitra-shadow-medium: 0 4px 12px rgb(0 0 0 / 40%);
     --vitra-shadow-elevated: 0 10px 32px rgb(0 0 0 / 50%);
     --vitra-glass-bg: hsl(var(--vitra-color-accent-h) 20% 95% / 5%);
+    color-scheme: dark;
   }
 
   /* --- PASTEL THEME --- */
@@ -245,12 +300,24 @@
     --vitra-color-bg: hsl(300deg 30% 98%);
     --vitra-bg-accent: hsl(300deg 30% 92%);
     --vitra-color-surface: hsl(300deg 100% 80% / 10%);
+    --vitra-color-surface-hover: hsl(300deg 100% 60% / 18%);
+    --vitra-color-surface-active: hsl(300deg 100% 50% / 25%);
+    --vitra-color-border: hsl(300deg 30% 60% / 20%);
+    --vitra-color-border-hover: hsl(300deg 30% 50% / 35%);
     --vitra-color-accent-h: 320;
     --vitra-color-accent-s: 70%;
     --vitra-color-accent-l: 65%;
     --vitra-color-text-primary: hsl(300deg 20% 20%);
     --vitra-color-text-secondary: hsl(300deg 10% 40%);
+    --vitra-color-text-tertiary: hsl(300deg 10% 50% / 60%);
+    --vitra-color-text-inverse: hsl(300deg 20% 98%);
+    --vitra-shadow-subtle: 0 1px 2px rgb(200 150 200 / 15%);
+    --vitra-shadow-medium: 0 4px 12px rgb(200 150 200 / 20%);
+    --vitra-shadow-elevated: 0 10px 32px rgb(200 150 200 / 25%);
     --vitra-glass-bg: hsl(300deg 100% 100% / 10%);
+    --vitra-color-bg-warm: hsl(310deg 25% 95%);
+    --vitra-color-bg-cool: hsl(290deg 25% 95%);
+    color-scheme: light;
   }
 
   /* --- NEON THEME --- */
@@ -258,12 +325,24 @@
     --vitra-color-bg: hsl(260deg 30% 2%);
     --vitra-bg-accent: hsl(260deg 30% 5%);
     --vitra-color-surface: hsl(180deg 100% 50% / 5%);
+    --vitra-color-surface-hover: hsl(180deg 100% 60% / 10%);
+    --vitra-color-surface-active: hsl(180deg 100% 70% / 15%);
+    --vitra-color-border: hsl(180deg 50% 60% / 12%);
+    --vitra-color-border-hover: hsl(180deg 50% 70% / 25%);
     --vitra-color-accent-h: 180;
     --vitra-color-accent-s: 100%;
     --vitra-color-accent-l: 50%;
     --vitra-color-text-primary: hsl(180deg 100% 95%);
     --vitra-color-text-secondary: hsl(180deg 50% 70%);
+    --vitra-color-text-tertiary: hsl(180deg 30% 50% / 50%);
+    --vitra-color-text-inverse: hsl(260deg 30% 2%);
+    --vitra-shadow-subtle: 0 1px 2px rgb(0 200 200 / 10%);
+    --vitra-shadow-medium: 0 4px 12px rgb(0 200 200 / 15%);
+    --vitra-shadow-elevated: 0 10px 32px rgb(0 200 200 / 20%);
     --vitra-glass-bg: hsl(180deg 100% 50% / 5%);
+    --vitra-color-bg-warm: hsl(200deg 20% 4%);
+    --vitra-color-bg-cool: hsl(220deg 20% 4%);
+    color-scheme: dark;
   }
 
   /* --- OCEAN THEME --- */
@@ -271,11 +350,24 @@
     --vitra-color-bg: hsl(210deg 30% 4%);
     --vitra-bg-accent: hsl(210deg 30% 8%);
     --vitra-color-surface: hsl(210deg 100% 60% / 5%);
+    --vitra-color-surface-hover: hsl(210deg 100% 70% / 10%);
+    --vitra-color-surface-active: hsl(210deg 100% 80% / 15%);
+    --vitra-color-border: hsl(210deg 50% 60% / 12%);
+    --vitra-color-border-hover: hsl(210deg 50% 70% / 25%);
     --vitra-color-accent-h: 200;
     --vitra-color-accent-s: 90%;
     --vitra-color-accent-l: 55%;
     --vitra-color-text-primary: hsl(210deg 100% 95%);
     --vitra-color-text-secondary: hsl(210deg 40% 75%);
+    --vitra-color-text-tertiary: hsl(210deg 30% 55% / 50%);
+    --vitra-color-text-inverse: hsl(210deg 30% 4%);
+    --vitra-shadow-subtle: 0 1px 2px rgb(50 150 220 / 10%);
+    --vitra-shadow-medium: 0 4px 12px rgb(50 150 220 / 15%);
+    --vitra-shadow-elevated: 0 10px 32px rgb(50 150 220 / 20%);
+    --vitra-glass-bg: hsl(210deg 100% 60% / 5%);
+    --vitra-color-bg-warm: hsl(190deg 25% 6%);
+    --vitra-color-bg-cool: hsl(220deg 25% 6%);
+    color-scheme: dark;
   }
 
   /* --- EMERALD THEME --- */
@@ -283,11 +375,24 @@
     --vitra-color-bg: hsl(160deg 20% 3%);
     --vitra-bg-accent: hsl(160deg 40% 6%);
     --vitra-color-surface: hsl(160deg 100% 50% / 5%);
+    --vitra-color-surface-hover: hsl(160deg 100% 60% / 10%);
+    --vitra-color-surface-active: hsl(160deg 100% 70% / 15%);
+    --vitra-color-border: hsl(160deg 50% 50% / 12%);
+    --vitra-color-border-hover: hsl(160deg 50% 60% / 25%);
     --vitra-color-accent-h: 155;
     --vitra-color-accent-s: 80%;
     --vitra-color-accent-l: 45%;
     --vitra-color-text-primary: hsl(160deg 100% 95%);
     --vitra-color-text-secondary: hsl(160deg 40% 75%);
+    --vitra-color-text-tertiary: hsl(160deg 30% 55% / 50%);
+    --vitra-color-text-inverse: hsl(160deg 20% 3%);
+    --vitra-shadow-subtle: 0 1px 2px rgb(50 200 130 / 10%);
+    --vitra-shadow-medium: 0 4px 12px rgb(50 200 130 / 15%);
+    --vitra-shadow-elevated: 0 10px 32px rgb(50 200 130 / 20%);
+    --vitra-glass-bg: hsl(160deg 100% 50% / 5%);
+    --vitra-color-bg-warm: hsl(140deg 25% 5%);
+    --vitra-color-bg-cool: hsl(170deg 25% 5%);
+    color-scheme: dark;
   }
 
   /* --- AUTO THEME --- */
@@ -298,9 +403,15 @@
     --vitra-color-surface-active: hsl(var(--vitra-color-accent-h) 20% 95% / 12%);
     --vitra-color-border: hsl(var(--vitra-color-accent-h) 20% 95% / 10%);
     --vitra-color-border-hover: hsl(var(--vitra-color-accent-h) 20% 95% / 20%);
+    --vitra-color-text-primary: hsl(0deg 0% 100% / 95%);
+    --vitra-color-text-secondary: hsl(0deg 0% 100% / 70%);
     --vitra-color-text-tertiary: hsl(0deg 0% 100% / 50%);
     --vitra-color-text-inverse: hsl(var(--vitra-color-accent-h) 15% 4%);
+    --vitra-shadow-subtle: 0 1px 2px rgb(0 0 0 / 30%);
+    --vitra-shadow-medium: 0 4px 12px rgb(0 0 0 / 40%);
+    --vitra-shadow-elevated: 0 10px 32px rgb(0 0 0 / 50%);
     --vitra-glass-bg: hsl(var(--vitra-color-accent-h) 20% 95% / 5%);
+    color-scheme: dark;
   }
 
   @media (prefers-color-scheme: light) {
@@ -316,6 +427,7 @@
       --vitra-color-text-tertiary: hsl(0deg 0% 0% / 50%);
       --vitra-color-text-inverse: hsl(0deg 0% 100%);
       --vitra-glass-bg: hsl(0deg 0% 100% / 40%);
+      color-scheme: light;
     }
   }
 }
@@ -847,6 +959,7 @@
   /* Hover Lift - subtle upward translation */
   .vitra-hover-lift {
     transition: transform var(--vitra-duration-normal, 250ms) var(--vitra-ease-out, cubic-bezier(0, 0, 0.2, 1));
+    will-change: transform;
   }
 
   .vitra-hover-lift:hover {
@@ -919,6 +1032,7 @@
       var(--vitra-color-bg);
     background-size: 200% 200%;
     animation: vitra-mesh-shift 16s ease-in-out infinite;
+    will-change: background-position;
   }
 
   /* --- Floating Glow Orb --- */
@@ -942,6 +1056,7 @@
     pointer-events: none;
     filter: blur(80px);
     opacity: 0.12;
+    will-change: transform;
   }
 
   .vitra-glow-orb-1 {
@@ -992,6 +1107,7 @@
     background-clip: text;
     color: transparent;
     animation: vitra-text-shift 6s ease-in-out infinite;
+    will-change: background-position;
   }
 
   /* --- Animated Gradient Border --- */
@@ -1022,6 +1138,7 @@
       hsl(var(--vitra-color-accent-h) 100% 70%)
     );
     animation: vitra-border-rotate 4s linear infinite;
+    will-change: transform;
   }
 
   .vitra-border-glow::after {
@@ -1042,6 +1159,68 @@
   .vitra-hero-spotlight .vitra-gradient-bg {
     position: absolute;
     z-index: 0;
+  }
+
+  /* ============================================
+     HIGH CONTRAST SUPPORT
+     Accessibility: increase contrast for users who
+     prefer stronger visual distinctions
+     ============================================ */
+
+  @media (prefers-contrast: more) {
+    .vitra-glass,
+    .vitra-glass-subtle,
+    .vitra-glass-sm,
+    .vitra-glass-md,
+    .vitra-glass-lg,
+    .vitra-glass-xl,
+    .vitra-navbar-glass,
+    .vitra-drawer-glass {
+      background: var(--vitra-color-surface) !important;
+      backdrop-filter: none !important;
+      border-color: var(--vitra-color-border-hover) !important;
+    }
+
+    .vitra-gradient-text {
+      background: none !important;
+      color: var(--vitra-color-accent) !important;
+      -webkit-background-clip: unset !important;
+      background-clip: unset !important;
+    }
+
+    .vitra-gradient-bg {
+      background: var(--vitra-color-bg) !important;
+      animation: none !important;
+    }
+
+    .vitra-glow-orb {
+      display: none !important;
+    }
+
+    .vitra-border-glow::before {
+      animation: none !important;
+    }
+
+    .vitra-border-glow::after {
+      background: var(--vitra-color-bg) !important;
+    }
+
+    .vitra-glass::after {
+      display: none !important;
+    }
+
+    .vitra-text-secondary {
+      opacity: 1 !important;
+    }
+
+    .vitra-badge,
+    .vitra-badge-glass {
+      border: 2px solid currentcolor;
+    }
+
+    .vitra-btn-glass {
+      border-width: 2px;
+    }
   }
 
   /* ============================================
@@ -1835,6 +2014,7 @@
     background: hsl(var(--vitra-color-accent-h) 20% 5% / 70%);
     backdrop-filter: blur(var(--vitra-blur-md));
     border-bottom-color: hsl(0deg 0% 100% / 10%);
+    z-index: 100;
   }
 
   /* --- NAVBAR BRAND --- */
@@ -1852,6 +2032,75 @@
   .vitra-navbar-brand:hover {
     color: var(--vitra-color-accent);
     text-shadow: 0 0 15px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 40%);
+  }
+
+  /* --- NAVBAR LINKS --- */
+  .vitra-navbar-links {
+    display: flex;
+    align-items: center;
+    gap: var(--vitra-space-1);
+  }
+
+  .vitra-navbar-link {
+    font-weight: var(--vitra-font-weight-medium);
+    letter-spacing: 0.02em;
+    opacity: 0.7;
+    transition: opacity var(--vitra-duration-fast) var(--vitra-ease-default),
+                color var(--vitra-duration-fast) var(--vitra-ease-default);
+  }
+
+  .vitra-navbar-link:hover {
+    opacity: 1;
+    color: var(--vitra-color-accent);
+  }
+
+  /* --- BURGER ICON (Mobile Menu Toggle) --- */
+  .vitra-burger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 28px;
+    height: 28px;
+    padding: 3px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    z-index: 101;
+  }
+
+  .vitra-burger-line {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: var(--vitra-color-text-primary, #fff);
+    border-radius: 2px;
+    transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+                opacity 0.2s ease;
+    transform-origin: center;
+  }
+
+  .vitra-burger.active .vitra-burger-line:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .vitra-burger.active .vitra-burger-line:nth-child(2) {
+    opacity: 0;
+  }
+
+  .vitra-burger.active .vitra-burger-line:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  @media (max-width: 768px) {
+    .vitra-navbar-links {
+      display: none;
+    }
+
+    .vitra-burger {
+      display: flex;
+    }
   }
 
   /* --- DRAWER --- */
@@ -3702,6 +3951,15 @@
 
     .vitra-skeleton-shimmer {
       animation: none;
+    }
+
+    .vitra-burger-line {
+      transition: none;
+    }
+
+    .vitra-burger.active .vitra-burger-line:nth-child(1),
+    .vitra-burger.active .vitra-burger-line:nth-child(3) {
+      transform: none;
     }
   }
 

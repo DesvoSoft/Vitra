@@ -34,6 +34,7 @@
     --vitra-shadow-medium: 0 4px 6px -1px rgb(0 0 0 / 10%);
     --vitra-shadow-elevated: 0 10px 15px -3px rgb(0 0 0 / 10%);
     --vitra-glass-bg: hsl(0deg 0% 100% / 40%);
+    color-scheme: light;
   }
 
   /* --- DARK THEME --- */
@@ -53,6 +54,7 @@
     --vitra-shadow-medium: 0 4px 12px rgb(0 0 0 / 40%);
     --vitra-shadow-elevated: 0 10px 32px rgb(0 0 0 / 50%);
     --vitra-glass-bg: hsl(var(--vitra-color-accent-h) 20% 95% / 5%);
+    color-scheme: dark;
   }
 
   /* --- PASTEL THEME --- */
@@ -60,12 +62,24 @@
     --vitra-color-bg: hsl(300deg 30% 98%);
     --vitra-bg-accent: hsl(300deg 30% 92%);
     --vitra-color-surface: hsl(300deg 100% 80% / 10%);
+    --vitra-color-surface-hover: hsl(300deg 100% 60% / 18%);
+    --vitra-color-surface-active: hsl(300deg 100% 50% / 25%);
+    --vitra-color-border: hsl(300deg 30% 60% / 20%);
+    --vitra-color-border-hover: hsl(300deg 30% 50% / 35%);
     --vitra-color-accent-h: 320;
     --vitra-color-accent-s: 70%;
     --vitra-color-accent-l: 65%;
     --vitra-color-text-primary: hsl(300deg 20% 20%);
     --vitra-color-text-secondary: hsl(300deg 10% 40%);
+    --vitra-color-text-tertiary: hsl(300deg 10% 50% / 60%);
+    --vitra-color-text-inverse: hsl(300deg 20% 98%);
+    --vitra-shadow-subtle: 0 1px 2px rgb(200 150 200 / 15%);
+    --vitra-shadow-medium: 0 4px 12px rgb(200 150 200 / 20%);
+    --vitra-shadow-elevated: 0 10px 32px rgb(200 150 200 / 25%);
     --vitra-glass-bg: hsl(300deg 100% 100% / 10%);
+    --vitra-color-bg-warm: hsl(310deg 25% 95%);
+    --vitra-color-bg-cool: hsl(290deg 25% 95%);
+    color-scheme: light;
   }
 
   /* --- NEON THEME --- */
@@ -73,12 +87,24 @@
     --vitra-color-bg: hsl(260deg 30% 2%);
     --vitra-bg-accent: hsl(260deg 30% 5%);
     --vitra-color-surface: hsl(180deg 100% 50% / 5%);
+    --vitra-color-surface-hover: hsl(180deg 100% 60% / 10%);
+    --vitra-color-surface-active: hsl(180deg 100% 70% / 15%);
+    --vitra-color-border: hsl(180deg 50% 60% / 12%);
+    --vitra-color-border-hover: hsl(180deg 50% 70% / 25%);
     --vitra-color-accent-h: 180;
     --vitra-color-accent-s: 100%;
     --vitra-color-accent-l: 50%;
     --vitra-color-text-primary: hsl(180deg 100% 95%);
     --vitra-color-text-secondary: hsl(180deg 50% 70%);
+    --vitra-color-text-tertiary: hsl(180deg 30% 50% / 50%);
+    --vitra-color-text-inverse: hsl(260deg 30% 2%);
+    --vitra-shadow-subtle: 0 1px 2px rgb(0 200 200 / 10%);
+    --vitra-shadow-medium: 0 4px 12px rgb(0 200 200 / 15%);
+    --vitra-shadow-elevated: 0 10px 32px rgb(0 200 200 / 20%);
     --vitra-glass-bg: hsl(180deg 100% 50% / 5%);
+    --vitra-color-bg-warm: hsl(200deg 20% 4%);
+    --vitra-color-bg-cool: hsl(220deg 20% 4%);
+    color-scheme: dark;
   }
 
   /* --- OCEAN THEME --- */
@@ -86,11 +112,24 @@
     --vitra-color-bg: hsl(210deg 30% 4%);
     --vitra-bg-accent: hsl(210deg 30% 8%);
     --vitra-color-surface: hsl(210deg 100% 60% / 5%);
+    --vitra-color-surface-hover: hsl(210deg 100% 70% / 10%);
+    --vitra-color-surface-active: hsl(210deg 100% 80% / 15%);
+    --vitra-color-border: hsl(210deg 50% 60% / 12%);
+    --vitra-color-border-hover: hsl(210deg 50% 70% / 25%);
     --vitra-color-accent-h: 200;
     --vitra-color-accent-s: 90%;
     --vitra-color-accent-l: 55%;
     --vitra-color-text-primary: hsl(210deg 100% 95%);
     --vitra-color-text-secondary: hsl(210deg 40% 75%);
+    --vitra-color-text-tertiary: hsl(210deg 30% 55% / 50%);
+    --vitra-color-text-inverse: hsl(210deg 30% 4%);
+    --vitra-shadow-subtle: 0 1px 2px rgb(50 150 220 / 10%);
+    --vitra-shadow-medium: 0 4px 12px rgb(50 150 220 / 15%);
+    --vitra-shadow-elevated: 0 10px 32px rgb(50 150 220 / 20%);
+    --vitra-glass-bg: hsl(210deg 100% 60% / 5%);
+    --vitra-color-bg-warm: hsl(190deg 25% 6%);
+    --vitra-color-bg-cool: hsl(220deg 25% 6%);
+    color-scheme: dark;
   }
 
   /* --- EMERALD THEME --- */
@@ -98,11 +137,24 @@
     --vitra-color-bg: hsl(160deg 20% 3%);
     --vitra-bg-accent: hsl(160deg 40% 6%);
     --vitra-color-surface: hsl(160deg 100% 50% / 5%);
+    --vitra-color-surface-hover: hsl(160deg 100% 60% / 10%);
+    --vitra-color-surface-active: hsl(160deg 100% 70% / 15%);
+    --vitra-color-border: hsl(160deg 50% 50% / 12%);
+    --vitra-color-border-hover: hsl(160deg 50% 60% / 25%);
     --vitra-color-accent-h: 155;
     --vitra-color-accent-s: 80%;
     --vitra-color-accent-l: 45%;
     --vitra-color-text-primary: hsl(160deg 100% 95%);
     --vitra-color-text-secondary: hsl(160deg 40% 75%);
+    --vitra-color-text-tertiary: hsl(160deg 30% 55% / 50%);
+    --vitra-color-text-inverse: hsl(160deg 20% 3%);
+    --vitra-shadow-subtle: 0 1px 2px rgb(50 200 130 / 10%);
+    --vitra-shadow-medium: 0 4px 12px rgb(50 200 130 / 15%);
+    --vitra-shadow-elevated: 0 10px 32px rgb(50 200 130 / 20%);
+    --vitra-glass-bg: hsl(160deg 100% 50% / 5%);
+    --vitra-color-bg-warm: hsl(140deg 25% 5%);
+    --vitra-color-bg-cool: hsl(170deg 25% 5%);
+    color-scheme: dark;
   }
 
   /* --- AUTO THEME --- */
@@ -113,9 +165,15 @@
     --vitra-color-surface-active: hsl(var(--vitra-color-accent-h) 20% 95% / 12%);
     --vitra-color-border: hsl(var(--vitra-color-accent-h) 20% 95% / 10%);
     --vitra-color-border-hover: hsl(var(--vitra-color-accent-h) 20% 95% / 20%);
+    --vitra-color-text-primary: hsl(0deg 0% 100% / 95%);
+    --vitra-color-text-secondary: hsl(0deg 0% 100% / 70%);
     --vitra-color-text-tertiary: hsl(0deg 0% 100% / 50%);
     --vitra-color-text-inverse: hsl(var(--vitra-color-accent-h) 15% 4%);
+    --vitra-shadow-subtle: 0 1px 2px rgb(0 0 0 / 30%);
+    --vitra-shadow-medium: 0 4px 12px rgb(0 0 0 / 40%);
+    --vitra-shadow-elevated: 0 10px 32px rgb(0 0 0 / 50%);
     --vitra-glass-bg: hsl(var(--vitra-color-accent-h) 20% 95% / 5%);
+    color-scheme: dark;
   }
 
   @media (prefers-color-scheme: light) {
@@ -131,6 +189,7 @@
       --vitra-color-text-tertiary: hsl(0deg 0% 0% / 50%);
       --vitra-color-text-inverse: hsl(0deg 0% 100%);
       --vitra-glass-bg: hsl(0deg 0% 100% / 40%);
+      color-scheme: light;
     }
   }
 }
