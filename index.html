@@ -76,29 +76,27 @@
   <!-- ============================================================
        HERO CINEMATOGRÁFICO
        ============================================================ -->
-  <section class="demo-hero" aria-label="Hero">
+  <section class="demo-hero" aria-label="Hero" data-spotlight>
     <div class="vitra-gradient-bg"></div>
     <div class="vitra-glow-orb vitra-glow-orb-1"></div>
     <div class="vitra-glow-orb vitra-glow-orb-2"></div>
     <div class="vitra-glow-orb vitra-glow-orb-3"></div>
-    <div class="vitra-hero-spotlight" data-spotlight>
-      <div class="vitra-container vitra-text-center">
-        <p class="demo-hero-badge vitra-badge vitra-badge-primary">v1.3.0</p>
-        <h1 class="vitra-gradient-text demo-hero-title">Vitra CSS</h1>
-        <p class="vitra-text-xl vitra-text-secondary demo-hero-sub" style="max-width: 600px; margin-left: auto; margin-right: auto;">
-          A premium glassmorphism framework with cinematic effects, modern CSS APIs, and obsessive attention to detail.
-        </p>
-        <div class="vitra-flex vitra-justify-center vitra-gap-4 vitra-flex-wrap vitra-mt-6">
-          <button class="vitra-btn vitra-btn-solid vitra-btn-lg" onclick="document.getElementById('cinematic').scrollIntoView({ behavior: 'smooth' })">
-            Explore Features
-          </button>
-          <button class="vitra-btn vitra-btn-glass vitra-btn-lg" onclick="toggleTheme()">
-            Toggle Theme
-          </button>
-          <button class="vitra-btn vitra-btn-ghost vitra-btn-lg" onclick="Vitra.particles.spawn(15, {container: '.demo-hero'})">
-            Spawn Particles
-          </button>
-        </div>
+    <div class="vitra-container vitra-text-center">
+      <p class="demo-hero-badge vitra-badge vitra-badge-primary">v1.3.0</p>
+      <h1 class="vitra-gradient-text demo-hero-title">Vitra CSS</h1>
+      <p class="vitra-text-xl vitra-text-secondary demo-hero-sub" style="max-width: 600px; margin-left: auto; margin-right: auto;">
+        A premium glassmorphism framework with cinematic effects, modern CSS APIs, and obsessive attention to detail.
+      </p>
+      <div class="vitra-flex vitra-justify-center vitra-gap-4 vitra-flex-wrap vitra-mt-6">
+        <button class="vitra-btn vitra-btn-solid vitra-btn-lg" onclick="document.getElementById('cinematic').scrollIntoView({ behavior: 'smooth' })">
+          Explore Features
+        </button>
+        <button class="vitra-btn vitra-btn-glass vitra-btn-lg" onclick="toggleTheme()">
+          Toggle Theme
+        </button>
+        <button class="vitra-btn vitra-btn-ghost vitra-btn-lg" onclick="Vitra.particles.spawn(15, {container: '.demo-hero'})">
+          Spawn Particles
+        </button>
       </div>
     </div>
   </section>
@@ -262,26 +260,6 @@
           <button class="vitra-btn vitra-btn-solid" id="starting-style-toggle">Toggle Panel</button>
           <div id="starting-style-panel" class="starting-panel" style="margin-top: var(--vitra-space-3); padding: var(--vitra-space-4); background: var(--vitra-color-surface); border-radius: var(--vitra-radius-md); display: none;">
             <p style="margin: 0;">This panel appears with <code>@starting-style</code> entry animation — opacity 0 → 1 + translateY 10px → 0.</p>
-          </div>
-        </div>
-
-        <!-- Container Queries -->
-        <div class="demo-card">
-          <div class="demo-card-header">
-            <h3><span class="vitra-badge vitra-badge-sm vitra-badge-info">CQ</span> Container Queries</h3>
-          </div>
-          <p>Responsive table that switches to card layout when container is &lt;500px wide.</p>
-          <div class="vitra-table-wrapper" style="margin-top: var(--vitra-space-3);">
-            <table class="vitra-table">
-              <thead>
-                <tr><th>Framework</th><th>Size</th><th>Glass</th><th>Particles</th></tr>
-              </thead>
-              <tbody>
-                <tr><td data-label="Framework">Vitra</td><td data-label="Size">10KB</td><td data-label="Glass">✅</td><td data-label="Particles">✅</td></tr>
-                <tr><td data-label="Framework">Bootstrap</td><td data-label="Size">188KB</td><td data-label="Glass">⚠️</td><td data-label="Particles">❌</td></tr>
-                <tr><td data-label="Framework">Tailwind</td><td data-label="Size">27KB</td><td data-label="Glass">⚠️</td><td data-label="Particles">❌</td></tr>
-              </tbody>
-            </table>
           </div>
         </div>
 
