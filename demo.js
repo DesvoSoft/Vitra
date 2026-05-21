@@ -1,12 +1,6 @@
-/**
- * Vitra CSS Interactive Demo - JavaScript
- * Wires up all interactive controls to the Vitra JS API
- */
-
 (function () {
   'use strict';
 
-  // Wait for DOM and Vitra to be ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initDemo);
   } else {
@@ -14,20 +8,38 @@
   }
 
   function initDemo() {
-    // Initialize Vitra theme from localStorage or system preference
     if (window.Vitra && Vitra.theme) {
       Vitra.theme.init({ defaultTheme: 'auto', persist: true });
     }
 
-    // Initialize all demo features
     initThemeSelector();
+    initHeroSpotlight();
+    initCinematicToggles();
+    initGradientTextEditor();
+    initThemeSwatches();
+    initPopoverDemo();
+    initStartingStyleDemo();
     initParticleControls();
     initMotionDemo();
     initTabs();
     initModalDemo();
     initNavigation();
 
-    console.log('[Vitra Demo] Interactive demo initialized');
+    updateParticleInfo();
+  }
+
+  // ==================== Hero Spotlight ====================
+  function initHeroSpotlight() {
+    const hero = document.querySelector('.demo-hero');
+    if (!hero) return;
+
+    hero.addEventListener('mousemove', function (e) {
+      const rect = this.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      this.style.setProperty('--spotlight-x', x + '%');
+      this.style.setProperty('--spotlight-y', y + '%');
+    });
   }
 
   // ==================== Theme Selector ====================
@@ -37,37 +49,30 @@
 
     if (!themeDisplay) return;
 
-    // Set initial value based on current theme
     const currentTheme = Vitra.theme.get();
     updateThemeDisplay(currentTheme);
 
-    // Handle theme changes
-    themeItems.forEach(item => {
+    themeItems.forEach(function (item) {
       item.addEventListener('click', function (e) {
         e.preventDefault();
-        const selectedTheme = this.getAttribute('data-theme-value');
-        const success = Vitra.theme.set(selectedTheme);
+        var selectedTheme = this.getAttribute('data-theme-value');
+        var success = Vitra.theme.set(selectedTheme);
 
         if (success) {
           updateThemeDisplay(selectedTheme);
+          updateActiveSwatch(selectedTheme);
           if (window.Vitra && Vitra.toast) {
-            Vitra.toast.show(`Theme changed to: ${selectedTheme}`, { type: 'success' });
-          }
-        } else {
-          if (window.Vitra && Vitra.toast) {
-            Vitra.toast.show(`Invalid theme: ${selectedTheme}`, { type: 'error' });
+            Vitra.toast.show('Theme changed to: ' + selectedTheme, { type: 'success' });
           }
         }
-        
-        // Close dropdown
-        const dropdown = this.closest('.vitra-dropdown');
+
+        var dropdown = this.closest('.vitra-dropdown');
         if (dropdown) dropdown.classList.remove('open');
       });
     });
 
-    // Also update when system theme changes (for 'auto' mode)
     if (window.matchMedia) {
-      const media = window.matchMedia('(prefers-color-scheme: dark)');
+      var media = window.matchMedia('(prefers-color-scheme: dark)');
       if (media.addEventListener) {
         media.addEventListener('change', function () {
           if (Vitra.theme.get() === 'auto') {
@@ -78,63 +83,186 @@
     }
   }
 
-  // Global toggle function for the button in index.html
-  window.toggleTheme = function() {
-    console.log('[Vitra Demo] Toggle requested');
+  window.toggleTheme = function () {
     if (window.Vitra && Vitra.theme) {
-      const nextTheme = Vitra.theme.toggle();
-      console.log('[Vitra Demo] Toggled to:', nextTheme);
-      
+      var nextTheme = Vitra.theme.toggle();
       updateThemeDisplay(nextTheme);
+      updateActiveSwatch(nextTheme);
       if (Vitra.toast) {
-        Vitra.toast.show(`Theme toggled to: ${nextTheme}`, { type: 'success' });
+        Vitra.toast.show('Toggled to: ' + nextTheme, { type: 'success' });
       }
-    } else {
-      console.error('[Vitra Demo] Vitra theme API not available');
     }
   };
 
   function updateThemeDisplay(themeName) {
-    const themeDisplay = document.getElementById('current-theme-name');
+    var themeDisplay = document.getElementById('current-theme-name');
     if (!themeDisplay) return;
 
     if (themeName === 'auto') {
-      const effective = Vitra.theme.getEffective();
-      themeDisplay.textContent = `Auto (${effective})`;
+      var effective = Vitra.theme.getEffective();
+      themeDisplay.textContent = 'Auto (' + effective + ')';
     } else {
       themeDisplay.textContent = themeName.charAt(0).toUpperCase() + themeName.slice(1);
     }
   }
 
+  // ==================== Theme Studio Swatches ====================
+  function initThemeSwatches() {
+    var swatches = document.querySelectorAll('#theme-swatches .theme-swatch');
+
+    swatches.forEach(function (swatch) {
+      swatch.addEventListener('click', function () {
+        var theme = this.getAttribute('data-theme-value');
+        Vitra.theme.set(theme);
+        updateThemeDisplay(theme);
+        updateActiveSwatch(theme);
+      });
+    });
+  }
+
+  function updateActiveSwatch(themeName) {
+    var swatches = document.querySelectorAll('#theme-swatches .theme-swatch');
+    swatches.forEach(function (s) {
+      s.classList.remove('active');
+      if (s.getAttribute('data-theme-value') === themeName) {
+        s.classList.add('active');
+      }
+    });
+
+    var nameEl = document.getElementById('theme-preview-name');
+    if (nameEl) {
+      nameEl.textContent = themeName.charAt(0).toUpperCase() + themeName.slice(1);
+    }
+  }
+
+  // ==================== Cinematic Toggles ====================
+  function initCinematicToggles() {
+    // Gradient BG toggle
+    var gradientToggle = document.getElementById('toggle-gradient-bg');
+    var gradientPreview = document.getElementById('cinematic-gradient-bg');
+    if (gradientToggle && gradientPreview) {
+      var gradientBg = gradientPreview.querySelector('.vitra-gradient-bg');
+      gradientToggle.addEventListener('change', function () {
+        if (gradientBg) {
+          gradientBg.style.display = this.checked ? '' : 'none';
+        }
+      });
+    }
+
+    // Glow Orbs toggle
+    var glowToggle = document.getElementById('toggle-glow-orbs');
+    var glowPreview = document.getElementById('cinematic-glow-orbs');
+    if (glowToggle && glowPreview) {
+      var orbs = glowPreview.querySelectorAll('.vitra-glow-orb');
+      glowToggle.addEventListener('change', function () {
+        orbs.forEach(function (orb) {
+          orb.style.display = this.checked ? '' : 'none';
+        }, this);
+      });
+    }
+
+    // Border Glow toggle
+    var borderToggle = document.getElementById('toggle-border-glow');
+    var borderPreview = document.getElementById('cinematic-border-glow');
+    if (borderToggle && borderPreview) {
+      borderToggle.addEventListener('change', function () {
+        if (this.checked) {
+          borderPreview.classList.add('vitra-border-glow');
+        } else {
+          borderPreview.classList.remove('vitra-border-glow');
+        }
+      });
+    }
+  }
+
+  // ==================== Gradient Text Editor ====================
+  function initGradientTextEditor() {
+    var input = document.getElementById('gradient-text-input');
+    var display = document.getElementById('gradient-text-display');
+    if (input && display) {
+      input.addEventListener('input', function () {
+        display.textContent = this.value || ' ';
+      });
+    }
+  }
+
+  // ==================== Popover Demo ====================
+  function initPopoverDemo() {
+    var btn = document.getElementById('popover-demo-btn');
+    var panel = document.getElementById('popover-demo');
+    var close = document.getElementById('popover-demo-close');
+    if (!btn || !panel) return;
+
+    btn.addEventListener('click', function () {
+      panel.classList.toggle('open');
+      if (panel.classList.contains('open')) {
+        panel.style.display = 'block';
+      } else {
+        panel.style.display = 'none';
+      }
+    });
+
+    if (close) {
+      close.addEventListener('click', function () {
+        panel.classList.remove('open');
+        panel.style.display = 'none';
+      });
+    }
+
+    // Close on click outside
+    document.addEventListener('click', function (e) {
+      if (!panel.contains(e.target) && e.target !== btn && panel.classList.contains('open')) {
+        panel.classList.remove('open');
+        panel.style.display = 'none';
+      }
+    });
+  }
+
+  // ==================== @starting-style Demo ====================
+  function initStartingStyleDemo() {
+    var toggle = document.getElementById('starting-style-toggle');
+    var panel = document.getElementById('starting-style-panel');
+    if (!toggle || !panel) return;
+
+    toggle.addEventListener('click', function () {
+      if (panel.style.display === 'none' || !panel.style.display) {
+        panel.style.display = 'block';
+        requestAnimationFrame(function () {
+          panel.classList.add('open');
+        });
+      } else {
+        panel.classList.remove('open');
+        panel.addEventListener('transitionend', function handler() {
+          panel.style.display = 'none';
+          panel.removeEventListener('transitionend', handler);
+        });
+      }
+    });
+  }
+
   // ==================== Particle Controls ====================
   function initParticleControls() {
-    const countSlider = document.getElementById('particle-count');
-    const countValue = document.getElementById('particle-count-value');
-    const colorPicker = document.getElementById('particle-color');
-    const colorText = document.getElementById('particle-color-text');
-    const sizeSlider = document.getElementById('particle-size');
-    const sizeValue = document.getElementById('particle-size-value');
-    const speedSlider = document.getElementById('particle-speed');
-    const speedValue = document.getElementById('particle-speed-value');
-    const limitDisplay = document.getElementById('particle-limit');
+    var countSlider = document.getElementById('particle-count');
+    var countValue = document.getElementById('particle-count-value');
+    var colorPicker = document.getElementById('particle-color');
+    var colorText = document.getElementById('particle-color-text');
+    var sizeSlider = document.getElementById('particle-size');
+    var sizeValue = document.getElementById('particle-size-value');
+    var speedSlider = document.getElementById('particle-speed');
+    var speedValue = document.getElementById('particle-speed-value');
+    var limitDisplay = document.getElementById('particle-limit');
 
     if (!countSlider) return;
 
-    // Initialize displays
-    updateParticleInfo();
-
-    // Update limit display based on viewport
     if (limitDisplay) {
-      const limit = window.innerWidth <= 768 ? 15 : 40;
+      var limit = window.innerWidth <= 768 ? 15 : 40;
       limitDisplay.textContent = limit;
     }
 
-    // Count slider
     countSlider.addEventListener('input', function () {
       if (countValue) countValue.textContent = this.value;
     });
 
-    // Color picker syncs with text input
     if (colorPicker && colorText) {
       colorPicker.addEventListener('input', function () {
         colorText.value = this.value;
@@ -146,97 +274,86 @@
       });
     }
 
-    // Size slider
     if (sizeSlider) {
       sizeSlider.addEventListener('input', function () {
         if (sizeValue) sizeValue.textContent = this.value;
       });
     }
 
-    // Speed slider
     if (speedSlider) {
       speedSlider.addEventListener('input', function () {
         if (speedValue) speedValue.textContent = this.value;
       });
     }
 
-    // Update info on window resize (for mobile limit)
     window.addEventListener('resize', function () {
       if (limitDisplay) {
-        const limit = window.innerWidth <= 768 ? 15 : 40;
-        limitDisplay.textContent = limit;
+        var newLimit = window.innerWidth <= 768 ? 15 : 40;
+        limitDisplay.textContent = newLimit;
       }
       updateParticleInfo();
     });
   }
 
-  // Make these functions available globally for button onclick handlers
   window.spawnParticles = function () {
-    const count = parseInt(document.getElementById('particle-count')?.value || '10', 10);
-    const color = document.getElementById('particle-color')?.value || '#6c63ff';
-    const size = parseInt(document.getElementById('particle-size')?.value || '4', 10);
-    const speed = parseInt(document.getElementById('particle-speed')?.value || '3', 10);
+    var count = parseInt(document.getElementById('particle-count')?.value || '10', 10);
+    var color = document.getElementById('particle-color')?.value || '#6c63ff';
+    var size = parseInt(document.getElementById('particle-size')?.value || '4', 10);
+    var speed = parseInt(document.getElementById('particle-speed')?.value || '3', 10);
 
-    // Destroy existing particles first
     Vitra.particles.destroy();
 
-    // Spawn new particles
-    const spawned = Vitra.particles.spawn(count, {
+    var spawned = Vitra.particles.spawn(count, {
       color: color,
       size: size,
       container: '#particle-demo-area'
     });
 
     if (spawned > 0) {
-      if (window.Vitra && Vitra.toast) Vitra.toast.show(`Spawned ${spawned} particles`, { type: 'success' });
+      if (window.Vitra && Vitra.toast) Vitra.toast.show('Spawned ' + spawned + ' particles', { type: 'success' });
     } else {
-      if (window.Vitra && Vitra.toast) Vitra.toast.show('No particles spawned (check limits or reduced motion)', { type: 'warning' });
+      if (window.Vitra && Vitra.toast) Vitra.toast.show('No particles spawned', { type: 'warning' });
     }
 
     updateParticleInfo();
   };
 
   window.destroyParticles = function () {
-    const destroyed = Vitra.particles.destroy();
-    if (window.Vitra && Vitra.toast) Vitra.toast.show(`Destroyed ${destroyed} particles`, { type: 'info' });
+    var destroyed = Vitra.particles.destroy();
+    if (window.Vitra && Vitra.toast) Vitra.toast.show('Destroyed ' + destroyed + ' particles', { type: 'info' });
     updateParticleInfo();
   };
 
   window.updateParticleInfo = function () {
-    const infoDiv = document.getElementById('particle-info');
+    var infoDiv = document.getElementById('particle-info');
     if (!infoDiv || !Vitra.particles) return;
 
-    const limits = Vitra.particles.limits();
-    infoDiv.textContent = `Active: ${limits.active} | Available: ${limits.available} | Max: ${limits.max}`;
+    var limits = Vitra.particles.limits();
+    infoDiv.textContent = 'Active: ' + limits.active + ' | Available: ' + limits.available + ' | Max: ' + limits.max;
   };
 
   window.setParticleColor = function (colorVar) {
-    const colorPicker = document.getElementById('particle-color');
-    const colorText = document.getElementById('particle-color-text');
+    var picker = document.getElementById('particle-color');
+    var text = document.getElementById('particle-color-text');
+    var rootStyle = getComputedStyle(document.documentElement);
+    var resolved = rootStyle.getPropertyValue(colorVar.replace('var(', '').replace(')', '')).trim() || '#6c63ff';
 
-    // Resolve CSS variable
-    const rootStyle = getComputedStyle(document.documentElement);
-    const resolvedColor = rootStyle.getPropertyValue(colorVar.replace('var(', '').replace(')', '')).trim() || '#6c63ff';
-
-    if (colorPicker) colorPicker.value = resolvedColor;
-    if (colorText) colorText.value = resolvedColor;
+    if (picker) picker.value = resolved;
+    if (text) text.value = resolved;
   };
 
   window.spawnEmojiParticles = function (emoji) {
-    const count = parseInt(document.getElementById('particle-count')?.value || '5', 10);
-
-    // Destroy existing particles first
+    var count = parseInt(document.getElementById('particle-count')?.value || '5', 10);
     Vitra.particles.destroy();
 
-    // Spawn emoji particles
-    const spawned = Vitra.particles.spawn(count, {
+    var spawned = Vitra.particles.spawn(count, {
       emoji: emoji,
       size: 4,
       container: '#particle-demo-area'
     });
 
-    if (spawned > 0) {
-      if (window.Vitra && Vitra.toast) Vitra.toast.show(`Spawned ${spawned} ${emoji} particles`, { type: 'success' });
+    if (spawned > 0 && window.Vitra && Vitra.toast) {
+      Vitra.toast.show('Spawned ' + spawned + ' ' + emoji + ' particles', { type: 'success' });
     }
 
     updateParticleInfo();
@@ -244,23 +361,21 @@
 
   // ==================== Motion Demo ====================
   function initMotionDemo() {
-    const motionBtn = document.getElementById('test-reduced-motion');
-    const resultDiv = document.getElementById('motion-preference-result');
+    var motionBtn = document.getElementById('test-reduced-motion');
+    var resultDiv = document.getElementById('motion-preference-result');
 
     if (!motionBtn || !resultDiv) return;
 
     motionBtn.addEventListener('click', function () {
-      const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-      resultDiv.innerHTML = `
-        <strong>Motion Preference:</strong> ${prefersReducedMotion ? 'Reduced motion' : 'Full motion'}<br>
-        <strong>Color Scheme:</strong> ${prefersDark ? 'Dark' : 'Light'}<br>
-        <small>Change in OS settings: Settings → Accessibility → Display → Reduce Motion</small>
-      `;
+      resultDiv.innerHTML =
+        '<strong>Motion Preference:</strong> ' + (prefersReducedMotion ? 'Reduced motion' : 'Full motion') + '<br>' +
+        '<strong>Color Scheme:</strong> ' + (prefersDark ? 'Dark' : 'Light') + '<br>' +
+        '<small>Change in OS settings: Settings \u2192 Accessibility \u2192 Display \u2192 Reduce Motion</small>';
     });
 
-    // Initialize reveal on scroll
     if (Vitra.reveal) {
       Vitra.reveal.init({
         selector: '.vitra-reveal',
@@ -272,27 +387,21 @@
 
   // ==================== Tabs ====================
   function initTabs() {
-    const tabsContainer = document.getElementById('demo-tabs');
+    var tabsContainer = document.getElementById('demo-tabs');
     if (!tabsContainer) return;
 
-    const tabButtons = tabsContainer.querySelectorAll('.vitra-tabs-tab');
-    const tabPanels = tabsContainer.querySelectorAll('.vitra-tabs-panel');
+    var tabButtons = tabsContainer.querySelectorAll('.vitra-tabs-tab');
+    var tabPanels = tabsContainer.querySelectorAll('.vitra-tabs-panel');
 
-    tabButtons.forEach(button => {
+    tabButtons.forEach(function (button) {
       button.addEventListener('click', function () {
-        const targetTab = this.getAttribute('data-tab');
+        var targetTab = this.getAttribute('data-tab');
 
-        // Update active tab button
-        tabButtons.forEach(btn => btn.classList.remove('vitra-tabs-tab-active'));
+        tabButtons.forEach(function (btn) { btn.classList.remove('vitra-tabs-tab-active'); });
         this.classList.add('vitra-tabs-tab-active');
 
-        // Show target panel, hide others
-        tabPanels.forEach(panel => {
-          if (panel.id === targetTab) {
-            panel.style.display = 'block';
-          } else {
-            panel.style.display = 'none';
-          }
+        tabPanels.forEach(function (panel) {
+          panel.style.display = panel.id === targetTab ? 'block' : 'none';
         });
       });
     });
@@ -300,54 +409,46 @@
 
   // ==================== Modal Demo ====================
   function initModalDemo() {
-    // Modal open buttons
-    const openButtons = document.querySelectorAll('[data-vitra-modal-open]');
-    openButtons.forEach(button => {
+    var openButtons = document.querySelectorAll('[data-vitra-modal-open]');
+    openButtons.forEach(function (button) {
       button.addEventListener('click', function (e) {
         e.preventDefault();
-        const targetId = this.getAttribute('data-vitra-modal-open');
-        if (Vitra.modal) {
-          Vitra.modal.open(targetId);
-        }
+        var targetId = this.getAttribute('data-vitra-modal-open');
+        if (Vitra.modal) Vitra.modal.open(targetId);
       });
     });
 
-    // Modal close buttons (handled by Vitra JS, but adding fallback)
-    const closeButtons = document.querySelectorAll('[data-vitra-modal-close]');
-    closeButtons.forEach(button => {
+    var closeButtons = document.querySelectorAll('[data-vitra-modal-close]');
+    closeButtons.forEach(function (button) {
       button.addEventListener('click', function () {
-        if (Vitra.modal) {
-          Vitra.modal.close();
-        }
+        if (Vitra.modal) Vitra.modal.close();
       });
     });
   }
 
-
-
   // ==================== Mobile Navigation ====================
   function initNavigation() {
-    const burger = document.querySelector('.vitra-burger');
-    const drawer = document.querySelector('.vitra-drawer');
-    const drawerClose = document.querySelector('.vitra-drawer-close');
-    const drawerLinks = document.querySelectorAll('.vitra-drawer .vitra-navbar-link');
+    var burger = document.querySelector('.vitra-burger');
+    var drawer = document.querySelector('.vitra-drawer');
+    var drawerClose = document.querySelector('.vitra-drawer-close');
+    var drawerLinks = document.querySelectorAll('.vitra-drawer .vitra-navbar-link');
 
     if (!burger || !drawer) return;
 
-    burger.addEventListener('click', () => {
+    burger.addEventListener('click', function () {
       burger.classList.toggle('active');
       drawer.classList.toggle('open');
     });
 
     if (drawerClose) {
-      drawerClose.addEventListener('click', () => {
+      drawerClose.addEventListener('click', function () {
         burger.classList.remove('active');
         drawer.classList.remove('open');
       });
     }
 
-    drawerLinks.forEach(link => {
-      link.addEventListener('click', () => {
+    drawerLinks.forEach(function (link) {
+      link.addEventListener('click', function () {
         burger.classList.remove('active');
         drawer.classList.remove('open');
       });

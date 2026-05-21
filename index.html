@@ -3,24 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vitra CSS - Interactive Demo</title>
-  <meta name="description" content="Interactive demo showcasing all Vitra CSS framework features including themes, particles, glassmorphism, and components.">
+  <meta name="description" content="Vitra CSS — Premium glassmorphism framework with cinematic effects, modern CSS features, and interactive components.">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#0a0a14">
+  <title>Vitra CSS — Interactive Demo</title>
 
-  <!-- Vitra CSS Framework -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.2.0/dist/vitra.min.css" integrity="sha256-RV2dZNi+HJxvKeb8AdDrsZV1mWz6oqAMSneODNdsIl0=" crossorigin="anonymous">
-
-  <!-- Demo-specific styles -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.3.0/dist/vitra.min.css" crossorigin="anonymous">
   <link rel="stylesheet" href="demo.css">
 
   <style>
-    /* Critical layout fixes for demo */
-    :root {
-      scroll-behavior: smooth;
-    }
-    
-    section[id] {
-      scroll-margin-top: 80px;
-    }
+    :root { scroll-behavior: smooth; }
+    section[id] { scroll-margin-top: 80px; }
   </style>
 </head>
 <body>
@@ -31,12 +24,11 @@
         <span class="vitra-text-gradient">Vitra CSS</span>
       </div>
       <div class="vitra-navbar-links">
-        <a href="#tokens" class="vitra-navbar-link">Tokens</a>
-        <a href="#glass" class="vitra-navbar-link">Glass</a>
-        <a href="#particles" class="vitra-navbar-link">Particles</a>
-        <a href="#motion" class="vitra-navbar-link">Motion</a>
-        <a href="#layout" class="vitra-navbar-link">Layout</a>
+        <a href="#cinematic" class="vitra-navbar-link">Cinematic</a>
+        <a href="#themes" class="vitra-navbar-link">Themes</a>
+        <a href="#modern-css" class="vitra-navbar-link">Modern CSS</a>
         <a href="#components" class="vitra-navbar-link">Components</a>
+        <a href="#particles" class="vitra-navbar-link">Particles</a>
       </div>
       <div class="vitra-navbar-actions">
         <div class="vitra-dropdown">
@@ -72,810 +64,775 @@
     </div>
     <div class="vitra-drawer-body">
       <nav class="vitra-flex vitra-flex-col vitra-gap-2">
-        <a href="#tokens" class="vitra-navbar-link">Tokens</a>
-        <a href="#glass" class="vitra-navbar-link">Glass</a>
-        <a href="#particles" class="vitra-navbar-link">Particles</a>
-        <a href="#motion" class="vitra-navbar-link">Motion</a>
-        <a href="#layout" class="vitra-navbar-link">Layout</a>
+        <a href="#cinematic" class="vitra-navbar-link">Cinematic</a>
+        <a href="#themes" class="vitra-navbar-link">Themes</a>
+        <a href="#modern-css" class="vitra-navbar-link">Modern CSS</a>
         <a href="#components" class="vitra-navbar-link">Components</a>
+        <a href="#particles" class="vitra-navbar-link">Particles</a>
       </nav>
     </div>
   </aside>
 
-  <!-- Hero Section -->
-  <section class="demo-hero vitra-glass-subtle">
-    <div class="vitra-container vitra-text-center">
-      <h1 class="vitra-text-4xl vitra-mb-4">
-        Vitra CSS Interactive Demo
-      </h1>
-      <p class="vitra-text-xl vitra-text-secondary vitra-mx-auto" style="max-width: 650px;">
-        Experience the complete Vitra CSS framework with live theme switching,
-        configurable particles, glassmorphism effects, and interactive components.
-      </p>
-      <div class="vitra-flex vitra-justify-center vitra-gap-4 vitra-flex-wrap vitra-mt-6">
-        <button class="vitra-btn vitra-btn-solid vitra-btn-lg" onclick="Vitra.particles.spawn(10, {container: '#particle-demo-area'})">
-          Test Particles
-        </button>
-        <button class="vitra-btn vitra-btn-glass vitra-btn-lg" onclick="toggleTheme()">
-          Toggle Theme
-        </button>
-        <button class="vitra-btn vitra-btn-ghost vitra-btn-lg" data-vitra-modal-open="demo-modal">
-          Open Modal
-        </button>
+  <!-- ============================================================
+       HERO CINEMATOGRÁFICO
+       ============================================================ -->
+  <section class="demo-hero" aria-label="Hero">
+    <div class="vitra-gradient-bg"></div>
+    <div class="vitra-glow-orb vitra-glow-orb-1"></div>
+    <div class="vitra-glow-orb vitra-glow-orb-2"></div>
+    <div class="vitra-glow-orb vitra-glow-orb-3"></div>
+    <div class="vitra-hero-spotlight" data-spotlight>
+      <div class="vitra-container vitra-text-center">
+        <p class="demo-hero-badge vitra-badge vitra-badge-primary">v1.3.0</p>
+        <h1 class="vitra-gradient-text demo-hero-title">Vitra CSS</h1>
+        <p class="vitra-text-xl vitra-text-secondary demo-hero-sub" style="max-width: 600px; margin-left: auto; margin-right: auto;">
+          A premium glassmorphism framework with cinematic effects, modern CSS APIs, and obsessive attention to detail.
+        </p>
+        <div class="vitra-flex vitra-justify-center vitra-gap-4 vitra-flex-wrap vitra-mt-6">
+          <button class="vitra-btn vitra-btn-solid vitra-btn-lg" onclick="document.getElementById('cinematic').scrollIntoView({ behavior: 'smooth' })">
+            Explore Features
+          </button>
+          <button class="vitra-btn vitra-btn-glass vitra-btn-lg" onclick="toggleTheme()">
+            Toggle Theme
+          </button>
+          <button class="vitra-btn vitra-btn-ghost vitra-btn-lg" onclick="Vitra.particles.spawn(15, {container: '.demo-hero'})">
+            Spawn Particles
+          </button>
+        </div>
       </div>
-
     </div>
   </section>
 
-  <!-- Tokens Section -->
+  <!-- ============================================================
+       CINEMATIC EFFECTS
+       ============================================================ -->
+  <section id="cinematic" class="demo-section vitra-reveal">
+    <div class="vitra-container">
+      <h2 class="demo-section-title">Cinematic Effects</h2>
+      <p class="vitra-text-secondary demo-section-desc">Five premium visual effects added in v1.3.0 — inspired by Stripe, Linear, and Raycast aesthetics.</p>
+
+      <!-- Gradient Background -->
+      <div class="demo-card">
+        <div class="demo-card-header">
+          <h3><span class="vitra-badge vitra-badge-sm vitra-badge-primary">NEW</span> Animated Mesh Gradient</h3>
+          <label class="vitra-toggle-label">
+            <input type="checkbox" class="vitra-toggle" id="toggle-gradient-bg" checked>
+            <span>Active</span>
+          </label>
+        </div>
+        <p>Radial mesh gradient with 3 blobs that shift position continuously via <code>vitra-mesh-shift</code> keyframes.</p>
+        <div class="cinematic-preview" id="cinematic-gradient-bg">
+          <div class="vitra-gradient-bg"></div>
+          <div class="cinematic-overlay-content">
+            <strong>Live Preview</strong>
+            <span style="opacity: 0.6; font-size: 0.85rem;">16s animation loop</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Glow Orbs -->
+      <div class="demo-card">
+        <div class="demo-card-header">
+          <h3><span class="vitra-badge vitra-badge-sm vitra-badge-primary">NEW</span> Floating Glow Orbs</h3>
+          <label class="vitra-toggle-label">
+            <input type="checkbox" class="vitra-toggle" id="toggle-glow-orbs" checked>
+            <span>Active</span>
+          </label>
+        </div>
+        <p>Large blur spheres (300–400px) with 80px blur that float in parallax via <code>vitra-float</code> keyframes.</p>
+        <div class="cinematic-preview" id="cinematic-glow-orbs">
+          <div class="vitra-glow-orb vitra-glow-orb-1" style="--vitra-glow-size: 200px; --vitra-glow-opacity: 0.15;"></div>
+          <div class="vitra-glow-orb vitra-glow-orb-2" style="--vitra-glow-size: 160px; --vitra-glow-opacity: 0.12;"></div>
+          <div class="vitra-glow-orb vitra-glow-orb-3" style="--vitra-glow-size: 240px; --vitra-glow-opacity: 0.1;"></div>
+          <div class="cinematic-overlay-content">
+            <strong>Floating Orbs</strong>
+            <span style="opacity: 0.6; font-size: 0.85rem;">18–25s parallax float</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gradient Text -->
+      <div class="demo-card">
+        <div class="demo-card-header">
+          <h3><span class="vitra-badge vitra-badge-sm vitra-badge-primary">NEW</span> Animated Gradient Text</h3>
+        </div>
+        <p>Text with animated gradient via <code>background-clip: text</code> and <code>vitra-text-shift</code> keyframes.</p>
+        <div style="margin: var(--vitra-space-4) 0;">
+          <input type="text" class="vitra-input" id="gradient-text-input" value="Edit this text — it uses gradient!" style="width: 100%;">
+        </div>
+        <h2 class="vitra-gradient-text" id="gradient-text-display" style="font-size: var(--vitra-font-size-2xl); text-align: center; padding: var(--vitra-space-4) 0;">
+          Edit this text — it uses gradient!
+        </h2>
+      </div>
+
+      <!-- Border Glow -->
+      <div class="demo-card">
+        <div class="demo-card-header">
+          <h3><span class="vitra-badge vitra-badge-sm vitra-badge-primary">NEW</span> Spinning Border Glow</h3>
+          <label class="vitra-toggle-label">
+            <input type="checkbox" class="vitra-toggle" id="toggle-border-glow" checked>
+            <span>Active</span>
+          </label>
+        </div>
+        <p>Animated conic-gradient border via oversized <code>::before</code> with spinning keyframe. Inner area masked via <code>::after</code>.</p>
+        <div class="cinematic-preview vitra-border-glow" id="cinematic-border-glow">
+          <div class="cinematic-overlay-content">
+            <strong>Border Glow Card</strong>
+            <span style="opacity: 0.6; font-size: 0.85rem;">Conic-gradient rotating</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       THEME STUDIO
+       ============================================================ -->
+  <section id="themes" class="demo-section vitra-reveal">
+    <div class="vitra-container">
+      <h2 class="demo-section-title">Theme Studio</h2>
+      <p class="vitra-text-secondary demo-section-desc">All 7 themes with tinted neutrals — every surface carries a trace of the accent hue.</p>
+
+      <!-- Theme Preview Card -->
+      <div class="theme-preview-card" id="theme-preview">
+        <div class="theme-preview-header">
+          <span class="vitra-badge" id="theme-preview-name">Dark</span>
+        </div>
+        <div class="theme-preview-bg">
+          <div class="theme-preview-surface">
+            <div class="theme-preview-accent-bar"></div>
+            <h4 style="margin: 0 0 var(--vitra-space-2)">Surface Card</h4>
+            <p style="opacity: 0.7; font-size: 0.9rem; margin: 0 0 var(--vitra-space-3)">This card uses <code>--vitra-color-surface</code> — notice the subtle tint.</p>
+            <div class="vitra-flex vitra-gap-2">
+              <span class="vitra-badge vitra-badge-primary">Accent</span>
+              <button class="vitra-btn vitra-btn-sm vitra-btn-glass">Glass</button>
+            </div>
+          </div>
+          <div class="theme-preview-glass vitra-glass" style="padding: var(--vitra-space-3); margin-top: var(--vitra-space-3); border-radius: var(--vitra-radius-md);">
+            <span style="font-size: 0.85rem;">Glass surface with <code>backdrop-filter</code></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Theme Swatches -->
+      <div class="theme-swatches" id="theme-swatches">
+        <button class="theme-swatch" data-theme-value="light" style="background: #f8f8fc; --swatch-border: #ccc;" title="Light"></button>
+        <button class="theme-swatch active" data-theme-value="dark" style="background: #0a0a14; --swatch-border: #333;" title="Dark"></button>
+        <button class="theme-swatch" data-theme-value="pastel" style="background: #1a0f1a; --swatch-border: #3a2a3a;" title="Pastel"></button>
+        <button class="theme-swatch" data-theme-value="neon" style="background: #050a0a; --swatch-border: #1a2a2a;" title="Neon"></button>
+        <button class="theme-swatch" data-theme-value="ocean" style="background: #080e14; --swatch-border: #1a2a3a;" title="Ocean"></button>
+        <button class="theme-swatch" data-theme-value="emerald" style="background: #080f0a; --swatch-border: #1a2a1a;" title="Emerald"></button>
+      </div>
+
+      <div style="text-align: center; margin-top: var(--vitra-space-2);">
+        <span style="font-size: 0.8rem; opacity: 0.5;">Click a swatch to preview the theme — use the navbar dropdown to apply it permanently</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       MODERN CSS
+       ============================================================ -->
+  <section id="modern-css" class="demo-section vitra-reveal">
+    <div class="vitra-container">
+      <h2 class="demo-section-title">Modern CSS Features</h2>
+      <p class="vitra-text-secondary demo-section-desc">Vitra leverages 2026 CSS APIs with progressive enhancement fallbacks.</p>
+
+      <div class="modern-grid">
+        <!-- Popover API -->
+        <div class="demo-card">
+          <div class="demo-card-header">
+            <h3><span class="vitra-badge vitra-badge-sm vitra-badge-info">Popover</span> Native Popover API</h3>
+          </div>
+          <p>Uses <code>showPopover()</code> when supported, falls back to class-based toggle.</p>
+          <button class="vitra-btn vitra-btn-solid" id="popover-demo-btn">Open Popover</button>
+          <div id="popover-demo" class="vitra-glass" style="padding: var(--vitra-space-4); border-radius: var(--vitra-radius-md); margin-top: var(--vitra-space-3); display: none; max-width: 320px;">
+            <h4 style="margin-top: 0;">Popover Content</h4>
+            <p style="font-size: 0.9rem;">This uses the Popover API with <code>@starting-style</code> for entry animation. Click the button again to close.</p>
+            <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" id="popover-demo-close">Close</button>
+          </div>
+        </div>
+
+        <!-- @starting-style -->
+        <div class="demo-card">
+          <div class="demo-card-header">
+            <h3><span class="vitra-badge vitra-badge-sm vitra-badge-info">Entry</span> @starting-style</h3>
+          </div>
+          <p>Elements animate in from their initial state using <code>@starting-style</code>.</p>
+          <button class="vitra-btn vitra-btn-solid" id="starting-style-toggle">Toggle Panel</button>
+          <div id="starting-style-panel" class="starting-panel" style="margin-top: var(--vitra-space-3); padding: var(--vitra-space-4); background: var(--vitra-color-surface); border-radius: var(--vitra-radius-md); display: none;">
+            <p style="margin: 0;">This panel appears with <code>@starting-style</code> entry animation — opacity 0 → 1 + translateY 10px → 0.</p>
+          </div>
+        </div>
+
+        <!-- Container Queries -->
+        <div class="demo-card">
+          <div class="demo-card-header">
+            <h3><span class="vitra-badge vitra-badge-sm vitra-badge-info">CQ</span> Container Queries</h3>
+          </div>
+          <p>Responsive table that switches to card layout when container is &lt;500px wide.</p>
+          <div class="vitra-table-wrapper" style="margin-top: var(--vitra-space-3);">
+            <table class="vitra-table">
+              <thead>
+                <tr><th>Framework</th><th>Size</th><th>Glass</th><th>Particles</th></tr>
+              </thead>
+              <tbody>
+                <tr><td data-label="Framework">Vitra</td><td data-label="Size">10KB</td><td data-label="Glass">✅</td><td data-label="Particles">✅</td></tr>
+                <tr><td data-label="Framework">Bootstrap</td><td data-label="Size">188KB</td><td data-label="Glass">⚠️</td><td data-label="Particles">❌</td></tr>
+                <tr><td data-label="Framework">Tailwind</td><td data-label="Size">27KB</td><td data-label="Glass">⚠️</td><td data-label="Particles">❌</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- oklch -->
+        <div class="demo-card">
+          <div class="demo-card-header">
+            <h3><span class="vitra-badge vitra-badge-sm vitra-badge-info">Color</span> oklch() Colors</h3>
+          </div>
+          <p>Perceptually uniform color interpolation via <code>--vitra-color-accent-oklch</code>.</p>
+          <div style="margin-top: var(--vitra-space-3);">
+            <div style="display: flex; gap: 2px; border-radius: var(--vitra-radius-md); overflow: hidden; height: 40px;">
+              <div style="flex: 1; background: oklch(0.5 0.25 var(--vitra-color-accent-h));"></div>
+              <div style="flex: 1; background: oklch(0.6 0.25 var(--vitra-color-accent-h));"></div>
+              <div style="flex: 1; background: oklch(0.7 0.25 var(--vitra-color-accent-h));"></div>
+              <div style="flex: 1; background: oklch(0.8 0.25 var(--vitra-color-accent-h));"></div>
+              <div style="flex: 1; background: oklch(0.9 0.25 var(--vitra-color-accent-h));"></div>
+            </div>
+            <span style="font-size: 0.75rem; opacity: 0.5;">oklch lightness ramp — perceptually uniform</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       DESIGN TOKENS
+       ============================================================ -->
   <section id="tokens" class="demo-section vitra-reveal">
     <div class="vitra-container">
-    <h2 class="demo-section-title">Design Tokens</h2>
-    <p>Vitra CSS uses CSS custom properties (variables) with the <code>--vitra-</code> prefix for all design tokens.</p>
+      <h2 class="demo-section-title">Design Tokens</h2>
+      <p>All <code>--vitra-*</code> custom properties update instantly when switching themes.</p>
 
-    <div class="demo-grid">
-      <div class="component-showcase">
-        <h3>Color Tokens</h3>
-        <div class="theme-swatches" id="color-token-swatches">
-          <div class="theme-swatch" style="background: var(--vitra-color-bg);" title="vitra-color-bg"></div>
-          <div class="theme-swatch" style="background: var(--vitra-color-surface);" title="vitra-color-surface"></div>
-          <div class="theme-swatch" style="background: var(--vitra-color-accent);" title="vitra-color-accent"></div>
-          <div class="theme-swatch" style="background: var(--vitra-color-text-primary);" title="vitra-color-text-primary"></div>
-          <div class="theme-swatch" style="background: var(--vitra-color-success);" title="vitra-color-success"></div>
-          <div class="theme-swatch" style="background: var(--vitra-color-warning);" title="vitra-color-warning"></div>
-          <div class="theme-swatch" style="background: var(--vitra-color-error);" title="vitra-color-error"></div>
-          <div class="theme-swatch" style="background: var(--vitra-color-info);" title="vitra-color-info"></div>
+      <div class="demo-grid">
+        <div class="component-showcase">
+          <h3>Color Tokens</h3>
+          <div class="theme-swatches" id="color-token-swatches">
+            <div class="token-swatch" style="background: var(--vitra-color-bg);" title="--vitra-color-bg"></div>
+            <div class="token-swatch" style="background: var(--vitra-color-surface);" title="--vitra-color-surface"></div>
+            <div class="token-swatch" style="background: var(--vitra-color-accent);" title="--vitra-color-accent"></div>
+            <div class="token-swatch" style="background: var(--vitra-color-text-primary);" title="--vitra-color-text-primary"></div>
+            <div class="token-swatch" style="background: var(--vitra-color-success);" title="--vitra-color-success"></div>
+            <div class="token-swatch" style="background: var(--vitra-color-warning);" title="--vitra-color-warning"></div>
+            <div class="token-swatch" style="background: var(--vitra-color-error);" title="--vitra-color-error"></div>
+            <div class="token-swatch" style="background: var(--vitra-color-info);" title="--vitra-color-info"></div>
+          </div>
         </div>
-        <p style="margin-top: var(--vitra-space-2, 0.5rem); font-size: var(--vitra-font-size-sm, 0.875rem);">
-          Colors update instantly when switching themes
-        </p>
-      </div>
 
-      <div class="component-showcase">
-        <h3>Spacing Scale</h3>
-        <div style="display: flex; flex-direction: column; gap: var(--vitra-space-2, 0.5rem);">
-          <div style="width: var(--vitra-space-1); height: 20px; background: var(--vitra-color-accent);" title="space-1"></div>
-          <div style="width: var(--vitra-space-2); height: 20px; background: var(--vitra-color-accent);" title="space-2"></div>
-          <div style="width: var(--vitra-space-4); height: 20px; background: var(--vitra-color-accent);" title="space-4"></div>
-          <div style="width: var(--vitra-space-8); height: 20px; background: var(--vitra-color-accent);" title="space-8"></div>
+        <div class="component-showcase">
+          <h3>Spacing Scale</h3>
+          <div style="display: flex; flex-direction: column; gap: var(--vitra-space-2);">
+            <div style="width: var(--vitra-space-1); height: 20px; background: var(--vitra-color-accent);" title="space-1"></div>
+            <div style="width: var(--vitra-space-2); height: 20px; background: var(--vitra-color-accent);" title="space-2"></div>
+            <div style="width: var(--vitra-space-4); height: 20px; background: var(--vitra-color-accent);" title="space-4"></div>
+            <div style="width: var(--vitra-space-8); height: 20px; background: var(--vitra-color-accent);" title="space-8"></div>
+          </div>
         </div>
-      </div>
 
-      <div class="component-showcase">
-        <h3>Border Radius</h3>
-<div class="vitra-flex vitra-gap-4 vitra-flex-wrap">
-          <div style="width: 60px; height: 60px; background: var(--vitra-color-accent); border-radius: var(--vitra-radius-sm);" title="radius-sm"></div>
-          <div style="width: 60px; height: 60px; background: var(--vitra-color-accent); border-radius: var(--vitra-radius-md);" title="radius-md"></div>
-          <div style="width: 60px; height: 60px; background: var(--vitra-color-accent); border-radius: var(--vitra-radius-lg);" title="radius-lg"></div>
-          <div style="width: 60px; height: 60px; background: var(--vitra-color-accent); border-radius: var(--vitra-radius-full);" title="radius-full"></div>
+        <div class="component-showcase">
+          <h3>Border Radius</h3>
+          <div class="vitra-flex vitra-gap-4 vitra-flex-wrap">
+            <div style="width: 60px; height: 60px; background: var(--vitra-color-accent); border-radius: var(--vitra-radius-sm);" title="radius-sm"></div>
+            <div style="width: 60px; height: 60px; background: var(--vitra-color-accent); border-radius: var(--vitra-radius-md);" title="radius-md"></div>
+            <div style="width: 60px; height: 60px; background: var(--vitra-color-accent); border-radius: var(--vitra-radius-lg);" title="radius-lg"></div>
+            <div style="width: 60px; height: 60px; background: var(--vitra-color-accent); border-radius: var(--vitra-radius-full);" title="radius-full"></div>
+          </div>
         </div>
-      </div>
 
-      <div class="component-showcase">
-        <h3>Shadow Tokens</h3>
-<div class="vitra-flex vitra-gap-4 vitra-flex-wrap">
-          <div style="width: 80px; height: 80px; background: var(--vitra-color-bg); box-shadow: var(--vitra-shadow-subtle); border-radius: var(--vitra-radius-md);" title="shadow-subtle"></div>
-          <div style="width: 80px; height: 80px; background: var(--vitra-color-bg); box-shadow: var(--vitra-shadow-medium); border-radius: var(--vitra-radius-md);" title="shadow-medium"></div>
-          <div style="width: 80px; height: 80px; background: var(--vitra-color-bg); box-shadow: var(--vitra-shadow-elevated); border-radius: var(--vitra-radius-md);" title="shadow-elevated"></div>
+        <div class="component-showcase">
+          <h3>Shadows</h3>
+          <div class="vitra-flex vitra-gap-4 vitra-flex-wrap">
+            <div style="width: 80px; height: 80px; background: var(--vitra-color-bg); box-shadow: var(--vitra-shadow-subtle); border-radius: var(--vitra-radius-md);" title="shadow-subtle"></div>
+            <div style="width: 80px; height: 80px; background: var(--vitra-color-bg); box-shadow: var(--vitra-shadow-medium); border-radius: var(--vitra-radius-md);" title="shadow-medium"></div>
+            <div style="width: 80px; height: 80px; background: var(--vitra-color-bg); box-shadow: var(--vitra-shadow-elevated); border-radius: var(--vitra-radius-md);" title="shadow-elevated"></div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Glass Section -->
+  <!-- ============================================================
+       GLASS
+       ============================================================ -->
   <section id="glass" class="demo-section vitra-reveal">
     <div class="vitra-container">
       <h2 class="demo-section-title">Glassmorphism</h2>
-    <p>Beautiful frosted glass effects with automatic fallbacks for browsers without <code>backdrop-filter</code> support.</p>
+      <p>Frosted glass with <code>backdrop-filter</code> and automatic fallbacks.</p>
 
-    <div class="demo-grid">
-      <div class="vitra-glass" style="padding: var(--vitra-space-6, 1.5rem); border-radius: var(--vitra-radius-lg, 8px);">
-        <h3>Standard Glass</h3>
-        <p>Default glass effect with backdrop blur.</p>
-        <button class="vitra-btn vitra-btn-glass">Glass Button</button>
-      </div>
-
-      <div class="vitra-glass vitra-glass-strong" style="padding: var(--vitra-space-6, 1.5rem); border-radius: var(--vitra-radius-lg, 8px);">
-        <h3>Strong Glass</h3>
-        <p>Enhanced blur for more prominence.</p>
-        <button class="vitra-btn vitra-btn-glass">Glass Button</button>
-      </div>
-
-      <div class="vitra-glass-subtle" style="padding: var(--vitra-space-6, 1.5rem); border-radius: var(--vitra-radius-lg, 8px);">
-        <h3>Subtle Glass</h3>
-        <p>Light glass effect for gentle overlays.</p>
-        <button class="vitra-btn vitra-btn-glass">Glass Button</button>
-      </div>
-
-      <div class="vitra-glass" style="padding: var(--vitra-space-6, 1.5rem); border-radius: var(--vitra-radius-lg, 8px); border: 2px solid var(--vitra-color-accent);">
-        <h3>Colored Border</h3>
-        <p>Glass with accent-colored border.</p>
-        <button class="vitra-btn vitra-btn-solid">Solid Button</button>
-      </div>
-    </div>
-
-    <!-- Glass cards with hover effect -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Glass Cards with Hover</h3>
       <div class="demo-grid">
-        <div class="vitra-glass vitra-card-hover" style="padding: 0; border-radius: var(--vitra-radius-lg, 8px); overflow: hidden;">
-          <div style="height: 150px; background: linear-gradient(135deg, var(--vitra-color-accent), var(--vitra-color-info));"></div>
-          <div style="padding: var(--vitra-space-4, 1rem);">
-            <h4 style="margin-top: 0;">Glass Card 1</h4>
-            <p style="font-size: var(--vitra-font-size-sm, 0.875rem);">Hover to see the lift effect with glow.</p>
-          </div>
+        <div class="vitra-glass" style="padding: var(--vitra-space-6); border-radius: var(--vitra-radius-lg);">
+          <h3>Standard Glass</h3>
+          <p>Default glass effect.</p>
+          <button class="vitra-btn vitra-btn-glass">Glass Button</button>
         </div>
-        <div class="vitra-glass vitra-card-hover" style="padding: 0; border-radius: var(--vitra-radius-lg, 8px); overflow: hidden;">
-          <div style="height: 150px; background: linear-gradient(135deg, var(--vitra-color-success), var(--vitra-color-accent));"></div>
-          <div style="padding: var(--vitra-space-4, 1rem);">
-            <h4 style="margin-top: 0;">Glass Card 2</h4>
-            <p style="font-size: var(--vitra-font-size-sm, 0.875rem);">Cards use glassmorphism effectively.</p>
-          </div>
+
+        <div class="vitra-glass vitra-glass-strong" style="padding: var(--vitra-space-6); border-radius: var(--vitra-radius-lg);">
+          <h3>Strong Glass</h3>
+          <p>Enhanced blur.</p>
+          <button class="vitra-btn vitra-btn-glass">Glass Button</button>
         </div>
-        <div class="vitra-glass vitra-card-hover" style="padding: 0; border-radius: var(--vitra-radius-lg, 8px); overflow: hidden;">
-          <div style="height: 150px; background: linear-gradient(135deg, var(--vitra-color-warning), var(--vitra-color-error));"></div>
-          <div style="padding: var(--vitra-space-4, 1rem);">
-            <h4 style="margin-top: 0;">Glass Card 3</h4>
-            <p style="font-size: var(--vitra-font-size-sm, 0.875rem);">Responsive and accessible design.</p>
+
+        <div class="vitra-glass-subtle" style="padding: var(--vitra-space-6); border-radius: var(--vitra-radius-lg);">
+          <h3>Subtle Glass</h3>
+          <p>Gentle overlay effect.</p>
+          <button class="vitra-btn vitra-btn-glass">Glass Button</button>
+        </div>
+
+        <div class="vitra-glass" style="padding: var(--vitra-space-6); border-radius: var(--vitra-radius-lg); border: 2px solid var(--vitra-color-accent);">
+          <h3>Colored Border</h3>
+          <p>Glass with accent border.</p>
+          <button class="vitra-btn vitra-btn-solid">Solid Button</button>
+        </div>
+      </div>
+
+      <!-- Glass Cards with Hover -->
+      <div style="margin-top: var(--vitra-space-6);">
+        <h3>Glass Cards with Hover</h3>
+        <div class="demo-grid">
+          <div class="vitra-glass vitra-card-hover" style="padding: 0; border-radius: var(--vitra-radius-lg); overflow: hidden;">
+            <div style="height: 120px; background: linear-gradient(135deg, var(--vitra-color-accent), var(--vitra-color-info));"></div>
+            <div style="padding: var(--vitra-space-4);">
+              <h4 style="margin-top: 0;">Glass Card 1</h4>
+              <p style="font-size: 0.875rem;">Hover to see lift + glow.</p>
+            </div>
+          </div>
+          <div class="vitra-glass vitra-card-hover" style="padding: 0; border-radius: var(--vitra-radius-lg); overflow: hidden;">
+            <div style="height: 120px; background: linear-gradient(135deg, var(--vitra-color-success), var(--vitra-color-accent));"></div>
+            <div style="padding: var(--vitra-space-4);">
+              <h4 style="margin-top: 0;">Glass Card 2</h4>
+              <p style="font-size: 0.875rem;">Cards with glassmorphism.</p>
+            </div>
+          </div>
+          <div class="vitra-glass vitra-card-hover" style="padding: 0; border-radius: var(--vitra-radius-lg); overflow: hidden;">
+            <div style="height: 120px; background: linear-gradient(135deg, var(--vitra-color-warning), var(--vitra-color-error));"></div>
+            <div style="padding: var(--vitra-space-4);">
+              <h4 style="margin-top: 0;">Glass Card 3</h4>
+              <p style="font-size: 0.875rem;">Responsive + accessible.</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Particles Section -->
+  <!-- ============================================================
+       PARTICLES
+       ============================================================ -->
   <section id="particles" class="demo-section vitra-reveal">
     <div class="vitra-container">
-    <h2 class="demo-section-title">Configurable Particles</h2>
-    <p>Add beautiful floating particles with glow effects. Configurable via JavaScript API or data attributes.</p>
+      <h2 class="demo-section-title">Configurable Particles</h2>
+      <p>Floating particles with glow effects. Configurable via JS API or data attributes.</p>
 
-    <!-- Particle Controls -->
-    <div class="demo-controls" id="particle-controls">
-      <h3 style="margin-top: 0;">Particle Controls</h3>
+      <div class="demo-controls" id="particle-controls">
+        <h3 style="margin-top: 0;">Particle Controls</h3>
 
-      <div class="demo-control-group">
-        <label class="demo-label" for="particle-count">Particle Count: <span id="particle-count-value">10</span></label>
-        <input type="range" id="particle-count" class="vitra-range" min="0" max="40" value="10" style="width: 100%;">
-        <small style="color: var(--vitra-color-text-tertiary);">Device limit: <span id="particle-limit">40</span> (15 on mobile)</small>
-      </div>
+        <div class="demo-control-group">
+          <label class="demo-label" for="particle-count">Particle Count: <span id="particle-count-value">10</span></label>
+          <input type="range" id="particle-count" class="vitra-range" min="0" max="40" value="10" style="width: 100%;">
+          <small style="color: var(--vitra-color-text-tertiary);">Device limit: <span id="particle-limit">40</span> (15 on mobile)</small>
+        </div>
 
-      <div class="demo-control-group">
-        <label class="demo-label" for="particle-color">Particle Color</label>
-        <div style="display: flex; gap: var(--vitra-space-2, 0.5rem); align-items: center;">
-          <input type="color" id="particle-color" class="vitra-color-input" value="#6c63ff" style="width: 50px; height: 40px; border: none; background: none; cursor: pointer;">
-          <input type="text" id="particle-color-text" class="vitra-input" value="#6c63ff" style="width: 100px;">
-          <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" onclick="setParticleColor('var(--vitra-color-accent)')">Use Accent</button>
+        <div class="demo-control-group">
+          <label class="demo-label" for="particle-color">Particle Color</label>
+          <div style="display: flex; gap: var(--vitra-space-2); align-items: center;">
+            <input type="color" id="particle-color" style="width: 50px; height: 40px; border: none; background: none; cursor: pointer; padding: 0;">
+            <input type="text" id="particle-color-text" class="vitra-input" value="#6c63ff" style="width: 100px;">
+            <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" onclick="setParticleColor('var(--vitra-color-accent)')">Use Accent</button>
+          </div>
+        </div>
+
+        <div class="demo-control-group">
+          <label class="demo-label" for="particle-size">Particle Size: <span id="particle-size-value">4</span>px</label>
+          <input type="range" id="particle-size" class="vitra-range" min="2" max="20" value="4" style="width: 100%;">
+        </div>
+
+        <div class="demo-control-group">
+          <label class="demo-label" for="particle-speed">Animation Speed: <span id="particle-speed-value">3</span>s</label>
+          <input type="range" id="particle-speed" class="vitra-range" min="1" max="10" value="3" style="width: 100%;">
+        </div>
+
+        <div class="demo-control-group">
+          <label class="demo-label">Emoji Particles</label>
+          <div class="vitra-flex vitra-gap-2 vitra-flex-wrap">
+            <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" onclick="spawnEmojiParticles('✨')">✨ Sparkles</button>
+            <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" onclick="spawnEmojiParticles('🔮')">🔮 Magic</button>
+            <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" onclick="spawnEmojiParticles('💫')">💫 Stars</button>
+            <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" onclick="spawnEmojiParticles('🎉')">🎉 Party</button>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: var(--vitra-space-2); margin-top: var(--vitra-space-4);">
+          <button class="vitra-btn vitra-btn-solid" onclick="spawnParticles()">Spawn Particles</button>
+          <button class="vitra-btn vitra-btn-ghost" onclick="destroyParticles()">Clear All</button>
+          <button class="vitra-btn vitra-btn-ghost" onclick="updateParticleInfo()">Refresh Info</button>
+        </div>
+
+        <div id="particle-info" style="margin-top: var(--vitra-space-4); padding: var(--vitra-space-2); background: var(--vitra-color-surface); border-radius: var(--vitra-radius-sm); font-size: 0.875rem;">
+          Active: 0 | Available: 40 | Max: 40
         </div>
       </div>
 
-      <div class="demo-control-group">
-        <label class="demo-label" for="particle-size">Particle Size: <span id="particle-size-value">4</span>px</label>
-        <input type="range" id="particle-size" class="vitra-range" min="2" max="20" value="4" style="width: 100%;">
+      <div id="particle-demo-area" style="margin-top: var(--vitra-space-4);">
+        <p style="text-align: center; color: var(--vitra-color-text-tertiary); pointer-events: none;">
+          Particles will appear here when spawned
+        </p>
       </div>
 
-      <div class="demo-control-group">
-        <label class="demo-label" for="particle-speed">Animation Speed: <span id="particle-speed-value">3</span>s</label>
-        <input type="range" id="particle-speed" class="vitra-range" min="1" max="10" value="3" style="width: 100%;">
-      </div>
-
-      <div class="demo-control-group">
-        <label class="demo-label">Emoji Particles</label>
-<div class="vitra-flex vitra-gap-2 vitra-flex-wrap">
-          <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" onclick="spawnEmojiParticles('✨')">✨ Sparkles</button>
-          <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" onclick="spawnEmojiParticles('🔮')">🔮 Magic</button>
-          <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" onclick="spawnEmojiParticles('💫')">💫 Stars</button>
-          <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" onclick="spawnEmojiParticles('🎉')">🎉 Party</button>
-        </div>
-      </div>
-
-      <div style="display: flex; gap: var(--vitra-space-2, 0.5rem); margin-top: var(--vitra-space-4, 1rem);">
-        <button class="vitra-btn vitra-btn-solid" onclick="spawnParticles()">Spawn Particles</button>
-        <button class="vitra-btn vitra-btn-ghost" onclick="destroyParticles()">Clear All</button>
-        <button class="vitra-btn vitra-btn-ghost" onclick="updateParticleInfo()">Refresh Info</button>
-      </div>
-
-      <div id="particle-info" style="margin-top: var(--vitra-space-4, 1rem); padding: var(--vitra-space-2, 0.5rem); background: var(--vitra-color-bg, #fff); border-radius: var(--vitra-radius-sm, 4px); font-size: var(--vitra-font-size-sm, 0.875rem);">
-        Active: 0 | Available: 40 | Max: 40
-      </div>
-    </div>
-
-    <!-- Particle Demo Area -->
-    <div id="particle-demo-area" style="margin-top: var(--vitra-space-4, 1rem);">
-      <p style="text-align: center; color: var(--vitra-color-text-tertiary);">
-        Particles will appear here when spawned
-      </p>
-    </div>
-
-    <!-- Data-attribute particles example -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Data-Attribute Particles</h3>
-      <p>Particles can also be configured via HTML data attributes:</p>
-      <pre style="background: var(--vitra-color-surface); padding: var(--vitra-space-4); border-radius: var(--vitra-radius-md); overflow-x: auto;"><code>&lt;div data-vitra-particles="5" data-vitra-particle-color="#ff6b6b"&gt;
+      <div style="margin-top: var(--vitra-space-6);">
+        <h3>Data-Attribute Particles</h3>
+        <p>Particles can also be configured via HTML <code>data-vitra-particles</code> attributes:</p>
+        <pre><code>&lt;div data-vitra-particles="5" data-vitra-particle-color="#ff6b6b"&gt;
   &lt;!-- 5 red particles appear here --&gt;
 &lt;/div&gt;</code></pre>
+      </div>
     </div>
   </section>
 
-  <!-- Motion Section -->
+  <!-- ============================================================
+       MOTION
+       ============================================================ -->
   <section id="motion" class="demo-section vitra-reveal">
     <div class="vitra-container">
-    <h2 class="demo-section-title">Motion & Animations</h2>
-    <p>Smooth reveal animations, hover interactions, and full <code>prefers-reduced-motion</code> support.</p>
+      <h2 class="demo-section-title">Motion & Animations</h2>
+      <p>Reveal animations, hover interactions, and full <code>prefers-reduced-motion</code> support.</p>
 
-    <!-- Reveal on Scroll Demo -->
-    <div class="motion-demo-item vitra-reveal">
-      <h3>Reveal on Scroll</h3>
-      <p>This section uses the <code>vitra-reveal</code> class and appears with animation when scrolled into view.</p>
-      <button class="vitra-btn vitra-btn-ghost" onclick="Vitra.reveal.reset()">Reset Reveal</button>
-    </div>
+      <div class="motion-demo-item vitra-reveal">
+        <h3>Reveal on Scroll</h3>
+        <p>Uses <code>vitra-reveal</code> — appears when scrolled into view.</p>
+        <button class="vitra-btn vitra-btn-ghost" onclick="Vitra.reveal.reset()">Reset Reveal</button>
+      </div>
 
-    <div class="motion-demo-item vitra-reveal" style="transition-delay: 0.1s;">
-      <h3>Staggered Reveal</h3>
-      <p>Multiple items can reveal with stagger delays for elegant cascading effects.</p>
-    </div>
+      <div class="motion-demo-item vitra-reveal" style="transition-delay: 0.1s;">
+        <h3>Staggered Reveal</h3>
+        <p>Cascading entry via stagger delay.</p>
+      </div>
 
-    <div class="motion-demo-item vitra-reveal" style="transition-delay: 0.2s;">
-      <h3>Smooth Transitions</h3>
-      <p>All animations respect user's motion preferences via <code>prefers-reduced-motion</code>.</p>
-    </div>
+      <div class="motion-demo-item vitra-reveal" style="transition-delay: 0.2s;">
+        <h3>Smooth Transitions</h3>
+        <p>Respects <code>prefers-reduced-motion</code>.</p>
+      </div>
 
-    <!-- Hover Interactions -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Hover Interactions</h3>
-      <div class="demo-grid">
-        <div class="component-showcase vitra-hover-lift">
-          <h4>Hover Lift</h4>
-          <p class="vitra-text-muted">Lifts on hover with shadow</p>
-        </div>
-        <div class="component-showcase vitra-hover-glow">
-          <h4>Hover Glow</h4>
-          <p class="vitra-text-muted">Glows on hover</p>
-        </div>
-        <div class="component-showcase vitra-hover-scale">
-          <h4>Hover Scale</h4>
-          <p class="vitra-text-muted">Scales up on hover</p>
+      <!-- Hover Interactions -->
+      <div style="margin-top: var(--vitra-space-6);">
+        <h3>Hover Interactions</h3>
+        <div class="demo-grid">
+          <div class="component-showcase vitra-hover-lift">
+            <h4>Hover Lift</h4>
+            <p class="vitra-text-muted">Lifts with shadow</p>
+          </div>
+          <div class="component-showcase vitra-hover-glow">
+            <h4>Hover Glow</h4>
+            <p class="vitra-text-muted">Glows on hover</p>
+          </div>
+          <div class="component-showcase vitra-hover-scale">
+            <h4>Hover Scale</h4>
+            <p class="vitra-text-muted">Scales on hover</p>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- prefers-reduced-motion Test -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Accessibility: prefers-reduced-motion</h3>
-      <p>Vitra CSS automatically disables animations when users prefer reduced motion.</p>
-      <div class="demo-controls">
-        <p><strong>Test:</strong> Enable "Reduce motion" in your OS settings, then refresh the page. All animations should be disabled.</p>
-        <button class="vitra-btn vitra-btn-ghost" id="test-reduced-motion">
-          Check Motion Preference
-        </button>
-        <div id="motion-preference-result" style="margin-top: var(--vitra-space-2, 0.5rem); font-size: var(--vitra-font-size-sm, 0.875rem);"></div>
+      <!-- prefers-reduced-motion Test -->
+      <div style="margin-top: var(--vitra-space-6);">
+        <h3>Accessibility: prefers-reduced-motion</h3>
+        <p>Vitra automatically disables animations when users prefer reduced motion.</p>
+        <div class="demo-controls">
+          <p><strong>Test:</strong> Enable "Reduce motion" in your OS settings, then refresh. All animations will be disabled.</p>
+          <button class="vitra-btn vitra-btn-ghost" id="test-reduced-motion">Check Motion Preference</button>
+          <div id="motion-preference-result" style="margin-top: var(--vitra-space-2); font-size: 0.875rem;"></div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Layout Section -->
-  <section id="layout" class="demo-section vitra-reveal">
-    <div class="vitra-container">
-    <h2 class="demo-section-title">Layout Utilities</h2>
-    <p>Fluid containers, responsive grids, flex utilities, and clamp()-based spacing.</p>
-
-    <!-- Container Demo -->
-    <div class="component-showcase">
-      <h3>Fluid Container</h3>
-      <p>Containers use <code>clamp()</code> for fluid responsive sizing.</p>
-      <div class="vitra-container" style="background: var(--vitra-color-surface); padding: var(--vitra-space-4); border-radius: var(--vitra-radius-md); border: 1px dashed var(--vitra-color-border);">
-        <p style="text-align: center; margin: 0;">This content is inside a <code>vitra-container</code></p>
-      </div>
-    </div>
-
-    <!-- Grid Demo -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Responsive Grid</h3>
-      <div class="vitra-grid vitra-grid-cols-3 vitra-gap-4" style="margin-top: var(--vitra-space-4, 1rem);">
-        <div style="background: var(--vitra-color-surface); padding: var(--vitra-space-4); border-radius: var(--vitra-radius-md); text-align: center;">Grid Item 1</div>
-        <div style="background: var(--vitra-color-surface); padding: var(--vitra-space-4); border-radius: var(--vitra-radius-md); text-align: center;">Grid Item 2</div>
-        <div style="background: var(--vitra-color-surface); padding: var(--vitra-space-4); border-radius: var(--vitra-radius-md); text-align: center;">Grid Item 3</div>
-        <div style="background: var(--vitra-color-surface); padding: var(--vitra-space-4); border-radius: var(--vitra-radius-md); text-align: center;">Grid Item 4</div>
-        <div style="background: var(--vitra-color-surface); padding: var(--vitra-space-4); border-radius: var(--vitra-radius-md); text-align: center;">Grid Item 5</div>
-        <div style="background: var(--vitra-color-surface); padding: var(--vitra-space-4); border-radius: var(--vitra-radius-md); text-align: center;">Grid Item 6</div>
-      </div>
-    </div>
-
-    <!-- Flex Utilities Demo -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Flex Utilities</h3>
-      <div class="vitra-flex vitra-gap-4 vitra-flex-wrap" style="margin-top: var(--vitra-space-4, 1rem);">
-        <div style="background: var(--vitra-color-accent); color: var(--vitra-color-text-inverse); padding: var(--vitra-space-4); border-radius: var(--vitra-radius-md); flex: 1; min-width: 150px; text-align: center;">Flex Item</div>
-        <div style="background: var(--vitra-color-accent); color: var(--vitra-color-text-inverse); padding: var(--vitra-space-4); border-radius: var(--vitra-radius-md); flex: 1; min-width: 150px; text-align: center;">Flex Item</div>
-        <div style="background: var(--vitra-color-accent); color: var(--vitra-color-text-inverse); padding: var(--vitra-space-4); border-radius: var(--vitra-radius-md); flex: 1; min-width: 150px; text-align: center;">Flex Item</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Components Section -->
+  <!-- ============================================================
+       COMPONENTS
+       ============================================================ -->
   <section id="components" class="demo-section vitra-reveal">
     <div class="vitra-container">
-    <h2 class="demo-section-title">Component Showcase</h2>
-    <p>All Vitra CSS components with token-only styling, glass variants, and accessibility built-in.</p>
+      <h2 class="demo-section-title">Component Showcase</h2>
+      <p>All Vitra components with token-only styling, glass variants, and built-in accessibility.</p>
 
-    <!-- Buttons -->
-    <div class="component-showcase">
-      <h3>Buttons</h3>
-<div class="vitra-flex vitra-gap-2 vitra-flex-wrap">
-        <button class="vitra-btn vitra-btn-solid">Solid</button>
-        <button class="vitra-btn vitra-btn-ghost">Ghost</button>
-        <button class="vitra-btn vitra-btn-glass">Glass</button>
-        <button class="vitra-btn vitra-btn-gradient">Gradient</button>
-      </div>
-<div class="vitra-flex vitra-gap-2 vitra-flex-wrap vitra-mt-2">
-        <button class="vitra-btn vitra-btn-solid vitra-btn-sm">Small</button>
-        <button class="vitra-btn vitra-btn-solid">Default</button>
-        <button class="vitra-btn vitra-btn-solid vitra-btn-lg">Large</button>
-      </div>
-<div class="vitra-flex vitra-gap-2 vitra-flex-wrap vitra-mt-2">
-        <button class="vitra-btn vitra-btn-solid" disabled>Disabled</button>
-        <button class="vitra-btn vitra-btn-ghost" disabled>Ghost Disabled</button>
-      </div>
-    </div>
-
-    <!-- Cards -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Cards</h3>
-      <div class="demo-grid">
-        <div class="vitra-card">
-          <h4>Standard Card</h4>
-          <p>Basic card with surface background and border.</p>
-          <button class="vitra-btn vitra-btn-sm vitra-btn-ghost">Action</button>
-        </div>
-        <div class="vitra-card vitra-glass">
-          <h4>Glass Card</h4>
-          <p>Card with glassmorphism effect.</p>
-          <button class="vitra-btn vitra-btn-sm vitra-btn-glass">Action</button>
-        </div>
-        <div class="vitra-card vitra-card-hover">
-          <h4>Hover Card</h4>
-          <p>Hover to see lift effect.</p>
-          <button class="vitra-btn vitra-btn-sm vitra-btn-solid">Action</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Form Elements -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Form Elements</h3>
+      <!-- Buttons -->
       <div class="component-showcase">
-<div class="vitra-flex vitra-flex-col vitra-gap-4">
-          <div>
-            <label class="vitra-label" for="demo-input">Input Field</label>
-            <input type="text" id="demo-input" class="vitra-input" placeholder="Enter text here...">
+        <h3>Buttons</h3>
+        <div class="vitra-flex vitra-gap-2 vitra-flex-wrap">
+          <button class="vitra-btn vitra-btn-solid">Solid</button>
+          <button class="vitra-btn vitra-btn-ghost">Ghost</button>
+          <button class="vitra-btn vitra-btn-glass">Glass</button>
+          <button class="vitra-btn vitra-btn-gradient">Gradient</button>
+        </div>
+        <div class="vitra-flex vitra-gap-2 vitra-flex-wrap vitra-mt-2">
+          <button class="vitra-btn vitra-btn-solid vitra-btn-sm">Small</button>
+          <button class="vitra-btn vitra-btn-solid">Default</button>
+          <button class="vitra-btn vitra-btn-solid vitra-btn-lg">Large</button>
+        </div>
+        <div class="vitra-flex vitra-gap-2 vitra-flex-wrap vitra-mt-2">
+          <button class="vitra-btn vitra-btn-solid" disabled>Disabled</button>
+          <button class="vitra-btn vitra-btn-ghost" disabled>Ghost Disabled</button>
+        </div>
+      </div>
+
+      <!-- Cards -->
+      <div style="margin-top: var(--vitra-space-6);">
+        <h3>Cards</h3>
+        <div class="demo-grid">
+          <div class="vitra-card">
+            <h4>Standard Card</h4>
+            <p>Surface + border.</p>
+            <button class="vitra-btn vitra-btn-sm vitra-btn-ghost">Action</button>
           </div>
-          <div>
-            <label class="vitra-label" for="demo-select">Select Menu</label>
-            <select id="demo-select" class="vitra-input vitra-input-glass">
-              <option>Option 1</option>
-              <option>Option 2</option>
-              <option>Option 3</option>
-            </select>
+          <div class="vitra-card vitra-glass">
+            <h4>Glass Card</h4>
+            <p>Glassmorphism card.</p>
+            <button class="vitra-btn vitra-btn-sm vitra-btn-glass">Action</button>
           </div>
-          <div>
-            <label class="vitra-label" for="demo-textarea">Textarea</label>
-            <textarea id="demo-textarea" class="vitra-textarea" rows="3" placeholder="Enter longer text..."></textarea>
-          </div>
-          <div>
-            <label class="vitra-label">Toggle Switch</label>
-            <label class="vitra-toggle-label">
-              <input type="checkbox" id="demo-toggle" class="vitra-toggle">
-              <span>Enable feature</span>
-            </label>
-          </div>
-          <div>
-            <label class="vitra-label">Radio Group</label>
-            <label class="vitra-radio">
-              <input type="radio" name="demo-radio" value="1">
-              <span>Option A</span>
-            </label>
-            <label class="vitra-radio" style="margin-left: var(--vitra-space-4, 1rem);">
-              <input type="radio" name="demo-radio" value="2">
-              <span>Option B</span>
-            </label>
+          <div class="vitra-card vitra-card-hover">
+            <h4>Hover Card</h4>
+            <p>Lifts on hover.</p>
+            <button class="vitra-btn vitra-btn-sm vitra-btn-solid">Action</button>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Navigation -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Navigation</h3>
-      <div class="component-showcase">
-        <nav class="vitra-navbar">
-          <div class="vitra-navbar-brand">Brand</div>
-          <div class="vitra-navbar-links">
-            <a href="#" class="vitra-navbar-link">Link 1</a>
-            <a href="#" class="vitra-navbar-link">Link 2</a>
-            <a href="#" class="vitra-navbar-link">Link 3</a>
-          </div>
-        </nav>
-        <p style="margin-top: var(--vitra-space-2, 0.5rem); font-size: var(--vitra-font-size-sm, 0.875rem);">
-          Use <code>vitra-navbar-mobile</code> for mobile drawer navigation
-        </p>
-      </div>
-    </div>
-
-    <!-- Modals -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Modals</h3>
-      <div class="component-showcase">
-        <button class="vitra-btn vitra-btn-solid" data-vitra-modal-open="demo-modal">
-          Open Modal
-        </button>
-        <button class="vitra-btn vitra-btn-ghost" data-vitra-modal-open="demo-modal-lg">
-          Open Large Modal
-        </button>
-        <p style="margin-top: var(--vitra-space-2, 0.5rem); font-size: var(--vitra-font-size-sm, 0.875rem);">
-          Modals support focus trapping, ESC close, and overlay click close
-        </p>
-      </div>
-    </div>
-
-    <!-- Modal: Small -->
-    <div id="demo-modal" class="vitra-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
-      <div class="vitra-modal-content" style="max-width: 400px;">
-        <div class="vitra-modal-header">
-          <h3 id="demo-modal-title">Demo Modal</h3>
-          <button class="vitra-btn vitra-btn-ghost vitra-btn-sm" data-vitra-modal-close>&times;</button>
-        </div>
-        <div class="vitra-modal-body">
-          <p>This is a modal dialog with proper accessibility features.</p>
-          <input type="text" class="vitra-input" placeholder="Focusable input" style="margin-top: var(--vitra-space-2);">
-        </div>
-        <div class="vitra-modal-footer">
-          <button class="vitra-btn vitra-btn-ghost" data-vitra-modal-close">Cancel</button>
-          <button class="vitra-btn vitra-btn-solid" data-vitra-modal-close>Confirm</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal: Large -->
-    <div id="demo-modal-lg" class="vitra-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="demo-modal-lg-title">
-      <div class="vitra-modal-content" style="max-width: 800px;">
-        <div class="vitra-modal-header">
-          <h3 id="demo-modal-lg-title">Large Modal</h3>
-          <button class="vitra-btn vitra-btn-ghost vitra-btn-sm" data-vitra-modal-close>&times;</button>
-        </div>
-        <div class="vitra-modal-body">
-          <p>This modal has more content and a larger width.</p>
-          <p>It demonstrates the flexible modal system in Vitra CSS.</p>
-        </div>
-        <div class="vitra-modal-footer">
-          <button class="vitra-btn vitra-btn-solid" data-vitra-modal-close">Close</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tooltips -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Tooltips</h3>
-      <div class="component-showcase">
-<div class="vitra-flex vitra-gap-4 vitra-flex-wrap">
-          <button class="vitra-btn vitra-btn-ghost" data-vitra-tooltip="Top tooltip" data-vitra-tooltip-position="top">
-            Hover for Top Tip
-          </button>
-          <button class="vitra-btn vitra-btn-ghost" data-vitra-tooltip="Bottom tooltip" data-vitra-tooltip-position="bottom">
-            Hover for Bottom Tip
-          </button>
-          <button class="vitra-btn vitra-btn-ghost" data-vitra-tooltip="Left tooltip" data-vitra-tooltip-position="left">
-            Hover for Left Tip
-          </button>
-          <button class="vitra-btn vitra-btn-ghost" data-vitra-tooltip="Right tooltip" data-vitra-tooltip-position="right">
-            Hover for Right Tip
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Sliders -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Sliders (Range Inputs)</h3>
-      <div class="component-showcase">
-        <div style="display: flex; flex-direction: column; gap: var(--vitra-space-4, 1rem);">
-          <div>
-            <label class="vitra-label" for="demo-slider">Default Slider</label>
-            <input type="range" id="demo-slider" class="vitra-range" min="0" max="100" value="50" style="width: 100%;">
-          </div>
-          <div>
-            <label class="vitra-label" for="demo-slider-sm">Small Slider</label>
-            <input type="range" id="demo-slider-sm" class="vitra-range vitra-range-sm" min="0" max="100" value="30" style="width: 100%;">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tabs -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Tabs</h3>
-      <div class="component-showcase">
-        <div class="vitra-tabs" id="demo-tabs">
-          <div class="vitra-tabs-nav">
-            <button class="vitra-tabs-tab vitra-tabs-tab-active" data-tab="tab1">Tab 1</button>
-            <button class="vitra-tabs-tab" data-tab="tab2">Tab 2</button>
-            <button class="vitra-tabs-tab" data-tab="tab3">Tab 3</button>
-          </div>
-          <div class="vitra-tabs-content">
-            <div class="vitra-tabs-panel" id="tab1">
-              <h4>Panel 1</h4>
-              <p>Content for the first tab.</p>
+      <!-- Form Elements -->
+      <div style="margin-top: var(--vitra-space-6);">
+        <h3>Form Elements</h3>
+        <div class="component-showcase">
+          <div class="vitra-flex vitra-flex-col vitra-gap-4">
+            <div>
+              <label class="vitra-label" for="demo-input">Input Field</label>
+              <input type="text" id="demo-input" class="vitra-input" placeholder="Enter text here...">
             </div>
-            <div class="vitra-tabs-panel" id="tab2" style="display: none;">
-              <h4>Panel 2</h4>
-              <p>Content for the second tab.</p>
+            <div>
+              <label class="vitra-label" for="demo-select">Select Menu</label>
+              <select id="demo-select" class="vitra-input vitra-input-glass">
+                <option>Option 1</option>
+                <option>Option 2</option>
+                <option>Option 3</option>
+              </select>
             </div>
-            <div class="vitra-tabs-panel" id="tab3" style="display: none;">
-              <h4>Panel 3</h4>
-              <p>Content for the third tab.</p>
+            <div>
+              <label class="vitra-label" for="demo-textarea">Textarea</label>
+              <textarea id="demo-textarea" class="vitra-textarea" rows="3" placeholder="Enter longer text..."></textarea>
+            </div>
+            <div>
+              <label class="vitra-label">Toggle Switch</label>
+              <label class="vitra-toggle-label">
+                <input type="checkbox" id="demo-toggle" class="vitra-toggle">
+                <span>Enable feature</span>
+              </label>
+            </div>
+            <div>
+              <label class="vitra-label">Radio Group</label>
+              <label class="vitra-radio">
+                <input type="radio" name="demo-radio" value="1">
+                <span>Option A</span>
+              </label>
+              <label class="vitra-radio" style="margin-left: var(--vitra-space-4);">
+                <input type="radio" name="demo-radio" value="2">
+                <span>Option B</span>
+              </label>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Progress -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Progress Bars</h3>
-      <div class="component-showcase">
-        <div style="display: flex; flex-direction: column; gap: var(--vitra-space-4, 1rem);">
-          <div>
-            <label class="vitra-label">Default Progress</label>
-            <div class="vitra-progress">
-              <div class="vitra-progress-bar" style="width: 60%;"></div>
+      <!-- Tabs -->
+      <div style="margin-top: var(--vitra-space-6);">
+        <h3>Tabs</h3>
+        <div class="component-showcase">
+          <div class="vitra-tabs" id="demo-tabs">
+            <div class="vitra-tabs-nav">
+              <button class="vitra-tabs-tab vitra-tabs-tab-active" data-tab="tab1">Tab 1</button>
+              <button class="vitra-tabs-tab" data-tab="tab2">Tab 2</button>
+              <button class="vitra-tabs-tab" data-tab="tab3">Tab 3</button>
             </div>
-          </div>
-          <div>
-            <label class="vitra-label">Small Progress</label>
-            <div class="vitra-progress vitra-progress-sm">
-              <div class="vitra-progress-bar" style="width: 30%;"></div>
-            </div>
-          </div>
-          <div>
-            <label class="vitra-label">Large Progress</label>
-            <div class="vitra-progress vitra-progress-lg">
-              <div class="vitra-progress-bar" style="width: 80%;"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Badges -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Badges</h3>
-      <div class="component-showcase">
-<div class="vitra-flex vitra-gap-2 vitra-flex-wrap vitra-items-center">
-          <span class="vitra-badge">Default</span>
-          <span class="vitra-badge vitra-badge-primary">Primary</span>
-          <span class="vitra-badge vitra-badge-success">Success</span>
-          <span class="vitra-badge vitra-badge-warning">Warning</span>
-          <span class="vitra-badge vitra-badge-error">Error</span>
-          <span class="vitra-badge vitra-badge-info">Info</span>
-        </div>
-        <div style="display: flex; flex-wrap: wrap; gap: var(--vitra-space-2, 0.5rem); margin-top: var(--vitra-space-2, 0.5rem); align-items: center;">
-          <span class="vitra-badge vitra-badge-sm">Small</span>
-          <span class="vitra-badge">Default</span>
-              <span>Enable feature</span>
-            </label>
-          </div>
-          <div>
-            <label class="vitra-label">Radio Group</label>
-            <label class="vitra-radio">
-              <input type="radio" name="demo-radio" value="1">
-              <span>Option A</span>
-            </label>
-            <label class="vitra-radio" style="margin-left: var(--vitra-space-4, 1rem);">
-              <input type="radio" name="demo-radio" value="2">
-              <span>Option B</span>
-            </label>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Navigation -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Navigation</h3>
-      <div class="component-showcase">
-        <nav class="vitra-navbar">
-          <div class="vitra-navbar-brand">Brand</div>
-          <div class="vitra-navbar-links">
-            <a href="#" class="vitra-navbar-link">Link 1</a>
-            <a href="#" class="vitra-navbar-link">Link 2</a>
-            <a href="#" class="vitra-navbar-link">Link 3</a>
-          </div>
-        </nav>
-        <p style="margin-top: var(--vitra-space-2, 0.5rem); font-size: var(--vitra-font-size-sm, 0.875rem);">
-          Use <code>vitra-navbar-mobile</code> for mobile drawer navigation
-        </p>
-      </div>
-    </div>
-
-    <!-- Modals -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Modals</h3>
-      <div class="component-showcase">
-        <button class="vitra-btn vitra-btn-solid" data-vitra-modal-open="demo-modal">
-          Open Modal
-        </button>
-        <button class="vitra-btn vitra-btn-ghost" data-vitra-modal-open="demo-modal-lg">
-          Open Large Modal
-        </button>
-        <p style="margin-top: var(--vitra-space-2, 0.5rem); font-size: var(--vitra-font-size-sm, 0.875rem);">
-          Modals support focus trapping, ESC close, and overlay click close
-        </p>
-      </div>
-    </div>
-
-    <!-- Modal: Small -->
-    <div id="demo-modal" class="vitra-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
-      <div class="vitra-modal-content" style="max-width: 400px;">
-        <div class="vitra-modal-header">
-          <h3 id="demo-modal-title">Demo Modal</h3>
-          <button class="vitra-btn vitra-btn-ghost vitra-btn-sm" data-vitra-modal-close>&times;</button>
-        </div>
-        <div class="vitra-modal-body">
-          <p>This is a modal dialog with proper accessibility features.</p>
-          <input type="text" class="vitra-input" placeholder="Focusable input" style="margin-top: var(--vitra-space-2);">
-        </div>
-        <div class="vitra-modal-footer">
-          <button class="vitra-btn vitra-btn-ghost" data-vitra-modal-close">Cancel</button>
-          <button class="vitra-btn vitra-btn-solid" data-vitra-modal-close>Confirm</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal: Large -->
-    <div id="demo-modal-lg" class="vitra-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="demo-modal-lg-title">
-      <div class="vitra-modal-content" style="max-width: 800px;">
-        <div class="vitra-modal-header">
-          <h3 id="demo-modal-lg-title">Large Modal</h3>
-          <button class="vitra-btn vitra-btn-ghost vitra-btn-sm" data-vitra-modal-close>&times;</button>
-        </div>
-        <div class="vitra-modal-body">
-          <p>This modal has more content and a larger width.</p>
-          <p>It demonstrates the flexible modal system in Vitra CSS.</p>
-        </div>
-        <div class="vitra-modal-footer">
-          <button class="vitra-btn vitra-btn-solid" data-vitra-modal-close">Close</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tooltips -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Tooltips</h3>
-      <div class="component-showcase">
-<div class="vitra-flex vitra-gap-4 vitra-flex-wrap">
-          <button class="vitra-btn vitra-btn-ghost" data-vitra-tooltip="Top tooltip" data-vitra-tooltip-position="top">
-            Hover for Top Tip
-          </button>
-          <button class="vitra-btn vitra-btn-ghost" data-vitra-tooltip="Bottom tooltip" data-vitra-tooltip-position="bottom">
-            Hover for Bottom Tip
-          </button>
-          <button class="vitra-btn vitra-btn-ghost" data-vitra-tooltip="Left tooltip" data-vitra-tooltip-position="left">
-            Hover for Left Tip
-          </button>
-          <button class="vitra-btn vitra-btn-ghost" data-vitra-tooltip="Right tooltip" data-vitra-tooltip-position="right">
-            Hover for Right Tip
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Sliders -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Sliders (Range Inputs)</h3>
-      <div class="component-showcase">
-        <div style="display: flex; flex-direction: column; gap: var(--vitra-space-4, 1rem);">
-          <div>
-            <label class="vitra-label" for="demo-slider">Default Slider</label>
-            <input type="range" id="demo-slider" class="vitra-range" min="0" max="100" value="50" style="width: 100%;">
-          </div>
-          <div>
-            <label class="vitra-label" for="demo-slider-sm">Small Slider</label>
-            <input type="range" id="demo-slider-sm" class="vitra-range vitra-range-sm" min="0" max="100" value="30" style="width: 100%;">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tabs -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Tabs</h3>
-      <div class="component-showcase">
-        <div class="vitra-tabs" id="demo-tabs">
-          <div class="vitra-tabs-nav">
-            <button class="vitra-tabs-tab vitra-tabs-tab-active" data-tab="tab1">Tab 1</button>
-            <button class="vitra-tabs-tab" data-tab="tab2">Tab 2</button>
-            <button class="vitra-tabs-tab" data-tab="tab3">Tab 3</button>
-          </div>
-          <div class="vitra-tabs-content">
-            <div class="vitra-tabs-panel" id="tab1">
-              <h4>Panel 1</h4>
-              <p>Content for the first tab.</p>
-            </div>
-            <div class="vitra-tabs-panel" id="tab2" style="display: none;">
-              <h4>Panel 2</h4>
-              <p>Content for the second tab.</p>
-            </div>
-            <div class="vitra-tabs-panel" id="tab3" style="display: none;">
-              <h4>Panel 3</h4>
-              <p>Content for the third tab.</p>
+            <div class="vitra-tabs-content">
+              <div class="vitra-tabs-panel" id="tab1">
+                <h4>Panel 1</h4>
+                <p>Content for the first tab.</p>
+              </div>
+              <div class="vitra-tabs-panel" id="tab2" style="display: none;">
+                <h4>Panel 2</h4>
+                <p>Content for the second tab.</p>
+              </div>
+              <div class="vitra-tabs-panel" id="tab3" style="display: none;">
+                <h4>Panel 3</h4>
+                <p>Content for the third tab.</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Progress -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Progress Bars</h3>
-      <div class="component-showcase">
-        <div style="display: flex; flex-direction: column; gap: var(--vitra-space-4, 1rem);">
-          <div>
-            <label class="vitra-label">Default Progress</label>
-            <div class="vitra-progress">
-              <div class="vitra-progress-bar" style="width: 60%;"></div>
-            </div>
+      <!-- Modals -->
+      <div style="margin-top: var(--vitra-space-6);">
+        <h3>Modals</h3>
+        <div class="component-showcase">
+          <button class="vitra-btn vitra-btn-solid" data-vitra-modal-open="demo-modal">Open Modal</button>
+          <button class="vitra-btn vitra-btn-ghost" data-vitra-modal-open="demo-modal-lg">Open Large Modal</button>
+          <p style="margin-top: var(--vitra-space-2); font-size: 0.875rem;">Focus trapping, ESC close, overlay click close.</p>
+        </div>
+      </div>
+
+      <!-- Tooltips -->
+      <div style="margin-top: var(--vitra-space-6);">
+        <h3>Tooltips</h3>
+        <div class="component-showcase">
+          <div class="vitra-flex vitra-gap-4 vitra-flex-wrap">
+            <button class="vitra-btn vitra-btn-ghost" data-vitra-tooltip="Top tooltip" data-vitra-tooltip-position="top">Hover Top</button>
+            <button class="vitra-btn vitra-btn-ghost" data-vitra-tooltip="Bottom tooltip" data-vitra-tooltip-position="bottom">Hover Bottom</button>
+            <button class="vitra-btn vitra-btn-ghost" data-vitra-tooltip="Left tooltip" data-vitra-tooltip-position="left">Hover Left</button>
+            <button class="vitra-btn vitra-btn-ghost" data-vitra-tooltip="Right tooltip" data-vitra-tooltip-position="right">Hover Right</button>
           </div>
-          <div>
-            <label class="vitra-label">Small Progress</label>
-            <div class="vitra-progress vitra-progress-sm">
-              <div class="vitra-progress-bar" style="width: 30%;"></div>
-            </div>
+        </div>
+      </div>
+
+      <!-- Toast Showcase -->
+      <div style="margin-top: var(--vitra-space-6);">
+        <h3>Toasts</h3>
+        <div class="component-showcase">
+          <p style="margin-top: 0;">Programmatic notifications with auto-dismiss and type variants.</p>
+          <div class="vitra-flex vitra-gap-2 vitra-flex-wrap">
+            <button class="vitra-btn vitra-btn-solid" onclick="Vitra.toast.show('Success toast', { type: 'success' })">Success</button>
+            <button class="vitra-btn vitra-btn-ghost" onclick="Vitra.toast.show('Error toast', { type: 'error', duration: 5000 })">Error</button>
+            <button class="vitra-btn vitra-btn-glass" onclick="Vitra.toast.show('Info toast', { type: 'info' })">Info</button>
+            <button class="vitra-btn vitra-btn-gradient" onclick="Vitra.toast.show('Warning toast', { type: 'warning', duration: 7000 })">Warning</button>
           </div>
-          <div>
-            <label class="vitra-label">Large Progress</label>
-            <div class="vitra-progress vitra-progress-lg">
-              <div class="vitra-progress-bar" style="width: 80%;"></div>
+        </div>
+      </div>
+
+      <!-- Progress -->
+      <div style="margin-top: var(--vitra-space-6);">
+        <h3>Progress Bars</h3>
+        <div class="component-showcase">
+          <div style="display: flex; flex-direction: column; gap: var(--vitra-space-4);">
+            <div>
+              <label class="vitra-label">Default</label>
+              <div class="vitra-progress"><div class="vitra-progress-bar" style="width: 60%;"></div></div>
+            </div>
+            <div>
+              <label class="vitra-label">Small</label>
+              <div class="vitra-progress vitra-progress-sm"><div class="vitra-progress-bar" style="width: 30%;"></div></div>
+            </div>
+            <div>
+              <label class="vitra-label">Large</label>
+              <div class="vitra-progress vitra-progress-lg"><div class="vitra-progress-bar" style="width: 80%;"></div></div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Badges -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Badges</h3>
-      <div class="component-showcase">
-<div class="vitra-flex vitra-gap-2 vitra-flex-wrap vitra-items-center">
-          <span class="vitra-badge">Default</span>
-          <span class="vitra-badge vitra-badge-primary">Primary</span>
-          <span class="vitra-badge vitra-badge-success">Success</span>
-          <span class="vitra-badge vitra-badge-warning">Warning</span>
-          <span class="vitra-badge vitra-badge-error">Error</span>
-          <span class="vitra-badge vitra-badge-info">Info</span>
-        </div>
-<div class="vitra-flex vitra-gap-2 vitra-flex-wrap vitra-items-center vitra-mt-2">
-          <span class="vitra-badge vitra-badge-sm">Small</span>
-          <span class="vitra-badge">Default</span>
-          <span class="vitra-badge vitra-badge-lg">Large</span>
+      <!-- Badges -->
+      <div style="margin-top: var(--vitra-space-6);">
+        <h3>Badges</h3>
+        <div class="component-showcase">
+          <div class="vitra-flex vitra-gap-2 vitra-flex-wrap vitra-items-center">
+            <span class="vitra-badge">Default</span>
+            <span class="vitra-badge vitra-badge-primary">Primary</span>
+            <span class="vitra-badge vitra-badge-success">Success</span>
+            <span class="vitra-badge vitra-badge-warning">Warning</span>
+            <span class="vitra-badge vitra-badge-error">Error</span>
+            <span class="vitra-badge vitra-badge-info">Info</span>
+          </div>
+          <div class="vitra-flex vitra-gap-2 vitra-flex-wrap vitra-items-center vitra-mt-2">
+            <span class="vitra-badge vitra-badge-sm">Small</span>
+            <span class="vitra-badge">Default</span>
+            <span class="vitra-badge vitra-badge-lg">Large</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Avatars -->
-    <div style="margin-top: var(--vitra-space-6, 1.5rem);">
-      <h3>Avatars</h3>
-      <div class="component-showcase">
-<div class="vitra-flex vitra-gap-4 vitra-flex-wrap vitra-items-center">
-          <div class="vitra-avatar" style="width: 40px; height: 40px; background: var(--vitra-color-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">JD</div>
-          <div class="vitra-avatar" style="width: 48px; height: 48px; background: var(--vitra-color-success); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">AB</div>
-          <div class="vitra-avatar" style="width: 64px; height: 64px; background: var(--vitra-color-warning); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">CD</div>
+      <!-- Avatars -->
+      <div style="margin-top: var(--vitra-space-6);">
+        <h3>Avatars</h3>
+        <div class="component-showcase">
+          <div class="vitra-flex vitra-gap-4 vitra-flex-wrap vitra-items-center">
+            <div class="vitra-avatar" style="width: 40px; height: 40px; background: var(--vitra-color-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">JD</div>
+            <div class="vitra-avatar" style="width: 48px; height: 48px; background: var(--vitra-color-success); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">AB</div>
+            <div class="vitra-avatar" style="width: 64px; height: 64px; background: var(--vitra-color-warning); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">CD</div>
+          </div>
         </div>
-        <p style="margin-top: var(--vitra-space-2, 0.5rem); font-size: var(--vitra-font-size-sm, 0.875rem);">
-          Avatars use initials with colored backgrounds
-        </p>
+      </div>
+
+      <!-- Typography -->
+      <div style="margin-top: var(--vitra-space-6);">
+        <h3>Typography Scale</h3>
+        <div class="component-showcase">
+          <p style="font-size: var(--vitra-font-size-xs); margin: var(--vitra-space-1) 0;">--vitra-font-size-xs: The quick brown fox</p>
+          <p style="font-size: var(--vitra-font-size-sm); margin: var(--vitra-space-1) 0;">--vitra-font-size-sm: The quick brown fox</p>
+          <p style="font-size: var(--vitra-font-size-base); margin: var(--vitra-space-1) 0;">--vitra-font-size-base: The quick brown fox</p>
+          <p style="font-size: var(--vitra-font-size-lg); margin: var(--vitra-space-1) 0;">--vitra-font-size-lg: The quick brown fox</p>
+          <p style="font-size: var(--vitra-font-size-xl); margin: var(--vitra-space-1) 0;">--vitra-font-size-xl: The quick brown fox</p>
+          <p style="font-size: var(--vitra-font-size-2xl); margin: var(--vitra-space-1) 0;">--vitra-font-size-2xl: The quick brown fox</p>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div style="margin-top: var(--vitra-space-6);">
+        <h3>Navigation</h3>
+        <div class="component-showcase">
+          <nav class="vitra-navbar" style="position: relative; top: auto;">
+            <div class="vitra-navbar-brand">Brand</div>
+            <div class="vitra-navbar-links" style="display: flex;">
+              <a href="#" class="vitra-navbar-link">Link 1</a>
+              <a href="#" class="vitra-navbar-link">Link 2</a>
+              <a href="#" class="vitra-navbar-link">Link 3</a>
+            </div>
+          </nav>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Footer -->
+  <!-- ============================================================
+       MODALS
+       ============================================================ -->
+  <div id="demo-modal" class="vitra-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
+    <div class="vitra-modal-content" style="max-width: 400px;">
+      <div class="vitra-modal-header">
+        <h3 id="demo-modal-title">Demo Modal</h3>
+        <button class="vitra-btn vitra-btn-ghost vitra-btn-sm" data-vitra-modal-close>&times;</button>
+      </div>
+      <div class="vitra-modal-body">
+        <p>Modal with proper accessibility.</p>
+        <input type="text" class="vitra-input" placeholder="Focusable input" style="margin-top: var(--vitra-space-2);">
+      </div>
+      <div class="vitra-modal-footer">
+        <button class="vitra-btn vitra-btn-ghost" data-vitra-modal-close>Cancel</button>
+        <button class="vitra-btn vitra-btn-solid" data-vitra-modal-close>Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="demo-modal-lg" class="vitra-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="demo-modal-lg-title">
+    <div class="vitra-modal-content" style="max-width: 800px;">
+      <div class="vitra-modal-header">
+        <h3 id="demo-modal-lg-title">Large Modal</h3>
+        <button class="vitra-btn vitra-btn-ghost vitra-btn-sm" data-vitra-modal-close>&times;</button>
+      </div>
+      <div class="vitra-modal-body">
+        <p>Larger modal with more content.</p>
+      </div>
+      <div class="vitra-modal-footer">
+        <button class="vitra-btn vitra-btn-solid" data-vitra-modal-close>Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
   <footer class="demo-footer">
     <div class="vitra-container">
       <div class="footer-grid">
@@ -888,10 +845,10 @@
         <div class="footer-links">
           <h4>Framework</h4>
           <ul>
-            <li><a href="#tokens">Design Tokens</a></li>
-            <li><a href="#glass">Glass Engine</a></li>
-            <li><a href="#particles">Particles</a></li>
-            <li><a href="#motion">Motion</a></li>
+            <li><a href="#cinematic">Cinematic</a></li>
+            <li><a href="#themes">Themes</a></li>
+            <li><a href="#modern-css">Modern CSS</a></li>
+            <li><a href="#components">Components</a></li>
           </ul>
         </div>
         <div class="footer-links">
@@ -907,27 +864,23 @@
           <ul>
             <li><a href="mailto:contact@desvosoft.com">Email Us</a></li>
             <li><a href="#">Support</a></li>
-            <li><a href="#">Privacy Policy</a></li>
           </ul>
         </div>
       </div>
       <div class="footer-bottom">
-        &copy; 2026 DesvoSoft. Vitra CSS Framework. Internal Use Only.
+        &copy; 2026 DesvoSoft. Vitra CSS Framework.
       </div>
     </div>
   </footer>
 
   <!-- Framework JS -->
-  <script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.2.0/dist/vitra.min.js" integrity="sha256-6s2xLqcZaX8RKfLG/tjPjNs/rJuWVgwz+8Lfz662jv8=" crossorigin="anonymous"></script>
-  
-  <!-- Demo Initialization -->
+  <script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.3.0/dist/vitra.min.js" crossorigin="anonymous"></script>
   <script src="demo.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Spawn initial particles in hero
-      Vitra.particles.spawn(30, {
+      Vitra.particles.spawn(20, {
         container: '.demo-hero',
-        color: 'hsla(var(--vitra-color-accent-h), 100%, 70%, 0.3)'
+        color: 'hsla(var(--vitra-color-accent-h), 100%, 70%, 0.25)'
       });
     });
   </script>

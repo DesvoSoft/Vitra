@@ -1,65 +1,372 @@
-/**
- * Vitra CSS Interactive Demo - Demo-specific Styles
- * Uses the Vitra framework tokens and components
- */
-
 /* ============================================
-   Demo Page Styles
+   Vitra CSS Interactive Demo — Demo Styles
+   Uses Vitra framework tokens throughout
    ============================================ */
 
-/* Hero section enhancements */
-.demo-hero {
-  position: relative;
-  overflow: hidden;
-}
+/* ============================================
+   Base & Layout
+   ============================================ */
 
 body {
   background-color: var(--vitra-color-bg);
-  background-image: 
+  background-image:
     radial-gradient(at 0% 0%, hsla(var(--vitra-color-accent-h), 100%, 70%, 0.15) 0px, transparent 50%),
     radial-gradient(at 100% 0%, hsla(var(--vitra-color-info-h, 200), 100%, 70%, 0.1) 0px, transparent 50%);
   background-attachment: fixed;
   min-height: 100vh;
-  position: relative;
 }
 
-.demo-hero::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 150%;
-  height: 150%;
-  background: radial-gradient(
-    circle at center,
-    hsla(var(--vitra-color-accent-h), 100%, 70%, 0.1) 0%,
-    transparent 50%
-  );
-  pointer-events: none;
-  z-index: -1;
-}
-
-/* Section spacing and styling */
 .demo-section {
   position: relative;
   padding: var(--vitra-space-12) 0;
   border-bottom: 1px solid hsla(var(--vitra-color-accent-h), 100%, 70%, 0.05);
 }
 
-/* Component showcase cards */
+.demo-section-title {
+  font-size: var(--vitra-font-size-3xl, 2rem);
+  margin-bottom: var(--vitra-space-2);
+  letter-spacing: -0.03em;
+}
+
+.demo-section-desc {
+  max-width: 560px;
+  margin-bottom: var(--vitra-space-8);
+}
+
+.demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--vitra-space-4);
+  margin: var(--vitra-space-6) 0;
+}
+
 .component-showcase {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .component-showcase:hover {
   transform: translateY(-2px);
-  box-shadow: var(--vitra-shadow-medium, 0 4px 12px rgba(0, 0, 0, 0.1));
+  box-shadow: var(--vitra-shadow-medium);
 }
 
 /* ============================================
-   Navigation Improvements
+   Hero
    ============================================ */
+
+.demo-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.demo-hero h1.demo-hero-title {
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  line-height: 1.05;
+  margin-bottom: var(--vitra-space-4);
+  letter-spacing: -0.04em;
+}
+
+.demo-hero-badge {
+  display: inline-block;
+  margin-bottom: var(--vitra-space-4);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+.demo-hero-sub {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  opacity: 0.7;
+}
+
+/* Spotlight tracking overlay */
+.vitra-hero-spotlight {
+  position: relative;
+  width: 100%;
+  z-index: 2;
+}
+
+.vitra-hero-spotlight::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(600px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%), hsla(var(--vitra-color-accent-h), 100%, 70%, 0.08), transparent 60%);
+  pointer-events: none;
+  transition: background 0.1s ease;
+}
+
+/* ============================================
+   Cinematic Section
+   ============================================ */
+
+.demo-card {
+  background: var(--vitra-color-surface);
+  border: 1px solid var(--vitra-color-border);
+  border-radius: var(--vitra-radius-lg);
+  padding: var(--vitra-space-6);
+  margin-bottom: var(--vitra-space-6);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.demo-card:hover {
+  border-color: var(--vitra-color-border-hover);
+  box-shadow: var(--vitra-shadow-medium);
+}
+
+.demo-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--vitra-space-3);
+  gap: var(--vitra-space-3);
+}
+
+.demo-card-header h3 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--vitra-space-2);
+}
+
+.cinematic-preview {
+  position: relative;
+  min-height: 220px;
+  border-radius: var(--vitra-radius-md);
+  overflow: hidden;
+  margin-top: var(--vitra-space-4);
+  border: 1px solid var(--vitra-color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cinematic-overlay-content {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  pointer-events: none;
+  padding: var(--vitra-space-4);
+}
+
+/* Keep glow orbs within cinematic preview boundaries */
+#cinematic-glow-orbs {
+  position: relative;
+  overflow: hidden;
+}
+
+#cinematic-glow-orbs .vitra-glow-orb {
+  position: absolute;
+}
+
+/* Border glow cinematic demo */
+#cinematic-border-glow {
+  --vitra-border-glow-angle: 0deg;
+}
+
+/* ============================================
+   Theme Studio
+   ============================================ */
+
+.theme-preview-card {
+  background: var(--vitra-color-bg);
+  border: 1px solid var(--vitra-color-border);
+  border-radius: var(--vitra-radius-lg);
+  overflow: hidden;
+  margin-bottom: var(--vitra-space-6);
+  transition: border-color 0.3s ease;
+}
+
+.theme-preview-header {
+  padding: var(--vitra-space-3) var(--vitra-space-4);
+  border-bottom: 1px solid var(--vitra-color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.theme-preview-bg {
+  padding: var(--vitra-space-6);
+  background: var(--vitra-color-bg);
+}
+
+.theme-preview-surface {
+  background: var(--vitra-color-surface);
+  border: 1px solid var(--vitra-color-border);
+  border-radius: var(--vitra-radius-md);
+  padding: var(--vitra-space-4);
+}
+
+.theme-preview-accent-bar {
+  height: 4px;
+  background: var(--vitra-color-accent);
+  border-radius: 2px;
+  margin-bottom: var(--vitra-space-3);
+  width: 60px;
+}
+
+.theme-preview-glass {
+  border: 1px solid var(--vitra-color-border);
+}
+
+/* Theme swatches (also used for token swatches) */
+.theme-swatches {
+  display: flex;
+  gap: var(--vitra-space-3);
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: var(--vitra-space-4);
+}
+
+.theme-swatch {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--swatch-border, var(--vitra-color-border));
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  position: relative;
+  padding: 0;
+  outline: none;
+}
+
+.theme-swatch:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 20px hsla(var(--vitra-color-accent-h), 100%, 70%, 0.3);
+}
+
+.theme-swatch.active {
+  border-color: var(--vitra-color-accent);
+  box-shadow: 0 0 0 3px var(--vitra-color-accent), 0 0 20px hsla(var(--vitra-color-accent-h), 100%, 70%, 0.3);
+}
+
+.theme-swatch.active::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Token swatches (square, in tokens section) */
+.token-swatch {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--vitra-radius-sm);
+  border: 2px solid var(--vitra-color-border);
+  cursor: default;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.token-swatch:hover {
+  transform: scale(1.1);
+  box-shadow: var(--vitra-shadow-medium);
+}
+
+/* ============================================
+   Modern CSS Section
+   ============================================ */
+
+.modern-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--vitra-space-4);
+}
+
+.modern-grid .demo-card {
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.modern-grid .demo-card > *:last-child {
+  margin-top: auto;
+}
+
+/* Popover demo */
+#popover-demo {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+#popover-demo.open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@starting-style {
+  #popover-demo.open {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+/* Starting-style panel */
+.starting-panel {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.starting-panel.open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@starting-style {
+  .starting-panel.open {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* Container Queries table demo */
+.vitra-table-wrapper {
+  container-type: inline-size;
+}
+
+@container (max-width: 500px) {
+  .vitra-table thead {
+    display: none;
+  }
+
+  .vitra-table tr {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--vitra-color-border);
+    border-radius: var(--vitra-radius-md);
+    padding: var(--vitra-space-3);
+    margin-bottom: var(--vitra-space-3);
+  }
+
+  .vitra-table td {
+    border: none;
+    padding: var(--vitra-space-1) 0;
+  }
+
+  .vitra-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.5;
+    display: block;
+  }
+}
+
+/* ============================================
+   Navigation
+   ============================================ */
+
 .vitra-navbar {
   width: 100%;
   border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
@@ -80,8 +387,9 @@ body {
 }
 
 /* ============================================
-   Footer Overhaul
+   Footer
    ============================================ */
+
 .demo-footer {
   margin-top: var(--vitra-space-12);
   padding: var(--vitra-space-12) 0 var(--vitra-space-6);
@@ -137,44 +445,6 @@ body {
   opacity: 0.4;
 }
 
-.theme-swatches {
-  display: flex;
-  gap: var(--vitra-space-2, 0.5rem);
-  flex-wrap: wrap;
-  margin-top: var(--vitra-space-2, 0.5rem);
-}
-
-.theme-swatch {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--vitra-radius-sm, 4px);
-  border: 2px solid var(--vitra-color-border, rgba(0, 0, 0, 0.12));
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  position: relative;
-}
-
-.theme-swatch:hover {
-  transform: scale(1.1);
-  box-shadow: var(--vitra-shadow-medium, 0 4px 12px rgba(0, 0, 0, 0.1));
-}
-
-.theme-swatch.active {
-  border-color: var(--vitra-color-accent, #6c63ff);
-  box-shadow: 0 0 0 2px var(--vitra-color-accent, #6c63ff);
-}
-
-.theme-swatch.active::after {
-  content: '✓';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-weight: bold;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-
 /* ============================================
    Particle Demo Area
    ============================================ */
@@ -182,18 +452,18 @@ body {
 #particle-demo-area {
   position: relative;
   min-height: 300px;
-  border: 2px dashed var(--vitra-color-border, rgba(0, 0, 0, 0.12));
-  border-radius: var(--vitra-radius-lg, 8px);
-  padding: var(--vitra-space-4, 1rem);
+  border: 2px dashed var(--vitra-color-border);
+  border-radius: var(--vitra-radius-lg);
+  padding: var(--vitra-space-4);
   overflow: hidden;
   transition: border-color 0.3s ease;
 }
 
 #particle-demo-area:hover {
-  border-color: var(--vitra-color-accent, #6c63ff);
+  border-color: var(--vitra-color-accent);
 }
 
-#particle-demo-area p {
+#particle-demo-area > p {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -203,32 +473,28 @@ body {
 }
 
 /* ============================================
-   Controls Styling
+   Controls
    ============================================ */
 
 .demo-controls {
-  background: var(--vitra-color-surface, rgba(0, 0, 0, 0.05));
-  border: 1px solid var(--vitra-color-border, rgba(0, 0, 0, 0.12));
-  border-radius: var(--vitra-radius-lg, 8px);
-  padding: var(--vitra-space-4, 1rem);
-  margin: var(--vitra-space-4, 1rem) 0;
+  background: var(--vitra-color-surface);
+  border: 1px solid var(--vitra-color-border);
+  border-radius: var(--vitra-radius-lg);
+  padding: var(--vitra-space-4);
+  margin: var(--vitra-space-4) 0;
 }
 
 .demo-control-group {
-  margin-bottom: var(--vitra-space-4, 1rem);
-}
-
-.demo-control-group:last-of-type {
-  margin-bottom: var(--vitra-space-4, 1rem);
+  margin-bottom: var(--vitra-space-4);
 }
 
 .demo-label {
   display: block;
   font-family: var(--vitra-font-heading);
   font-weight: 600;
-  margin-bottom: var(--vitra-space-2, 0.5rem);
-  color: var(--vitra-color-text-primary, #000);
-  font-size: var(--vitra-font-size-xs, 0.75rem);
+  margin-bottom: var(--vitra-space-2);
+  color: var(--vitra-color-text-primary);
+  font-size: var(--vitra-font-size-xs);
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
@@ -250,9 +516,9 @@ body {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: var(--vitra-color-accent, #6c63ff);
+  background: var(--vitra-color-accent);
   cursor: pointer;
-  border: 2px solid var(--vitra-color-bg, #fff);
+  border: 2px solid var(--vitra-color-bg);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s ease;
 }
@@ -265,29 +531,10 @@ body {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: var(--vitra-color-accent, #6c63ff);
+  background: var(--vitra-color-accent);
   cursor: pointer;
-  border: 2px solid var(--vitra-color-bg, #fff);
+  border: 2px solid var(--vitra-color-bg);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-/* Color input styling */
-.vitra-color-input {
-  -webkit-appearance: none;
-  appearance: none;
-  border: 2px solid var(--vitra-color-border, rgba(0, 0, 0, 0.12));
-  border-radius: var(--vitra-radius-sm, 4px);
-  cursor: pointer;
-  padding: 0;
-  overflow: hidden;
-}
-
-.vitra-color-input::-webkit-color-swatch-wrapper {
-  padding: 0;
-}
-
-.vitra-color-input::-webkit-color-swatch {
-  border: none;
 }
 
 /* ============================================
@@ -295,28 +542,17 @@ body {
    ============================================ */
 
 .motion-demo-item {
-  padding: var(--vitra-space-6, 1.5rem);
-  margin: var(--vitra-space-4, 1rem) 0;
-  background: var(--vitra-color-surface, rgba(0, 0, 0, 0.05));
-  border-radius: var(--vitra-radius-md, 4px);
-  border: 1px solid var(--vitra-color-border, rgba(0, 0, 0, 0.12));
+  padding: var(--vitra-space-6);
+  margin: var(--vitra-space-4) 0;
+  background: var(--vitra-color-surface);
+  border-radius: var(--vitra-radius-md);
+  border: 1px solid var(--vitra-color-border);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .motion-demo-item:hover {
   transform: translateY(-4px);
-  box-shadow: var(--vitra-shadow-elevated, 0 8px 32px rgba(0, 0, 0, 0.12));
-}
-
-/* ============================================
-   Grid Layouts
-   ============================================ */
-
-.demo-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: var(--vitra-space-4, 1rem);
-  margin: var(--vitra-space-6, 1.5rem) 0;
+  box-shadow: var(--vitra-shadow-elevated);
 }
 
 /* ============================================
@@ -324,48 +560,47 @@ body {
    ============================================ */
 
 pre {
-  background: var(--vitra-color-surface, rgba(0, 0, 0, 0.05));
-  border: 1px solid var(--vitra-color-border, rgba(0, 0, 0, 0.12));
-  border-radius: var(--vitra-radius-md, 4px);
-  padding: var(--vitra-space-4, 1rem);
+  background: var(--vitra-color-surface);
+  border: 1px solid var(--vitra-color-border);
+  border-radius: var(--vitra-radius-md);
+  padding: var(--vitra-space-4);
   overflow-x: auto;
-  font-size: var(--vitra-font-size-sm, 0.875rem);
+  font-size: var(--vitra-font-size-sm);
   line-height: 1.6;
 }
 
 pre code {
-  color: var(--vitra-color-text-primary, #000);
+  color: var(--vitra-color-text-primary);
   font-family: 'Courier New', Courier, monospace;
 }
 
-
-
 /* ============================================
-   Responsive Adjustments
+   Responsive
    ============================================ */
 
 @media (max-width: 768px) {
   .demo-hero {
-    min-height: 50vh;
-    padding: var(--vitra-space-4, 1rem);
+    min-height: 60vh;
+    padding: var(--vitra-space-4);
   }
 
-  .demo-hero h1 {
-    font-size: var(--vitra-font-size-2xl, 1.5rem);
+  .demo-hero h1.demo-hero-title {
+    font-size: var(--vitra-font-size-3xl);
   }
 
   .demo-section {
-    padding: var(--vitra-space-4, 1rem) var(--vitra-space-2, 0.5rem);
-    margin: var(--vitra-space-4, 1rem) auto;
+    padding: var(--vitra-space-6) var(--vitra-space-2);
+    margin: var(--vitra-space-4) auto;
   }
 
-  .demo-grid {
+  .demo-grid,
+  .modern-grid {
     grid-template-columns: 1fr;
   }
 
   .theme-swatch {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
   }
 
   #particle-demo-area {
@@ -373,7 +608,7 @@ pre code {
   }
 
   .vitra-navbar-links {
-    display: none; /* Use mobile drawer on small screens */
+    display: none;
   }
 }
 
@@ -381,7 +616,11 @@ pre code {
   .motion-demo-item,
   .component-showcase,
   .theme-swatch,
-  .vitra-range::-webkit-slider-thumb {
+  .token-swatch,
+  .vitra-range::-webkit-slider-thumb,
+  .demo-card,
+  .cinematic-preview,
+  .theme-preview-card {
     transition: none !important;
     animation: none !important;
   }
@@ -391,24 +630,14 @@ pre code {
   }
 }
 
-/* ============================================
-   Print Styles
-   ============================================ */
-
 @media print {
+  .demo-controls,
+  #particle-demo-area,
+  .vitra-navbar {
+    display: none;
+  }
+
   .demo-hero::before {
     display: none;
-  }
-
-  .demo-controls {
-    display: none;
-  }
-
-  #particle-demo-area {
-    display: none;
-  }
-
-  .vitra-navbar {
-    position: relative;
   }
 }
