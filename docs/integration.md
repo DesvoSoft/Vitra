@@ -132,9 +132,9 @@ Vitra supports declarive configuration via the `data-config` attribute. No JavaS
 ```html
 <!-- Configure Vitra with JSON in data-config -->
 <div data-config='{
-  "theme": { "init": true, "options": { "defaultTheme": "auto" } },
-  "particles": { "spawn": { "count": 10, "options": { "color": "#6c63ff" } } },
-  "reveal": { "init": true }
+  "theme": { "defaultTheme": "auto" },
+  "particles": { "count": 10, "color": "#6c63ff" },
+  "reveal": { "threshold": 0.1, "stagger": 100 }
 }'>
   <!-- Your content -->
 </div>
@@ -145,33 +145,21 @@ Vitra supports declarive configuration via the `data-config` attribute. No JavaS
 ```javascript
 {
   "theme": {
-    "init": true,          // Initialize theme system
-    "options": {
-      "defaultTheme": "auto",  // Fallback theme
-      "persist": true            // Save to localStorage
-    }
+    "defaultTheme": "auto",  // Fallback theme
+    "persist": true            // Save to localStorage
   },
   "particles": {
-    "spawn": {
-      "count": 10,              // Number of particles
-      "options": {
-        "color": "#6c63ff",    // Particle color
-        "size": 4,              // Particle size (px)
-        "emoji": null            // Or emoji string like "✨"
-      }
-    }
+    "count": 10,              // Number of particles
+    "color": "#6c63ff",      // Particle color
+    "size": 4,                // Particle size (px)
+    "emoji": null              // Or emoji string like "✨"
   },
   "reveal": {
-    "init": true,              // Initialize scroll reveal
-    "options": {
-      "selector": ".vitra-reveal",  // Element selector
-      "threshold": 0.1,            // Visibility threshold
-      "stagger": 100               // Stagger delay (ms)
-    }
+    "selector": ".vitra-reveal",  // Element selector
+    "threshold": 0.1,            // Visibility threshold
+    "stagger": 100               // Stagger delay (ms)
   },
-  "tooltip": {
-    "init": true               // Initialize tooltips
-  }
+  "tooltip": true              // Initialize tooltips (true by default)
 }
 ```
 
@@ -179,7 +167,7 @@ Vitra supports declarive configuration via the `data-config` attribute. No JavaS
 
 ```html
 <!-- Just initialize theme with auto-detect -->
-<div data-config='{"theme": {"init": true, "options": {"defaultTheme": "auto"}}}'>
+<div data-config='{"theme": {"defaultTheme": "auto"}}'>
   <!-- Page content -->
 </div>
 ```
@@ -190,7 +178,7 @@ Vitra supports declarive configuration via the `data-config` attribute. No JavaS
 <!-- Initialize particles on a container -->
 <div data-vitra-particles="20" 
      data-vitra-particle-color="#ff6b6b"
-     data-config='{"particles": {"spawn": {"count": 20}}}'>
+     data-config='{"particles": {"count": 20}}'>
   <!-- Particles will appear here -->
 </div>
 ```

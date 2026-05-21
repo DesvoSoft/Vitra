@@ -1,5 +1,7 @@
 /* 05-layout.css - Layout System */
+
 /* Part of Vitra CSS Framework */
+
 /* Phase 4: Layout & Utilities - Plan 01 */
 
 /* ============================================
@@ -9,27 +11,31 @@
    ============================================ */
 
 @layer layout {
-  /* --- LAYOUT TOKENS --- */
-  /* Responsive breakpoints */
-  --vitra-breakpoint-md: 768px;
-  --vitra-breakpoint-lg: 1024px;
-  --vitra-breakpoint-xl: 1280px;
+  :root {
+    /* --- LAYOUT TOKENS --- */
 
-  /* Container max-widths at each breakpoint */
-  --vitra-container-sm: 100%;
-  --vitra-container-md: 720px;
-  --vitra-container-lg: 960px;
-  --vitra-container-xl: 1200px;
+    /* Responsive breakpoints */
+    --vitra-breakpoint-md: 768px;
+    --vitra-breakpoint-lg: 1024px;
+    --vitra-breakpoint-xl: 1280px;
 
-  /* Fluid spacing scale using clamp() */
-  --vitra-fluid-space-1: clamp(0.25rem, 1vw, 0.5rem);    /* 4-8px */
-  --vitra-fluid-space-2: clamp(0.5rem, 2vw, 1rem);        /* 8-16px */
-  --vitra-fluid-space-3: clamp(1rem, 3vw, 1.5rem);        /* 16-24px */
-  --vitra-fluid-space-4: clamp(1.25rem, 4vw, 2rem);       /* 20-32px */
-  --vitra-fluid-space-5: clamp(1.5rem, 5vw, 2.5rem);     /* 24-40px */
-  --vitra-fluid-space-6: clamp(2rem, 6vw, 3rem);          /* 32-48px */
+    /* Container max-widths at each breakpoint */
+    --vitra-container-sm: 100%;
+    --vitra-container-md: 720px;
+    --vitra-container-lg: 960px;
+    --vitra-container-xl: 1200px;
+
+    /* Fluid spacing scale using clamp() */
+    --vitra-fluid-space-1: clamp(0.25rem, 1vw, 0.5rem);    /* 4-8px */
+    --vitra-fluid-space-2: clamp(0.5rem, 2vw, 1rem);        /* 8-16px */
+    --vitra-fluid-space-3: clamp(1rem, 3vw, 1.5rem);        /* 16-24px */
+    --vitra-fluid-space-4: clamp(1.25rem, 4vw, 2rem);       /* 20-32px */
+    --vitra-fluid-space-5: clamp(1.5rem, 5vw, 2.5rem);     /* 24-40px */
+    --vitra-fluid-space-6: clamp(2rem, 6vw, 3rem);          /* 32-48px */
+  }
 
   /* --- CONTAINER SYSTEM --- */
+
   /* Responsive container with max-width breakpoints and fluid padding */
 
   .vitra-container {
@@ -40,33 +46,31 @@
     max-width: var(--vitra-container-sm);
 
     /* Fluid padding using clamp() for responsive spacing */
-    padding-inline-start: var(--vitra-fluid-space-3);
-    padding-inline-end: var(--vitra-fluid-space-3);
+    padding-inline: var(--vitra-fluid-space-3) var(--vitra-fluid-space-3);
 
     /* Center the container */
-    margin-inline-start: auto;
-    margin-inline-end: auto;
+    margin-inline: auto;
 
     /* Ensure padding doesn't affect width calculation */
     box-sizing: border-box;
   }
 
   /* Responsive max-width at medium breakpoint (768px+) */
-  @media (min-width: 768px) {
+  @media (width >= 768px) {
     .vitra-container {
       max-width: var(--vitra-container-md);
     }
   }
 
   /* Responsive max-width at large breakpoint (1024px+) */
-  @media (min-width: 1024px) {
+  @media (width >= 1024px) {
     .vitra-container {
       max-width: var(--vitra-container-lg);
     }
   }
 
   /* Responsive max-width at extra-large breakpoint (1280px+) */
-  @media (min-width: 1280px) {
+  @media (width >= 1280px) {
     .vitra-container {
       max-width: var(--vitra-container-xl);
     }
@@ -90,6 +94,7 @@
   }
 
   /* --- GRID SYSTEM --- */
+
   /* CSS Grid utilities with column variants and gap utilities */
 
   .vitra-grid {
@@ -111,8 +116,9 @@
   }
 
   /* Responsive grid variants */
+
   /* 2 columns on medium+ screens */
-  @media (min-width: 768px) {
+  @media (width >= 768px) {
     .vitra-grid-md-2 {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -127,7 +133,7 @@
   }
 
   /* 3 columns on large+ screens */
-  @media (min-width: 1024px) {
+  @media (width >= 1024px) {
     .vitra-grid-lg-2 {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -142,6 +148,7 @@
   }
 
   /* --- GRID GAP UTILITIES --- */
+
   /* Using spacing tokens for consistent gaps */
 
   .vitra-grid-gap-1 {
@@ -173,170 +180,8 @@
     gap: var(--vitra-fluid-space-3); /* clamp(1rem, 3vw, 1.5rem) */
   }
 
-  /* --- FLEX UTILITIES --- */
-  /* Flexbox utilities with justify, align, and direction variants */
-
-  .vitra-flex {
-    display: flex;
-    gap: var(--vitra-space-2); /* Default gap: 1rem (16px) */
-  }
-
-  /* Flex direction variants */
-  .vitra-flex-row {
-    flex-direction: row;
-  }
-
-  .vitra-flex-row-reverse {
-    flex-direction: row-reverse;
-  }
-
-  .vitra-flex-col {
-    flex-direction: column;
-  }
-
-  .vitra-flex-col-reverse {
-    flex-direction: column-reverse;
-  }
-
-  /* Justify content variants */
-  .vitra-justify-start {
-    justify-content: flex-start;
-  }
-
-  .vitra-justify-end {
-    justify-content: flex-end;
-  }
-
-  .vitra-justify-center {
-    justify-content: center;
-  }
-
-  .vitra-justify-between {
-    justify-content: space-between;
-  }
-
-  .vitra-justify-around {
-    justify-content: space-around;
-  }
-
-  .vitra-justify-evenly {
-    justify-content: space-evenly;
-  }
-
-  /* Align items variants */
-  .vitra-items-start {
-    align-items: flex-start;
-  }
-
-  .vitra-items-end {
-    align-items: flex-end;
-  }
-
-  .vitra-items-center {
-    align-items: center;
-  }
-
-  .vitra-items-baseline {
-    align-items: baseline;
-  }
-
-  .vitra-items-stretch {
-    align-items: stretch;
-  }
-
-  /* Align content variants (for multi-line flex) */
-  .vitra-content-start {
-    align-content: flex-start;
-  }
-
-  .vitra-content-end {
-    align-content: flex-end;
-  }
-
-  .vitra-content-center {
-    align-content: center;
-  }
-
-  .vitra-content-between {
-    align-content: space-between;
-  }
-
-  .vitra-content-around {
-    align-content: space-around;
-  }
-
-  .vitra-content-stretch {
-    align-content: stretch;
-  }
-
-  /* Flex wrap variants */
-  .vitra-flex-wrap {
-    flex-wrap: wrap;
-  }
-
-  .vitra-flex-wrap-reverse {
-    flex-wrap: wrap-reverse;
-  }
-
-  .vitra-flex-nowrap {
-    flex-wrap: nowrap;
-  }
-
-  /* Flex grow/shrink utilities */
-  .vitra-flex-1 {
-    flex: 1 1 0%;
-  }
-
-  .vitra-flex-auto {
-    flex: 1 1 auto;
-  }
-
-  .vitra-flex-initial {
-    flex: 0 1 auto;
-  }
-
-  .vitra-flex-none {
-    flex: none;
-  }
-
-  /* Responsive flex variants */
-  @media (min-width: 768px) {
-    .vitra-md-flex-row {
-      flex-direction: row;
-    }
-
-    .vitra-md-flex-col {
-      flex-direction: column;
-    }
-
-    .vitra-md-justify-center {
-      justify-content: center;
-    }
-
-    .vitra-md-items-center {
-      align-items: center;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .vitra-lg-flex-row {
-      flex-direction: row;
-    }
-
-    .vitra-lg-flex-col {
-      flex-direction: column;
-    }
-
-    .vitra-lg-justify-between {
-      justify-content: space-between;
-    }
-
-    .vitra-lg-items-center {
-      align-items: center;
-    }
-  }
-
   /* --- FLUID SPACING UTILITIES --- */
+
   /* Responsive spacing using clamp() for smooth scaling */
 
   /* Fluid margin utilities */
@@ -374,6 +219,7 @@
   }
 
   /* Fluid directional spacing */
+
   /* Margin top/bottom */
   .vitra-mt-fluid-3 {
     margin-top: var(--vitra-fluid-space-3);
@@ -441,8 +287,7 @@
   
   .vitra-section {
     position: relative;
-    padding-block-start: var(--vitra-space-12, 4rem);
-    padding-block-end: var(--vitra-space-12, 4rem);
+    padding-block: var(--vitra-space-12, 4rem) var(--vitra-space-12, 4rem);
     width: 100%;
   }
 
@@ -453,18 +298,16 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-block-start: var(--vitra-space-16, 6rem);
-    padding-block-end: var(--vitra-space-16, 6rem);
+    padding-block: var(--vitra-space-16, 8rem) var(--vitra-space-16, 8rem);
     text-align: center;
     overflow: hidden;
   }
 
   .vitra-footer {
     position: relative;
-    padding-block-start: var(--vitra-space-12, 4rem);
-    padding-block-end: var(--vitra-space-8, 2rem);
-    background: var(--vitra-color-surface, rgba(0, 0, 0, 0.02));
-    border-block-start: 1px solid var(--vitra-color-border, rgba(0, 0, 0, 0.1));
+    padding-block: var(--vitra-space-12, 4rem) var(--vitra-space-8, 2rem);
+    background: var(--vitra-color-surface, rgb(0 0 0 / 2%));
+    border-block-start: 1px solid var(--vitra-color-border, rgb(0 0 0 / 10%));
     margin-block-start: auto;
   }
 }

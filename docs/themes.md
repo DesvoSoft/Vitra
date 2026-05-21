@@ -1,20 +1,29 @@
 # Themes - Vitra CSS Framework
 
-Complete guide to using and customizing the 8 preset themes in Vitra CSS Framework.
+Complete guide to using and customizing the 7 preset themes in Vitra CSS Framework.
 
 ## Overview
 
-Vitra includes **7 preset themes** that can be applied via the `data-theme` attribute or JavaScript API. Each theme overrides the core design tokens to create a unique visual experience.
+Vitra includes **6 preset themes** (plus `auto` for system detection) that can be applied via the `data-theme` attribute or JavaScript API. Each theme overrides the core design tokens to create a unique visual experience. All surface colors are tinted with the accent hue — no pure neutral grays.
 
-| Theme | Name | Description |
-|-------|------|-------------|
-| `light` | Light | Light background (#ffffff) with dark text |
-| `dark` | Dark | Dark background (#06060a) with light text |
-| `pastel` | Pastel | Soft muted colors with pink accents |
-| `neon` | Neon | Bright glowing accents on deep black background |
-| `ocean` | Ocean | Deep blue-toned theme with cyan accents |
-| `emerald` | Emerald | Rich green-toned theme with soft glows |
-| `auto` | Auto-Detect | Uses `prefers-color-scheme` to detect system preference |
+| Theme | Name | Accent Hue | Description |
+|-------|------|-----------|-------------|
+| `light` | Light | 245 (purple) | Light background with subtle purple tint |
+| `dark` | Dark | 245 (purple) | Dark background with subtle purple tint |
+| `pastel` | Pastel | 320 (pink) | Soft muted colors with pink accents |
+| `neon` | Neon | 180 (cyan) | Bright cyan accents on deep dark background |
+| `ocean` | Ocean | 200 (blue) | Deep blue-toned theme with cyan accents |
+| `emerald` | Emerald | 155 (green) | Rich green-toned theme with soft glows |
+| `auto` | Auto-Detect | 245 (purple) | Uses `prefers-color-scheme` to detect system preference |
+
+### Premium Color Features
+
+Since v1.3, Vitra's theming system includes:
+
+- **Tinted Neutrals**: Every surface carries a trace of the accent hue — inspired by Stripe, Linear, and Raycast
+- **oklch() Support**: `--vitra-color-accent-oklch` for perceptually uniform color interpolation
+- **Warm/Cool Variants**: `--vitra-color-bg-warm` (+30° hue shift) and `--vitra-color-bg-cool` (-30° hue shift)
+- **`color-scheme` Sync**: Browser-native UI (scrollbars, form controls) automatically matches the theme
 
 ## Quick Start
 
@@ -41,8 +50,8 @@ const Vitra = window.Vitra; // or import from './vitra.js'
 // Set a specific theme
 Vitra.theme.set('dark');
 
-// Toggle between two themes
-Vitra.theme.toggle('light', 'dark');
+// Toggle between light and dark
+const newTheme = Vitra.theme.toggle();
 
 // Get current theme
 const current = Vitra.theme.get();
@@ -57,12 +66,12 @@ console.log('Effective theme:', effective);
 
 ### 1. Default (No data-theme attribute)
 
-The default theme matches the base token values defined in `01-tokens.css`.
+The default theme matches the base token values defined in `01-tokens.css`. Since v1.3, surfaces are tinted with the accent hue.
 
 **Core Colors:**
-- Background: `#0f0f14` (dark)
-- Surface: `rgba(255, 255, 255, 0.05)`
-- Accent: `#6c63ff` (purple)
+- Background: `hsl(245, 15%, 4%)` (dark with purple tint)
+- Surface: `hsl(245, 20%, 95% / 5%)` (tinted white overlay)
+- Accent: `hsl(245, 100%, 70%)` — `#6c63ff` (purple)
 - Text: `rgba(255, 255, 255, 0.95)` (light)
 
 **Use case:** Dark-themed applications, matches the "dark" theme.
@@ -71,13 +80,13 @@ The default theme matches the base token values defined in `01-tokens.css`.
 
 ### 2. Light Theme
 
-Bright theme with dark text on light background.
+Bright theme with dark text on light background. Surface colors are subtly tinted with the accent hue.
 
 **Key Tokens:**
 ```css
 html[data-theme="light"] {
-  --vitra-color-bg: #ffffff;
-  --vitra-color-surface: rgba(0, 0, 0, 0.05);
+  --vitra-color-bg: hsl(245, 10%, 98%);
+  --vitra-color-surface: hsl(245, 20%, 10% / 4%);
   --vitra-color-text-primary: rgba(0, 0, 0, 0.95);
   --vitra-color-accent: #6c63ff;
 }
@@ -91,13 +100,13 @@ html[data-theme="light"] {
 
 ### 3. Dark Theme
 
-Dark background with light text (explicit).
+Dark background with light text (explicit). Tinted with accent hue for cohesive premium look.
 
 **Key Tokens:**
 ```css
 html[data-theme="dark"] {
-  --vitra-color-bg: #06060a;
-  --vitra-color-surface: rgba(255, 255, 255, 0.05);
+  --vitra-color-bg: hsl(245, 15%, 4%);
+  --vitra-color-surface: hsl(245, 20%, 95% / 5%);
   --vitra-color-text-primary: rgba(255, 255, 255, 0.95);
   --vitra-color-accent: #6c63ff;
 }
@@ -149,68 +158,47 @@ Bright cyan glow effects on deep black background.
 
 ---
 
-### 6. Earth Theme
+### 6. Ocean Theme
 
-Warm natural tones with brown accents.
-
-**Key Tokens:**
-```css
-[data-theme="earth"] {
-  --vitra-color-bg: #f5e6d3;
-  --vitra-color-surface: rgba(139, 90, 43, 0.08);
-  --vitra-color-accent: #8b5a2b; /* Brown */
-  --vitra-color-text-primary: rgba(62, 39, 18, 0.95);
-}
-```
-
-**Shadows:** Earthy brown shadows.
-
-**Use case:** Nature-themed sites, organic brands, eco-friendly applications.
-
----
-
-### 7. Mono Theme
-
-Grayscale-only theme (no color).
+Deep blue-toned theme with cyan accents.
 
 **Key Tokens:**
 ```css
-[data-theme="mono"] {
-  --vitra-color-bg: #f5f5f5;
-  --vitra-color-surface: rgba(0, 0, 0, 0.05);
-  --vitra-color-accent: #505050; /* Gray */
-  --vitra-color-text-primary: rgba(0, 0, 0, 0.95);
-  --vitra-color-success: #404040;
-  --vitra-color-error: #202020;
+html[data-theme="ocean"] {
+  --vitra-color-bg: hsl(210, 30%, 4%);
+  --vitra-color-surface: hsla(210, 100%, 60%, 0.05);
+  --vitra-color-accent-h: 200;
+  --vitra-color-accent-s: 90%;
+  --vitra-color-accent-l: 55%;
+  --vitra-color-text-primary: hsl(210, 100%, 95%);
 }
 ```
 
-**Use case:** Print-friendly views, high-contrast accessibility, minimalist designs.
+**Use case:** Marine-themed interfaces, creative portfolios, data dashboards.
 
 ---
 
-### 8. Midnight Theme
+### 7. Emerald Theme
 
-Deep blue-purple theme with purple glow.
+Rich green-toned theme with soft glows.
 
 **Key Tokens:**
 ```css
-[data-theme="midnight"] {
-  --vitra-color-bg: #0f0b1a;
-  --vitra-color-surface: rgba(106, 90, 205, 0.08);
-  --vitra-color-accent: #6a5acd; /* Slate blue */
-  --vitra-color-text-primary: rgba(230, 230, 250, 0.95);
-  --vitra-shadow-glow: 0 0 20px rgba(106, 90, 205, 0.4);
+html[data-theme="emerald"] {
+  --vitra-color-bg: hsl(160, 20%, 3%);
+  --vitra-color-surface: hsla(160, 100%, 50%, 0.05);
+  --vitra-color-accent-h: 155;
+  --vitra-color-accent-s: 80%;
+  --vitra-color-accent-l: 45%;
+  --vitra-color-text-primary: hsl(160, 100%, 95%);
 }
 ```
 
-**Shadows:** Purple glow effects.
-
-**Use case:** Night modes, creative applications, luxurious interfaces.
+**Use case:** Nature-themed sites, financial dashboards, premium branding.
 
 ---
 
-### 9. Auto Theme (System Preference)
+### 8. Auto Theme (System Preference)
 
 Automatically detects the user's system theme preference via `prefers-color-scheme`.
 
@@ -223,14 +211,15 @@ Automatically detects the user's system theme preference via `prefers-color-sche
 ```css
 html[data-theme="auto"] {
   /* Default to dark */
-  --vitra-color-bg: #06060a;
-  /* ... other dark theme tokens ... */
+  --vitra-color-bg: hsl(240, 15%, 4%);
 }
 
 @media (prefers-color-scheme: light) {
   html[data-theme="auto"] {
-    --vitra-color-bg: #ffffff;
-    /* ... light theme tokens ... */
+    --vitra-color-bg: hsl(0, 0%, 100%);
+    --vitra-color-surface: hsla(0, 0%, 0%, 0.04);
+    --vitra-color-text-primary: hsla(0, 0%, 0%, 0.95);
+    --vitra-color-text-secondary: hsla(0, 0%, 0%, 0.7);
   }
 }
 ```
@@ -242,6 +231,34 @@ if (themeToSet === 'auto') {
   theme._watchSystemTheme();
 }
 ```
+
+### CSS Custom Properties Reference
+
+Each theme defines the following `--vitra-*` properties:
+
+| Property | Purpose | Overridden in themes? |
+|----------|---------|-----------------------|
+| `--vitra-color-bg` | Page background | ✅ All themes |
+| `--vitra-color-surface` | Card/component background | ✅ All themes |
+| `--vitra-color-surface-hover` | Hover state surface | ✅ All themes |
+| `--vitra-color-surface-active` | Active state surface | ✅ All themes |
+| `--vitra-color-border` | Subtle borders | ✅ All themes |
+| `--vitra-color-border-hover` | Hover border state | ✅ All themes |
+| `--vitra-color-text-primary` | Primary text | ✅ All themes |
+| `--vitra-color-text-secondary` | Secondary/muted text | ✅ All themes |
+| `--vitra-color-text-tertiary` | Tertiary/disabled text | ✅ All themes |
+| `--vitra-color-text-inverse` | Text on accent backgrounds | ✅ All themes |
+| `--vitra-shadow-*` | Shadow levels | ✅ Dark/light, ⚠️ decorative (fallback to dark) |
+| `--vitra-glass-bg` | Glass background | ✅ All themes |
+| `--vitra-color-accent-h` | Accent hue | ✅ Decorative themes override |
+| `--vitra-color-accent-s` | Accent saturation | ✅ Decorative themes override |
+| `--vitra-color-accent-l` | Accent lightness | ✅ Decorative themes override |
+| `--vitra-color-bg-warm` | Warm background variant | ✅ Dark/light |
+| `--vitra-color-bg-cool` | Cool background variant | ✅ Dark/light |
+| `--vitra-color-accent-oklch` | Perceptual color space | ✅ Dark/light |
+| `--vitra-border-glow-angle` | Animated border start angle | ✅ Dark/light |
+
+**Note:** Decorative themes (pastel, neon, ocean, emerald) inherit shadow and premium token values from the default dark theme unless explicitly overridden.
 
 **Use case:** Respecting user's OS-level theme preference automatically.
 
@@ -257,7 +274,7 @@ Returns the current theme name from the DOM.
 ```javascript
 const theme = Vitra.theme.get();
 // Returns: 'dark', 'light', 'auto', etc.
-// If no data-theme is set, returns 'default'
+// If no data-theme is set, returns 'auto'
 ```
 
 #### `Vitra.theme.set(themeName)`
@@ -270,14 +287,13 @@ const success = Vitra.theme.set('neon');
 // Persists to localStorage automatically
 ```
 
-#### `Vitra.theme.toggle(themeA, themeB)`
-Toggles between two themes.
+#### `Vitra.theme.toggle()`
+Toggles between light and dark themes. If currently in a special theme (pastel, neon, etc.), defaults to light.
 
 ```javascript
 // Toggle between light and dark
-const newTheme = Vitra.theme.toggle('light', 'dark');
-// If current is 'light', sets to 'dark' and returns 'dark'
-// If current is 'dark', sets to 'light' and returns 'light'
+const newTheme = Vitra.theme.toggle();
+// Returns: 'light' or 'dark' depending on the new state
 ```
 
 #### `Vitra.theme.init(options)`
@@ -319,7 +335,7 @@ Returns an array of valid theme names.
 
 ```javascript
 const themes = Vitra.theme.getValidThemes();
-// Returns: ['light', 'dark', 'pastel', 'neon', 'ocean', 'emerald', 'auto']
+// Returns: ['light', 'dark', 'auto', 'pastel', 'neon', 'ocean', 'emerald']
 ```
 
 ---
@@ -346,9 +362,8 @@ function toggleTheme() {
   <option value="dark" selected>Dark</option>
   <option value="pastel">Pastel</option>
   <option value="neon">Neon</option>
-  <option value="earth">Earth</option>
-  <option value="mono">Mono</option>
-  <option value="midnight">Midnight</option>
+  <option value="ocean">Ocean</option>
+  <option value="emerald">Emerald</option>
   <option value="auto">Auto (System)</option>
 </select>
 ```

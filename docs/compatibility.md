@@ -9,15 +9,21 @@ Complete browser support matrix and fallback strategies for the Vitra CSS Framew
 | **Core CSS (Tokens, Utilities)** | 88+ ✅ | 87+ ✅ | 14+ ✅ | 88+ ✅ | 74+ ✅ | ❌ |
 | **@layer Cascade** | 88+ ✅ | 97+ ✅ | 15.4+ ✅ | 88+ ✅ | 74+ ✅ | ❌ |
 | **backdrop-filter (Glass)** | 76+ ✅ | 103+ ✅ | 9+ ✅ | 79+ ✅ | 63+ ✅ | ❌ |
-| **@supports Detection** | 28+ ✅ | 22+ ✅ | 9+ ✅ | 12+ ✅ | 15+ ✅ | 12+ ⚠️ |
-| **CSS Grid (Layout)** | 57+ ✅ | 52+ ✅ | 10.1+ ✅ | 16+ ✅ | 44+ ✅ | 10+ ⚠️ |
-| **CSS Flexbox** | 29+ ✅ | 22+ ✅ | 9+ ✅ | 12+ ✅ | 17+ ✅ | 11+ ⚠️ |
+| **@supports Detection** | 28+ ✅ | 22+ ✅ | 9+ ✅ | 12+ ✅ | 15+ ✅ | ❌ |
+| **CSS Grid (Layout)** | 57+ ✅ | 52+ ✅ | 10.1+ ✅ | 16+ ✅ | 44+ ✅ | ❌ |
+| **CSS Flexbox** | 29+ ✅ | 22+ ✅ | 9+ ✅ | 12+ ✅ | 17+ ✅ | ❌ |
 | **CSS clamp()** | 79+ ✅ | 75+ ✅ | 13.1+ ✅ | 79+ ✅ | 66+ ✅ | ❌ |
 | **CSS Variables** | 49+ ✅ | 31+ ✅ | 9.1+ ✅ | 15+ ✅ | 36+ ✅ | ❌ |
 | **prefers-reduced-motion** | 74+ ✅ | 63+ ✅ | 10.1+ ✅ | 79+ ✅ | 62+ ✅ | ❌ |
 | **prefers-color-scheme** | 76+ ✅ | 67+ ✅ | 12.1+ ✅ | 79+ ✅ | 63+ ✅ | ❌ |
 | **IntersectionObserver** | 51+ ✅ | 55+ ✅ | 12.1+ ✅ | 15+ ✅ | 38+ ✅ | ❌ |
 | **ES Modules (JS)** | 61+ ✅ | 60+ ✅ | 10.1+ ✅ | 16+ ✅ | 48+ ✅ | ❌ |
+| **@container Queries** | 105+ ✅ | 110+ ✅ | 16+ ✅ | 105+ ✅ | 91+ ✅ | ❌ |
+| **@starting-style** | 117+ ✅ | 129+ ✅ | 17.4+ ✅ | 117+ ✅ | 103+ ✅ | ❌ |
+| **Popover API** | 114+ ✅ | 125+ ✅ | 17.4+ ✅ | 114+ ✅ | 100+ ✅ | ❌ |
+| **:has() Selector** | 105+ ✅ | 121+ ✅ | 15.4+ ✅ | 105+ ✅ | 91+ ✅ | ❌ |
+| **oklch() Colors** | 111+ ✅ | 113+ ✅ | 15.4+ ✅ | 111+ ✅ | 97+ ✅ | ❌ |
+| **transition-behavior: allow-discrete** | 117+ ✅ | 129+ ✅ | 17.4+ ✅ | 117+ ✅ | 103+ ✅ | ❌ |
 
 **Legend:**
 - ✅ Full support
@@ -29,18 +35,23 @@ Complete browser support matrix and fallback strategies for the Vitra CSS Framew
 Vitra CSS is designed **mobile-first and modern-first**, with graceful degradation for older browsers.
 
 ### Tier 1: Modern Browsers (Recommended)
-- **Chrome 88+**, **Firefox 97+**, **Safari 15.4+**, **Edge 88+**
-- Full feature set: glassmorphism, motion, themes, particles
+- **Chrome 117+**, **Firefox 129+**, **Safari 17.4+**, **Edge 117+**
+- Full feature set: glassmorphism, motion, themes, particles, cinematic effects, container queries, @starting-style, popover API
 - All @layer cascade features work
+- Modern CSS: `:has()`, `oklch()`, `allow-discrete` transitions
 
 ### Tier 2: Broad Support (Functional)
-- **Chrome 76+**, **Firefox 63+**, **Safari 12+**, **Edge 79+**
+- **Chrome 88+**, **Firefox 97+**, **Safari 15.4+**, **Edge 88+**
 - Core features work; some advanced features may degrade
-- Glass effect falls back to solid backgrounds
+- No `@starting-style` (entry animations fall back to CSS transitions)
+- No `popover` API (dropdowns use JS class toggle)
+- No `oklch()` (uses HSL fallback)
+- No `@container` (uses `@media` query fallback)
+- Glass effect falls back to solid backgrounds (older browsers)
 - Animations may be simplified
 
 ### Tier 3: Legacy (Basic)
-- **IE 11**, **Older Edge (Spartan)**
+- **Older Edge (Spartan)**, legacy mobile browsers
 - **Not officially supported**
 - Basic layout may work with CSS fallbacks
 - JS features will not work (no ES module support)
@@ -262,6 +273,6 @@ Vitra does **not** include polyfills for:
 |------------------|---------------|---------------|
 | Modern (Chrome 88+, FF 97+, Safari 15.4+) | ✅ Full | None needed |
 | Compatible (Chrome 76+, FF 63+, Safari 12+) | ⚠️ Good | No @layer, solid bg for glass |
-| Legacy (IE 11, old Android) | ❌ None | Not supported |
+| Legacy (old Edge, old Android) | ❌ None | Not supported |
 
 **Bottom line**: Vitra works best in modern browsers. For older browsers, features degrade gracefully but the experience may be simplified.

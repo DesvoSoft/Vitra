@@ -12,11 +12,7 @@ const Vitra = (() => {
   // Storage key for localStorage persistence
   const STORAGE_KEY = 'vitra-theme';
 
-  const VALID_THEMES = ['light', 'dark', 'auto', 'pastel', 'neon', 'ocean', 'emerald'];
-
-  // Cache for prefers-color-scheme media query
-  let _prefersDarkMedia = null;
-  let _prefersLightMedia = null;
+  const VALID_THEMES = Object.freeze(['light', 'dark', 'auto', 'pastel', 'neon', 'ocean', 'emerald']);
 
   /**
    * Theme Module
@@ -46,6 +42,18 @@ const Vitra = (() => {
 
       const html = document.documentElement;
       html.dataset.theme = themeName;
+
+      // Announce theme change for screen readers
+      const announcer = document.getElementById('vitra-theme-announcer') || (() => {
+        const el = document.createElement('div');
+        el.id = 'vitra-theme-announcer';
+        el.setAttribute('aria-live', 'polite');
+        el.setAttribute('aria-atomic', 'true');
+        el.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;';
+        document.body.appendChild(el);
+        return el;
+      })();
+      announcer.textContent = `Theme changed to ${themeName}`;
 
       // Persist to localStorage if available
       if (theme._isLocalStorageAvailable()) {
@@ -232,6 +240,7 @@ const Vitra = (() => {
     let _maxParticles = 40; // Desktop default
 
     // Check for reduced motion preference
+    // Check for reduced motion preference
     const _prefersReducedMotion = () => {
       return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     };
@@ -265,7 +274,7 @@ const Vitra = (() => {
         color = 'var(--vitra-color-accent, #6c63ff)',
         size = 4,
         emoji = null,
-        container = 'body'
+        container
       } = options;
 
       // Apply device limit
@@ -278,7 +287,7 @@ const Vitra = (() => {
         return 0;
       }
 
-      const targetContainer = document.querySelector(container) || document.body;
+      const targetContainer = container ? document.querySelector(container) || document.body : document.body;
 
       for (let i = 0; i < actualCount; i++) {
         const particle = document.createElement('div');
@@ -349,15 +358,7 @@ const Vitra = (() => {
         const count = parseInt(container.dataset.vitraParticles || '10', 10);
         const color = container.dataset.vitraParticleColor || undefined;
         const emoji = container.dataset.vitraParticleEmoji || null;
-        spawn(count, { color, emoji, container: null });
-        // Re-append to correct container since we queried it
-        const jsParticles = document.querySelectorAll('.vitra-particle-js, .vitra-particles-emoji-js');
-        jsParticles.forEach(p => {
-          if (p.parentNode === document.body && container !== document.body) {
-            p.parentNode.removeChild(p);
-            container.appendChild(p);
-          }
-        });
+        spawn(count, { color, emoji, container: container || null });
       });
     };
 
@@ -434,7 +435,7 @@ const Vitra = (() => {
         // Initial state
         el.style.opacity = '0';
         el.style.transform = 'translateY(20px)';
-        el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        el.style.transition = 'opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1), transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
         _observer.observe(el);
       });
     };
@@ -477,6 +478,7 @@ const Vitra = (() => {
     let _focusableElements = null;
     let _firstFocusable = null;
     let _lastFocusable = null;
+    let _overlayClickHandler = null;
 
     /**
      * Open a modal
@@ -507,32 +509,44 @@ const Vitra = (() => {
       _activeModal = modalEl;
       _previousFocus = document.activeElement;
 
+      // Set ARIA attributes for accessibility
+      modalEl.setAttribute('role', 'dialog');
+      modalEl.setAttribute('aria-modal', 'true');
+      modalEl.setAttribute('aria-hidden', 'false');
+
+      // Lock body scroll
+      document.body.style.overflow = 'hidden';
+
       // Show modal
       modalEl.classList.add('vitra-modal-open');
       modalEl.setAttribute('open', '');
-      modalEl.setAttribute('aria-hidden', 'false');
 
       // Set up focus trap
       _setupFocusTrap(modalEl);
 
-      // Event listeners
+      // Event listeners with cleanup
       if (closeOnOverlay) {
-        const overlay = modalEl;
-        overlay.addEventListener('click', (e) => {
-          if (e.target === overlay) {
+        if (_overlayClickHandler) {
+          modalEl.removeEventListener('click', _overlayClickHandler);
+        }
+        _overlayClickHandler = (e) => {
+          if (e.target === modalEl) {
             close();
           }
-        });
+        };
+        modalEl.addEventListener('click', _overlayClickHandler);
       }
 
       if (closeOnEsc) {
+        document.removeEventListener('keydown', _handleEsc);
         document.addEventListener('keydown', _handleEsc);
       }
 
-      // Find close buttons and bind them
+      // Find close buttons and bind them (remove old listeners first)
       const closeButtons = modalEl.querySelectorAll('[data-vitra-modal-close]');
       closeButtons.forEach(btn => {
-        btn.addEventListener('click', () => close());
+        btn.removeEventListener('click', close);
+        btn.addEventListener('click', close);
       });
 
       return true;
@@ -546,10 +560,19 @@ const Vitra = (() => {
 
       _activeModal.classList.remove('vitra-modal-open');
       _activeModal.removeAttribute('open');
+      _activeModal.removeAttribute('role');
+      _activeModal.removeAttribute('aria-modal');
       _activeModal.setAttribute('aria-hidden', 'true');
+
+      // Restore body scroll
+      document.body.style.overflow = '';
 
       // Remove event listeners
       document.removeEventListener('keydown', _handleEsc);
+      if (_overlayClickHandler) {
+        _activeModal.removeEventListener('click', _overlayClickHandler);
+        _overlayClickHandler = null;
+      }
 
       // Restore focus
       if (_previousFocus && _previousFocus.focus) {
@@ -631,6 +654,7 @@ const Vitra = (() => {
 
   const tooltip = (() => {
     let _activeTooltip = null;
+    let _showTimeout = null;
     const _offset = 8;
 
     /**
@@ -657,9 +681,16 @@ const Vitra = (() => {
       // Hide any active tooltip first
       hide();
 
-      setTimeout(() => {
+      if (_showTimeout) {
+        clearTimeout(_showTimeout);
+        _showTimeout = null;
+      }
+
+      _showTimeout = setTimeout(() => {
         const tooltipEl = document.createElement('div');
+        const tooltipId = 'vitra-tt-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6);
         tooltipEl.className = 'vitra-tooltip-js';
+        tooltipEl.id = tooltipId;
         tooltipEl.setAttribute('role', 'tooltip');
         tooltipEl.textContent = text;
 
@@ -678,6 +709,9 @@ const Vitra = (() => {
         tooltipEl.style.pointerEvents = 'none';
         tooltipEl.style.opacity = '0';
         tooltipEl.style.transition = 'opacity 0.2s ease';
+
+        // Connect tooltip to target via aria-describedby
+        targetEl.setAttribute('aria-describedby', tooltipId);
 
         document.body.appendChild(tooltipEl);
 
@@ -752,8 +786,20 @@ const Vitra = (() => {
      * Hide the active tooltip
      * @param {string|HTMLElement} target - Optional target to hide tooltip for
      */
+    const _removeDescribedBy = (target) => {
+      if (target && target.getAttribute('aria-describedby')?.startsWith('vitra-tt-')) {
+        target.removeAttribute('aria-describedby');
+      }
+    };
+
     const hide = (target = null) => {
+      if (_showTimeout) {
+        clearTimeout(_showTimeout);
+        _showTimeout = null;
+      }
+
       if (_activeTooltip) {
+        _removeDescribedBy(document.querySelector(`[aria-describedby="${_activeTooltip.id}"]`));
         _activeTooltip.style.opacity = '0';
         setTimeout(() => {
           if (_activeTooltip && _activeTooltip.parentNode) {
@@ -767,6 +813,7 @@ const Vitra = (() => {
       if (target) {
         const targetEl = typeof target === 'string' ? document.querySelector(target) : target;
         if (targetEl && targetEl._vitraTooltip) {
+          _removeDescribedBy(targetEl);
           targetEl._vitraTooltip.style.opacity = '0';
           setTimeout(() => {
             if (targetEl._vitraTooltip && targetEl._vitraTooltip.parentNode) {
@@ -835,7 +882,7 @@ const Vitra = (() => {
         el.classList.add(`vitra-toast-${type}`);
       }
 
-      el.innerHTML = `<span>${message}</span>`;
+      el.textContent = message;
       container.appendChild(el);
 
       // Trigger animation
@@ -865,25 +912,67 @@ const Vitra = (() => {
   // =========================================================================
 
   const dropdown = (() => {
+    const _supportsPopover = typeof HTMLElement !== 'undefined' && 'showPopover' in HTMLElement.prototype;
+
     const init = () => {
       document.addEventListener('click', (e) => {
         const toggle = e.target.closest('[data-vitra-dropdown-toggle]');
-        
-        // Close all other dropdowns
-        document.querySelectorAll('.vitra-dropdown.open').forEach(dd => {
-          if (!toggle || dd !== toggle.closest('.vitra-dropdown')) {
-            dd.classList.remove('open');
-          }
-        });
+        const dropdown = toggle ? toggle.closest('.vitra-dropdown') : null;
+        const menu = dropdown ? dropdown.querySelector('.vitra-dropdown-menu') : null;
 
-        if (toggle) {
-          e.preventDefault();
-          const dropdown = toggle.closest('.vitra-dropdown');
-          if (dropdown) {
-            dropdown.classList.toggle('open');
+        if (_supportsPopover && menu && menu.hasAttribute('popover')) {
+          // Popover API handles close-on-outside-click automatically
+          if (toggle) {
+            e.preventDefault();
+            menu.togglePopover();
+          }
+        } else {
+          // Fallback: close all other dropdowns
+          document.querySelectorAll('.vitra-dropdown.open').forEach(dd => {
+            if (!toggle || dd !== dropdown) {
+              dd.classList.remove('open');
+            }
+          });
+
+          if (toggle) {
+            e.preventDefault();
+            if (dropdown) {
+              dropdown.classList.toggle('open');
+            }
           }
         }
       });
+    };
+
+    return { init };
+  })();
+
+  // =========================================================================
+  // SPOTLIGHT MODULE
+  // Adds magnetic hover effect to elements
+  // =========================================================================
+  const spotlight = (() => {
+    let initialized = false;
+    let _rafId = null;
+
+    const init = () => {
+      if (initialized) return;
+      const handleMove = (e) => {
+        if (_rafId) return;
+        _rafId = requestAnimationFrame(() => {
+          _rafId = null;
+          const spotlights = document.querySelectorAll('.vitra-spotlight');
+          spotlights.forEach(el => {
+            const rect = el.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            el.style.setProperty('--mouse-x', `${x}px`);
+            el.style.setProperty('--mouse-y', `${y}px`);
+          });
+        });
+      };
+      document.addEventListener('mousemove', handleMove, { passive: true });
+      initialized = true;
     };
 
     return { init };
@@ -945,31 +1034,6 @@ const Vitra = (() => {
       spotlight.init();
     }
   }
-
-  // =========================================================================
-  // SPOTLIGHT MODULE
-  // Adds magnetic hover effect to elements
-  // =========================================================================
-  const spotlight = (() => {
-    let initialized = false;
-
-    const init = () => {
-      if (initialized) return;
-      document.addEventListener('mousemove', e => {
-        const spotlights = document.querySelectorAll('.vitra-spotlight');
-        spotlights.forEach(el => {
-          const rect = el.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          el.style.setProperty('--mouse-x', `${x}px`);
-          el.style.setProperty('--mouse-y', `${y}px`);
-        });
-      });
-      initialized = true;
-    };
-
-    return { init };
-  })();
 
   // Public API
   return {

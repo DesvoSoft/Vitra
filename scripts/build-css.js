@@ -61,7 +61,7 @@ try {
     filename: 'vitra.css',
     code: code,
     minify: true,
-    sourceMap: false,
+    sourceMap: true,
     errorRecovery: true, // Ignore invalid rules
     targets: {
       // Support last 2 versions of major browsers
@@ -75,7 +75,12 @@ try {
   const minifiedPath = path.join(distDir, 'vitra.min.css');
   fs.writeFileSync(minifiedPath, result.code);
   console.log(`  Created: dist/vitra.min.css (${result.code.length} bytes)`);
-  console.log('');
+
+  if (result.map) {
+    const mapPath = path.join(distDir, 'vitra.min.css.map');
+    fs.writeFileSync(mapPath, result.map);
+    console.log(`  Created: dist/vitra.min.css.map`);
+  }
 
   console.log('CSS build complete!');
 } catch (error) {

@@ -1,5 +1,7 @@
 /* 07-utilities.css - Utility Classes */
+
 /* Part of Vitra CSS Framework */
+
 /* Phase 4: Layout & Utilities - Plan 02 */
 
 /* ============================================
@@ -88,18 +90,18 @@
   .vitra-ml-12 { margin-inline-start: var(--vitra-space-12); }
 
   /* Margin Horizontal (x-axis) */
-  .vitra-mx-1 { margin-inline-start: var(--vitra-space-1); margin-inline-end: var(--vitra-space-1); }
-  .vitra-mx-2 { margin-inline-start: var(--vitra-space-2); margin-inline-end: var(--vitra-space-2); }
-  .vitra-mx-3 { margin-inline-start: var(--vitra-space-3); margin-inline-end: var(--vitra-space-3); }
-  .vitra-mx-4 { margin-inline-start: var(--vitra-space-4); margin-inline-end: var(--vitra-space-4); }
-  .vitra-mx-5 { margin-inline-start: var(--vitra-space-5); margin-inline-end: var(--vitra-space-5); }
-  .vitra-mx-6 { margin-inline-start: var(--vitra-space-6); margin-inline-end: var(--vitra-space-6); }
-  .vitra-mx-7 { margin-inline-start: var(--vitra-space-7); margin-inline-end: var(--vitra-space-7); }
-  .vitra-mx-8 { margin-inline-start: var(--vitra-space-8); margin-inline-end: var(--vitra-space-8); }
-  .vitra-mx-9 { margin-inline-start: var(--vitra-space-9); margin-inline-end: var(--vitra-space-9); }
-  .vitra-mx-10 { margin-inline-start: var(--vitra-space-10); margin-inline-end: var(--vitra-space-10); }
-  .vitra-mx-11 { margin-inline-start: var(--vitra-space-11); margin-inline-end: var(--vitra-space-11); }
-  .vitra-mx-12 { margin-inline-start: var(--vitra-space-12); margin-inline-end: var(--vitra-space-12); }
+  .vitra-mx-1 { margin-inline: var(--vitra-space-1) var(--vitra-space-1); }
+  .vitra-mx-2 { margin-inline: var(--vitra-space-2) var(--vitra-space-2); }
+  .vitra-mx-3 { margin-inline: var(--vitra-space-3) var(--vitra-space-3); }
+  .vitra-mx-4 { margin-inline: var(--vitra-space-4) var(--vitra-space-4); }
+  .vitra-mx-5 { margin-inline: var(--vitra-space-5) var(--vitra-space-5); }
+  .vitra-mx-6 { margin-inline: var(--vitra-space-6) var(--vitra-space-6); }
+  .vitra-mx-7 { margin-inline: var(--vitra-space-7) var(--vitra-space-7); }
+  .vitra-mx-8 { margin-inline: var(--vitra-space-8) var(--vitra-space-8); }
+  .vitra-mx-9 { margin-inline: var(--vitra-space-9) var(--vitra-space-9); }
+  .vitra-mx-10 { margin-inline: var(--vitra-space-10) var(--vitra-space-10); }
+  .vitra-mx-11 { margin-inline: var(--vitra-space-11) var(--vitra-space-11); }
+  .vitra-mx-12 { margin-inline: var(--vitra-space-12) var(--vitra-space-12); }
 
   /* Margin Vertical (y-axis) */
   .vitra-my-1 { margin-top: var(--vitra-space-1); margin-bottom: var(--vitra-space-1); }
@@ -188,18 +190,18 @@
   .vitra-pl-12 { padding-inline-start: var(--vitra-space-12); }
 
   /* Padding Horizontal (x-axis) */
-  .vitra-px-1 { padding-inline-start: var(--vitra-space-1); padding-inline-end: var(--vitra-space-1); }
-  .vitra-px-2 { padding-inline-start: var(--vitra-space-2); padding-inline-end: var(--vitra-space-2); }
-  .vitra-px-3 { padding-inline-start: var(--vitra-space-3); padding-inline-end: var(--vitra-space-3); }
-  .vitra-px-4 { padding-inline-start: var(--vitra-space-4); padding-inline-end: var(--vitra-space-4); }
-  .vitra-px-5 { padding-inline-start: var(--vitra-space-5); padding-inline-end: var(--vitra-space-5); }
-  .vitra-px-6 { padding-inline-start: var(--vitra-space-6); padding-inline-end: var(--vitra-space-6); }
-  .vitra-px-7 { padding-inline-start: var(--vitra-space-7); padding-inline-end: var(--vitra-space-7); }
-  .vitra-px-8 { padding-inline-start: var(--vitra-space-8); padding-inline-end: var(--vitra-space-8); }
-  .vitra-px-9 { padding-inline-start: var(--vitra-space-9); padding-inline-end: var(--vitra-space-9); }
-  .vitra-px-10 { padding-inline-start: var(--vitra-space-10); padding-inline-end: var(--vitra-space-10); }
-  .vitra-px-11 { padding-inline-start: var(--vitra-space-11); padding-inline-end: var(--vitra-space-11); }
-  .vitra-px-12 { padding-inline-start: var(--vitra-space-12); padding-inline-end: var(--vitra-space-12); }
+  .vitra-px-1 { padding-inline: var(--vitra-space-1) var(--vitra-space-1); }
+  .vitra-px-2 { padding-inline: var(--vitra-space-2) var(--vitra-space-2); }
+  .vitra-px-3 { padding-inline: var(--vitra-space-3) var(--vitra-space-3); }
+  .vitra-px-4 { padding-inline: var(--vitra-space-4) var(--vitra-space-4); }
+  .vitra-px-5 { padding-inline: var(--vitra-space-5) var(--vitra-space-5); }
+  .vitra-px-6 { padding-inline: var(--vitra-space-6) var(--vitra-space-6); }
+  .vitra-px-7 { padding-inline: var(--vitra-space-7) var(--vitra-space-7); }
+  .vitra-px-8 { padding-inline: var(--vitra-space-8) var(--vitra-space-8); }
+  .vitra-px-9 { padding-inline: var(--vitra-space-9) var(--vitra-space-9); }
+  .vitra-px-10 { padding-inline: var(--vitra-space-10) var(--vitra-space-10); }
+  .vitra-px-11 { padding-inline: var(--vitra-space-11) var(--vitra-space-11); }
+  .vitra-px-12 { padding-inline: var(--vitra-space-12) var(--vitra-space-12); }
 
   /* Padding Vertical (y-axis) */
   .vitra-py-1 { padding-top: var(--vitra-space-1); padding-bottom: var(--vitra-space-1); }
@@ -221,7 +223,7 @@
   .vitra-mr-auto { margin-inline-end: auto; }
   .vitra-mb-auto { margin-bottom: auto; }
   .vitra-ml-auto { margin-inline-start: auto; }
-  .vitra-mx-auto { margin-inline-start: auto; margin-inline-end: auto; }
+  .vitra-mx-auto { margin-inline: auto; }
   .vitra-my-auto { margin-top: auto; margin-bottom: auto; }
 
   /* Centering helpers */
@@ -321,8 +323,31 @@
   .vitra-flex-none { flex: none; }
 
   /* Display Flex */
-  .vitra-flex { display: flex; }
-  .vitra-inline-flex { display: inline-flex; }
+  .vitra-flex { display: flex; gap: var(--vitra-space-2); }
+  .vitra-inline-flex { display: inline-flex; gap: var(--vitra-space-2); }
+
+  /* Align Content */
+  .vitra-content-start { align-content: flex-start; }
+  .vitra-content-end { align-content: flex-end; }
+  .vitra-content-center { align-content: center; }
+  .vitra-content-between { align-content: space-between; }
+  .vitra-content-around { align-content: space-around; }
+  .vitra-content-stretch { align-content: stretch; }
+
+  /* Responsive flex variants */
+  @media (width >= 768px) {
+    .vitra-md-flex-row { flex-direction: row; }
+    .vitra-md-flex-col { flex-direction: column; }
+    .vitra-md-justify-center { justify-content: center; }
+    .vitra-md-items-center { align-items: center; }
+  }
+
+  @media (width >= 1024px) {
+    .vitra-lg-flex-row { flex-direction: row; }
+    .vitra-lg-flex-col { flex-direction: column; }
+    .vitra-lg-justify-between { justify-content: space-between; }
+    .vitra-lg-items-center { align-items: center; }
+  }
 
   /* ============================================
      TEXT UTILITIES
@@ -486,5 +511,104 @@
 
   .vitra-transition-shadow {
     transition: box-shadow var(--vitra-duration-normal) var(--vitra-ease-default);
+  }
+
+  /* ============================================
+     DISPLAY UTILITIES
+     ============================================ */
+
+  .vitra-block { display: block; }
+  .vitra-inline { display: inline; }
+  .vitra-inline-block { display: inline-block; }
+  .vitra-hidden { display: none; }
+  .vitra-grid { display: grid; gap: var(--vitra-space-3); }
+
+  /* Responsive display */
+  @media (width >= 768px) {
+    .vitra-md-block { display: block; }
+    .vitra-md-hidden { display: none; }
+  }
+
+  @media (width >= 1024px) {
+    .vitra-lg-block { display: block; }
+    .vitra-lg-hidden { display: none; }
+  }
+
+  /* ============================================
+     WIDTH / HEIGHT UTILITIES
+     ============================================ */
+
+  .vitra-w-full { width: 100%; }
+  .vitra-w-auto { width: auto; }
+  .vitra-w-screen { width: 100vw; }
+  .vitra-w-half { width: 50%; }
+  .vitra-w-third { width: 33.333%; }
+  .vitra-w-quarter { width: 25%; }
+
+  .vitra-h-full { height: 100%; }
+  .vitra-h-auto { height: auto; }
+  .vitra-h-screen { height: 100vh; }
+
+  .vitra-max-w-full { max-width: 100%; }
+  .vitra-max-w-screen { max-width: 100vw; }
+  .vitra-min-h-screen { min-height: 100vh; }
+
+  /* Responsive width */
+  @media (width >= 768px) {
+    .vitra-md-w-auto { width: auto; }
+    .vitra-md-w-full { width: 100%; }
+    .vitra-md-w-half { width: 50%; }
+    .vitra-md-w-third { width: 33.333%; }
+  }
+
+  /* ============================================
+     OVERFLOW UTILITIES
+     ============================================ */
+
+  .vitra-overflow-hidden { overflow: hidden; }
+  .vitra-overflow-auto { overflow: auto; }
+  .vitra-overflow-scroll { overflow: scroll; }
+  .vitra-overflow-visible { overflow: visible; }
+  .vitra-overflow-x-auto { overflow-x: auto; }
+  .vitra-overflow-y-auto { overflow-y: auto; }
+
+  /* ============================================
+     Z-INDEX UTILITIES
+     ============================================ */
+
+  .vitra-z-0 { z-index: 0; }
+  .vitra-z-10 { z-index: 10; }
+  .vitra-z-20 { z-index: 20; }
+  .vitra-z-30 { z-index: 30; }
+  .vitra-z-40 { z-index: 40; }
+  .vitra-z-50 { z-index: 50; }
+  .vitra-z-auto { z-index: auto; }
+
+  /* ============================================
+     SCREEN READER ONLY
+     Visually hidden, accessible for screen readers
+     ============================================ */
+
+  .vitra-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .vitra-not-sr-only {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
   }
 }

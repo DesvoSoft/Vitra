@@ -1,22 +1,27 @@
 # Vitra CSS Framework
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
-[![Version](https://img.shields.io/badge/version-1.2.0-blue)](https://github.com/DesvoSoft/Vitra)
-[![License](https://img.shields.io/badge/license-Internal-red)](https://github.com/DesvoSoft/Vitra)
+[![Version](https://img.shields.io/badge/version-1.3.0-blue)](https://github.com/DesvoSoft/Vitra)
+[![License](https://img.shields.io/badge/license-ISC-blue)](https://github.com/DesvoSoft/Vitra)
+[![Bundle Size](https://img.shields.io/badge/css-10.5%20KB%20brotlied-brightgreen)](https://github.com/DesvoSoft/Vitra)
+[![Tests](https://img.shields.io/badge/tests-60%20passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
 
-Vitra is a high-performance, premium CSS framework engineered for modern web applications. It specializes in Glassmorphism, Motion Design, and Interactive Particles, providing a sophisticated aesthetic out of the box with zero external dependencies.
+Vitra is a high-performance, premium CSS framework engineered for modern web applications. It specializes in Glassmorphism, Motion Design, Interactive Particles, and Cinematic Visual Effects, providing a sophisticated aesthetic out of the box with zero external dependencies.
 
 ---
 
 ## Why Vitra?
 
-Unlike generic utility-first frameworks, Vitra is built with a specific aesthetic philosophy: Depth and Motion. It eliminates CSS boilerplate while enforcing a strict, maintainable architecture.
+Unlike generic utility-first frameworks, Vitra is built with a specific aesthetic philosophy: **Depth, Motion, and Life**. It eliminates CSS boilerplate while enforcing a strict, maintainable architecture.
 
--   Glass-First Design: Optimized backdrop-filter effects with robust @supports fallbacks for all browsers.
--   Strict @layer Architecture: Predictable cascade management using modern CSS layers.
--   Motion Engine: High-performance animations that automatically respect prefers-reduced-motion.
--   Particle System: Native CSS/JS hybrid particles with built-in performance limits.
--   Smart Theming: Zero-config Light, Dark, and Auto modes with system-level synchronization.
+-   **Glass-First Design**: Optimized backdrop-filter effects with robust `@supports` fallbacks for all browsers.
+-   **Strict @layer Architecture**: Predictable cascade management using modern CSS layers.
+-   **Motion Engine**: 17 choreographed keyframes that automatically respect `prefers-reduced-motion`.
+-   **Particle System**: Native CSS/JS hybrid particles with built-in performance limits (15 mobile / 40 desktop).
+-   **Cinematic Effects**: Animated mesh gradients, floating glow orbs, gradient text, and spinning border glows.
+-   **Modern CSS Features**: Container Queries, `@starting-style`, Popover API — all with fallbacks.
+-   **Premium Color System**: All surfaces tinted with accent hue — no pure neutral grays. Warm/cool/oklch variants.
+-   **Smart Theming**: 7 themes (light, dark, auto, pastel, neon, ocean, emerald) with system-level sync.
 
 ---
 
@@ -40,28 +45,26 @@ You can use Vitra by installing it locally, or via a free CDN (jsDelivr) for ins
 
 #### Option A: Via CDN (Recommended for production)
 
-Use jsDelivr to load the minified files. We strongly recommend using a fixed version (e.g., `@1.2.0`) and including Subresource Integrity (SRI) hashes to guarantee security and stability.
+Use jsDelivr to load the minified files. We strongly recommend using a fixed version and including Subresource Integrity (SRI) hashes to guarantee security and stability.
 
 ```html
 <!-- High-performance CSS (Fixed version with SRI) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.2.0/dist/vitra.min.css" integrity="sha256-SgZY5apaP48KO2UquhWXH0TJQ9qQbAyM9PagKnSS6iI=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.3.0/dist/vitra.min.css" integrity="sha256-..." crossorigin="anonymous">
 
 <!-- Optional: Modular JS Engine (Fixed version with SRI) -->
-<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.2.0/dist/vitra.min.js" integrity="sha256-nLbPlWz+rimhFqBHQMaRifl0D4sfTiod6aTxky5epFc=" crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.3.0/dist/vitra.min.js" integrity="sha256-..." crossorigin="anonymous" defer></script>
 ```
 
-> **Note:** You can use `@latest` instead of `@1.2.0` for testing the most recent updates, but this is **not recommended** for production as breaking changes could affect your site.
+> **Note:** Always use a pinned version (e.g., `@1.3.0`) for production. The SRI hashes are generated during build and stored in `dist/SRI.txt`.
 
 #### Option B: Local Assets
-
-If you built the framework locally, link the assets in your HTML:
 
 ```html
 <!-- High-performance CSS -->
 <link rel="stylesheet" href="dist/vitra.min.css">
 
 <!-- Optional: Modular JS Engine -->
-<script src="dist/vitra.min.js" defer data-config='{"theme":"auto"}'></script>
+<script src="dist/vitra.min.js" defer></script>
 ```
 
 ---
@@ -103,8 +106,9 @@ The Vitra JS API is modular and declarative. You can configure it via data-confi
 
 ### Theme Control
 ```javascript
-Vitra.theme.toggle(); // Intelligently flips between Light/Dark
-Vitra.theme.set('light');
+Vitra.theme.set('neon');          // Switch to neon theme
+Vitra.theme.toggle();             // Flip between light/dark
+Vitra.theme.getEffective();       // Resolve 'auto' to actual theme
 ```
 
 ### Particle Engine
@@ -116,6 +120,24 @@ Vitra.particles.spawn(15, {
 });
 ```
 
+### Cinematic Effects (CSS-only, no JS needed)
+```html
+<!-- Animated mesh gradient background -->
+<div class="vitra-gradient-bg"></div>
+
+<!-- Floating glow orbs -->
+<div class="vitra-glow-orb vitra-glow-orb-1"></div>
+<div class="vitra-glow-orb vitra-glow-orb-2"></div>
+
+<!-- Animated gradient text -->
+<h1 class="vitra-gradient-text">Premium Heading</h1>
+
+<!-- Spinning border glow -->
+<div class="vitra-border-glow">
+  <div class="vitra-card">Content</div>
+</div>
+```
+
 ---
 
 ## Project Structure
@@ -123,36 +145,57 @@ Vitra.particles.spawn(15, {
 ```text
 Vitra/
 ├── src/
-│   ├── 00-themes.css      # Smart theme definitions
-│   ├── 01-tokens.css      # Design tokens (colors, spacing)
-│   ├── 02-glass.css       # Glassmorphism engine
-│   ├── 03-particles.css   # Particle systems
-│   ├── 04-motion.css      # Motion & Animation engine
-│   ├── 05-layout.css      # Modern Layout system
-│   ├── 06-components.css  # Premium UI components
-│   └── vitra.js           # Modular JS core
-├── dist/                  # Production builds
-└── docs/                  # Detailed implementation guides
+│   ├── 00-themes.css      # 7 themes (light, dark, auto, pastel, neon, ocean, emerald)
+│   ├── 01-tokens.css      # Foundation tokens (colors, spacing, typography, shadows)
+│   ├── 02-glass.css       # Glassmorphism engine with @supports fallbacks
+│   ├── 03-particles.css   # Particle systems with device-aware limits
+│   ├── 04-motion.css      # Motion engine + cinematic effects (gradient, glow, border)
+│   ├── 05-layout.css      # Grid, container, hero, flex, responsive utilities
+│   ├── 06-components.css  # 17 component systems (buttons, cards, modals, tables, etc.)
+│   ├── 07-utilities.css   # Spacing, display, width/height, z-index, responsive variants
+│   └── vitra.js           # 8 modules: theme, particles, reveal, modal, tooltip, toast, dropdown, spotlight
+├── dist/                  # Production builds + source maps + SRI hashes
+├── docs/                  # Theming, integration, compatibility, audit
+└── tests/                 # 60 vitest tests
 ```
+
+---
+
+## Modern CSS Features
+
+Vitra leverages cutting-edge CSS for progressive enhancement:
+
+| Feature | Usage | Browser Support |
+|---------|-------|-----------------|
+| **`@layer`** | Cascade ordering (tokens < components < utilities) | Chrome 88+, FF 97+, Safari 15.4+ |
+| **`@container`** | Responsive table card layout | Chrome 105+, FF 110+, Safari 16+ |
+| **`@starting-style`** | Entry animations for modals, toasts, dropdowns | Chrome 117+, FF 129+, Safari 17.4+ |
+| **`popover` API** | Native dropdown with JS fallback | Chrome 114+, FF 125+, Safari 17.4+ |
+| **`:has()`** | Parent-aware component states | All modern browsers |
+| **`clamp()`** | Fluid spacing and typography | Chrome 79+, FF 75+ |
+| **`oklch()`** | Premium color space alternative | Chrome 111+, FF 113+, Safari 15.4+ |
 
 ---
 
 ## Accessibility & Performance
 
--   Reduced Motion: All transitions and animations are automatically disabled if prefers-reduced-motion is detected.
--   Resource Safety: Particle counts are capped (15 on mobile, 40 on desktop) to ensure 60fps performance on all devices.
--   Semantic HTML: All components are designed with accessibility and screen readers in mind.
+-   **Reduced Motion**: All transitions and animations auto-disable if `prefers-reduced-motion` is detected. Supported at CSS (`0.01ms !important`) and JS levels.
+-   **Resource Safety**: Particle counts capped (15 mobile, 40 desktop) for 60fps on all devices.
+-   **Screen Reader Support**: `aria-live` announcer on theme changes, `aria-describedby` on tooltips, `role="dialog"` + `aria-modal` on modals, `.vitra-sr-only` utilities.
+-   **Bundle Size**: CSS ~83 KB minified (~10.5 KB brotlied), JS ~11.7 KB minified (~3.7 KB brotlied). Monitored via `size-limit`.
 
 ---
 
 ## Documentation
 
-For deep dives into the framework, check the internal documentation:
--   Theming Guide (docs/themes.md)
--   Integration & API (docs/integration.md)
--   Browser Compatibility (docs/compatibility.md)
+| Document | Description |
+|----------|-------------|
+| [Theming Guide](docs/themes.md) | Theme reference, customization, persistence |
+| [Integration & API](docs/integration.md) | CDN, JS API, data-config, tree-shaking |
+| [Browser Compatibility](docs/compatibility.md) | Support matrix, fallback strategies |
+| [Audit & Roadmap](docs/AUDIT-2026.md) | Full codebase audit, gaps, future plans |
 
 ---
 
 Developed and maintained by DesvoSoft.  
-Internal Use Only.
+Released under the ISC License.

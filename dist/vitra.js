@@ -10,9 +10,7 @@ var Vitra = (() => {
       var Vitra = (() => {
         "use strict";
         const STORAGE_KEY = "vitra-theme";
-        const VALID_THEMES = ["light", "dark", "auto", "pastel", "neon", "ocean", "emerald"];
-        let _prefersDarkMedia = null;
-        let _prefersLightMedia = null;
+        const VALID_THEMES = Object.freeze(["light", "dark", "auto", "pastel", "neon", "ocean", "emerald"]);
         const theme = {
           /**
            * Get the current theme from DOM
@@ -34,6 +32,16 @@ var Vitra = (() => {
             }
             const html = document.documentElement;
             html.dataset.theme = themeName;
+            const announcer = document.getElementById("vitra-theme-announcer") || (() => {
+              const el = document.createElement("div");
+              el.id = "vitra-theme-announcer";
+              el.setAttribute("aria-live", "polite");
+              el.setAttribute("aria-atomic", "true");
+              el.style.cssText = "position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;";
+              document.body.appendChild(el);
+              return el;
+            })();
+            announcer.textContent = `Theme changed to ${themeName}`;
             if (theme._isLocalStorageAvailable()) {
               try {
                 localStorage.setItem(STORAGE_KEY, themeName);
@@ -195,7 +203,7 @@ var Vitra = (() => {
               color = "var(--vitra-color-accent, #6c63ff)",
               size = 4,
               emoji = null,
-              container = "body"
+              container
             } = options;
             const limit = _getDeviceLimit();
             const availableSlots = limit - _activeParticles.length;
@@ -204,7 +212,7 @@ var Vitra = (() => {
               console.warn(`[Vitra Particles] Particle limit reached (${limit})`);
               return 0;
             }
-            const targetContainer = document.querySelector(container) || document.body;
+            const targetContainer = container ? document.querySelector(container) || document.body : document.body;
             for (let i = 0; i < actualCount; i++) {
               const particle = document.createElement("div");
               particle.className = "vitra-particle";
@@ -252,14 +260,7 @@ var Vitra = (() => {
               const count = parseInt(container.dataset.vitraParticles || "10", 10);
               const color = container.dataset.vitraParticleColor || void 0;
               const emoji = container.dataset.vitraParticleEmoji || null;
-              spawn(count, { color, emoji, container: null });
-              const jsParticles = document.querySelectorAll(".vitra-particle-js, .vitra-particles-emoji-js");
-              jsParticles.forEach((p) => {
-                if (p.parentNode === document.body && container !== document.body) {
-                  p.parentNode.removeChild(p);
-                  container.appendChild(p);
-                }
-              });
+              spawn(count, { color, emoji, container: container || null });
             });
           };
           return {
@@ -311,7 +312,7 @@ var Vitra = (() => {
             elements.forEach((el) => {
               el.style.opacity = "0";
               el.style.transform = "translateY(20px)";
-              el.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+              el.style.transition = "opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1), transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)";
               _observer.observe(el);
             });
           };
@@ -338,6 +339,7 @@ var Vitra = (() => {
           let _focusableElements = null;
           let _firstFocusable = null;
           let _lastFocusable = null;
+          let _overlayClickHandler = null;
           const open = (target, options = {}) => {
             const {
               closeOnOverlay = true,
@@ -354,24 +356,32 @@ var Vitra = (() => {
             }
             _activeModal = modalEl;
             _previousFocus = document.activeElement;
+            modalEl.setAttribute("role", "dialog");
+            modalEl.setAttribute("aria-modal", "true");
+            modalEl.setAttribute("aria-hidden", "false");
+            document.body.style.overflow = "hidden";
             modalEl.classList.add("vitra-modal-open");
             modalEl.setAttribute("open", "");
-            modalEl.setAttribute("aria-hidden", "false");
             _setupFocusTrap(modalEl);
             if (closeOnOverlay) {
-              const overlay = modalEl;
-              overlay.addEventListener("click", (e) => {
-                if (e.target === overlay) {
+              if (_overlayClickHandler) {
+                modalEl.removeEventListener("click", _overlayClickHandler);
+              }
+              _overlayClickHandler = (e) => {
+                if (e.target === modalEl) {
                   close();
                 }
-              });
+              };
+              modalEl.addEventListener("click", _overlayClickHandler);
             }
             if (closeOnEsc) {
+              document.removeEventListener("keydown", _handleEsc);
               document.addEventListener("keydown", _handleEsc);
             }
             const closeButtons = modalEl.querySelectorAll("[data-vitra-modal-close]");
             closeButtons.forEach((btn) => {
-              btn.addEventListener("click", () => close());
+              btn.removeEventListener("click", close);
+              btn.addEventListener("click", close);
             });
             return true;
           };
@@ -379,8 +389,15 @@ var Vitra = (() => {
             if (!_activeModal) return;
             _activeModal.classList.remove("vitra-modal-open");
             _activeModal.removeAttribute("open");
+            _activeModal.removeAttribute("role");
+            _activeModal.removeAttribute("aria-modal");
             _activeModal.setAttribute("aria-hidden", "true");
+            document.body.style.overflow = "";
             document.removeEventListener("keydown", _handleEsc);
+            if (_overlayClickHandler) {
+              _activeModal.removeEventListener("click", _overlayClickHandler);
+              _overlayClickHandler = null;
+            }
             if (_previousFocus && _previousFocus.focus) {
               _previousFocus.focus();
             }
@@ -430,6 +447,7 @@ var Vitra = (() => {
         })();
         const tooltip = /* @__PURE__ */ (() => {
           let _activeTooltip = null;
+          let _showTimeout = null;
           const _offset = 8;
           const show = (target, text, options = {}) => {
             const {
@@ -442,9 +460,15 @@ var Vitra = (() => {
               return false;
             }
             hide();
-            setTimeout(() => {
+            if (_showTimeout) {
+              clearTimeout(_showTimeout);
+              _showTimeout = null;
+            }
+            _showTimeout = setTimeout(() => {
               const tooltipEl = document.createElement("div");
+              const tooltipId = "vitra-tt-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6);
               tooltipEl.className = "vitra-tooltip-js";
+              tooltipEl.id = tooltipId;
               tooltipEl.setAttribute("role", "tooltip");
               tooltipEl.textContent = text;
               tooltipEl.style.position = "absolute";
@@ -461,6 +485,7 @@ var Vitra = (() => {
               tooltipEl.style.pointerEvents = "none";
               tooltipEl.style.opacity = "0";
               tooltipEl.style.transition = "opacity 0.2s ease";
+              targetEl.setAttribute("aria-describedby", tooltipId);
               document.body.appendChild(tooltipEl);
               _positionTooltip(targetEl, tooltipEl, position);
               setTimeout(() => {
@@ -511,8 +536,18 @@ var Vitra = (() => {
             tooltip2.style.top = `${top}px`;
             tooltip2.style.left = `${left}px`;
           };
+          const _removeDescribedBy = (target) => {
+            if (target && target.getAttribute("aria-describedby")?.startsWith("vitra-tt-")) {
+              target.removeAttribute("aria-describedby");
+            }
+          };
           const hide = (target = null) => {
+            if (_showTimeout) {
+              clearTimeout(_showTimeout);
+              _showTimeout = null;
+            }
             if (_activeTooltip) {
+              _removeDescribedBy(document.querySelector(`[aria-describedby="${_activeTooltip.id}"]`));
               _activeTooltip.style.opacity = "0";
               setTimeout(() => {
                 if (_activeTooltip && _activeTooltip.parentNode) {
@@ -524,6 +559,7 @@ var Vitra = (() => {
             if (target) {
               const targetEl = typeof target === "string" ? document.querySelector(target) : target;
               if (targetEl && targetEl._vitraTooltip) {
+                _removeDescribedBy(targetEl);
                 targetEl._vitraTooltip.style.opacity = "0";
                 setTimeout(() => {
                   if (targetEl._vitraTooltip && targetEl._vitraTooltip.parentNode) {
@@ -570,7 +606,7 @@ var Vitra = (() => {
             if (type !== "default") {
               el.classList.add(`vitra-toast-${type}`);
             }
-            el.innerHTML = `<span>${message}</span>`;
+            el.textContent = message;
             container.appendChild(el);
             setTimeout(() => el.classList.add("show"), 10);
             if (duration > 0) {
@@ -587,23 +623,56 @@ var Vitra = (() => {
           };
           return { show };
         })();
-        const dropdown = /* @__PURE__ */ (() => {
+        const dropdown = (() => {
+          const _supportsPopover = typeof HTMLElement !== "undefined" && "showPopover" in HTMLElement.prototype;
           const init = () => {
             document.addEventListener("click", (e) => {
               const toggle = e.target.closest("[data-vitra-dropdown-toggle]");
-              document.querySelectorAll(".vitra-dropdown.open").forEach((dd) => {
-                if (!toggle || dd !== toggle.closest(".vitra-dropdown")) {
-                  dd.classList.remove("open");
+              const dropdown2 = toggle ? toggle.closest(".vitra-dropdown") : null;
+              const menu = dropdown2 ? dropdown2.querySelector(".vitra-dropdown-menu") : null;
+              if (_supportsPopover && menu && menu.hasAttribute("popover")) {
+                if (toggle) {
+                  e.preventDefault();
+                  menu.togglePopover();
                 }
-              });
-              if (toggle) {
-                e.preventDefault();
-                const dropdown2 = toggle.closest(".vitra-dropdown");
-                if (dropdown2) {
-                  dropdown2.classList.toggle("open");
+              } else {
+                document.querySelectorAll(".vitra-dropdown.open").forEach((dd) => {
+                  if (!toggle || dd !== dropdown2) {
+                    dd.classList.remove("open");
+                  }
+                });
+                if (toggle) {
+                  e.preventDefault();
+                  if (dropdown2) {
+                    dropdown2.classList.toggle("open");
+                  }
                 }
               }
             });
+          };
+          return { init };
+        })();
+        const spotlight = /* @__PURE__ */ (() => {
+          let initialized = false;
+          let _rafId = null;
+          const init = () => {
+            if (initialized) return;
+            const handleMove = (e) => {
+              if (_rafId) return;
+              _rafId = requestAnimationFrame(() => {
+                _rafId = null;
+                const spotlights = document.querySelectorAll(".vitra-spotlight");
+                spotlights.forEach((el) => {
+                  const rect = el.getBoundingClientRect();
+                  const x = e.clientX - rect.left;
+                  const y = e.clientY - rect.top;
+                  el.style.setProperty("--mouse-x", `${x}px`);
+                  el.style.setProperty("--mouse-y", `${y}px`);
+                });
+              });
+            };
+            document.addEventListener("mousemove", handleMove, { passive: true });
+            initialized = true;
           };
           return { init };
         })();
@@ -647,24 +716,6 @@ var Vitra = (() => {
             spotlight.init();
           }
         }
-        const spotlight = /* @__PURE__ */ (() => {
-          let initialized = false;
-          const init = () => {
-            if (initialized) return;
-            document.addEventListener("mousemove", (e) => {
-              const spotlights = document.querySelectorAll(".vitra-spotlight");
-              spotlights.forEach((el) => {
-                const rect = el.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                el.style.setProperty("--mouse-x", `${x}px`);
-                el.style.setProperty("--mouse-y", `${y}px`);
-              });
-            });
-            initialized = true;
-          };
-          return { init };
-        })();
         return {
           theme,
           particles,

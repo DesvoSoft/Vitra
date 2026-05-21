@@ -11,19 +11,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Use Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: '20.x'
         cache: 'npm'
-        
+
     - name: Install dependencies
       run: npm ci
 
+    - name: Run Lint
+      run: npm run lint
+
     - name: Run Build
       run: npm run build
+
+    - name: Run Tests
+      run: npm test
 
     - name: Verify Build Artifacts
       run: |

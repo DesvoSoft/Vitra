@@ -1,6 +1,8 @@
 /* === 01-tokens.css === */
 /* 01-tokens.css - Foundation Tokens */
+
 /* Part of Vitra CSS Framework */
+
 /* Phase 1: Tokens & Themes - Plan 01 */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap');
@@ -21,31 +23,37 @@
     --vitra-color-accent-h: 245;
     --vitra-color-accent-s: 100%;
     --vitra-color-accent-l: 70%;
-    
-    --vitra-color-accent: hsl(var(--vitra-color-accent-h), var(--vitra-color-accent-s), var(--vitra-color-accent-l));
-    --vitra-color-accent-rgb: 108, 99, 255; /* Keep for legacy rgba if needed */
-    --vitra-color-accent-hover: hsl(var(--vitra-color-accent-h), var(--vitra-color-accent-s), calc(var(--vitra-color-accent-l) + 5%));
-    --vitra-color-accent-active: hsl(var(--vitra-color-accent-h), var(--vitra-color-accent-s), calc(var(--vitra-color-accent-l) - 10%));
+    --vitra-color-accent: hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l));
+    --vitra-color-accent-rgb: 108, 99, 255;
+    --vitra-color-border-rgb: 255, 255, 255;
+    --vitra-color-accent-hover: hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) calc(var(--vitra-color-accent-l) + 5%));
+    --vitra-color-accent-active: hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) calc(var(--vitra-color-accent-l) - 10%));
     
     /* Semantic Colors */
-    --vitra-color-success: hsl(150, 84%, 39%);
-    --vitra-color-warning: hsl(38, 92%, 50%);
-    --vitra-color-error: hsl(0, 84%, 60%);
-    --vitra-color-info: hsl(217, 91%, 60%);
+    --vitra-color-success: hsl(150deg 84% 39%);
+    --vitra-color-warning: hsl(38deg 92% 50%);
+    --vitra-color-error: hsl(0deg 84% 60%);
+    --vitra-color-info: hsl(217deg 91% 60%);
+
+    /* Premium Color Extensions */
+    --vitra-color-accent-oklch: oklch(0.65 0.25 var(--vitra-color-accent-h));
+    --vitra-color-bg-warm: hsl(calc(var(--vitra-color-accent-h) + 30) 20% 6%);
+    --vitra-color-bg-cool: hsl(calc(var(--vitra-color-accent-h) - 30) 20% 6%);
+    --vitra-border-glow-angle: 0deg;
 
     /* Background & Surface (Default Dark) */
-    --vitra-color-bg: hsl(240, 15%, 4%);
-    --vitra-color-surface: hsla(0, 0%, 100%, 0.05);
-    --vitra-color-surface-hover: hsla(0, 0%, 100%, 0.08);
-    --vitra-color-surface-active: hsla(0, 0%, 100%, 0.12);
-    --vitra-color-border: hsla(0, 0%, 100%, 0.1);
-    --vitra-color-border-hover: hsla(0, 0%, 100%, 0.2);
+    --vitra-color-bg: hsl(var(--vitra-color-accent-h) 15% 4%);
+    --vitra-color-surface: hsl(var(--vitra-color-accent-h) 20% 95% / 5%);
+    --vitra-color-surface-hover: hsl(var(--vitra-color-accent-h) 20% 95% / 8%);
+    --vitra-color-surface-active: hsl(var(--vitra-color-accent-h) 20% 95% / 12%);
+    --vitra-color-border: hsl(var(--vitra-color-accent-h) 20% 95% / 10%);
+    --vitra-color-border-hover: hsl(var(--vitra-color-accent-h) 20% 95% / 20%);
 
     /* Text */
-    --vitra-color-text-primary: hsla(0, 0%, 100%, 0.95);
-    --vitra-color-text-secondary: hsla(0, 0%, 100%, 0.7);
-    --vitra-color-text-tertiary: hsla(0, 0%, 100%, 0.5);
-    --vitra-color-text-inverse: hsl(240, 15%, 4%);
+    --vitra-color-text-primary: hsl(0deg 0% 100% / 95%);
+    --vitra-color-text-secondary: hsl(0deg 0% 100% / 70%);
+    --vitra-color-text-tertiary: hsl(0deg 0% 100% / 50%);
+    --vitra-color-text-inverse: hsl(240deg 15% 4%);
 
     /* --- Spacing (8px Grid) --- */
     --vitra-space-1: 0.5rem;   /* 8px */
@@ -56,6 +64,11 @@
     --vitra-space-6: 3rem;     /* 48px */
     --vitra-space-7: 3.5rem;   /* 56px */
     --vitra-space-8: 4rem;     /* 64px */
+    --vitra-space-9: 4.5rem;   /* 72px */
+    --vitra-space-10: 5rem;    /* 80px */
+    --vitra-space-11: 5.5rem;  /* 88px */
+    --vitra-space-12: 6rem;    /* 96px */
+    --vitra-space-16: 8rem;    /* 128px */
 
     /* --- Radius (Subtle & Modern) --- */
     --vitra-radius-sm: 0.375rem; /* 6px */
@@ -65,22 +78,21 @@
     --vitra-radius-full: 9999px;
 
     /* --- Shadows (Layered for Depth) --- */
-    --vitra-shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.1);
+    --vitra-shadow-subtle: 0 1px 2px rgb(0 0 0 / 10%);
     --vitra-shadow-medium: 
-      0 4px 6px -1px rgba(0, 0, 0, 0.1), 
-      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      0 4px 6px -1px rgb(0 0 0 / 10%), 
+      0 2px 4px -1px rgb(0 0 0 / 6%);
     --vitra-shadow-elevated: 
-      0 10px 15px -3px rgba(0, 0, 0, 0.1), 
-      0 4px 6px -2px rgba(0, 0, 0, 0.05),
-      0 0 0 1px hsla(0, 0%, 100%, 0.05);
-    --vitra-shadow-glow: 0 0 20px hsla(var(--vitra-color-accent-h), var(--vitra-color-accent-s), var(--vitra-color-accent-l), 0.3);
-    --vitra-shadow-glow-strong: 0 0 40px hsla(var(--vitra-color-accent-h), var(--vitra-color-accent-s), var(--vitra-color-accent-l), 0.5);
+      0 10px 15px -3px rgb(0 0 0 / 10%), 
+      0 4px 6px -2px rgb(0 0 0 / 5%),
+      0 0 0 1px hsl(0deg 0% 100% / 5%);
+    --vitra-shadow-glow: 0 0 20px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 30%);
+    --vitra-shadow-glow-strong: 0 0 40px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 50%);
 
     /* --- Typography (Premium Stack) --- */
     --vitra-font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --vitra-font-heading: 'Outfit', sans-serif;
     --vitra-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-
     --vitra-font-size-xs: 0.75rem;   /* 12px */
     --vitra-font-size-sm: 0.875rem;  /* 14px */
     --vitra-font-size-base: 1rem;    /* 16px */
@@ -89,12 +101,10 @@
     --vitra-font-size-2xl: 1.5rem;   /* 24px */
     --vitra-font-size-3xl: 2rem;     /* 32px */
     --vitra-font-size-4xl: 3rem;     /* 48px */
-
     --vitra-font-weight-normal: 400;
     --vitra-font-weight-medium: 500;
     --vitra-font-weight-semibold: 600;
     --vitra-font-weight-bold: 700;
-
     --vitra-line-height-tight: 1.2;
     --vitra-line-height-normal: 1.6;
     --vitra-line-height-relaxed: 1.8;
@@ -103,79 +113,80 @@
     --vitra-ease-default: cubic-bezier(0.4, 0, 0.2, 1);
     --vitra-ease-in: cubic-bezier(0.4, 0, 1, 1);
     --vitra-ease-out: cubic-bezier(0, 0, 0.2, 1);
-    --vitra-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
     --vitra-ease-luxury: cubic-bezier(0.23, 1, 0.32, 1); /* EaseOutQuint */
-
     --vitra-duration-fast: 150ms;
     --vitra-duration-normal: 300ms;
     --vitra-duration-slow: 500ms;
     --vitra-duration-slower: 800ms;
   }
-}
 
-/* Base body styles using token values */
-body {
-  background-color: var(--vitra-color-bg);
-  color: var(--vitra-color-text-primary);
-  font-family: var(--vitra-font-family);
-  font-size: var(--vitra-font-size-base);
-  line-height: var(--vitra-line-height-normal);
-  margin: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  transition: background-color var(--vitra-duration-normal) var(--vitra-ease-luxury),
-              color var(--vitra-duration-normal) var(--vitra-ease-luxury);
-}
+  /* Base body styles using token values */
+  body {
+    background-color: var(--vitra-color-bg);
+    color: var(--vitra-color-text-primary);
+    font-family: var(--vitra-font-family);
+    font-size: var(--vitra-font-size-base);
+    line-height: var(--vitra-line-height-normal);
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color var(--vitra-duration-normal) var(--vitra-ease-luxury),
+                color var(--vitra-duration-normal) var(--vitra-ease-luxury);
+  }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--vitra-font-heading);
-  font-weight: var(--vitra-font-weight-bold);
-  line-height: var(--vitra-line-height-tight);
-  color: var(--vitra-color-text-primary);
-  margin: 0;
-  letter-spacing: -0.02em;
-}
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--vitra-font-heading);
+    font-weight: var(--vitra-font-weight-bold);
+    line-height: var(--vitra-line-height-tight);
+    color: var(--vitra-color-text-primary);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
 
-/* Global Link Styles */
-a {
-  color: var(--vitra-color-accent);
-  text-decoration: none;
-  transition: all var(--vitra-duration-normal) var(--vitra-ease-luxury);
-}
+  /* Global Link Styles */
+  a {
+    color: var(--vitra-color-accent);
+    text-decoration: none;
+    transition: color var(--vitra-duration-normal) var(--vitra-ease-luxury),
+                opacity var(--vitra-duration-normal) var(--vitra-ease-luxury);
+  }
 
-a:hover {
-  color: var(--vitra-color-accent-hover);
-  opacity: 0.8;
-}
+  a:hover {
+    color: var(--vitra-color-accent-hover);
+    opacity: 0.8;
+  }
 
-.vitra-link {
-  position: relative;
-  display: inline-block;
-}
+  .vitra-link {
+    position: relative;
+    display: inline-block;
+  }
 
-.vitra-link::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  transform: scaleX(0);
-  height: 1px;
-  bottom: -2px;
-  left: 0;
-  background-color: currentColor;
-  transform-origin: bottom right;
-  transition: transform var(--vitra-duration-normal) var(--vitra-ease-luxury);
-}
+  .vitra-link::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 1px;
+    bottom: -2px;
+    left: 0;
+    background-color: currentcolor;
+    transform-origin: bottom right;
+    transition: transform var(--vitra-duration-normal) var(--vitra-ease-luxury);
+  }
 
-.vitra-link:hover::after {
-  transform: scaleX(1);
-  transform-origin: bottom left;
+  .vitra-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
 }
 
 
 
 /* === 00-themes.css === */
 /* 00-themes.css - Theme Definitions */
+
 /* Part of Vitra CSS Framework */
+
 /* Phase 1: Tokens & Themes - Plan 02 */
 
 /* ============================================
@@ -186,114 +197,125 @@ a:hover {
 
 @layer tokens {
   /* --- DEFAULT THEME --- */
+
   /* Base tokens are already defined in 01-tokens.css */
+
   /* Default theme matches the base token values */
 
   /* --- LIGHT THEME --- */
   html[data-theme="light"] {
-    --vitra-color-bg: hsl(210, 20%, 98%);
-    --vitra-bg-accent: hsl(210, 20%, 94%);
-    --vitra-color-surface: hsla(0, 0%, 0%, 0.04);
-    --vitra-color-surface-hover: hsla(0, 0%, 0%, 0.08);
-    --vitra-color-surface-active: hsla(0, 0%, 0%, 0.12);
-    --vitra-color-border: hsla(0, 0%, 0%, 0.1);
-    --vitra-color-border-hover: hsla(0, 0%, 0%, 0.2);
-    
-    --vitra-color-text-primary: hsla(0, 0%, 0%, 0.95);
-    --vitra-color-text-secondary: hsla(0, 0%, 0%, 0.7);
-    --vitra-color-text-tertiary: hsla(0, 0%, 0%, 0.5);
-    --vitra-color-text-inverse: hsl(0, 0%, 100%);
-
-    --vitra-shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.05);
-    --vitra-shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --vitra-shadow-elevated: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    
-    --vitra-glass-bg: hsla(0, 0%, 100%, 0.4);
+    --vitra-color-bg: hsl(var(--vitra-color-accent-h) 10% 98%);
+    --vitra-bg-accent: hsl(var(--vitra-color-accent-h) 15% 94%);
+    --vitra-color-surface: hsl(var(--vitra-color-accent-h) 20% 10% / 4%);
+    --vitra-color-surface-hover: hsl(var(--vitra-color-accent-h) 20% 10% / 8%);
+    --vitra-color-surface-active: hsl(var(--vitra-color-accent-h) 20% 10% / 12%);
+    --vitra-color-border: hsl(var(--vitra-color-accent-h) 20% 10% / 10%);
+    --vitra-color-border-hover: hsl(var(--vitra-color-accent-h) 20% 10% / 20%);
+    --vitra-color-text-primary: hsl(0deg 0% 0% / 95%);
+    --vitra-color-text-secondary: hsl(0deg 0% 0% / 70%);
+    --vitra-color-text-tertiary: hsl(0deg 0% 0% / 50%);
+    --vitra-color-text-inverse: hsl(0deg 0% 100%);
+    --vitra-shadow-subtle: 0 1px 2px rgb(0 0 0 / 5%);
+    --vitra-shadow-medium: 0 4px 6px -1px rgb(0 0 0 / 10%);
+    --vitra-shadow-elevated: 0 10px 15px -3px rgb(0 0 0 / 10%);
+    --vitra-glass-bg: hsl(0deg 0% 100% / 40%);
   }
 
   /* --- DARK THEME --- */
   html[data-theme="dark"] {
-    --vitra-color-bg: hsl(240, 15%, 4%);
-    --vitra-bg-accent: hsl(var(--vitra-color-accent-h), 20%, 6%);
-    --vitra-color-surface: hsla(0, 0%, 100%, 0.05);
-    --vitra-color-surface-hover: hsla(0, 0%, 100%, 0.08);
-    --vitra-color-surface-active: hsla(0, 0%, 100%, 0.12);
-    --vitra-color-border: hsla(0, 0%, 100%, 0.1);
-    --vitra-color-border-hover: hsla(0, 0%, 100%, 0.2);
-    
-    --vitra-color-text-primary: hsla(0, 0%, 100%, 0.95);
-    --vitra-color-text-secondary: hsla(0, 0%, 100%, 0.7);
-    --vitra-color-text-tertiary: hsla(0, 0%, 100%, 0.5);
-    --vitra-color-text-inverse: hsl(240, 15%, 4%);
-
-    --vitra-shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.3);
-    --vitra-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.4);
-    --vitra-shadow-elevated: 0 10px 32px rgba(0, 0, 0, 0.5);
-    
-    --vitra-glass-bg: hsla(0, 0%, 100%, 0.05);
+    --vitra-color-bg: hsl(var(--vitra-color-accent-h) 15% 4%);
+    --vitra-bg-accent: hsl(var(--vitra-color-accent-h) 20% 6%);
+    --vitra-color-surface: hsl(var(--vitra-color-accent-h) 20% 95% / 5%);
+    --vitra-color-surface-hover: hsl(var(--vitra-color-accent-h) 20% 95% / 8%);
+    --vitra-color-surface-active: hsl(var(--vitra-color-accent-h) 20% 95% / 12%);
+    --vitra-color-border: hsl(var(--vitra-color-accent-h) 20% 95% / 10%);
+    --vitra-color-border-hover: hsl(var(--vitra-color-accent-h) 20% 95% / 20%);
+    --vitra-color-text-primary: hsl(0deg 0% 100% / 95%);
+    --vitra-color-text-secondary: hsl(0deg 0% 100% / 70%);
+    --vitra-color-text-tertiary: hsl(0deg 0% 100% / 50%);
+    --vitra-color-text-inverse: hsl(var(--vitra-color-accent-h) 15% 4%);
+    --vitra-shadow-subtle: 0 1px 2px rgb(0 0 0 / 30%);
+    --vitra-shadow-medium: 0 4px 12px rgb(0 0 0 / 40%);
+    --vitra-shadow-elevated: 0 10px 32px rgb(0 0 0 / 50%);
+    --vitra-glass-bg: hsl(var(--vitra-color-accent-h) 20% 95% / 5%);
   }
 
   /* --- PASTEL THEME --- */
   html[data-theme="pastel"] {
-    --vitra-color-bg: hsl(300, 30%, 98%);
-    --vitra-bg-accent: hsl(300, 30%, 92%);
-    --vitra-color-surface: hsla(300, 100%, 80%, 0.1);
+    --vitra-color-bg: hsl(300deg 30% 98%);
+    --vitra-bg-accent: hsl(300deg 30% 92%);
+    --vitra-color-surface: hsl(300deg 100% 80% / 10%);
     --vitra-color-accent-h: 320;
     --vitra-color-accent-s: 70%;
     --vitra-color-accent-l: 65%;
-    --vitra-color-text-primary: hsl(300, 20%, 20%);
-    --vitra-color-text-secondary: hsl(300, 10%, 40%);
-    --vitra-glass-bg: hsla(300, 100%, 100%, 0.1);
+    --vitra-color-text-primary: hsl(300deg 20% 20%);
+    --vitra-color-text-secondary: hsl(300deg 10% 40%);
+    --vitra-glass-bg: hsl(300deg 100% 100% / 10%);
   }
 
   /* --- NEON THEME --- */
   html[data-theme="neon"] {
-    --vitra-color-bg: hsl(260, 30%, 2%);
-    --vitra-bg-accent: hsl(260, 30%, 5%);
-    --vitra-color-surface: hsla(180, 100%, 50%, 0.05);
+    --vitra-color-bg: hsl(260deg 30% 2%);
+    --vitra-bg-accent: hsl(260deg 30% 5%);
+    --vitra-color-surface: hsl(180deg 100% 50% / 5%);
     --vitra-color-accent-h: 180;
     --vitra-color-accent-s: 100%;
     --vitra-color-accent-l: 50%;
-    --vitra-color-text-primary: hsl(180, 100%, 95%);
-    --vitra-color-text-secondary: hsl(180, 50%, 70%);
-    --vitra-glass-bg: hsla(180, 100%, 50%, 0.05);
+    --vitra-color-text-primary: hsl(180deg 100% 95%);
+    --vitra-color-text-secondary: hsl(180deg 50% 70%);
+    --vitra-glass-bg: hsl(180deg 100% 50% / 5%);
   }
 
   /* --- OCEAN THEME --- */
   html[data-theme="ocean"] {
-    --vitra-color-bg: hsl(210, 30%, 4%);
-    --vitra-bg-accent: hsl(210, 30%, 8%);
-    --vitra-color-surface: hsla(210, 100%, 60%, 0.05);
+    --vitra-color-bg: hsl(210deg 30% 4%);
+    --vitra-bg-accent: hsl(210deg 30% 8%);
+    --vitra-color-surface: hsl(210deg 100% 60% / 5%);
     --vitra-color-accent-h: 200;
     --vitra-color-accent-s: 90%;
     --vitra-color-accent-l: 55%;
-    --vitra-color-text-primary: hsl(210, 100%, 95%);
-    --vitra-color-text-secondary: hsl(210, 40%, 75%);
+    --vitra-color-text-primary: hsl(210deg 100% 95%);
+    --vitra-color-text-secondary: hsl(210deg 40% 75%);
   }
 
   /* --- EMERALD THEME --- */
   html[data-theme="emerald"] {
-    --vitra-color-bg: hsl(160, 20%, 3%);
-    --vitra-bg-accent: hsl(160, 40%, 6%);
-    --vitra-color-surface: hsla(160, 100%, 50%, 0.05);
+    --vitra-color-bg: hsl(160deg 20% 3%);
+    --vitra-bg-accent: hsl(160deg 40% 6%);
+    --vitra-color-surface: hsl(160deg 100% 50% / 5%);
     --vitra-color-accent-h: 155;
     --vitra-color-accent-s: 80%;
     --vitra-color-accent-l: 45%;
-    --vitra-color-text-primary: hsl(160, 100%, 95%);
-    --vitra-color-text-secondary: hsl(160, 40%, 75%);
+    --vitra-color-text-primary: hsl(160deg 100% 95%);
+    --vitra-color-text-secondary: hsl(160deg 40% 75%);
   }
 
   /* --- AUTO THEME --- */
   html[data-theme="auto"] {
-    --vitra-color-bg: hsl(240, 15%, 4%);
+    --vitra-color-bg: hsl(var(--vitra-color-accent-h) 15% 4%);
+    --vitra-color-surface: hsl(var(--vitra-color-accent-h) 20% 95% / 5%);
+    --vitra-color-surface-hover: hsl(var(--vitra-color-accent-h) 20% 95% / 8%);
+    --vitra-color-surface-active: hsl(var(--vitra-color-accent-h) 20% 95% / 12%);
+    --vitra-color-border: hsl(var(--vitra-color-accent-h) 20% 95% / 10%);
+    --vitra-color-border-hover: hsl(var(--vitra-color-accent-h) 20% 95% / 20%);
+    --vitra-color-text-tertiary: hsl(0deg 0% 100% / 50%);
+    --vitra-color-text-inverse: hsl(var(--vitra-color-accent-h) 15% 4%);
+    --vitra-glass-bg: hsl(var(--vitra-color-accent-h) 20% 95% / 5%);
   }
 
   @media (prefers-color-scheme: light) {
     html[data-theme="auto"] {
-      --vitra-color-bg: hsl(0, 0%, 100%);
-      --vitra-color-surface: hsla(0, 0%, 0%, 0.04);
-      --vitra-color-text-primary: hsla(0, 0%, 0%, 0.95);
-      --vitra-color-text-secondary: hsla(0, 0%, 0%, 0.7);
+      --vitra-color-bg: hsl(var(--vitra-color-accent-h) 8% 99%);
+      --vitra-color-surface: hsl(var(--vitra-color-accent-h) 20% 10% / 4%);
+      --vitra-color-surface-hover: hsl(var(--vitra-color-accent-h) 20% 10% / 8%);
+      --vitra-color-surface-active: hsl(var(--vitra-color-accent-h) 20% 10% / 12%);
+      --vitra-color-border: hsl(var(--vitra-color-accent-h) 20% 10% / 10%);
+      --vitra-color-border-hover: hsl(var(--vitra-color-accent-h) 20% 10% / 20%);
+      --vitra-color-text-primary: hsl(0deg 0% 0% / 95%);
+      --vitra-color-text-secondary: hsl(0deg 0% 0% / 70%);
+      --vitra-color-text-tertiary: hsl(0deg 0% 0% / 50%);
+      --vitra-color-text-inverse: hsl(0deg 0% 100%);
+      --vitra-glass-bg: hsl(0deg 0% 100% / 40%);
     }
   }
 }
@@ -301,7 +323,9 @@ a:hover {
 
 /* === 02-glass.css === */
 /* 02-glass.css - Glass System */
+
 /* Part of Vitra CSS Framework */
+
 /* Phase 2: Glass System - Plan 01 */
 
 /* ============================================
@@ -313,6 +337,7 @@ a:hover {
 @layer glass {
   :root {
     /* --- GLASS BLUR TOKENS --- */
+
     /* Increased blur intensity for premium frosted feel */
     --vitra-blur-sm: 12px;
     --vitra-blur-md: 24px;
@@ -320,13 +345,13 @@ a:hover {
     --vitra-blur-xl: 64px;
 
     /* --- GLASS BACKGROUND TOKENS --- */
-    --vitra-glass-bg: hsla(0, 0%, 100%, 0.03);
+    --vitra-glass-bg: hsl(0deg 0% 100% / 3%);
     --vitra-glass-bg-fallback: var(--vitra-color-surface);
 
     /* --- GLASS BORDER TOKENS --- */
     --vitra-border-width: 1px;
     --vitra-border-style: solid;
-    --vitra-border-color: hsla(0, 0%, 100%, 0.1);
+    --vitra-border-color: rgb(var(--vitra-color-border-rgb) / 10%);
   }
 
   /* Base glass class with solid fallback */
@@ -341,14 +366,15 @@ a:hover {
   }
 
   /* Enhanced glass effect using backdrop-filter */
-  @supports (backdrop-filter: blur(4px)) {
+  /* Glass Variants - with webkit prefix for Safari < 15 */
+  @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
     .vitra-glass {
       background: var(--vitra-glass-bg);
       backdrop-filter: blur(var(--vitra-blur-md));
       box-shadow: 
         var(--vitra-shadow-medium),
-        inset 0 1px 1px hsla(0, 0%, 100%, 0.1),
-        inset 0 -1px 1px hsla(0, 0%, 0%, 0.1);
+        inset 0 1px 1px hsl(0deg 0% 100% / 10%),
+        inset 0 -1px 1px hsl(0deg 0% 0% / 10%);
     }
 
     /* Specular highlight (inner border) for realism */
@@ -360,43 +386,56 @@ a:hover {
       padding: 1.5px;
       background: linear-gradient(
         135deg,
-        hsla(0, 0%, 100%, 0.2),
+        hsl(0deg 0% 100% / 20%),
         transparent 40%,
-        hsla(0, 0%, 100%, 0.1)
+        hsl(0deg 0% 100% / 10%)
       );
       mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      mask-composite: exclude;
       -webkit-mask-composite: xor;
+      mask-composite: exclude;
       pointer-events: none;
+    }
+
+    .vitra-glass-sm {
+      backdrop-filter: blur(var(--vitra-blur-sm));
+    }
+
+    .vitra-glass-md {
+      backdrop-filter: blur(var(--vitra-blur-md));
+    }
+
+    .vitra-glass-lg {
+      backdrop-filter: blur(var(--vitra-blur-lg));
+    }
+
+    .vitra-glass-xl {
+      backdrop-filter: blur(var(--vitra-blur-xl));
+    }
+
+    .vitra-glass-subtle {
+      backdrop-filter: blur(var(--vitra-blur-sm));
     }
   }
 
-  /* Glass Variants */
-  .vitra-glass-sm { backdrop-filter: blur(var(--vitra-blur-sm)); }
-  .vitra-glass-md { backdrop-filter: blur(var(--vitra-blur-md)); }
-  .vitra-glass-lg { backdrop-filter: blur(var(--vitra-blur-lg)); }
-  .vitra-glass-xl { backdrop-filter: blur(var(--vitra-blur-xl)); }
+  /* Fallback for glass variants when backdrop-filter not supported */
+  .vitra-glass-sm, .vitra-glass-md, .vitra-glass-lg, .vitra-glass-xl {
+    background: var(--vitra-glass-bg-fallback);
+  }
 
   /* Reflective Surface (Luxury addition) */
   .vitra-glass-reflect {
     background: linear-gradient(
       135deg,
-      hsla(0, 0%, 100%, 0.05) 0%,
-      hsla(0, 0%, 100%, 0.01) 50%,
-      hsla(0, 0%, 100%, 0.05) 100%
+      hsl(0deg 0% 100% / 5%) 0%,
+      hsl(0deg 0% 100% / 1%) 50%,
+      hsl(0deg 0% 100% / 5%) 100%
     );
   }
 
   /* Subtle glass variant - lighter blur and transparency */
   .vitra-glass-subtle {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(var(--vitra-color-border-rgb, 200, 200, 200), 0.3);
-  }
-
-  @supports (backdrop-filter: blur(4px)) {
-    .vitra-glass-subtle {
-      backdrop-filter: blur(var(--vitra-blur-sm));
-    }
+    background: rgb(255 255 255 / 5%);
+    border-color: var(--vitra-color-border);
   }
 }
 
@@ -404,7 +443,9 @@ a:hover {
 
 /* === 03-particles.css === */
 /* 03-particles.css - Particle System */
+
 /* Part of Vitra CSS Framework */
+
 /* Phase 3: Particles & Motion - Plan 01 */
 
 /* ============================================
@@ -416,6 +457,7 @@ a:hover {
 @layer particles {
   :root {
     /* --- PARTICLE BASE TOKENS --- */
+
     /* Configurable particle properties via CSS variables */
     --vitra-particle-count: 20;
     --vitra-particle-color: var(--vitra-color-accent, #6c63ff);
@@ -425,6 +467,7 @@ a:hover {
   }
 
   /* --- PARTICLE BASE CLASS --- */
+
   /* Configurable particle system with CSS variable controls */
   .vitra-particle {
     /* Particle appearance */
@@ -450,6 +493,7 @@ a:hover {
       transform: translateY(0) scale(1);
       opacity: 0.7;
     }
+
     50% {
       transform: translateY(-20px) scale(1.1);
       opacity: 1;
@@ -457,6 +501,7 @@ a:hover {
   }
 
   /* --- PARTICLE GLOW VARIANTS --- */
+
   /* Glow intensity classes for configurable glow effects */
 
   /* Subtle glow variant - uses token value */
@@ -466,12 +511,12 @@ a:hover {
 
   /* Medium glow variant (balanced) - enhanced with token */
   .vitra-particle-glow-md {
-    box-shadow: var(--vitra-shadow-glow), 0 0 30px rgba(108, 99, 255, 0.2);
+    box-shadow: var(--vitra-shadow-glow), 0 0 30px rgb(108 99 255 / 20%);
   }
 
   /* Strong glow variant - uses strong glow token */
   .vitra-particle-glow-lg {
-    box-shadow: var(--vitra-shadow-glow-strong), 0 0 60px rgba(108, 99, 255, 0.3);
+    box-shadow: var(--vitra-shadow-glow-strong), 0 0 60px rgb(108 99 255 / 30%);
   }
 
   /* Configurable glow intensity via CSS variable */
@@ -480,14 +525,15 @@ a:hover {
   }
 
   .vitra-particle[data-glow="md"] {
-    box-shadow: var(--vitra-shadow-glow), 0 0 30px rgba(108, 99, 255, 0.2);
+    box-shadow: var(--vitra-shadow-glow), 0 0 30px rgb(108 99 255 / 20%);
   }
 
   .vitra-particle[data-glow="lg"] {
-    box-shadow: var(--vitra-shadow-glow-strong), 0 0 60px rgba(108, 99, 255, 0.3);
+    box-shadow: var(--vitra-shadow-glow-strong), 0 0 60px rgb(108 99 255 / 30%);
   }
 
   /* --- EMOJI PARTICLES --- */
+
   /* Emoji-based particles using data-emoji attribute */
 
   .vitra-particles-emoji {
@@ -502,13 +548,6 @@ a:hover {
   .vitra-particles-emoji::before {
     content: attr(data-emoji);
     display: inline-block;
-  }
-
-  /* Random positioning classes for emoji particles */
-  .vitra-particles-emoji[data-pos="random"] {
-    position: absolute;
-    top: calc(var(--random-y, 0) * 100%);
-    left: calc(var(--random-x, 0) * 100%);
   }
 
   /* Preset positions for common use cases */
@@ -544,10 +583,11 @@ a:hover {
   }
 
   /* --- PERFORMANCE LIMITS --- */
+
   /* Device-specific particle limits for performance optimization */
 
   /* Mobile: limit to 15 particles for better performance */
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     :root {
       --vitra-particle-count: 15;
     }
@@ -570,13 +610,14 @@ a:hover {
   }
 
   /* Desktop: limit to 40 particles for richer experience */
-  @media (min-width: 769px) {
+  @media (width >= 768px) {
     :root {
       --vitra-particle-count: 40;
     }
   }
 
   /* --- ACCESSIBILITY: Reduced Motion --- */
+
   /* Disable animations for users who prefer reduced motion */
 
   @media (prefers-reduced-motion: reduce) {
@@ -607,7 +648,9 @@ a:hover {
 
 /* === 04-motion.css === */
 /* 04-motion.css - Motion Engine */
+
 /* Part of Vitra CSS Framework */
+
 /* Phase 3: Particles & Motion - Plan 02 */
 
 /* ============================================
@@ -623,8 +666,6 @@ a:hover {
      ============================================ */
   :root {
     --vitra-motion-delay: 0ms;
-    --vitra-ease-luxury: cubic-bezier(0.23, 1, 0.32, 1);
-    --vitra-ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   /* ============================================
@@ -638,6 +679,7 @@ a:hover {
       opacity: 0;
       transform: translateY(20px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -649,6 +691,7 @@ a:hover {
     0% {
       background-position: -200% center;
     }
+
     100% {
       background-position: 200% center;
     }
@@ -660,6 +703,7 @@ a:hover {
       transform: scale(1);
       opacity: 0.8;
     }
+
     50% {
       transform: scale(1.05);
       opacity: 1;
@@ -671,9 +715,11 @@ a:hover {
     0% {
       background-position: 0% 50%;
     }
+
     50% {
       background-position: 100% 50%;
     }
+
     100% {
       background-position: 0% 50%;
     }
@@ -686,6 +732,7 @@ a:hover {
       filter: blur(10px);
       transform: scale(0.95);
     }
+
     to {
       opacity: 1;
       filter: blur(0);
@@ -719,9 +766,22 @@ a:hover {
     animation-timing-function: var(--vitra-ease-out, cubic-bezier(0, 0, 0.2, 1));
   }
 
+  /* Fade Left - element fades in while sliding from left */
+  @keyframes vitra-fade-left {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
   /* Reveal Left - fade in while sliding from left */
   .vitra-reveal-left {
-    animation-name: vitra-fade-up;
+    animation-name: vitra-fade-left;
     animation-duration: var(--vitra-duration-normal, 250ms);
     animation-timing-function: var(--vitra-ease-out, cubic-bezier(0, 0, 0.2, 1));
     transform: translateX(-20px);
@@ -750,26 +810,31 @@ a:hover {
 
   .vitra-delay-100 {
     --vitra-motion-delay: 100ms;
+
     animation-delay: var(--vitra-motion-delay);
   }
 
   .vitra-delay-200 {
     --vitra-motion-delay: 200ms;
+
     animation-delay: var(--vitra-motion-delay);
   }
 
   .vitra-delay-300 {
     --vitra-motion-delay: 300ms;
+
     animation-delay: var(--vitra-motion-delay);
   }
 
   .vitra-delay-400 {
     --vitra-motion-delay: 400ms;
+
     animation-delay: var(--vitra-motion-delay);
   }
 
   .vitra-delay-500 {
     --vitra-motion-delay: 500ms;
+
     animation-delay: var(--vitra-motion-delay);
   }
 
@@ -798,11 +863,11 @@ a:hover {
   }
 
   .vitra-hover-glow:hover {
-    box-shadow: var(--vitra-shadow-glow, 0 0 20px rgba(108, 99, 255, 0.3));
+    box-shadow: var(--vitra-shadow-glow, 0 0 20px rgb(108 99 255 / 30%));
   }
 
   .vitra-hover-glow:focus-visible {
-    box-shadow: var(--vitra-shadow-glow, 0 0 20px rgba(108, 99, 255, 0.3));
+    box-shadow: var(--vitra-shadow-glow, 0 0 20px rgb(108 99 255 / 30%));
   }
 
   /* Hover Accent Line - pseudo-element line effect */
@@ -825,6 +890,158 @@ a:hover {
   .vitra-hover-accent-line:hover::before,
   .vitra-hover-accent-line:focus-visible::before {
     width: 100%;
+  }
+
+  /* ============================================
+     CINEMATIC EFFECTS
+     Premium animated backgrounds, glowing orbs,
+     gradient text, and animated borders.
+     2026 design trend: living, breathing UI
+     ============================================ */
+
+  /* --- Mesh Gradient Background --- */
+  @keyframes vitra-mesh-shift {
+    0% { background-position: 0% 50%; }
+    25% { background-position: 100% 0%; }
+    50% { background-position: 100% 100%; }
+    75% { background-position: 0% 100%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .vitra-gradient-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(ellipse at 20% 50%, hsl(var(--vitra-color-accent-h) 80% 60% / 20%) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, hsl(calc(var(--vitra-color-accent-h) + 60) 80% 60% / 15%) 0%, transparent 50%),
+      radial-gradient(ellipse at 40% 80%, hsl(calc(var(--vitra-color-accent-h) - 30) 80% 60% / 15%) 0%, transparent 50%),
+      var(--vitra-color-bg);
+    background-size: 200% 200%;
+    animation: vitra-mesh-shift 16s ease-in-out infinite;
+  }
+
+  /* --- Floating Glow Orb --- */
+  @keyframes vitra-float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(60px, -40px) scale(1.05); }
+    50% { transform: translate(-40px, 60px) scale(0.95); }
+    75% { transform: translate(40px, -60px) scale(1.02); }
+  }
+
+  @keyframes vitra-float-reverse {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(-50px, 30px) scale(0.95); }
+    50% { transform: translate(50px, -50px) scale(1.05); }
+    75% { transform: translate(-30px, 40px) scale(0.98); }
+  }
+
+  .vitra-glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(80px);
+    opacity: 0.12;
+  }
+
+  .vitra-glow-orb-1 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, hsl(var(--vitra-color-accent-h) 100% 70%) 0%, transparent 70%);
+    top: -10%;
+    right: -5%;
+    animation: vitra-float 22s ease-in-out infinite;
+  }
+
+  .vitra-glow-orb-2 {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, hsl(calc(var(--vitra-color-accent-h) + 60) 100% 60%) 0%, transparent 70%);
+    bottom: -5%;
+    left: -5%;
+    animation: vitra-float-reverse 18s ease-in-out infinite;
+  }
+
+  .vitra-glow-orb-3 {
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, hsl(calc(var(--vitra-color-accent-h) - 30) 100% 60%) 0%, transparent 70%);
+    top: 40%;
+    left: 50%;
+    animation: vitra-float 25s ease-in-out infinite;
+    opacity: 0.08;
+  }
+
+  /* --- Animated Gradient Text --- */
+  @keyframes vitra-text-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .vitra-gradient-text {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--vitra-color-accent-h) 100% 70%),
+      hsl(calc(var(--vitra-color-accent-h) + 40) 100% 65%),
+      hsl(calc(var(--vitra-color-accent-h) - 20) 100% 70%),
+      hsl(var(--vitra-color-accent-h) 100% 70%)
+    );
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: vitra-text-shift 6s ease-in-out infinite;
+  }
+
+  /* --- Animated Gradient Border --- */
+  @keyframes vitra-border-rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .vitra-border-glow {
+    position: relative;
+    border-radius: var(--vitra-radius-md);
+    overflow: hidden;
+  }
+
+  .vitra-border-glow::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    z-index: -2;
+    background: conic-gradient(
+      from var(--vitra-border-glow-angle, 0deg),
+      hsl(var(--vitra-color-accent-h) 100% 70%),
+      hsl(calc(var(--vitra-color-accent-h) + 60) 100% 60%),
+      hsl(calc(var(--vitra-color-accent-h) - 30) 100% 65%),
+      hsl(var(--vitra-color-accent-h) 100% 70%)
+    );
+    animation: vitra-border-rotate 4s linear infinite;
+  }
+
+  .vitra-border-glow::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border-radius: inherit;
+    background: var(--vitra-color-bg);
+    z-index: -1;
+  }
+
+  /* --- Cinematic Hero (spotlight + gradient combo) --- */
+  .vitra-hero-spotlight {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vitra-hero-spotlight .vitra-gradient-bg {
+    position: absolute;
+    z-index: 0;
   }
 
   /* ============================================
@@ -855,7 +1072,9 @@ a:hover {
 
 /* === 05-layout.css === */
 /* 05-layout.css - Layout System */
+
 /* Part of Vitra CSS Framework */
+
 /* Phase 4: Layout & Utilities - Plan 01 */
 
 /* ============================================
@@ -865,27 +1084,31 @@ a:hover {
    ============================================ */
 
 @layer layout {
-  /* --- LAYOUT TOKENS --- */
-  /* Responsive breakpoints */
-  --vitra-breakpoint-md: 768px;
-  --vitra-breakpoint-lg: 1024px;
-  --vitra-breakpoint-xl: 1280px;
+  :root {
+    /* --- LAYOUT TOKENS --- */
 
-  /* Container max-widths at each breakpoint */
-  --vitra-container-sm: 100%;
-  --vitra-container-md: 720px;
-  --vitra-container-lg: 960px;
-  --vitra-container-xl: 1200px;
+    /* Responsive breakpoints */
+    --vitra-breakpoint-md: 768px;
+    --vitra-breakpoint-lg: 1024px;
+    --vitra-breakpoint-xl: 1280px;
 
-  /* Fluid spacing scale using clamp() */
-  --vitra-fluid-space-1: clamp(0.25rem, 1vw, 0.5rem);    /* 4-8px */
-  --vitra-fluid-space-2: clamp(0.5rem, 2vw, 1rem);        /* 8-16px */
-  --vitra-fluid-space-3: clamp(1rem, 3vw, 1.5rem);        /* 16-24px */
-  --vitra-fluid-space-4: clamp(1.25rem, 4vw, 2rem);       /* 20-32px */
-  --vitra-fluid-space-5: clamp(1.5rem, 5vw, 2.5rem);     /* 24-40px */
-  --vitra-fluid-space-6: clamp(2rem, 6vw, 3rem);          /* 32-48px */
+    /* Container max-widths at each breakpoint */
+    --vitra-container-sm: 100%;
+    --vitra-container-md: 720px;
+    --vitra-container-lg: 960px;
+    --vitra-container-xl: 1200px;
+
+    /* Fluid spacing scale using clamp() */
+    --vitra-fluid-space-1: clamp(0.25rem, 1vw, 0.5rem);    /* 4-8px */
+    --vitra-fluid-space-2: clamp(0.5rem, 2vw, 1rem);        /* 8-16px */
+    --vitra-fluid-space-3: clamp(1rem, 3vw, 1.5rem);        /* 16-24px */
+    --vitra-fluid-space-4: clamp(1.25rem, 4vw, 2rem);       /* 20-32px */
+    --vitra-fluid-space-5: clamp(1.5rem, 5vw, 2.5rem);     /* 24-40px */
+    --vitra-fluid-space-6: clamp(2rem, 6vw, 3rem);          /* 32-48px */
+  }
 
   /* --- CONTAINER SYSTEM --- */
+
   /* Responsive container with max-width breakpoints and fluid padding */
 
   .vitra-container {
@@ -896,33 +1119,31 @@ a:hover {
     max-width: var(--vitra-container-sm);
 
     /* Fluid padding using clamp() for responsive spacing */
-    padding-inline-start: var(--vitra-fluid-space-3);
-    padding-inline-end: var(--vitra-fluid-space-3);
+    padding-inline: var(--vitra-fluid-space-3) var(--vitra-fluid-space-3);
 
     /* Center the container */
-    margin-inline-start: auto;
-    margin-inline-end: auto;
+    margin-inline: auto;
 
     /* Ensure padding doesn't affect width calculation */
     box-sizing: border-box;
   }
 
   /* Responsive max-width at medium breakpoint (768px+) */
-  @media (min-width: 768px) {
+  @media (width >= 768px) {
     .vitra-container {
       max-width: var(--vitra-container-md);
     }
   }
 
   /* Responsive max-width at large breakpoint (1024px+) */
-  @media (min-width: 1024px) {
+  @media (width >= 1024px) {
     .vitra-container {
       max-width: var(--vitra-container-lg);
     }
   }
 
   /* Responsive max-width at extra-large breakpoint (1280px+) */
-  @media (min-width: 1280px) {
+  @media (width >= 1280px) {
     .vitra-container {
       max-width: var(--vitra-container-xl);
     }
@@ -946,6 +1167,7 @@ a:hover {
   }
 
   /* --- GRID SYSTEM --- */
+
   /* CSS Grid utilities with column variants and gap utilities */
 
   .vitra-grid {
@@ -967,8 +1189,9 @@ a:hover {
   }
 
   /* Responsive grid variants */
+
   /* 2 columns on medium+ screens */
-  @media (min-width: 768px) {
+  @media (width >= 768px) {
     .vitra-grid-md-2 {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -983,7 +1206,7 @@ a:hover {
   }
 
   /* 3 columns on large+ screens */
-  @media (min-width: 1024px) {
+  @media (width >= 1024px) {
     .vitra-grid-lg-2 {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -998,6 +1221,7 @@ a:hover {
   }
 
   /* --- GRID GAP UTILITIES --- */
+
   /* Using spacing tokens for consistent gaps */
 
   .vitra-grid-gap-1 {
@@ -1029,170 +1253,8 @@ a:hover {
     gap: var(--vitra-fluid-space-3); /* clamp(1rem, 3vw, 1.5rem) */
   }
 
-  /* --- FLEX UTILITIES --- */
-  /* Flexbox utilities with justify, align, and direction variants */
-
-  .vitra-flex {
-    display: flex;
-    gap: var(--vitra-space-2); /* Default gap: 1rem (16px) */
-  }
-
-  /* Flex direction variants */
-  .vitra-flex-row {
-    flex-direction: row;
-  }
-
-  .vitra-flex-row-reverse {
-    flex-direction: row-reverse;
-  }
-
-  .vitra-flex-col {
-    flex-direction: column;
-  }
-
-  .vitra-flex-col-reverse {
-    flex-direction: column-reverse;
-  }
-
-  /* Justify content variants */
-  .vitra-justify-start {
-    justify-content: flex-start;
-  }
-
-  .vitra-justify-end {
-    justify-content: flex-end;
-  }
-
-  .vitra-justify-center {
-    justify-content: center;
-  }
-
-  .vitra-justify-between {
-    justify-content: space-between;
-  }
-
-  .vitra-justify-around {
-    justify-content: space-around;
-  }
-
-  .vitra-justify-evenly {
-    justify-content: space-evenly;
-  }
-
-  /* Align items variants */
-  .vitra-items-start {
-    align-items: flex-start;
-  }
-
-  .vitra-items-end {
-    align-items: flex-end;
-  }
-
-  .vitra-items-center {
-    align-items: center;
-  }
-
-  .vitra-items-baseline {
-    align-items: baseline;
-  }
-
-  .vitra-items-stretch {
-    align-items: stretch;
-  }
-
-  /* Align content variants (for multi-line flex) */
-  .vitra-content-start {
-    align-content: flex-start;
-  }
-
-  .vitra-content-end {
-    align-content: flex-end;
-  }
-
-  .vitra-content-center {
-    align-content: center;
-  }
-
-  .vitra-content-between {
-    align-content: space-between;
-  }
-
-  .vitra-content-around {
-    align-content: space-around;
-  }
-
-  .vitra-content-stretch {
-    align-content: stretch;
-  }
-
-  /* Flex wrap variants */
-  .vitra-flex-wrap {
-    flex-wrap: wrap;
-  }
-
-  .vitra-flex-wrap-reverse {
-    flex-wrap: wrap-reverse;
-  }
-
-  .vitra-flex-nowrap {
-    flex-wrap: nowrap;
-  }
-
-  /* Flex grow/shrink utilities */
-  .vitra-flex-1 {
-    flex: 1 1 0%;
-  }
-
-  .vitra-flex-auto {
-    flex: 1 1 auto;
-  }
-
-  .vitra-flex-initial {
-    flex: 0 1 auto;
-  }
-
-  .vitra-flex-none {
-    flex: none;
-  }
-
-  /* Responsive flex variants */
-  @media (min-width: 768px) {
-    .vitra-md-flex-row {
-      flex-direction: row;
-    }
-
-    .vitra-md-flex-col {
-      flex-direction: column;
-    }
-
-    .vitra-md-justify-center {
-      justify-content: center;
-    }
-
-    .vitra-md-items-center {
-      align-items: center;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .vitra-lg-flex-row {
-      flex-direction: row;
-    }
-
-    .vitra-lg-flex-col {
-      flex-direction: column;
-    }
-
-    .vitra-lg-justify-between {
-      justify-content: space-between;
-    }
-
-    .vitra-lg-items-center {
-      align-items: center;
-    }
-  }
-
   /* --- FLUID SPACING UTILITIES --- */
+
   /* Responsive spacing using clamp() for smooth scaling */
 
   /* Fluid margin utilities */
@@ -1230,6 +1292,7 @@ a:hover {
   }
 
   /* Fluid directional spacing */
+
   /* Margin top/bottom */
   .vitra-mt-fluid-3 {
     margin-top: var(--vitra-fluid-space-3);
@@ -1297,8 +1360,7 @@ a:hover {
   
   .vitra-section {
     position: relative;
-    padding-block-start: var(--vitra-space-12, 4rem);
-    padding-block-end: var(--vitra-space-12, 4rem);
+    padding-block: var(--vitra-space-12, 4rem) var(--vitra-space-12, 4rem);
     width: 100%;
   }
 
@@ -1309,18 +1371,16 @@ a:hover {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-block-start: var(--vitra-space-16, 6rem);
-    padding-block-end: var(--vitra-space-16, 6rem);
+    padding-block: var(--vitra-space-16, 8rem) var(--vitra-space-16, 8rem);
     text-align: center;
     overflow: hidden;
   }
 
   .vitra-footer {
     position: relative;
-    padding-block-start: var(--vitra-space-12, 4rem);
-    padding-block-end: var(--vitra-space-8, 2rem);
-    background: var(--vitra-color-surface, rgba(0, 0, 0, 0.02));
-    border-block-start: 1px solid var(--vitra-color-border, rgba(0, 0, 0, 0.1));
+    padding-block: var(--vitra-space-12, 4rem) var(--vitra-space-8, 2rem);
+    background: var(--vitra-color-surface, rgb(0 0 0 / 2%));
+    border-block-start: 1px solid var(--vitra-color-border, rgb(0 0 0 / 10%));
     margin-block-start: auto;
   }
 }
@@ -1328,7 +1388,9 @@ a:hover {
 
 /* === 06-components.css === */
 /* 06-components.css - Components Layer */
+
 /* Part of Vitra CSS Framework */
+
 /* Phase 5: Components - Plan 02 */
 
 /* ============================================
@@ -1349,23 +1411,23 @@ a:hover {
     align-items: center;
     justify-content: center;
     gap: var(--vitra-space-2);
-
     font-family: var(--vitra-font-family);
     font-size: var(--vitra-font-size-base);
     font-weight: var(--vitra-font-weight-medium);
     line-height: var(--vitra-line-height-tight);
     text-decoration: none;
-
     padding: var(--vitra-space-2) var(--vitra-space-3);
     border: 1px solid transparent;
     border-radius: var(--vitra-radius-md);
-
     background-color: var(--vitra-color-accent);
     color: var(--vitra-color-text-inverse);
-
     cursor: pointer;
     user-select: none;
-    transition: all var(--vitra-duration-normal) var(--vitra-ease-luxury);
+    transition: background-color var(--vitra-duration-normal) var(--vitra-ease-luxury),
+                border-color var(--vitra-duration-normal) var(--vitra-ease-luxury),
+                color var(--vitra-duration-normal) var(--vitra-ease-luxury),
+                transform var(--vitra-duration-normal) var(--vitra-ease-luxury),
+                box-shadow var(--vitra-duration-normal) var(--vitra-ease-luxury);
     box-sizing: border-box;
     position: relative;
     overflow: hidden;
@@ -1374,8 +1436,8 @@ a:hover {
   /* --- BUTTON VARIANTS --- */
 
   .vitra-btn-glass {
-    background: hsla(0, 0%, 100%, 0.05);
-    border-color: hsla(0, 0%, 100%, 0.1);
+    background: hsl(0deg 0% 100% / 5%);
+    border-color: hsl(0deg 0% 100% / 10%);
     color: var(--vitra-color-text-primary);
     backdrop-filter: blur(var(--vitra-blur-sm));
     box-shadow: var(--vitra-shadow-subtle);
@@ -1387,7 +1449,7 @@ a:hover {
     inset: 0;
     padding: 1px;
     border-radius: inherit;
-    background: linear-gradient(to bottom, hsla(0, 0%, 100%, 0.15), transparent);
+    background: linear-gradient(to bottom, hsl(0deg 0% 100% / 15%), transparent);
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask-composite: exclude;
     pointer-events: none;
@@ -1400,13 +1462,13 @@ a:hover {
   }
 
   .vitra-btn-ghost:hover {
-    background-color: hsla(var(--vitra-color-accent-h), var(--vitra-color-accent-s), var(--vitra-color-accent-l), 0.1);
+    background-color: hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 10%);
   }
 
   .vitra-btn-solid {
     background-color: var(--vitra-color-accent);
     color: var(--vitra-color-text-inverse);
-    box-shadow: 0 4px 14px 0 hsla(var(--vitra-color-accent-h), var(--vitra-color-accent-s), var(--vitra-color-accent-l), 0.39);
+    box-shadow: 0 4px 14px 0 hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 39%);
   }
 
   .vitra-btn-gradient {
@@ -1422,13 +1484,13 @@ a:hover {
   }
 
   .vitra-btn-glass:hover:not(:disabled) {
-    background-color: hsla(0, 0%, 100%, 0.08);
-    border-color: hsla(0, 0%, 100%, 0.2);
+    background-color: hsl(0deg 0% 100% / 8%);
+    border-color: hsl(0deg 0% 100% / 20%);
   }
 
   .vitra-btn-solid:hover:not(:disabled) {
     background-color: var(--vitra-color-accent-hover);
-    box-shadow: 0 6px 20px rgba(var(--vitra-color-accent-rgb), 0.23);
+    box-shadow: 0 6px 20px rgb(var(--vitra-color-accent-rgb), 0.23);
   }
 
   .vitra-btn:active:not(:disabled) {
@@ -1459,14 +1521,14 @@ a:hover {
     flex-direction: column;
     padding: var(--vitra-space-3) var(--vitra-space-4);
     gap: var(--vitra-space-2);
-
     border: 1px solid var(--vitra-color-border);
     border-radius: var(--vitra-radius-lg);
     background-color: var(--vitra-color-surface);
     color: var(--vitra-color-text-primary);
-
     box-shadow: var(--vitra-shadow-medium);
-    transition: all var(--vitra-duration-normal) var(--vitra-ease-luxury);
+    transition: transform var(--vitra-duration-normal) var(--vitra-ease-luxury),
+                box-shadow var(--vitra-duration-normal) var(--vitra-ease-luxury),
+                border-color var(--vitra-duration-normal) var(--vitra-ease-luxury);
     box-sizing: border-box;
     position: relative;
     overflow: hidden;
@@ -1475,9 +1537,9 @@ a:hover {
   /* --- CARD VARIANTS --- */
 
   .vitra-card-glass {
-    background: hsla(0, 0%, 100%, 0.03);
+    background: hsl(0deg 0% 100% / 3%);
     backdrop-filter: blur(var(--vitra-blur-md));
-    border-color: hsla(0, 0%, 100%, 0.1);
+    border-color: hsl(0deg 0% 100% / 10%);
   }
 
   .vitra-card-glass::after {
@@ -1486,7 +1548,7 @@ a:hover {
     inset: 0;
     padding: 1px;
     border-radius: inherit;
-    background: linear-gradient(135deg, hsla(0, 0%, 100%, 0.1), transparent 50%);
+    background: linear-gradient(135deg, hsl(0deg 0% 100% / 10%), transparent 50%);
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask-composite: exclude;
     pointer-events: none;
@@ -1494,15 +1556,15 @@ a:hover {
 
   .vitra-card-hover:hover {
     transform: translateY(-6px);
-    box-shadow: var(--vitra-shadow-elevated), 0 0 20px hsla(var(--vitra-color-accent-h), var(--vitra-color-accent-s), var(--vitra-color-accent-l), 0.1);
+    box-shadow: var(--vitra-shadow-elevated), 0 0 20px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 10%);
     border-color: var(--vitra-color-border-hover);
   }
 
   .vitra-card-stacked {
     box-shadow:
       var(--vitra-shadow-medium),
-      0 12px 0 -6px hsla(0, 0%, 100%, 0.02),
-      0 24px 0 -12px hsla(0, 0%, 100%, 0.01);
+      0 12px 0 -6px hsl(0deg 0% 100% / 2%),
+      0 24px 0 -12px hsl(0deg 0% 100% / 1%);
   }
 
   /* --- CARD ELEMENTS --- */
@@ -1576,8 +1638,8 @@ a:hover {
   }
 
   .vitra-card-lg .vitra-card-image {
-    width: calc(100% + var(--vitra-space-5) * 2);
-    margin: calc(-1 * var(--vitra-space-5)) calc(-1 * var(--vitra-space-5)) var(--vitra-space-4);
+    width: calc(100% + var(--vitra-space-4) * 2);
+    margin: calc(-1 * var(--vitra-space-4)) calc(-1 * var(--vitra-space-4)) var(--vitra-space-3);
   }
 
   /* --- prefers-reduced-motion --- */
@@ -1592,10 +1654,7 @@ a:hover {
       transform: none;
     }
 
-    .vitra-card-stacked:hover {
-      transform: none;
     }
-  }
 
   /* ============================================
       FORM ELEMENTS (COMP-03)
@@ -1617,7 +1676,9 @@ a:hover {
     border: 1px solid var(--vitra-color-border);
     border-radius: var(--vitra-radius-md);
     background-color: var(--vitra-color-surface);
-    transition: all var(--vitra-duration-normal) var(--vitra-ease-luxury);
+    transition: border-color var(--vitra-duration-normal) var(--vitra-ease-luxury),
+                box-shadow var(--vitra-duration-normal) var(--vitra-ease-luxury),
+                background-color var(--vitra-duration-normal) var(--vitra-ease-luxury);
     box-sizing: border-box;
     outline: none;
   }
@@ -1625,15 +1686,15 @@ a:hover {
   /* Focus state - glowing border */
   .vitra-input:focus {
     border-color: var(--vitra-color-accent);
-    box-shadow: 0 0 0 4px hsla(var(--vitra-color-accent-h), var(--vitra-color-accent-s), var(--vitra-color-accent-l), 0.15);
-    background-color: hsla(0, 0%, 100%, 0.08);
+    box-shadow: 0 0 0 4px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 15%);
+    background-color: hsl(0deg 0% 100% / 8%);
   }
 
   /* Glass input variant */
   .vitra-input-glass {
-    background: hsla(0, 0%, 100%, 0.03);
+    background: hsl(0deg 0% 100% / 3%);
     backdrop-filter: blur(var(--vitra-blur-md));
-    border-color: hsla(0, 0%, 100%, 0.15);
+    border-color: hsl(0deg 0% 100% / 15%);
     color: var(--vitra-color-text-primary);
   }
 
@@ -1654,13 +1715,9 @@ a:hover {
     height: 1rem;
     background-color: var(--vitra-color-text-primary);
     mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
     mask-repeat: no-repeat;
-    -webkit-mask-repeat: no-repeat;
     mask-position: center;
-    -webkit-mask-position: center;
     mask-size: contain;
-    -webkit-mask-size: contain;
     pointer-events: none;
     transition: background-color var(--vitra-duration-normal) var(--vitra-ease-luxury);
   }
@@ -1679,6 +1736,22 @@ a:hover {
   }
 
   /* --- TOGGLE SWITCH --- */
+  .vitra-toggle {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .vitra-toggle + .vitra-toggle-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--vitra-space-2);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   .vitra-toggle-label::before {
     content: '';
     display: inline-block;
@@ -1687,13 +1760,15 @@ a:hover {
     background-color: var(--vitra-color-surface);
     border: 1px solid var(--vitra-color-border);
     border-radius: var(--vitra-radius-full);
-    transition: all var(--vitra-duration-normal) var(--vitra-ease-luxury);
+    transition: background-color var(--vitra-duration-normal) var(--vitra-ease-luxury),
+                border-color var(--vitra-duration-normal) var(--vitra-ease-luxury),
+                box-shadow var(--vitra-duration-normal) var(--vitra-ease-luxury);
     position: relative;
   }
 
   .vitra-toggle:checked + .vitra-toggle-label::before {
     background-color: var(--vitra-color-accent);
-    box-shadow: 0 0 10px hsla(var(--vitra-color-accent-h), var(--vitra-color-accent-s), var(--vitra-color-accent-l), 0.3);
+    box-shadow: 0 0 10px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 30%);
   }
 
   /* --- RADIO BUTTON --- */
@@ -1752,13 +1827,14 @@ a:hover {
     position: sticky;
     top: 0;
     z-index: 100;
-    transition: all var(--vitra-duration-normal) var(--vitra-ease-luxury);
+    transition: background-color var(--vitra-duration-normal) var(--vitra-ease-luxury),
+                border-bottom-color var(--vitra-duration-normal) var(--vitra-ease-luxury);
   }
 
   .vitra-navbar-glass {
-    background: hsla(var(--vitra-color-accent-h), 20%, 5%, 0.7);
+    background: hsl(var(--vitra-color-accent-h) 20% 5% / 70%);
     backdrop-filter: blur(var(--vitra-blur-md));
-    border-bottom-color: hsla(0, 0%, 100%, 0.1);
+    border-bottom-color: hsl(0deg 0% 100% / 10%);
   }
 
   /* --- NAVBAR BRAND --- */
@@ -1769,15 +1845,17 @@ a:hover {
     color: var(--vitra-color-text-primary);
     text-decoration: none;
     letter-spacing: -0.03em;
-    transition: all var(--vitra-duration-normal) var(--vitra-ease-luxury);
+    transition: color var(--vitra-duration-normal) var(--vitra-ease-luxury),
+                text-shadow var(--vitra-duration-normal) var(--vitra-ease-luxury);
   }
 
   .vitra-navbar-brand:hover {
     color: var(--vitra-color-accent);
-    text-shadow: 0 0 15px hsla(var(--vitra-color-accent-h), var(--vitra-color-accent-s), var(--vitra-color-accent-l), 0.4);
+    text-shadow: 0 0 15px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 40%);
   }
 
   /* --- DRAWER --- */
+
   /* Mobile slide-out drawer */
   .vitra-drawer {
     /* Position fixed off-screen by default */
@@ -1818,7 +1896,7 @@ a:hover {
 
   @supports (backdrop-filter: blur(4px)) {
     .vitra-drawer-glass {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgb(255 255 255 / 8%);
       backdrop-filter: blur(var(--vitra-blur-md));
     }
   }
@@ -1851,8 +1929,8 @@ a:hover {
     align-items: center;
     justify-content: center;
     border-radius: var(--vitra-radius-sm);
-
-    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+    transition: background-color var(--vitra-duration-fast) var(--vitra-ease-default),
+                color var(--vitra-duration-fast) var(--vitra-ease-default);
   }
 
   .vitra-drawer-close:hover {
@@ -1875,8 +1953,8 @@ a:hover {
     color: var(--vitra-color-text-secondary);
     text-decoration: none;
     border-radius: var(--vitra-radius-md);
-
-    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+    transition: color var(--vitra-duration-fast) var(--vitra-ease-default),
+                background-color var(--vitra-duration-fast) var(--vitra-ease-default);
   }
 
   .vitra-drawer-link:hover {
@@ -1886,21 +1964,19 @@ a:hover {
 
   .vitra-drawer-link.active {
     color: var(--vitra-color-accent);
-    background-color: rgba(var(--vitra-color-accent-rgb),  0.1);
+    background-color: rgb(var(--vitra-color-accent-rgb),  0.1);
   }
 
   /* --- DRAWER OVERLAY --- */
   .vitra-drawer-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    inset: 0;
+    background-color: rgb(0 0 0 / 50%);
     z-index: 998;
     opacity: 0;
     visibility: hidden;
-    transition: all var(--vitra-duration-normal) var(--vitra-ease-out);
+    transition: opacity var(--vitra-duration-normal) var(--vitra-ease-out),
+                visibility var(--vitra-duration-normal) var(--vitra-ease-out);
   }
 
   .vitra-drawer-overlay.open {
@@ -1911,15 +1987,8 @@ a:hover {
   /* --- prefers-reduced-motion --- */
   @media (prefers-reduced-motion: reduce) {
     .vitra-navbar,
-    .vitra-burger-line,
     .vitra-drawer,
     .vitra-drawer-overlay {
-      transition: none;
-    }
-
-    .vitra-burger.active .vitra-burger-line:nth-child(1),
-    .vitra-burger.active .vitra-burger-line:nth-child(2),
-    .vitra-burger.active .vitra-burger-line:nth-child(3) {
       transition: none;
     }
   }
@@ -1930,17 +1999,15 @@ a:hover {
       ============================================ */
 
   /* --- MODAL OVERLAY --- */
+
   /* Full-screen backdrop overlay for modal dialogs */
   .vitra-modal-overlay {
     /* Position fixed to cover entire viewport */
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
 
     /* Semi-transparent dark backdrop */
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgb(0 0 0 / 60%);
 
     /* Ensure overlay appears above all content */
     z-index: 1000;
@@ -1964,23 +2031,34 @@ a:hover {
     opacity: 1;
   }
 
+  @starting-style {
+    .vitra-modal-overlay[open],
+    .vitra-modal-overlay.vitra-modal-open {
+      opacity: 0;
+    }
+
+    .vitra-modal-overlay[open] .vitra-modal-content,
+    .vitra-modal-overlay.vitra-modal-open .vitra-modal-content {
+      transform: translateY(20px) scale(0.98);
+    }
+  }
+
   /* --- MODAL CONTENT --- */
   .vitra-modal-content {
-    background-color: hsla(240, 15%, 8%, 0.95);
+    background-color: hsl(240deg 15% 8% / 95%);
     backdrop-filter: blur(var(--vitra-blur-lg));
-    border: 1px solid hsla(0, 0%, 100%, 0.1);
+    border: 1px solid hsl(0deg 0% 100% / 10%);
     border-radius: var(--vitra-radius-xl);
     box-shadow: var(--vitra-shadow-elevated);
-
     padding: var(--vitra-space-6);
     margin: var(--vitra-space-4);
     max-width: 90vw;
     width: 600px;
     max-height: 85vh;
     overflow-y: auto;
-
     transform: translateY(20px) scale(0.98);
-    transition: all var(--vitra-duration-normal) var(--vitra-ease-luxury);
+    transition: transform var(--vitra-duration-normal) var(--vitra-ease-luxury),
+                opacity var(--vitra-duration-normal) var(--vitra-ease-luxury);
   }
 
   .vitra-modal-overlay[open] .vitra-modal-content,
@@ -2049,7 +2127,8 @@ a:hover {
     border-radius: var(--vitra-radius-sm);
 
     /* Transition */
-    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+    transition: color var(--vitra-duration-fast) var(--vitra-ease-default),
+                background-color var(--vitra-duration-fast) var(--vitra-ease-default);
   }
 
   .vitra-modal-close:hover {
@@ -2084,7 +2163,9 @@ a:hover {
   }
 
   /* --- FOCUS TRAP PREPARATION --- */
+
   /* Informational comment: Focus trap logic will be handled by JS */
+
   /* These styles ensure proper focus visibility within modal */
   .vitra-modal-overlay:focus {
     outline: none;
@@ -2114,6 +2195,7 @@ a:hover {
      ============================================ */
 
   /* --- BADGE BASE --- */
+
   /* Inline badge component for status, labels, counts */
   .vitra-badge {
     display: inline-flex;
@@ -2127,13 +2209,15 @@ a:hover {
     border-radius: var(--vitra-radius-full);
     background-color: var(--vitra-color-accent);
     color: var(--vitra-color-text-inverse);
-    transition: all var(--vitra-duration-normal) var(--vitra-ease-luxury);
+    transition: background-color var(--vitra-duration-normal) var(--vitra-ease-luxury),
+                color var(--vitra-duration-normal) var(--vitra-ease-luxury),
+                border-color var(--vitra-duration-normal) var(--vitra-ease-luxury);
   }
 
   .vitra-badge-glass {
-    background: hsla(0, 0%, 100%, 0.1);
+    background: hsl(0deg 0% 100% / 10%);
     backdrop-filter: blur(var(--vitra-blur-sm));
-    border: 1px solid hsla(0, 0%, 100%, 0.1);
+    border: 1px solid hsl(0deg 0% 100% / 10%);
     color: var(--vitra-color-text-primary);
   }
 
@@ -2191,6 +2275,7 @@ a:hover {
   }
 
   /* --- BADGE WITH DOT --- */
+
   /* Badge with leading dot indicator */
   .vitra-badge-dot::before {
     content: '';
@@ -2198,11 +2283,12 @@ a:hover {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background-color: currentColor;
+    background-color: currentcolor;
     margin-inline-end: var(--vitra-space-1);
   }
 
   /* --- AVATAR BASE --- */
+
   /* Circular avatar with image or fallback */
   .vitra-avatar {
     /* Flexbox for centering */
@@ -2231,10 +2317,13 @@ a:hover {
     overflow: hidden;
 
     /* Smooth transitions */
-    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+    transition: border-color var(--vitra-duration-fast) var(--vitra-ease-default),
+                background-color var(--vitra-duration-fast) var(--vitra-ease-default),
+                color var(--vitra-duration-fast) var(--vitra-ease-default);
   }
 
   /* --- AVATAR IMAGE --- */
+
   /* Image inside avatar container */
   .vitra-avatar img {
     width: 100%;
@@ -2274,6 +2363,7 @@ a:hover {
   }
 
   /* --- AVATAR GROUP --- */
+
   /* Container for stacked avatars */
   .vitra-avatar-group {
     display: flex;
@@ -2290,6 +2380,7 @@ a:hover {
   }
 
   /* --- AVATAR WITH STATUS --- */
+
   /* Status indicator on avatar */
   .vitra-avatar[data-status] {
     position: relative;
@@ -2332,6 +2423,7 @@ a:hover {
   }
 
   /* --- AVATAR FALLBACK --- */
+
   /* Text fallback when image fails to load */
   .vitra-avatar-fallback {
     display: flex;
@@ -2350,6 +2442,7 @@ a:hover {
      ============================================ */
 
   /* --- TOOLTIP BASE --- */
+
   /* Tooltip container - wraps target element */
   .vitra-tooltip {
     position: relative;
@@ -2357,15 +2450,16 @@ a:hover {
   }
 
   /* --- TOOLTIP CONTENT --- */
+
   /* The actual tooltip text/content */
   .vitra-tooltip::before {
     content: attr(data-tooltip);
     position: absolute;
     z-index: 9999;
-    background-color: hsla(240, 15%, 4%, 0.9);
+    background-color: hsl(240deg 15% 4% / 90%);
     backdrop-filter: blur(var(--vitra-blur-md));
     color: var(--vitra-color-text-primary);
-    border: 1px solid hsla(0, 0%, 100%, 0.1);
+    border: 1px solid hsl(0deg 0% 100% / 10%);
     border-radius: var(--vitra-radius-md);
     padding: var(--vitra-space-1) var(--vitra-space-3);
     font-size: var(--vitra-font-size-sm);
@@ -2374,7 +2468,9 @@ a:hover {
     opacity: 0;
     visibility: hidden;
     transform: translateY(5px);
-    transition: all var(--vitra-duration-normal) var(--vitra-ease-luxury);
+    transition: opacity var(--vitra-duration-normal) var(--vitra-ease-luxury),
+                visibility var(--vitra-duration-normal) var(--vitra-ease-luxury),
+                transform var(--vitra-duration-normal) var(--vitra-ease-luxury);
   }
 
   .vitra-tooltip:hover::before {
@@ -2384,6 +2480,7 @@ a:hover {
   }
 
   /* --- TOOLTIP ARROW --- */
+
   /* Arrow pseudo-element */
   .vitra-tooltip::after {
     content: '';
@@ -2443,18 +2540,12 @@ a:hover {
 
   /* Left tooltip */
   .vitra-tooltip[data-position="left"]::before {
-    right: calc(100% + 8px);
-    bottom: auto;
-    left: auto;
-    top: 50%;
+    inset: 50% calc(100% + 8px) auto auto;
     transform: translateY(-50%);
   }
 
   .vitra-tooltip[data-position="left"]::after {
-    right: calc(100% + 3px);
-    bottom: auto;
-    left: auto;
-    top: 50%;
+    inset: 50% calc(100% + 3px) auto auto;
     transform: translateY(-50%);
     border-left-color: var(--vitra-color-bg);
     border-right: none;
@@ -2462,18 +2553,12 @@ a:hover {
 
   /* Right tooltip */
   .vitra-tooltip[data-position="right"]::before {
-    left: calc(100% + 8px);
-    bottom: auto;
-    right: auto;
-    top: 50%;
+    inset: 50% auto auto calc(100% + 8px);
     transform: translateY(-50%);
   }
 
   .vitra-tooltip[data-position="right"]::after {
-    left: calc(100% + 3px);
-    bottom: auto;
-    right: auto;
-    top: 50%;
+    inset: 50% auto auto calc(100% + 3px);
     transform: translateY(-50%);
     border-right-color: var(--vitra-color-bg);
     border-left: none;
@@ -2511,6 +2596,7 @@ a:hover {
      ============================================ */
 
   /* --- SLIDER CONTAINER --- */
+
   /* Container for slider component */
   .vitra-slider {
     /* Flexbox layout */
@@ -2523,10 +2609,10 @@ a:hover {
 
     /* Prevent text selection during drag */
     user-select: none;
-    -webkit-user-select: none;
   }
 
   /* --- SLIDER TRACK CONTAINER --- */
+
   /* Wrapper for track and thumb */
   .vitra-slider-track-container {
     position: relative;
@@ -2537,6 +2623,7 @@ a:hover {
   }
 
   /* --- SLIDER TRACK --- */
+
   /* The track (background bar) */
   .vitra-slider-track {
     /* Full width */
@@ -2553,6 +2640,7 @@ a:hover {
   }
 
   /* --- SLIDER FILL (FILLED PORTION) --- */
+
   /* Shows progress/filled portion of track */
   .vitra-slider-fill {
     position: absolute;
@@ -2569,6 +2657,7 @@ a:hover {
   }
 
   /* --- SLIDER THUMB --- */
+
   /* The draggable handle */
   .vitra-slider-thumb {
     /* Circular thumb */
@@ -2590,7 +2679,9 @@ a:hover {
     cursor: grab;
 
     /* Transition */
-    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+    transition: background-color var(--vitra-duration-fast) var(--vitra-ease-default),
+                box-shadow var(--vitra-duration-fast) var(--vitra-ease-default),
+                transform var(--vitra-duration-fast) var(--vitra-ease-default);
   }
 
   .vitra-slider-thumb:hover {
@@ -2612,6 +2703,7 @@ a:hover {
   }
 
   /* --- SLIDER VALUE DISPLAY --- */
+
   /* Optional value label */
   .vitra-slider-value {
     min-width: 40px;
@@ -2664,6 +2756,7 @@ a:hover {
   }
 
   /* --- SLIDER WITH TICKS --- */
+
   /* Container for tick marks */
   .vitra-slider-ticks {
     display: flex;
@@ -2679,6 +2772,7 @@ a:hover {
   }
 
   /* --- CSS SCROLL-SNAP BASE --- */
+
   /* Alternative: horizontal scroll-snap slider (for touch devices) */
   .vitra-slider-scroll {
     /* Horizontal scrolling container */
@@ -2716,7 +2810,9 @@ a:hover {
     cursor: pointer;
 
     /* Transition */
-    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+    transition: background-color var(--vitra-duration-fast) var(--vitra-ease-default),
+                color var(--vitra-duration-fast) var(--vitra-ease-default),
+                border-color var(--vitra-duration-fast) var(--vitra-ease-default);
   }
 
   .vitra-slider-scroll-item:hover {
@@ -2744,6 +2840,7 @@ a:hover {
      ============================================ */
 
   /* --- TABS CONTAINER --- */
+
   /* Horizontal tab navigation container */
   .vitra-tabs {
     /* Flexbox layout */
@@ -2758,6 +2855,7 @@ a:hover {
   }
 
   /* --- TAB ITEM --- */
+
   /* Individual tab button */
   .vitra-tab,
   .vitra-tabs-tab {
@@ -2778,7 +2876,9 @@ a:hover {
     margin-bottom: -2px; /* Offset container border */
 
     /* Transition */
-    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+    transition: color var(--vitra-duration-fast) var(--vitra-ease-default),
+                background-color var(--vitra-duration-fast) var(--vitra-ease-default),
+                border-bottom-color var(--vitra-duration-fast) var(--vitra-ease-default);
   }
 
   .vitra-tab:hover,
@@ -2804,6 +2904,7 @@ a:hover {
   }
 
   /* --- TABS VERTICAL --- */
+
   /* Vertical tab navigation */
   .vitra-tabs-vertical {
     flex-direction: column;
@@ -2832,6 +2933,7 @@ a:hover {
   }
 
   /* --- TAB PANEL --- */
+
   /* Content panel for tabs */
   .vitra-tab-panel,
   .vitra-tabs-panel {
@@ -2880,6 +2982,7 @@ a:hover {
      ============================================ */
 
   /* --- PROGRESS CONTAINER --- */
+
   /* Container for progress bar */
   .vitra-progress {
     /* Full width by default */
@@ -2898,6 +3001,7 @@ a:hover {
   }
 
   /* --- PROGRESS BAR --- */
+
   /* The filled portion of the progress bar */
   .vitra-progress-bar {
     /* Height matches container */
@@ -2918,15 +3022,16 @@ a:hover {
   }
 
   /* --- PROGRESS BAR STRIPED --- */
+
   /* Diagonal stripes using gradient */
   .vitra-progress-bar-striped {
     background-image: linear-gradient(
       45deg,
-      rgba(255, 255, 255, 0.15) 25%,
+      rgb(255 255 255 / 15%) 25%,
       transparent 25%,
       transparent 50%,
-      rgba(255, 255, 255, 0.15) 50%,
-      rgba(255, 255, 255, 0.15) 75%,
+      rgb(255 255 255 / 15%) 50%,
+      rgb(255 255 255 / 15%) 75%,
       transparent 75%,
       transparent
     );
@@ -2934,6 +3039,7 @@ a:hover {
   }
 
   /* --- PROGRESS BAR ANIMATED --- */
+
   /* Animated stripes */
   .vitra-progress-bar-animated {
     animation: vitra-progress-bar-stripes var(--vitra-duration-slower) linear infinite;
@@ -2944,6 +3050,7 @@ a:hover {
     0% {
       background-position: 1rem 0;
     }
+
     100% {
       background-position: 0 0;
     }
@@ -2992,6 +3099,7 @@ a:hover {
   }
 
   /* --- PROGRESS WITH LABEL --- */
+
   /* Container with label support */
   .vitra-progress-container {
     display: flex;
@@ -3015,6 +3123,7 @@ a:hover {
   }
 
   /* --- PROGRESS INDETERMINATE --- */
+
   /* Indeterminate animation (unknown progress) */
   .vitra-progress-indeterminate .vitra-progress-bar {
     width: 50%;
@@ -3025,9 +3134,11 @@ a:hover {
     0% {
       transform: translateX(-100%);
     }
+
     50% {
       transform: translateX(100%);
     }
+
     100% {
       transform: translateX(-100%);
     }
@@ -3043,149 +3154,7 @@ a:hover {
     }
   }
 
-  /* ============================================
-      NAVIGATION (COMP-04)
-      Navbar, links, brand, and burger menu
-      ============================================ */
 
-  .vitra-navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--vitra-space-2) var(--vitra-space-6);
-    width: 100%;
-    box-sizing: border-box;
-    transition: all var(--vitra-duration-normal) var(--vitra-ease-luxury);
-  }
-
-  .vitra-navbar-brand {
-    font-family: var(--vitra-font-heading);
-    font-size: var(--vitra-font-size-xl);
-    font-weight: var(--vitra-font-weight-bold);
-    color: var(--vitra-color-text-primary);
-    text-decoration: none;
-    letter-spacing: -0.02em;
-  }
-
-  .vitra-navbar-links {
-    display: none;
-    gap: var(--vitra-space-4);
-  }
-
-  @media (min-width: 768px) {
-    .vitra-navbar-links {
-      display: flex;
-    }
-  }
-
-  .vitra-navbar-link {
-    color: var(--vitra-color-text-secondary);
-    font-weight: var(--vitra-font-weight-medium);
-    font-size: var(--vitra-font-size-sm);
-    transition: color var(--vitra-duration-fast) var(--vitra-ease-luxury);
-  }
-
-  .vitra-navbar-link:hover {
-    color: var(--vitra-color-text-primary);
-  }
-
-  .vitra-navbar-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--vitra-space-3);
-  }
-
-  /* --- BURGER MENU --- */
-  .vitra-burger {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 24px;
-    height: 18px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    z-index: 1001;
-  }
-
-  @media (min-width: 768px) {
-    .vitra-burger {
-      display: none;
-    }
-  }
-
-  .vitra-burger-line {
-    width: 100%;
-    height: 2px;
-    background-color: var(--vitra-color-text-primary);
-    border-radius: 1px;
-    transition: all var(--vitra-duration-normal) var(--vitra-ease-luxury);
-  }
-
-  .vitra-burger.active .vitra-burger-line:nth-child(1) {
-    transform: translateY(8px) rotate(45deg);
-  }
-
-  .vitra-burger.active .vitra-burger-line:nth-child(2) {
-    opacity: 0;
-  }
-
-  .vitra-burger.active .vitra-burger-line:nth-child(3) {
-    transform: translateY(-8px) rotate(-45deg);
-  }
-
-  /* ============================================
-      DRAWER (COMP-05)
-      Mobile navigation drawer
-      ============================================ */
-
-  .vitra-drawer {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 280px;
-    z-index: 2000;
-    background-color: var(--vitra-color-bg);
-    padding: var(--vitra-space-6) var(--vitra-space-4);
-    transform: translateX(100%);
-    transition: transform var(--vitra-duration-normal) var(--vitra-ease-luxury);
-    box-shadow: var(--vitra-shadow-elevated);
-    display: flex;
-    flex-direction: column;
-    gap: var(--vitra-space-4);
-  }
-
-  .vitra-drawer.open {
-    transform: translateX(0);
-  }
-
-  .vitra-drawer-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: var(--vitra-space-4);
-  }
-
-  .vitra-drawer-title {
-    margin: 0;
-    font-size: var(--vitra-font-size-xl);
-  }
-
-  .vitra-drawer-close {
-    background: transparent;
-    border: none;
-    font-size: 24px;
-    color: var(--vitra-color-text-primary);
-    cursor: pointer;
-  }
-
-  .vitra-drawer-glass {
-    background: hsla(var(--vitra-color-accent-h), 20%, 5%, 0.8);
-    backdrop-filter: blur(var(--vitra-blur-lg));
-    border-left: 1px solid hsla(0, 0%, 100%, 0.1);
-  }
 
   /* ============================================
       TOASTS (COMP-10)
@@ -3204,9 +3173,9 @@ a:hover {
   }
 
   .vitra-toast {
-    background: hsla(240, 15%, 8%, 0.85);
+    background: hsl(240deg 15% 8% / 85%);
     backdrop-filter: blur(var(--vitra-blur-md));
-    border: 1px solid hsla(0, 0%, 100%, 0.1);
+    border: 1px solid hsl(0deg 0% 100% / 10%);
     border-radius: var(--vitra-radius-md);
     padding: var(--vitra-space-3) var(--vitra-space-4);
     color: var(--vitra-color-text-primary);
@@ -3218,13 +3187,21 @@ a:hover {
     max-width: 350px;
     transform: translateX(120%);
     opacity: 0;
-    transition: all var(--vitra-duration-normal) var(--vitra-ease-luxury);
+    transition: transform var(--vitra-duration-normal) var(--vitra-ease-luxury),
+                opacity var(--vitra-duration-normal) var(--vitra-ease-luxury);
     pointer-events: auto;
   }
 
   .vitra-toast.show {
     transform: translateX(0);
     opacity: 1;
+  }
+
+  @starting-style {
+    .vitra-toast.show {
+      transform: translateX(120%);
+      opacity: 0;
+    }
   }
 
   .vitra-toast-success { border-left: 4px solid var(--vitra-color-success); }
@@ -3241,28 +3218,41 @@ a:hover {
     display: inline-block;
   }
 
-  .vitra-dropdown-menu {
+  .vitra-dropdown-menu,
+  .vitra-dropdown-menu[popover] {
     position: absolute;
     top: calc(100% + var(--vitra-space-2));
     left: 0;
     min-width: 200px;
-    background: hsla(240, 15%, 8%, 0.9);
+    background: hsl(240deg 15% 8% / 90%);
     backdrop-filter: blur(var(--vitra-blur-lg));
-    border: 1px solid hsla(0, 0%, 100%, 0.1);
+    border: 1px solid hsl(0deg 0% 100% / 10%);
     border-radius: var(--vitra-radius-md);
     box-shadow: var(--vitra-shadow-elevated);
     padding: var(--vitra-space-2) 0;
     opacity: 0;
     transform: translateY(-10px);
     visibility: hidden;
-    transition: all var(--vitra-duration-fast) var(--vitra-ease-out);
+    transition: opacity var(--vitra-duration-fast) var(--vitra-ease-out),
+                transform var(--vitra-duration-fast) var(--vitra-ease-out),
+                visibility var(--vitra-duration-fast) var(--vitra-ease-out),
+                display var(--vitra-duration-fast) var(--vitra-ease-out) allow-discrete,
+                overlay var(--vitra-duration-fast) var(--vitra-ease-out) allow-discrete;
     z-index: 1000;
   }
 
-  .vitra-dropdown.open .vitra-dropdown-menu {
+  .vitra-dropdown.open .vitra-dropdown-menu,
+  .vitra-dropdown-menu[popover]:popover-open {
     opacity: 1;
     transform: translateY(0);
     visibility: visible;
+  }
+
+  @starting-style {
+    .vitra-dropdown-menu[popover]:popover-open {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
   }
 
   .vitra-dropdown-item {
@@ -3276,12 +3266,13 @@ a:hover {
     font-family: var(--vitra-font-family);
     font-size: var(--vitra-font-size-sm);
     cursor: pointer;
-    transition: all var(--vitra-duration-fast) var(--vitra-ease-default);
+    transition: background-color var(--vitra-duration-fast) var(--vitra-ease-default),
+                color var(--vitra-duration-fast) var(--vitra-ease-default);
   }
 
   .vitra-dropdown-item:hover,
   .vitra-dropdown-item:focus-visible {
-    background: hsla(0, 0%, 100%, 0.08);
+    background: hsl(0deg 0% 100% / 8%);
     color: var(--vitra-color-text-primary);
     outline: none;
   }
@@ -3296,7 +3287,7 @@ a:hover {
   }
 
   .vitra-input-valid:focus {
-    box-shadow: 0 0 0 2px hsla(160, 84%, 39%, 0.2) !important;
+    box-shadow: 0 0 0 2px hsl(160deg 84% 39% / 20%) !important;
   }
 
   .vitra-input-invalid {
@@ -3305,7 +3296,7 @@ a:hover {
   }
 
   .vitra-input-invalid:focus {
-    box-shadow: 0 0 0 2px hsla(0, 84%, 60%, 0.2) !important;
+    box-shadow: 0 0 0 2px hsl(0deg 84% 60% / 20%) !important;
   }
 
   @keyframes vitra-shake {
@@ -3331,7 +3322,7 @@ a:hover {
     pointer-events: none;
     background: radial-gradient(
       600px circle at var(--mouse-x, 0) var(--mouse-y, 0),
-      hsla(var(--vitra-color-accent-h, 250), 100%, 70%, 0.1),
+      hsl(var(--vitra-color-accent-h, 250) 100% 70% / 10%),
       transparent 40%
     );
     z-index: 1;
@@ -3342,12 +3333,393 @@ a:hover {
   .vitra-spotlight:hover::before {
     opacity: 1;
   }
+
+  /* ============================================
+      SKELETON LOADERS (COMP-14)
+      Glassmorphism skeleton loading placeholders
+      ============================================ */
+
+  /* Skeleton base with shimmer */
+  .vitra-skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--vitra-color-surface) 25%,
+      hsl(0deg 0% 100% / 8%) 50%,
+      var(--vitra-color-surface) 75%
+    );
+    background-size: 200% 100%;
+    animation: vitra-skeleton-shimmer 2s ease-in-out infinite;
+    border-radius: var(--vitra-radius-sm);
+  }
+
+  @keyframes vitra-skeleton-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Text line skeleton */
+  .vitra-skeleton-text {
+    height: 1em;
+    margin-bottom: var(--vitra-space-2);
+    width: 100%;
+  }
+
+  .vitra-skeleton-text:last-child {
+    width: 70%;
+  }
+
+  /* Heading skeleton - wider */
+  .vitra-skeleton-heading {
+    height: 1.5em;
+    width: 60%;
+    margin-bottom: var(--vitra-space-3);
+  }
+
+  /* Circular skeleton (avatar) */
+  .vitra-skeleton-circle {
+    border-radius: var(--vitra-radius-full);
+    width: 48px;
+    height: 48px;
+  }
+
+  .vitra-skeleton-circle-sm {
+    width: 32px;
+    height: 32px;
+  }
+
+  .vitra-skeleton-circle-lg {
+    width: 64px;
+    height: 64px;
+  }
+
+  /* Card skeleton */
+  .vitra-skeleton-card {
+    padding: var(--vitra-space-4);
+    border: 1px solid var(--vitra-color-border);
+    border-radius: var(--vitra-radius-lg);
+    background: var(--vitra-color-surface);
+  }
+
+  .vitra-skeleton-card .vitra-skeleton {
+    margin-bottom: var(--vitra-space-3);
+  }
+
+  .vitra-skeleton-card .vitra-skeleton:last-child {
+    margin-bottom: 0;
+  }
+
+  /* ============================================
+      SPINNER / LOADER (COMP-15)
+      Configurable loading spinner with glass variant
+      ============================================ */
+
+  .vitra-spinner {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--vitra-color-surface);
+    border-top-color: var(--vitra-color-accent);
+    border-radius: var(--vitra-radius-full);
+    animation: vitra-spinner-spin 0.8s linear infinite;
+  }
+
+  @keyframes vitra-spinner-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Spinner sizes */
+  .vitra-spinner-sm {
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
+  }
+
+  .vitra-spinner-lg {
+    width: 40px;
+    height: 40px;
+    border-width: 4px;
+  }
+
+  /* Spinner glass variant */
+  .vitra-spinner-glass {
+    border-color: hsl(0deg 0% 100% / 10%);
+    border-top-color: hsl(0deg 0% 100% / 80%);
+  }
+
+  /* Spinner with label */
+  .vitra-spinner-container {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--vitra-space-2);
+  }
+
+  .vitra-spinner-label {
+    font-size: var(--vitra-font-size-sm);
+    color: var(--vitra-color-text-secondary);
+  }
+
+  /* ============================================
+      ALERTS / CALLOUTS (COMP-16)
+      Status messages with icon, dismiss, glass variant
+      ============================================ */
+
+  .vitra-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--vitra-space-3);
+    padding: var(--vitra-space-3) var(--vitra-space-4);
+    border-radius: var(--vitra-radius-md);
+    border: 1px solid var(--vitra-color-border);
+    background: var(--vitra-color-surface);
+    color: var(--vitra-color-text-primary);
+    font-size: var(--vitra-font-size-sm);
+    line-height: var(--vitra-line-height-normal);
+    position: relative;
+  }
+
+  /* Alert variants */
+  .vitra-alert-success {
+    border-color: var(--vitra-color-success);
+    background: hsl(150deg 84% 39% / 10%);
+    color: var(--vitra-color-text-primary);
+  }
+
+  .vitra-alert-success::before {
+    content: '✓';
+    color: var(--vitra-color-success);
+    font-weight: var(--vitra-font-weight-bold);
+    flex-shrink: 0;
+  }
+
+  .vitra-alert-warning {
+    border-color: var(--vitra-color-warning);
+    background: hsl(38deg 92% 50% / 10%);
+    color: var(--vitra-color-text-primary);
+  }
+
+  .vitra-alert-warning::before {
+    content: '⚠';
+    color: var(--vitra-color-warning);
+    font-weight: var(--vitra-font-weight-bold);
+    flex-shrink: 0;
+  }
+
+  .vitra-alert-error {
+    border-color: var(--vitra-color-error);
+    background: hsl(0deg 84% 60% / 10%);
+    color: var(--vitra-color-text-primary);
+  }
+
+  .vitra-alert-error::before {
+    content: '✕';
+    color: var(--vitra-color-error);
+    font-weight: var(--vitra-font-weight-bold);
+    flex-shrink: 0;
+  }
+
+  .vitra-alert-info {
+    border-color: var(--vitra-color-info);
+    background: hsl(217deg 91% 60% / 10%);
+    color: var(--vitra-color-text-primary);
+  }
+
+  .vitra-alert-info::before {
+    content: 'ℹ';
+    color: var(--vitra-color-info);
+    font-weight: var(--vitra-font-weight-bold);
+    flex-shrink: 0;
+  }
+
+  /* Alert glass variant */
+  .vitra-alert-glass {
+    background: hsl(0deg 0% 100% / 3%);
+    backdrop-filter: blur(var(--vitra-blur-sm));
+    border-color: hsl(0deg 0% 100% / 10%);
+  }
+
+  /* Alert dismiss button */
+  .vitra-alert-dismiss {
+    margin-inline-start: auto;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--vitra-color-text-tertiary);
+    padding: var(--vitra-space-1);
+    border-radius: var(--vitra-radius-sm);
+    flex-shrink: 0;
+    transition: color var(--vitra-duration-fast) var(--vitra-ease-default),
+                background-color var(--vitra-duration-fast) var(--vitra-ease-default);
+  }
+
+  .vitra-alert-dismiss:hover {
+    color: var(--vitra-color-text-primary);
+    background-color: var(--vitra-color-surface-hover);
+  }
+
+  /* ============================================
+      RESPONSIVE TABLE (COMP-17)
+      Accessible table with horizontal scroll on mobile
+      ============================================ */
+
+  .vitra-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--vitra-radius-md);
+    border: 1px solid var(--vitra-color-border);
+    container-type: inline-size;
+  }
+
+  .vitra-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--vitra-font-size-sm);
+    color: var(--vitra-color-text-primary);
+    background: var(--vitra-color-surface);
+  }
+
+  .vitra-table thead {
+    background: hsl(0deg 0% 100% / 3%);
+    border-bottom: 2px solid var(--vitra-color-border);
+  }
+
+  .vitra-table th {
+    padding: var(--vitra-space-2) var(--vitra-space-3);
+    text-align: left;
+    font-weight: var(--vitra-font-weight-semibold);
+    color: var(--vitra-color-text-primary);
+    font-size: var(--vitra-font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
+  .vitra-table td {
+    padding: var(--vitra-space-2) var(--vitra-space-3);
+    border-bottom: 1px solid var(--vitra-color-border);
+    color: var(--vitra-color-text-secondary);
+  }
+
+  .vitra-table tbody tr:hover {
+    background: hsl(0deg 0% 100% / 3%);
+  }
+
+  .vitra-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* Table glass variant */
+  .vitra-table-glass {
+    background: hsl(0deg 0% 100% / 2%);
+    backdrop-filter: blur(var(--vitra-blur-sm));
+  }
+
+  /* Table striped variant */
+  .vitra-table-striped tbody tr:nth-child(even) {
+    background: hsl(0deg 0% 100% / 2%);
+  }
+
+  /* Table responsive card layout on mobile */
+  @media (width <= 768px) {
+    .vitra-table-stack thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+    }
+
+    .vitra-table-stack tr {
+      display: block;
+      padding: var(--vitra-space-3);
+      border-bottom: 1px solid var(--vitra-color-border);
+    }
+
+    .vitra-table-stack td {
+      display: block;
+      padding: var(--vitra-space-1) 0;
+      border: none;
+    }
+
+    .vitra-table-stack td::before {
+      content: attr(data-label);
+      display: block;
+      font-weight: var(--vitra-font-weight-semibold);
+      color: var(--vitra-color-text-primary);
+      font-size: var(--vitra-font-size-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--vitra-space-1);
+    }
+  }
+
+  @container (max-width: 500px) {
+    .vitra-table-stack thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+    }
+
+    .vitra-table-stack tr {
+      display: block;
+      padding: var(--vitra-space-3);
+      border-bottom: 1px solid var(--vitra-color-border);
+    }
+
+    .vitra-table-stack td {
+      display: block;
+      padding: var(--vitra-space-1) 0;
+      border: none;
+    }
+
+    .vitra-table-stack td::before {
+      content: attr(data-label);
+      display: block;
+      font-weight: var(--vitra-font-weight-semibold);
+      color: var(--vitra-color-text-primary);
+      font-size: var(--vitra-font-size-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--vitra-space-1);
+    }
+  }
+
+  /* ============================================
+      prefers-reduced-motion for new components
+      ============================================ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .vitra-skeleton {
+      animation: none;
+      background: var(--vitra-color-surface);
+    }
+
+    .vitra-spinner {
+      animation: none;
+      opacity: 0.5;
+    }
+
+    .vitra-skeleton-shimmer {
+      animation: none;
+    }
+  }
+
+  /* ============================================
+      THEME CONFIG ATTRIBUTE STYLING
+      ============================================ */
+
+  .vitra-config {
+    display: none;
+  }
 }
 
 
 /* === 07-utilities.css === */
 /* 07-utilities.css - Utility Classes */
+
 /* Part of Vitra CSS Framework */
+
 /* Phase 4: Layout & Utilities - Plan 02 */
 
 /* ============================================
@@ -3436,18 +3808,18 @@ a:hover {
   .vitra-ml-12 { margin-inline-start: var(--vitra-space-12); }
 
   /* Margin Horizontal (x-axis) */
-  .vitra-mx-1 { margin-inline-start: var(--vitra-space-1); margin-inline-end: var(--vitra-space-1); }
-  .vitra-mx-2 { margin-inline-start: var(--vitra-space-2); margin-inline-end: var(--vitra-space-2); }
-  .vitra-mx-3 { margin-inline-start: var(--vitra-space-3); margin-inline-end: var(--vitra-space-3); }
-  .vitra-mx-4 { margin-inline-start: var(--vitra-space-4); margin-inline-end: var(--vitra-space-4); }
-  .vitra-mx-5 { margin-inline-start: var(--vitra-space-5); margin-inline-end: var(--vitra-space-5); }
-  .vitra-mx-6 { margin-inline-start: var(--vitra-space-6); margin-inline-end: var(--vitra-space-6); }
-  .vitra-mx-7 { margin-inline-start: var(--vitra-space-7); margin-inline-end: var(--vitra-space-7); }
-  .vitra-mx-8 { margin-inline-start: var(--vitra-space-8); margin-inline-end: var(--vitra-space-8); }
-  .vitra-mx-9 { margin-inline-start: var(--vitra-space-9); margin-inline-end: var(--vitra-space-9); }
-  .vitra-mx-10 { margin-inline-start: var(--vitra-space-10); margin-inline-end: var(--vitra-space-10); }
-  .vitra-mx-11 { margin-inline-start: var(--vitra-space-11); margin-inline-end: var(--vitra-space-11); }
-  .vitra-mx-12 { margin-inline-start: var(--vitra-space-12); margin-inline-end: var(--vitra-space-12); }
+  .vitra-mx-1 { margin-inline: var(--vitra-space-1) var(--vitra-space-1); }
+  .vitra-mx-2 { margin-inline: var(--vitra-space-2) var(--vitra-space-2); }
+  .vitra-mx-3 { margin-inline: var(--vitra-space-3) var(--vitra-space-3); }
+  .vitra-mx-4 { margin-inline: var(--vitra-space-4) var(--vitra-space-4); }
+  .vitra-mx-5 { margin-inline: var(--vitra-space-5) var(--vitra-space-5); }
+  .vitra-mx-6 { margin-inline: var(--vitra-space-6) var(--vitra-space-6); }
+  .vitra-mx-7 { margin-inline: var(--vitra-space-7) var(--vitra-space-7); }
+  .vitra-mx-8 { margin-inline: var(--vitra-space-8) var(--vitra-space-8); }
+  .vitra-mx-9 { margin-inline: var(--vitra-space-9) var(--vitra-space-9); }
+  .vitra-mx-10 { margin-inline: var(--vitra-space-10) var(--vitra-space-10); }
+  .vitra-mx-11 { margin-inline: var(--vitra-space-11) var(--vitra-space-11); }
+  .vitra-mx-12 { margin-inline: var(--vitra-space-12) var(--vitra-space-12); }
 
   /* Margin Vertical (y-axis) */
   .vitra-my-1 { margin-top: var(--vitra-space-1); margin-bottom: var(--vitra-space-1); }
@@ -3536,18 +3908,18 @@ a:hover {
   .vitra-pl-12 { padding-inline-start: var(--vitra-space-12); }
 
   /* Padding Horizontal (x-axis) */
-  .vitra-px-1 { padding-inline-start: var(--vitra-space-1); padding-inline-end: var(--vitra-space-1); }
-  .vitra-px-2 { padding-inline-start: var(--vitra-space-2); padding-inline-end: var(--vitra-space-2); }
-  .vitra-px-3 { padding-inline-start: var(--vitra-space-3); padding-inline-end: var(--vitra-space-3); }
-  .vitra-px-4 { padding-inline-start: var(--vitra-space-4); padding-inline-end: var(--vitra-space-4); }
-  .vitra-px-5 { padding-inline-start: var(--vitra-space-5); padding-inline-end: var(--vitra-space-5); }
-  .vitra-px-6 { padding-inline-start: var(--vitra-space-6); padding-inline-end: var(--vitra-space-6); }
-  .vitra-px-7 { padding-inline-start: var(--vitra-space-7); padding-inline-end: var(--vitra-space-7); }
-  .vitra-px-8 { padding-inline-start: var(--vitra-space-8); padding-inline-end: var(--vitra-space-8); }
-  .vitra-px-9 { padding-inline-start: var(--vitra-space-9); padding-inline-end: var(--vitra-space-9); }
-  .vitra-px-10 { padding-inline-start: var(--vitra-space-10); padding-inline-end: var(--vitra-space-10); }
-  .vitra-px-11 { padding-inline-start: var(--vitra-space-11); padding-inline-end: var(--vitra-space-11); }
-  .vitra-px-12 { padding-inline-start: var(--vitra-space-12); padding-inline-end: var(--vitra-space-12); }
+  .vitra-px-1 { padding-inline: var(--vitra-space-1) var(--vitra-space-1); }
+  .vitra-px-2 { padding-inline: var(--vitra-space-2) var(--vitra-space-2); }
+  .vitra-px-3 { padding-inline: var(--vitra-space-3) var(--vitra-space-3); }
+  .vitra-px-4 { padding-inline: var(--vitra-space-4) var(--vitra-space-4); }
+  .vitra-px-5 { padding-inline: var(--vitra-space-5) var(--vitra-space-5); }
+  .vitra-px-6 { padding-inline: var(--vitra-space-6) var(--vitra-space-6); }
+  .vitra-px-7 { padding-inline: var(--vitra-space-7) var(--vitra-space-7); }
+  .vitra-px-8 { padding-inline: var(--vitra-space-8) var(--vitra-space-8); }
+  .vitra-px-9 { padding-inline: var(--vitra-space-9) var(--vitra-space-9); }
+  .vitra-px-10 { padding-inline: var(--vitra-space-10) var(--vitra-space-10); }
+  .vitra-px-11 { padding-inline: var(--vitra-space-11) var(--vitra-space-11); }
+  .vitra-px-12 { padding-inline: var(--vitra-space-12) var(--vitra-space-12); }
 
   /* Padding Vertical (y-axis) */
   .vitra-py-1 { padding-top: var(--vitra-space-1); padding-bottom: var(--vitra-space-1); }
@@ -3569,7 +3941,7 @@ a:hover {
   .vitra-mr-auto { margin-inline-end: auto; }
   .vitra-mb-auto { margin-bottom: auto; }
   .vitra-ml-auto { margin-inline-start: auto; }
-  .vitra-mx-auto { margin-inline-start: auto; margin-inline-end: auto; }
+  .vitra-mx-auto { margin-inline: auto; }
   .vitra-my-auto { margin-top: auto; margin-bottom: auto; }
 
   /* Centering helpers */
@@ -3669,8 +4041,31 @@ a:hover {
   .vitra-flex-none { flex: none; }
 
   /* Display Flex */
-  .vitra-flex { display: flex; }
-  .vitra-inline-flex { display: inline-flex; }
+  .vitra-flex { display: flex; gap: var(--vitra-space-2); }
+  .vitra-inline-flex { display: inline-flex; gap: var(--vitra-space-2); }
+
+  /* Align Content */
+  .vitra-content-start { align-content: flex-start; }
+  .vitra-content-end { align-content: flex-end; }
+  .vitra-content-center { align-content: center; }
+  .vitra-content-between { align-content: space-between; }
+  .vitra-content-around { align-content: space-around; }
+  .vitra-content-stretch { align-content: stretch; }
+
+  /* Responsive flex variants */
+  @media (width >= 768px) {
+    .vitra-md-flex-row { flex-direction: row; }
+    .vitra-md-flex-col { flex-direction: column; }
+    .vitra-md-justify-center { justify-content: center; }
+    .vitra-md-items-center { align-items: center; }
+  }
+
+  @media (width >= 1024px) {
+    .vitra-lg-flex-row { flex-direction: row; }
+    .vitra-lg-flex-col { flex-direction: column; }
+    .vitra-lg-justify-between { justify-content: space-between; }
+    .vitra-lg-items-center { align-items: center; }
+  }
 
   /* ============================================
      TEXT UTILITIES
@@ -3834,6 +4229,105 @@ a:hover {
 
   .vitra-transition-shadow {
     transition: box-shadow var(--vitra-duration-normal) var(--vitra-ease-default);
+  }
+
+  /* ============================================
+     DISPLAY UTILITIES
+     ============================================ */
+
+  .vitra-block { display: block; }
+  .vitra-inline { display: inline; }
+  .vitra-inline-block { display: inline-block; }
+  .vitra-hidden { display: none; }
+  .vitra-grid { display: grid; gap: var(--vitra-space-3); }
+
+  /* Responsive display */
+  @media (width >= 768px) {
+    .vitra-md-block { display: block; }
+    .vitra-md-hidden { display: none; }
+  }
+
+  @media (width >= 1024px) {
+    .vitra-lg-block { display: block; }
+    .vitra-lg-hidden { display: none; }
+  }
+
+  /* ============================================
+     WIDTH / HEIGHT UTILITIES
+     ============================================ */
+
+  .vitra-w-full { width: 100%; }
+  .vitra-w-auto { width: auto; }
+  .vitra-w-screen { width: 100vw; }
+  .vitra-w-half { width: 50%; }
+  .vitra-w-third { width: 33.333%; }
+  .vitra-w-quarter { width: 25%; }
+
+  .vitra-h-full { height: 100%; }
+  .vitra-h-auto { height: auto; }
+  .vitra-h-screen { height: 100vh; }
+
+  .vitra-max-w-full { max-width: 100%; }
+  .vitra-max-w-screen { max-width: 100vw; }
+  .vitra-min-h-screen { min-height: 100vh; }
+
+  /* Responsive width */
+  @media (width >= 768px) {
+    .vitra-md-w-auto { width: auto; }
+    .vitra-md-w-full { width: 100%; }
+    .vitra-md-w-half { width: 50%; }
+    .vitra-md-w-third { width: 33.333%; }
+  }
+
+  /* ============================================
+     OVERFLOW UTILITIES
+     ============================================ */
+
+  .vitra-overflow-hidden { overflow: hidden; }
+  .vitra-overflow-auto { overflow: auto; }
+  .vitra-overflow-scroll { overflow: scroll; }
+  .vitra-overflow-visible { overflow: visible; }
+  .vitra-overflow-x-auto { overflow-x: auto; }
+  .vitra-overflow-y-auto { overflow-y: auto; }
+
+  /* ============================================
+     Z-INDEX UTILITIES
+     ============================================ */
+
+  .vitra-z-0 { z-index: 0; }
+  .vitra-z-10 { z-index: 10; }
+  .vitra-z-20 { z-index: 20; }
+  .vitra-z-30 { z-index: 30; }
+  .vitra-z-40 { z-index: 40; }
+  .vitra-z-50 { z-index: 50; }
+  .vitra-z-auto { z-index: auto; }
+
+  /* ============================================
+     SCREEN READER ONLY
+     Visually hidden, accessible for screen readers
+     ============================================ */
+
+  .vitra-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .vitra-not-sr-only {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
   }
 }
 

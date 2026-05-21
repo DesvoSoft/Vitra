@@ -1,5 +1,7 @@
 /* 03-particles.css - Particle System */
+
 /* Part of Vitra CSS Framework */
+
 /* Phase 3: Particles & Motion - Plan 01 */
 
 /* ============================================
@@ -11,6 +13,7 @@
 @layer particles {
   :root {
     /* --- PARTICLE BASE TOKENS --- */
+
     /* Configurable particle properties via CSS variables */
     --vitra-particle-count: 20;
     --vitra-particle-color: var(--vitra-color-accent, #6c63ff);
@@ -20,6 +23,7 @@
   }
 
   /* --- PARTICLE BASE CLASS --- */
+
   /* Configurable particle system with CSS variable controls */
   .vitra-particle {
     /* Particle appearance */
@@ -45,6 +49,7 @@
       transform: translateY(0) scale(1);
       opacity: 0.7;
     }
+
     50% {
       transform: translateY(-20px) scale(1.1);
       opacity: 1;
@@ -52,6 +57,7 @@
   }
 
   /* --- PARTICLE GLOW VARIANTS --- */
+
   /* Glow intensity classes for configurable glow effects */
 
   /* Subtle glow variant - uses token value */
@@ -61,12 +67,12 @@
 
   /* Medium glow variant (balanced) - enhanced with token */
   .vitra-particle-glow-md {
-    box-shadow: var(--vitra-shadow-glow), 0 0 30px rgba(108, 99, 255, 0.2);
+    box-shadow: var(--vitra-shadow-glow), 0 0 30px rgb(108 99 255 / 20%);
   }
 
   /* Strong glow variant - uses strong glow token */
   .vitra-particle-glow-lg {
-    box-shadow: var(--vitra-shadow-glow-strong), 0 0 60px rgba(108, 99, 255, 0.3);
+    box-shadow: var(--vitra-shadow-glow-strong), 0 0 60px rgb(108 99 255 / 30%);
   }
 
   /* Configurable glow intensity via CSS variable */
@@ -75,14 +81,15 @@
   }
 
   .vitra-particle[data-glow="md"] {
-    box-shadow: var(--vitra-shadow-glow), 0 0 30px rgba(108, 99, 255, 0.2);
+    box-shadow: var(--vitra-shadow-glow), 0 0 30px rgb(108 99 255 / 20%);
   }
 
   .vitra-particle[data-glow="lg"] {
-    box-shadow: var(--vitra-shadow-glow-strong), 0 0 60px rgba(108, 99, 255, 0.3);
+    box-shadow: var(--vitra-shadow-glow-strong), 0 0 60px rgb(108 99 255 / 30%);
   }
 
   /* --- EMOJI PARTICLES --- */
+
   /* Emoji-based particles using data-emoji attribute */
 
   .vitra-particles-emoji {
@@ -97,13 +104,6 @@
   .vitra-particles-emoji::before {
     content: attr(data-emoji);
     display: inline-block;
-  }
-
-  /* Random positioning classes for emoji particles */
-  .vitra-particles-emoji[data-pos="random"] {
-    position: absolute;
-    top: calc(var(--random-y, 0) * 100%);
-    left: calc(var(--random-x, 0) * 100%);
   }
 
   /* Preset positions for common use cases */
@@ -139,10 +139,11 @@
   }
 
   /* --- PERFORMANCE LIMITS --- */
+
   /* Device-specific particle limits for performance optimization */
 
   /* Mobile: limit to 15 particles for better performance */
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     :root {
       --vitra-particle-count: 15;
     }
@@ -165,13 +166,14 @@
   }
 
   /* Desktop: limit to 40 particles for richer experience */
-  @media (min-width: 769px) {
+  @media (width >= 768px) {
     :root {
       --vitra-particle-count: 40;
     }
   }
 
   /* --- ACCESSIBILITY: Reduced Motion --- */
+
   /* Disable animations for users who prefer reduced motion */
 
   @media (prefers-reduced-motion: reduce) {
