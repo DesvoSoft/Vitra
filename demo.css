@@ -66,6 +66,11 @@ body {
   position: absolute;
   inset: 0;
   z-index: 0;
+  will-change: background-position;
+}
+
+.demo-hero .vitra-glow-orb {
+  will-change: transform;
 }
 
 .demo-hero .vitra-container {
@@ -377,12 +382,8 @@ body {
    Navigation
    ============================================ */
 
-.vitra-navbar {
-  width: 100%;
-  border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
-  background: hsla(240, 15%, 8%, 0.7);
-  backdrop-filter: blur(var(--vitra-blur-lg));
-  -webkit-backdrop-filter: blur(var(--vitra-blur-lg));
+.vitra-navbar-glass {
+  z-index: 1000;
 }
 
 .vitra-navbar-link {
@@ -394,6 +395,71 @@ body {
 .vitra-navbar-link:hover {
   opacity: 1;
   color: var(--vitra-color-accent);
+}
+
+/* ============================================
+   Burger Icon
+   ============================================ */
+
+.vitra-burger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 28px;
+  height: 28px;
+  padding: 3px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  z-index: 1001;
+}
+
+.vitra-burger-line {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--vitra-color-text-primary, #fff);
+  border-radius: 2px;
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.2s ease;
+  transform-origin: center;
+}
+
+.vitra-burger.active .vitra-burger-line:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.vitra-burger.active .vitra-burger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.vitra-burger.active .vitra-burger-line:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ============================================
+   Drawer
+   ============================================ */
+
+.vitra-drawer-body {
+  padding-top: 70px;
+}
+
+.vitra-drawer-glass {
+  z-index: 999;
+}
+
+/* ============================================
+   Dropdown Chevron
+   ============================================ */
+
+.dropdown-chevron {
+  transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.vitra-dropdown.open .dropdown-chevron {
+  transform: rotate(180deg);
 }
 
 /* ============================================
@@ -643,9 +709,23 @@ pre code {
   .vitra-range::-webkit-slider-thumb,
   .demo-card,
   .cinematic-preview,
-  .theme-preview-card {
+  .theme-preview-card,
+  .vitra-burger-line,
+  .dropdown-chevron {
     transition: none !important;
     animation: none !important;
+  }
+
+  .vitra-burger.active .vitra-burger-line:nth-child(1) {
+    transform: none;
+  }
+
+  .vitra-burger.active .vitra-burger-line:nth-child(3) {
+    transform: none;
+  }
+
+  .vitra-dropdown.open .dropdown-chevron {
+    transform: none;
   }
 
   .demo-hero::before {

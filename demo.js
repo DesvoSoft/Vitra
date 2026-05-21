@@ -435,23 +435,36 @@
 
     if (!burger || !drawer) return;
 
+    function closeDrawer() {
+      burger.classList.remove('active');
+      drawer.classList.remove('open');
+    }
+
     burger.addEventListener('click', function () {
       burger.classList.toggle('active');
       drawer.classList.toggle('open');
     });
 
     if (drawerClose) {
-      drawerClose.addEventListener('click', function () {
-        burger.classList.remove('active');
-        drawer.classList.remove('open');
-      });
+      drawerClose.addEventListener('click', closeDrawer);
     }
 
     drawerLinks.forEach(function (link) {
-      link.addEventListener('click', function () {
-        burger.classList.remove('active');
-        drawer.classList.remove('open');
-      });
+      link.addEventListener('click', closeDrawer);
+    });
+
+    // Close drawer on outside click
+    document.addEventListener('click', function (e) {
+      if (!drawer.classList.contains('open')) return;
+      if (drawer.contains(e.target) || burger.contains(e.target)) return;
+      closeDrawer();
+    });
+
+    // Close drawer on ESC
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && drawer.classList.contains('open')) {
+        closeDrawer();
+      }
     });
   }
 })();

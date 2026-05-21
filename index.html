@@ -14,11 +14,12 @@
   <style>
     :root { scroll-behavior: smooth; }
     section[id] { scroll-margin-top: 80px; }
+    body { overflow-x: hidden; }
   </style>
 </head>
 <body>
   <!-- Navigation -->
-  <nav class="vitra-navbar" style="position: sticky; top: 0; z-index: 1000;" role="navigation" aria-label="Main navigation">
+  <nav class="vitra-navbar vitra-navbar-glass" role="navigation" aria-label="Main navigation">
     <div class="vitra-container vitra-flex vitra-justify-between vitra-items-center">
       <div class="vitra-navbar-brand">
         <span class="vitra-text-gradient">Vitra CSS</span>
@@ -34,7 +35,7 @@
         <div class="vitra-dropdown">
           <button class="vitra-btn vitra-btn-glass vitra-btn-sm" data-vitra-dropdown-toggle>
             Theme: <span id="current-theme-name">Auto</span>
-            <svg style="width: 16px; height: 16px; margin-left: 0.5rem;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            <svg class="dropdown-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </button>
           <div class="vitra-dropdown-menu">
             <button class="vitra-dropdown-item theme-dropdown-item" data-theme-value="light">Light</button>
