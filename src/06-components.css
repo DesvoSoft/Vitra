@@ -487,14 +487,21 @@
   }
 
   /* --- BURGER ICON (Mobile Menu Toggle) --- */
+  .vitra-navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--vitra-space-2);
+  }
+
   .vitra-burger {
     display: none;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
     gap: 5px;
     width: 28px;
     height: 28px;
-    padding: 3px;
+    padding: 0;
     background: transparent;
     border: none;
     cursor: pointer;
@@ -682,7 +689,8 @@
   /* --- MODAL OVERLAY --- */
 
   /* Full-screen backdrop overlay for modal dialogs */
-  .vitra-modal-overlay {
+  .vitra-modal-overlay,
+  .vitra-modal {
     /* Position fixed to cover entire viewport */
     position: fixed;
     inset: 0;
@@ -708,18 +716,24 @@
 
   /* Show state for modal overlay */
   .vitra-modal-overlay[open],
-  .vitra-modal-overlay.vitra-modal-open {
+  .vitra-modal-overlay.vitra-modal-open,
+  .vitra-modal[open],
+  .vitra-modal.vitra-modal-open {
     opacity: 1;
   }
 
   @starting-style {
     .vitra-modal-overlay[open],
-    .vitra-modal-overlay.vitra-modal-open {
+    .vitra-modal-overlay.vitra-modal-open,
+    .vitra-modal[open],
+    .vitra-modal.vitra-modal-open {
       opacity: 0;
     }
 
     .vitra-modal-overlay[open] .vitra-modal-content,
-    .vitra-modal-overlay.vitra-modal-open .vitra-modal-content {
+    .vitra-modal-overlay.vitra-modal-open .vitra-modal-content,
+    .vitra-modal[open] .vitra-modal-content,
+    .vitra-modal.vitra-modal-open .vitra-modal-content {
       transform: translateY(20px) scale(0.98);
     }
   }
@@ -743,8 +757,18 @@
   }
 
   .vitra-modal-overlay[open] .vitra-modal-content,
-  .vitra-modal-overlay.vitra-modal-open .vitra-modal-content {
+  .vitra-modal-overlay.vitra-modal-open .vitra-modal-content,
+  .vitra-modal[open] .vitra-modal-content,
+  .vitra-modal.vitra-modal-open .vitra-modal-content {
     transform: translateY(0) scale(1);
+  }
+
+  @media (width < 640px) {
+    .vitra-modal-content {
+      padding: var(--vitra-space-4);
+      margin: var(--vitra-space-3);
+      width: 100%;
+    }
   }
 
   /* --- MODAL HEADER --- */
@@ -848,7 +872,8 @@
   /* Informational comment: Focus trap logic will be handled by JS */
 
   /* These styles ensure proper focus visibility within modal */
-  .vitra-modal-overlay:focus {
+  .vitra-modal-overlay:focus,
+  .vitra-modal:focus {
     outline: none;
   }
 
@@ -865,6 +890,7 @@
   /* --- prefers-reduced-motion --- */
   @media (prefers-reduced-motion: reduce) {
     .vitra-modal-overlay,
+    .vitra-modal,
     .vitra-modal-content {
       transition: none;
     }
