@@ -2356,10 +2356,23 @@
   }
 
   @media (width < 640px) {
+    .vitra-modal {
+      padding: var(--vitra-space-3);
+      align-items: flex-start;
+      overflow-y: auto;
+    }
     .vitra-modal-content {
-      padding: var(--vitra-space-4);
-      margin: var(--vitra-space-3);
+      margin: 0;
       width: 100%;
+      max-width: 100%;
+      border-radius: var(--vitra-radius-lg);
+    }
+    .vitra-modal-sm .vitra-modal-content,
+    .vitra-modal-lg .vitra-modal-content,
+    .vitra-modal-full .vitra-modal-content {
+      width: 100%;
+      padding: var(--vitra-space-4);
+      height: auto;
     }
   }
 
