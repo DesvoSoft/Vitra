@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#0a0a14">
   <title>Vitra CSS — Interactive Demo</title>
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.4.0/dist/vitra.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="dist/vitra.css" crossorigin="anonymous">
   <link rel="stylesheet" href="demo.css">
 
   <style>
@@ -30,6 +30,7 @@
         <a href="#modern-css" class="vitra-navbar-link">Modern CSS</a>
         <a href="#components" class="vitra-navbar-link">Components</a>
         <a href="#particles" class="vitra-navbar-link">Particles</a>
+        <a href="#shaders" class="vitra-navbar-link">Shaders</a>
       </div>
       <div class="vitra-navbar-actions">
         <div class="vitra-dropdown">
@@ -70,6 +71,7 @@
         <a href="#modern-css" class="vitra-navbar-link">Modern CSS</a>
         <a href="#components" class="vitra-navbar-link">Components</a>
         <a href="#particles" class="vitra-navbar-link">Particles</a>
+        <a href="#shaders" class="vitra-navbar-link">Shaders</a>
       </nav>
     </div>
   </aside>
@@ -83,7 +85,7 @@
     <div class="vitra-glow-orb vitra-glow-orb-2"></div>
     <div class="vitra-glow-orb vitra-glow-orb-3"></div>
     <div class="vitra-container vitra-text-center">
-      <p class="demo-hero-badge vitra-badge vitra-badge-primary">v1.4.0</p>
+      <p class="demo-hero-badge vitra-badge vitra-badge-primary">v1.5.0</p>
       <h1 class="vitra-gradient-text demo-hero-title">Vitra CSS</h1>
       <p class="vitra-text-xl vitra-text-secondary demo-hero-sub" style="max-width: 600px; margin-left: auto; margin-right: auto;">
         A premium glassmorphism framework with cinematic effects, modern CSS APIs, and obsessive attention to detail.
@@ -279,6 +281,137 @@
               <div style="flex: 1; background: oklch(0.9 0.25 var(--vitra-color-accent-h));"></div>
             </div>
             <span style="font-size: 0.75rem; opacity: 0.5;">oklch lightness ramp — perceptually uniform</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CSS SHADERS
+       ============================================================ -->
+  <section id="shaders" class="demo-section vitra-reveal">
+    <div class="vitra-container">
+      <h2 class="demo-section-title">CSS Shaders</h2>
+      <p class="vitra-text-secondary demo-section-desc">Pure-CSS shader-like effects — no WebGL, no Three.js, no JS canvas. Progressive enhancement with modern CSS APIs.</p>
+
+      <!-- Noise Overlay -->
+      <div class="demo-card">
+        <div class="demo-card-header">
+          <h3><span class="vitra-badge vitra-badge-sm vitra-badge-primary">NEW</span> Noise Overlay</h3>
+          <label class="vitra-toggle-label">
+            <input type="checkbox" class="vitra-toggle" id="toggle-noise-overlay" checked>
+            <span>Active</span>
+          </label>
+        </div>
+        <p>Grain texture via SVG <code>feTurbulence</code> filter rendered as a data URI background. <code>mix-blend-mode: overlay</code> for cinematic film grain.</p>
+      </div>
+
+      <!-- Progress Ring -->
+      <div class="demo-card">
+        <div class="demo-card-header">
+          <h3><span class="vitra-badge vitra-badge-sm vitra-badge-primary">NEW</span> Progress Ring</h3>
+        </div>
+        <p>Circular progress indicator using <code>conic-gradient</code> with smooth animation via <code>@property --vitra-progress-ring-value</code>. Set CSS variable as percentage.</p>
+        <div class="vitra-flex vitra-gap-4 vitra-items-center vitra-justify-center vitra-mt-4 vitra-flex-wrap">
+          <div class="vitra-progress-ring" id="progress-ring-1">
+            <div class="vitra-progress-ring-inner" id="progress-ring-label-1">0%</div>
+          </div>
+          <div class="vitra-progress-ring vitra-progress-ring-lg" id="progress-ring-2">
+            <div class="vitra-progress-ring-inner" id="progress-ring-label-2">75%</div>
+          </div>
+        </div>
+        <div class="vitra-flex vitra-gap-2 vitra-justify-center vitra-mt-3 vitra-flex-wrap">
+          <button class="vitra-btn vitra-btn-sm vitra-btn-glass" onclick="animateProgressRing('progress-ring-1', 'progress-ring-label-1', 0, 85)">Demo 1 → 85%</button>
+          <button class="vitra-btn vitra-btn-sm vitra-btn-glass" onclick="animateProgressRing('progress-ring-2', 'progress-ring-label-2', 75, 30)">Demo 2 → 30%</button>
+          <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" onclick="animateProgressRing('progress-ring-1', 'progress-ring-label-1', 0, 100); animateProgressRing('progress-ring-2', 'progress-ring-label-2', 75, 100)">Both → 100%</button>
+        </div>
+      </div>
+
+      <!-- Shape Morph -->
+      <div class="demo-card">
+        <div class="demo-card-header">
+          <h3><span class="vitra-badge vitra-badge-sm vitra-badge-primary">NEW</span> Shape Morph</h3>
+          <label class="vitra-toggle-label">
+            <input type="checkbox" class="vitra-toggle" id="toggle-shape-morph" checked>
+            <span>Active</span>
+          </label>
+        </div>
+        <p><code>clip-path</code> polygon morphing animation: diamond → square → triangle → hexagon → diamond. 12s ease-in-out loop.</p>
+        <div class="vitra-flex vitra-gap-4 vitra-justify-center vitra-mt-4 vitra-flex-wrap">
+          <div class="vitra-shape-morph vitra-shape-morph-sm" id="shape-morph-1"></div>
+          <div class="vitra-shape-morph" id="shape-morph-2"></div>
+        </div>
+      </div>
+
+      <!-- Gradient Rotate Border -->
+      <div class="demo-card">
+        <div class="demo-card-header">
+          <h3><span class="vitra-badge vitra-badge-sm vitra-badge-primary">NEW</span> Gradient Rotate</h3>
+          <label class="vitra-toggle-label">
+            <input type="checkbox" class="vitra-toggle" id="toggle-gradient-rotate" checked>
+            <span>Active</span>
+          </label>
+        </div>
+        <p>Animated conic-gradient border using <code>@property --vitra-border-glow-angle</code> for smooth angle interpolation. Use <code>.vitra-gradient-rotate-fast</code> or <code>.vitra-gradient-rotate-slow</code> variants.</p>
+        <div class="vitra-flex vitra-gap-4 vitra-mt-4 vitra-flex-wrap vitra-justify-center">
+          <div class="vitra-gradient-rotate" style="padding: var(--vitra-space-4); max-width: 250px; width: 100%;">
+            <div style="position: relative; z-index: 1;">
+              <strong>Rotating Border</strong>
+              <p style="font-size: 0.85rem; opacity: 0.7; margin: var(--vitra-space-2) 0 0;">4s per rotation</p>
+            </div>
+          </div>
+          <div class="vitra-gradient-rotate vitra-gradient-rotate-fast" style="padding: var(--vitra-space-4); max-width: 250px; width: 100%;">
+            <div style="position: relative; z-index: 1;">
+              <strong>Fast Spin</strong>
+              <p style="font-size: 0.85rem; opacity: 0.7; margin: var(--vitra-space-2) 0 0;">2s per rotation</p>
+            </div>
+          </div>
+          <div class="vitra-gradient-rotate vitra-gradient-rotate-slow" style="padding: var(--vitra-space-4); max-width: 250px; width: 100%;">
+            <div style="position: relative; z-index: 1;">
+              <strong>Slow Spin</strong>
+              <p style="font-size: 0.85rem; opacity: 0.7; margin: var(--vitra-space-2) 0 0;">8s per rotation</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll Reveal -->
+      <div class="demo-card">
+        <div class="demo-card-header">
+          <h3><span class="vitra-badge vitra-badge-sm vitra-badge-primary">NEW</span> Scroll-Driven Reveal</h3>
+          <label class="vitra-toggle-label">
+            <input type="checkbox" class="vitra-toggle" id="toggle-scroll-reveal" checked>
+            <span>Active</span>
+          </label>
+        </div>
+        <p>Uses <code>animation-timeline: view()</code> for scroll-driven entry animations. Elements fade + slide as they enter the viewport. Progressive enhancement — falls back gracefully in unsupported browsers.</p>
+        <div class="vitra-grid vitra-mt-4" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--vitra-space-3);">
+          <div class="vitra-card vitra-scroll-reveal"><h4>Fade Up</h4></div>
+          <div class="vitra-card vitra-scroll-reveal-left"><h4>From Left</h4></div>
+          <div class="vitra-card vitra-scroll-reveal-right"><h4>From Right</h4></div>
+          <div class="vitra-card vitra-scroll-reveal-scale"><h4>Scale In</h4></div>
+        </div>
+      </div>
+
+      <!-- Light-Dark Utility -->
+      <div class="demo-card">
+        <div class="demo-card-header">
+          <h3><span class="vitra-badge vitra-badge-sm vitra-badge-primary">NEW</span> light-dark() Utility</h3>
+        </div>
+        <p>Native CSS <code>light-dark()</code> function for single-declaration theme switching. These boxes adapt automatically without <code>@media (prefers-color-scheme)</code>.</p>
+        <div class="vitra-flex vitra-gap-3 vitra-mt-4 vitra-flex-wrap">
+          <div class="vitra-light-dark-bg vitra-light-dark-text" style="padding: var(--vitra-space-3); border-radius: var(--vitra-radius-md); border: 1px solid var(--vitra-color-border); flex: 1;">
+            <strong>light-dark bg/text</strong>
+            <p style="font-size: 0.85rem; margin: var(--vitra-space-1) 0 0;">Auto-switches with OS preference</p>
+          </div>
+          <div class="vitra-color-mix-accent-subtle" style="padding: var(--vitra-space-3); border-radius: var(--vitra-radius-md); border: 1px solid var(--vitra-color-border); flex: 1;">
+            <strong>color-mix accent</strong>
+            <p style="font-size: 0.85rem; margin: var(--vitra-space-1) 0 0;">15% accent + bg</p>
+          </div>
+          <div class="vitra-color-mix-accent-surface" style="padding: var(--vitra-space-3); border-radius: var(--vitra-radius-md); flex: 1;">
+            <strong>color-mix surface</strong>
+            <p style="font-size: 0.85rem; margin: var(--vitra-space-1) 0 0;">10% accent + surface</p>
           </div>
         </div>
       </div>
@@ -827,6 +960,7 @@
             <li><a href="#cinematic">Cinematic</a></li>
             <li><a href="#themes">Themes</a></li>
             <li><a href="#modern-css">Modern CSS</a></li>
+            <li><a href="#shaders">Shaders</a></li>
             <li><a href="#components">Components</a></li>
           </ul>
         </div>
@@ -853,7 +987,7 @@
   </footer>
 
   <!-- Framework JS -->
-  <script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.4.0/dist/vitra.min.js" crossorigin="anonymous"></script>
+  <script src="dist/vitra.min.js" crossorigin="anonymous"></script>
   <script src="demo.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {

@@ -24,6 +24,8 @@
     initTabs();
     initModalDemo();
     initNavigation();
+    initShaderToggles();
+    initProgressRing();
 
     updateParticleInfo();
   }
@@ -467,4 +469,90 @@
       }
     });
   }
+
+  // ==================== Shader Toggles ====================
+  function initShaderToggles() {
+    // Noise overlay toggle
+    var noiseToggle = document.getElementById('toggle-noise-overlay');
+    var noiseOverlay = document.querySelector('.vitra-noise-overlay');
+    if (noiseToggle && !noiseOverlay) {
+      noiseOverlay = document.createElement('div');
+      noiseOverlay.className = 'vitra-noise-overlay';
+      document.body.appendChild(noiseOverlay);
+    }
+    if (noiseToggle && noiseOverlay) {
+      noiseToggle.addEventListener('change', function () {
+        noiseOverlay.style.display = noiseToggle.checked ? '' : 'none';
+      });
+    }
+
+    // Shape morph toggle
+    var morphToggle = document.getElementById('toggle-shape-morph');
+    var morphEls = document.querySelectorAll('.vitra-shape-morph');
+    if (morphToggle) {
+      morphToggle.addEventListener('change', function () {
+        morphEls.forEach(function (el) {
+          el.style.animationPlayState = morphToggle.checked ? 'running' : 'paused';
+          el.style.opacity = morphToggle.checked ? '1' : '0.3';
+        });
+      });
+    }
+
+    // Gradient rotate toggle
+    var gradRotateToggle = document.getElementById('toggle-gradient-rotate');
+    var gradRotateEls = document.querySelectorAll('.vitra-gradient-rotate');
+    if (gradRotateToggle) {
+      gradRotateToggle.addEventListener('change', function () {
+        gradRotateEls.forEach(function (el) {
+          el.style.opacity = gradRotateToggle.checked ? '1' : '0.4';
+          var pseudo = el.querySelector('::before');
+          if (pseudo) pseudo.style.animationPlayState = gradRotateToggle.checked ? 'running' : 'paused';
+        });
+      });
+    }
+
+    // Scroll reveal toggle
+    var scrollToggle = document.getElementById('toggle-scroll-reveal');
+    var scrollEls = document.querySelectorAll('.vitra-scroll-reveal, .vitra-scroll-reveal-left, .vitra-scroll-reveal-right, .vitra-scroll-reveal-scale');
+    if (scrollToggle) {
+      scrollToggle.addEventListener('change', function () {
+        scrollEls.forEach(function (el) {
+          el.style.animationPlayState = scrollToggle.checked ? 'running' : 'paused';
+          el.style.opacity = scrollToggle.checked ? '' : '1';
+          el.style.transform = scrollToggle.checked ? '' : 'none';
+        });
+      });
+    }
+  }
+
+  // ==================== Progress Ring ====================
+  function initProgressRing() {
+    // Set initial values
+    setProgressRing('progress-ring-1', 'progress-ring-label-1', 0);
+    setProgressRing('progress-ring-2', 'progress-ring-label-2', 75);
+  }
+
+  function setProgressRing(ringId, labelId, value) {
+    var ring = document.getElementById(ringId);
+    var label = document.getElementById(labelId);
+    if (!ring) return;
+    ring.style.setProperty('--vitra-progress-ring-value', value + '%');
+    if (label) label.textContent = Math.round(value) + '%';
+  }
+
+  window.animateProgressRing = function (ringId, labelId, from, to) {
+    var ring = document.getElementById(ringId);
+    var label = document.getElementById(labelId);
+    if (!ring) return;
+
+    setProgressRing(ringId, labelId, from);
+
+    requestAnimationFrame(function () {
+      ring.style.transition = '--vitra-progress-ring-value 1.2s var(--vitra-ease-out, cubic-bezier(0, 0, 0.2, 1))';
+      setProgressRing(ringId, labelId, to);
+      setTimeout(function () {
+        ring.style.transition = '';
+      }, 1300);
+    });
+  };
 })();
