@@ -16,7 +16,8 @@ const sourceFiles = [
   '04-motion.css',    // Motion layer
   '05-layout.css',    // Layout layer
   '06-components.css', // Components layer
-  '07-utilities.css'  // Utilities layer (last to override)
+  '07-utilities.css',  // Utilities layer
+  '08-shaders.css'     // Shaders layer (premium CSS effects)
 ];
 
 const srcDir = path.join(__dirname, '..', 'src');

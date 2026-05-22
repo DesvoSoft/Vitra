@@ -7,7 +7,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap');
 
 /* Define cascade layer order */
-@layer tokens, glass, particles, layout, motion, components, utilities;
+@layer tokens, glass, particles, layout, motion, components, utilities, shaders;
 
 /* Tokens layer - immutable design tokens */
 @layer tokens {
@@ -127,6 +127,30 @@
     --vitra-duration-normal: 300ms;
     --vitra-duration-slow: 500ms;
     --vitra-duration-slower: 800ms;
+
+    /* --- Shader / CSS FX Tokens --- */
+    --vitra-progress-ring-value: 0%;
+    --vitra-noise-opacity: 0.035;
+    --vitra-shape-morph-duration: 12s;
+  }
+
+  /* @property registrations for smooth CSS shader animations */
+  @property --vitra-progress-ring-value {
+    syntax: '<percentage>';
+    inherits: true;
+    initial-value: 0%;
+  }
+
+  @property --vitra-border-glow-angle {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+  }
+
+  @property --vitra-noise-opacity {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 0.035;
   }
 
   /* Base body styles using token values */

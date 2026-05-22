@@ -8,7 +8,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap');
 
 /* Define cascade layer order */
-@layer tokens, glass, particles, layout, motion, components, utilities;
+@layer tokens, glass, particles, layout, motion, components, utilities, shaders;
 
 /* Tokens layer - immutable design tokens */
 @layer tokens {
@@ -128,6 +128,30 @@
     --vitra-duration-normal: 300ms;
     --vitra-duration-slow: 500ms;
     --vitra-duration-slower: 800ms;
+
+    /* --- Shader / CSS FX Tokens --- */
+    --vitra-progress-ring-value: 0%;
+    --vitra-noise-opacity: 0.035;
+    --vitra-shape-morph-duration: 12s;
+  }
+
+  /* @property registrations for smooth CSS shader animations */
+  @property --vitra-progress-ring-value {
+    syntax: '<percentage>';
+    inherits: true;
+    initial-value: 0%;
+  }
+
+  @property --vitra-border-glow-angle {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+  }
+
+  @property --vitra-noise-opacity {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 0.035;
   }
 
   /* Base body styles using token values */
@@ -4586,6 +4610,402 @@
     overflow: visible;
     clip: auto;
     white-space: normal;
+  }
+
+  /* ============================================
+     LIGHT-DARK UTILITY
+     Uses native light-dark() for single-declaration
+     theme switching. Requires color-scheme on parent.
+     ============================================ */
+
+  .vitra-light-dark-text {
+    color: light-dark(hsl(0deg 0% 0% / 90%), hsl(0deg 0% 100% / 90%));
+  }
+
+  .vitra-light-dark-text-secondary {
+    color: light-dark(hsl(0deg 0% 0% / 65%), hsl(0deg 0% 100% / 65%));
+  }
+
+  .vitra-light-dark-bg {
+    background-color: light-dark(#f5f5f7, #0f0f14);
+  }
+
+  .vitra-light-dark-surface {
+    background-color: light-dark(hsl(0deg 0% 0% / 4%), hsl(0deg 0% 100% / 5%));
+  }
+
+  .vitra-light-dark-border {
+    border-color: light-dark(hsl(0deg 0% 0% / 10%), hsl(0deg 0% 100% / 10%));
+  }
+
+  /* ============================================
+     COLOR-MIX UTILITIES
+     Dynamic on-the-fly tints using color-mix()
+     ============================================ */
+
+  .vitra-color-mix-accent-subtle {
+    background-color: color-mix(in srgb, var(--vitra-color-accent) 15%, var(--vitra-color-bg));
+  }
+
+  .vitra-color-mix-accent-surface {
+    background-color: color-mix(in srgb, var(--vitra-color-accent) 10%, var(--vitra-color-surface));
+  }
+
+  .vitra-color-mix-accent-border {
+    border-color: color-mix(in srgb, var(--vitra-color-accent) 40%, var(--vitra-color-border));
+  }
+
+  .vitra-color-mix-accent-text {
+    color: color-mix(in srgb, var(--vitra-color-accent) 60%, var(--vitra-color-text-primary));
+  }
+}
+
+
+/* === 08-shaders.css === */
+/* 08-shaders.css - Pure-CSS Shader-like Effects */
+
+/* Part of Vitra CSS Framework */
+
+/* Phase 6: CSS Shader Effects
+   Cinematic, GPU-accelerated visual effects using
+   modern CSS only — no WebGL, no Three.js, no JS canvas.
+   Progressive enhancement with graceful fallbacks.
+   ============================================ */
+
+@layer shaders {
+  /* ============================================
+     NOISE OVERLAY
+     CSS grain texture via SVG feTurbulence filter
+     rendered as a data URI background.
+     Self-contained SVG with URL-encoded fragment.
+     ============================================ */
+
+  .vitra-noise-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: var(--vitra-noise-opacity, 0.035);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+    background-repeat: repeat;
+    mix-blend-mode: overlay;
+    will-change: opacity;
+  }
+
+  @media (prefers-contrast: more) {
+    .vitra-noise-overlay {
+      display: none !important;
+    }
+  }
+
+  /* ============================================
+     PROGRESS RING
+     Circular progress indicator using conic-gradient.
+     Set --vitra-progress-ring-value as a percentage.
+     Smooth animation via @property registration.
+     ============================================ */
+
+  .vitra-progress-ring {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: conic-gradient(
+      var(--vitra-color-accent) 0%,
+      var(--vitra-color-accent) var(--vitra-progress-ring-value, 0%),
+      var(--vitra-color-surface) var(--vitra-progress-ring-value, 0%),
+      var(--vitra-color-surface) 100%
+    );
+    transition: --vitra-progress-ring-value var(--vitra-duration-normal) var(--vitra-ease-out);
+  }
+
+  .vitra-progress-ring-inner {
+    position: absolute;
+    inset: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: inherit;
+    background: var(--vitra-color-bg);
+    font-size: var(--vitra-font-size-sm);
+    font-weight: var(--vitra-font-weight-semibold);
+    color: var(--vitra-color-text-primary);
+  }
+
+  /* Size variants */
+  .vitra-progress-ring-sm {
+    width: 56px;
+    height: 56px;
+  }
+
+  .vitra-progress-ring-sm .vitra-progress-ring-inner {
+    font-size: var(--vitra-font-size-xs);
+    inset: 5px;
+  }
+
+  .vitra-progress-ring-lg {
+    width: 120px;
+    height: 120px;
+  }
+
+  .vitra-progress-ring-lg .vitra-progress-ring-inner {
+    font-size: var(--vitra-font-size-lg);
+    inset: 8px;
+  }
+
+  /* Determinate -> indeterminate: animate the value */
+  .vitra-progress-ring-indeterminate {
+    animation: vitra-progress-ring-spin 2s linear infinite;
+  }
+
+  @keyframes vitra-progress-ring-spin {
+    from { --vitra-progress-ring-value: 0%; }
+    to { --vitra-progress-ring-value: 100%; }
+  }
+
+  /* ============================================
+     SHAPE MORPH
+     clip-path polygon morphing animation.
+     Morphs between geometric shapes (diamond →
+     square → triangle → hexagon → diamond).
+     ============================================ */
+
+  @keyframes vitra-shape-morph {
+    0% {
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    }
+    25% {
+      clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+    }
+    50% {
+      clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+    }
+    75% {
+      clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    }
+    100% {
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    }
+  }
+
+  .vitra-shape-morph {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(
+      135deg,
+      var(--vitra-color-accent),
+      hsl(calc(var(--vitra-color-accent-h) + 60) 100% 60%)
+    );
+    animation: vitra-shape-morph var(--vitra-shape-morph-duration, 12s) ease-in-out infinite;
+    will-change: clip-path;
+  }
+
+  .vitra-shape-morph-sm {
+    width: 100px;
+    height: 100px;
+  }
+
+  .vitra-shape-morph-lg {
+    width: 300px;
+    height: 300px;
+  }
+
+  /* ============================================
+     GRADIENT ROTATE BORDER
+     Animated conic-gradient border using @property
+     for smooth angle interpolation (no jank).
+     Enhanced version of .vitra-border-glow with
+     registered custom property support.
+     ============================================ */
+
+  .vitra-gradient-rotate {
+    position: relative;
+    border-radius: var(--vitra-radius-md);
+    overflow: hidden;
+  }
+
+  .vitra-gradient-rotate::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    z-index: -2;
+    background: conic-gradient(
+      from var(--vitra-border-glow-angle, 0deg),
+      var(--vitra-color-accent),
+      hsl(calc(var(--vitra-color-accent-h) + 60) 100% 60%),
+      hsl(calc(var(--vitra-color-accent-h) - 30) 100% 65%),
+      var(--vitra-color-accent)
+    );
+    animation: vitra-gradient-rotate-spin 4s linear infinite;
+    will-change: transform;
+  }
+
+  .vitra-gradient-rotate::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border-radius: inherit;
+    background: var(--vitra-color-bg);
+    z-index: -1;
+  }
+
+  @keyframes vitra-gradient-rotate-spin {
+    from { --vitra-border-glow-angle: 0deg; }
+    to { --vitra-border-glow-angle: 360deg; }
+  }
+
+  /* Faster spin variant */
+  .vitra-gradient-rotate-fast::before {
+    animation-duration: 2s;
+  }
+
+  /* Slower spin variant */
+  .vitra-gradient-rotate-slow::before {
+    animation-duration: 8s;
+  }
+
+  /* ============================================
+     SCROLL REVEAL
+     Scroll-driven entry animations using
+     animation-timeline: view(). Elements fade
+     and slide in as they enter the viewport.
+     Progressive enhancement — does nothing in
+     browsers without scroll-timeline support.
+     ============================================ */
+
+  @keyframes vitra-scroll-fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes vitra-scroll-fade-left {
+    from {
+      opacity: 0;
+      transform: translateX(-40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes vitra-scroll-fade-right {
+    from {
+      opacity: 0;
+      transform: translateX(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes vitra-scroll-scale {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .vitra-scroll-reveal {
+    animation: vitra-scroll-fade-up 1s var(--vitra-ease-luxury) both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 30%;
+  }
+
+  .vitra-scroll-reveal-left {
+    animation-name: vitra-scroll-fade-left;
+    animation-duration: 1s;
+    animation-timing-function: var(--vitra-ease-luxury);
+    animation-fill-mode: both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 30%;
+  }
+
+  .vitra-scroll-reveal-right {
+    animation-name: vitra-scroll-fade-right;
+    animation-duration: 1s;
+    animation-timing-function: var(--vitra-ease-luxury);
+    animation-fill-mode: both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 30%;
+  }
+
+  .vitra-scroll-reveal-scale {
+    animation-name: vitra-scroll-scale;
+    animation-duration: 1s;
+    animation-timing-function: var(--vitra-ease-luxury);
+    animation-fill-mode: both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 30%;
+  }
+
+  /* ============================================
+     REDUCED MOTION
+     Disable all shader animations
+     ============================================ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .vitra-noise-overlay,
+    .vitra-progress-ring,
+    .vitra-progress-ring-indeterminate,
+    .vitra-shape-morph,
+    .vitra-gradient-rotate::before,
+    .vitra-scroll-reveal,
+    .vitra-scroll-reveal-left,
+    .vitra-scroll-reveal-right,
+    .vitra-scroll-reveal-scale {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .vitra-noise-overlay {
+      opacity: 0.015;
+    }
+
+    .vitra-shape-morph {
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%) !important;
+    }
+
+    .vitra-scroll-reveal,
+    .vitra-scroll-reveal-left,
+    .vitra-scroll-reveal-right,
+    .vitra-scroll-reveal-scale {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+
+  /* ============================================
+     HIGH CONTRAST
+     Simplify shader effects
+     ============================================ */
+
+  @media (prefers-contrast: more) {
+    .vitra-shape-morph {
+      clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%) !important;
+    }
+
+    .vitra-gradient-rotate::before {
+      animation: none !important;
+    }
   }
 }
 

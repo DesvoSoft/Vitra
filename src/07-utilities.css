@@ -611,4 +611,51 @@
     clip: auto;
     white-space: normal;
   }
+
+  /* ============================================
+     LIGHT-DARK UTILITY
+     Uses native light-dark() for single-declaration
+     theme switching. Requires color-scheme on parent.
+     ============================================ */
+
+  .vitra-light-dark-text {
+    color: light-dark(hsl(0deg 0% 0% / 90%), hsl(0deg 0% 100% / 90%));
+  }
+
+  .vitra-light-dark-text-secondary {
+    color: light-dark(hsl(0deg 0% 0% / 65%), hsl(0deg 0% 100% / 65%));
+  }
+
+  .vitra-light-dark-bg {
+    background-color: light-dark(#f5f5f7, #0f0f14);
+  }
+
+  .vitra-light-dark-surface {
+    background-color: light-dark(hsl(0deg 0% 0% / 4%), hsl(0deg 0% 100% / 5%));
+  }
+
+  .vitra-light-dark-border {
+    border-color: light-dark(hsl(0deg 0% 0% / 10%), hsl(0deg 0% 100% / 10%));
+  }
+
+  /* ============================================
+     COLOR-MIX UTILITIES
+     Dynamic on-the-fly tints using color-mix()
+     ============================================ */
+
+  .vitra-color-mix-accent-subtle {
+    background-color: color-mix(in srgb, var(--vitra-color-accent) 15%, var(--vitra-color-bg));
+  }
+
+  .vitra-color-mix-accent-surface {
+    background-color: color-mix(in srgb, var(--vitra-color-accent) 10%, var(--vitra-color-surface));
+  }
+
+  .vitra-color-mix-accent-border {
+    border-color: color-mix(in srgb, var(--vitra-color-accent) 40%, var(--vitra-color-border));
+  }
+
+  .vitra-color-mix-accent-text {
+    color: color-mix(in srgb, var(--vitra-color-accent) 60%, var(--vitra-color-text-primary));
+  }
 }
