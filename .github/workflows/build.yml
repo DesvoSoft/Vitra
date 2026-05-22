@@ -31,6 +31,9 @@ jobs:
     - name: Run Tests
       run: npm test
 
+    - name: Check Bundle Size
+      run: npm run size
+
     - name: Verify Build Artifacts
       run: |
         if [ ! -f dist/vitra.min.css ]; then
