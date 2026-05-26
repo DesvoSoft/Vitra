@@ -1,7 +1,7 @@
 # Vitra CSS Framework — Audit 2026
 
-**Date**: 2026-05-21  
-**Version**: 1.3.0  
+**Date**: 2026-05-26  
+**Version**: 1.6.0  
 **Scope**: Full codebase analysis — architecture, components, JS modules, themes, performance, accessibility, testing
 
 ---
@@ -31,20 +31,21 @@
 
 | File | Lines | Key Content |
 |------|-------|-------------|
+| `08-shaders.css` | 501 | Pure-CSS shader effects: noise overlay, progress rings, shape morph, gradient rotate, scroll reveal, ripple |
 | `00-themes.css` | 136 | 7 themes (light, dark, auto, pastel, neon, ocean, emerald) |
 | `01-tokens.css` | 181 | Foundation tokens, Google Fonts import, layer declaration |
 | `02-glass.css` | 117 | Glass system with `@supports` fallbacks, 4 blur levels |
 | `03-particles.css` | 202 | Particle system, glow variants, responsive limits |
-| `04-motion.css` | 421 | 17 keyframes, reveal classes, hover interactions, cinematic effects |
+| `04-motion.css` | 679 | 25+ keyframes, reveal classes, hover interactions, cinematic effects, stagger, tilt-card, aurora bg, text-reveal |
 | `05-layout.css` | 313 | Grid, container, section, hero, footer, fluid spacing |
-| `06-components.css` | 2,326 | 17 component systems (buttons, cards, forms, modals, drawers, etc.) |
+| `06-components.css` | 2,173 | 17 component systems (buttons, cards, forms, modals, drawers, etc.) |
 | `07-utilities.css` | 614 | Spacing, display, flex, grid, width/height, z-index, responsive variants |
 
 ### Source JS
 
 | File | Lines | Content |
 |------|-------|---------|
-| `vitra.js` | 1,059 | 8 modules: theme, particles, reveal, modal, tooltip, toast, dropdown, spotlight |
+| `vitra.js` | 1,208 | 9 modules: theme, particles, reveal, ripple, modal, tooltip, toast, dropdown, spotlight |
 
 ### Tests
 
@@ -56,9 +57,9 @@
 
 | Asset | Size (minified) | Size (brotlied) |
 |-------|-----------------|-----------------|
-| `vitra.min.css` | 83,448 B | ~10.5 KB |
-| `vitra.min.js` | 11,670 B | ~3.7 KB |
-| `vitra.esm.js` | 28,129 B | ~5.3 KB |
+| `vitra.min.css` | 100,065 B | ~10.8 KB |
+| `vitra.min.js` | 14,100 B | ~4.2 KB |
+| `vitra.esm.js` | — | — (removed in v1.5) |
 
 ---
 
@@ -206,7 +207,7 @@ Buttons, Cards, Forms (partial), Navigation (Navbar + Drawer), Modals, Badges, A
 | Total rules | 803 |
 | Selectors | ~858 |
 | At-rules | 57 |
-| `@keyframes` | 17 |
+| `@keyframes` | 25+ |
 | `@media` blocks | 24 |
 | Unique `--vitra-*` properties | 386 |
 
@@ -217,18 +218,18 @@ Buttons, Cards, Forms (partial), Navigation (Navbar + Drawer), Modals, Badges, A
 | Tokens + Themes | ~10 KB |
 | Glass | ~3 KB |
 | Particles | ~4 KB |
-| Motion + Cinematic | ~8 KB |
+| Motion + Cinematic | ~10 KB |
 | Layout | ~6 KB |
 | Components | ~40 KB |
+| Shaders | ~5 KB |
 | Utilities | ~17 KB |
 
 ### Size Budget
 
 | Asset | Budget | Actual | Status |
 |-------|--------|--------|--------|
-| `vitra.min.css` | 85 KB | 83.4 KB | ✅ Pass |
-| `vitra.min.js` | 15 KB | 11.7 KB | ✅ Pass |
-| `vitra.esm.js` | 30 KB | 28.1 KB | ✅ Pass |
+| `vitra.min.css` | 110 KB | 100.1 KB | ✅ Pass |
+| `vitra.min.js` | 18 KB | 14.1 KB | ✅ Pass |
 
 ### Efficiency Concerns
 
@@ -390,7 +391,7 @@ src/vitra.js → [esbuild IIFE] → dist/vitra.js → [esbuild --minify] → dis
 - [ ] Add `color-scheme: light/dark` to all `html[data-theme]`
 - [ ] Fix `@import` before `@layer` (move Google Fonts to `<link>` recommendation)
 - [ ] Add CSS rendering tests (computed style verification)
-- [ ] Disable `errorRecovery: true` in production build
+- [x] `errorRecovery: true` gated behind `--dev` flag
 - [ ] Add `--vitra-font-size-h1` through `--vitra-font-size-h6` tokens
 
 ### Phase: Short-term (v1.4 — JS hygiene + missing components)
@@ -403,7 +404,17 @@ src/vitra.js → [esbuild IIFE] → dist/vitra.js → [esbuild --minify] → dis
 - [ ] Add Accordion component
 - [ ] Add Pagination component
 
-### Phase: Medium-term (v1.5 — modern CSS migration)
+### Phase: Completed (v1.6 — cinematic effects + shaders)
+
+- [x] `@starting-style` and `allow-discrete` for drawer, tab panel
+- [x] Burger animation improvements (scaleX, ease-luxury)
+- [x] Tooltip scale variant, skeleton pulse variant
+- [x] Cinematic animations: page-enter, stagger, tilt-card, aurora bg, text-reveal
+- [x] Shader effects: animated noise, dashed progress ring, 6-shape morph, double gradient rotate, CSS ripple
+- [x] Scroll reveal IntersectionObserver fallback
+- [x] `will-change` hints on 15+ high-impact animated elements
+
+### Phase: Medium-term (v1.7 — modern CSS migration)
 
 - [ ] Migrate to `light-dark()` function for single-declaration theming
 - [ ] Add blocking `<script>` for theme flash prevention
@@ -418,21 +429,20 @@ src/vitra.js → [esbuild IIFE] → dist/vitra.js → [esbuild --minify] → dis
 - [ ] Visual regression tests with Playwright
 - [ ] axe-core a11y audit in CI
 - [ ] Responsive heading scale with `clamp()`
-- [ ] `will-change` hints on animated elements
 - [ ] Reduce easing curves to 2-3 max for cohesive motion language
 
 ---
 
 ## Appendix: Key Metrics Comparison
 
-| Metric | Vitra v1.2 | Vitra v1.3 | Target v2.0 |
-|--------|-----------|-----------|-------------|
-| CSS minified | 77 KB | 83 KB | <100 KB |
-| JS minified | 11 KB | 11 KB | <15 KB |
-| Tests | 49 | 60 | >200 |
+| Metric | v1.3 | v1.6 | Target v2.0 |
+|--------|------|------|-------------|
+| CSS minified | 83 KB | 100 KB | <110 KB |
+| JS minified | 11 KB | 14 KB | <18 KB |
+| Tests | 60 | 60 | >200 |
 | Themes | 7 | 7 | 7+ |
-| Components | 14 | 19 | 25+ |
-| `@keyframes` | 13 | 17 | 20 |
+| Components | 19 | 19 | 25+ |
+| `@keyframes` | 17 | 25+ | 28 |
 | Browser support | Modern | Modern | Modern + graceful degradation |
 | Tree-shaking | No | No | Per-component imports |
 

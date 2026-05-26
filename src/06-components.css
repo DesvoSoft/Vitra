@@ -535,7 +535,7 @@
     transform: translateY(-7px) rotate(-48deg) scaleX(1.1);
   }
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     .vitra-navbar-links {
       display: none;
     }
@@ -794,6 +794,7 @@
       align-items: flex-start;
       overflow-y: auto;
     }
+
     .vitra-modal-content {
       margin: 0;
       width: 100%;
@@ -801,6 +802,7 @@
       max-height: 90dvh;
       border-radius: var(--vitra-radius-lg);
     }
+
     .vitra-modal-sm .vitra-modal-content,
     .vitra-modal-lg .vitra-modal-content,
     .vitra-modal-full .vitra-modal-content {
@@ -1219,21 +1221,7 @@
     transition: opacity var(--vitra-duration-normal) var(--vitra-ease-luxury),
                 visibility var(--vitra-duration-normal) var(--vitra-ease-luxury),
                  transform var(--vitra-duration-normal) var(--vitra-ease-luxury);
-    position: relative;
-    border-radius: var(--vitra-radius-lg);
-    background: var(--vitra-color-surface);
-    border: 1px solid var(--vitra-color-border);
     will-change: transform;
-    border-radius: var(--vitra-radius-md);
-    text-align: center;
-
-    /* Cursor */
-    cursor: pointer;
-
-    /* Transition */
-    transition: background-color var(--vitra-duration-fast) var(--vitra-ease-default),
-                color var(--vitra-duration-fast) var(--vitra-ease-default),
-                border-color var(--vitra-duration-fast) var(--vitra-ease-default);
   }
 
   .vitra-slider-scroll-item:hover {

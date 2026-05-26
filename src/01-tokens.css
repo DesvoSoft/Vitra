@@ -35,7 +35,7 @@
     --vitra-color-info: hsl(217deg 91% 60%);
 
     /* Premium Color Extensions */
-    --vitra-color-accent-oklch: oklch(0.65 0.25 var(--vitra-color-accent-h));
+    --vitra-color-accent-oklch: oklch(65% 0.25 var(--vitra-color-accent-h));
     --vitra-color-bg-warm: hsl(calc(var(--vitra-color-accent-h) + 30) 20% 6%);
     --vitra-color-bg-cool: hsl(calc(var(--vitra-color-accent-h) - 30) 20% 6%);
     --vitra-border-glow-angle: 0deg;
@@ -89,7 +89,7 @@
     --vitra-shadow-glow-strong: 0 0 40px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 50%);
 
     /* --- Typography (Premium Stack) --- */
-    --vitra-font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --vitra-font-family: 'Inter', -apple-system, blinkmacsystemfont, sans-serif;
     --vitra-font-heading: 'Outfit', sans-serif;
     --vitra-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
     --vitra-font-size-xs: 0.75rem;   /* 12px */
@@ -109,7 +109,6 @@
     --vitra-h4-size: clamp(1.125rem, 2.5vw, var(--vitra-font-size-xl));
     --vitra-h5-size: var(--vitra-font-size-lg);
     --vitra-h6-size: var(--vitra-font-size-base);
-
     --vitra-font-weight-normal: 400;
     --vitra-font-weight-medium: 500;
     --vitra-font-weight-semibold: 600;

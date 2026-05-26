@@ -157,8 +157,10 @@ Vitra supports declarive configuration via the `data-config` attribute. No JavaS
   "reveal": {
     "selector": ".vitra-reveal",  // Element selector
     "threshold": 0.1,            // Visibility threshold
-    "stagger": 100               // Stagger delay (ms)
+    "stagger": 100,              // Stagger delay (ms)
+    "scrollReveal": false        // Also watch .vitra-scroll-reveal* elements
   },
+  "ripple": true,              // Initialize click ripple (true by default)
   "tooltip": true              // Initialize tooltips (true by default)
 }
 ```
@@ -278,9 +280,10 @@ import { reveal } from './vitra.js';
 
 // Initialize scroll reveal
 reveal.init({
-  selector: '.vitra-reveal',  // CSS selector
-  threshold: 0.1,              // Visibility threshold (0-1)
-  stagger: 100                    // Delay between elements (ms)
+  selector: '.vitra-reveal',   // CSS selector
+  threshold: 0.1,               // Visibility threshold (0-1)
+  stagger: 100,                 // Delay between elements (ms)
+  scrollReveal: false           // Also observe .vitra-scroll-reveal* elements
 });
 
 // Count revealed elements
@@ -321,6 +324,18 @@ modal.close();
   </div>
 </div>
 */
+```
+
+### Ripple Module
+
+```javascript
+import { ripple } from './vitra.js';
+
+// Initialize click ripple (auto-enabled by default)
+ripple.init();
+
+// Add .vitra-ripple to any element to enable
+// Click ripple is handled automatically via event delegation
 ```
 
 ### Tooltip Module
@@ -379,9 +394,10 @@ npx esbuild src/vitra.js --bundle --outfile=dist/vitra.js --format=esm --tree-sh
 | `theme` | ~2 KB | Theme toggle, auto-detect, persistence |
 | `particles` | ~3 KB | Particle spawn, destroy, limits |
 | `reveal` | ~2 KB | Scroll reveal, stagger |
+| `ripple` | ~0.5 KB | Click ripple effect |
 | `modal` | ~2 KB | Modal open/close, focus trap |
 | `tooltip` | ~2 KB | Tooltip show/hide, positioning |
-| **Full `Vitra`** | ~8 KB | All modules combined |
+| **Full `Vitra`** | ~14 KB | All modules combined |
 
 ---
 

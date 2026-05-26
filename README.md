@@ -1,9 +1,9 @@
 # Vitra CSS Framework
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
-[![Version](https://img.shields.io/badge/version-1.3.0-blue)](https://github.com/DesvoSoft/Vitra)
+[![Version](https://img.shields.io/badge/version-1.6.0-blue)](https://github.com/DesvoSoft/Vitra)
 [![License](https://img.shields.io/badge/license-ISC-blue)](https://github.com/DesvoSoft/Vitra)
-[![Bundle Size](https://img.shields.io/badge/css-10.5%20KB%20brotlied-brightgreen)](https://github.com/DesvoSoft/Vitra)
+[![Bundle Size](https://img.shields.io/badge/css-10.8%20KB%20brotlied-brightgreen)](https://github.com/DesvoSoft/Vitra)
 [![Tests](https://img.shields.io/badge/tests-60%20passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
 
 Vitra is a high-performance, premium CSS framework engineered for modern web applications. It specializes in Glassmorphism, Motion Design, Interactive Particles, and Cinematic Visual Effects, providing a sophisticated aesthetic out of the box with zero external dependencies.
@@ -16,9 +16,10 @@ Unlike generic utility-first frameworks, Vitra is built with a specific aestheti
 
 -   **Glass-First Design**: Optimized backdrop-filter effects with robust `@supports` fallbacks for all browsers.
 -   **Strict @layer Architecture**: Predictable cascade management using modern CSS layers.
--   **Motion Engine**: 17 choreographed keyframes that automatically respect `prefers-reduced-motion`.
+-   **Motion Engine**: 25+ choreographed keyframes that automatically respect `prefers-reduced-motion`.
 -   **Particle System**: Native CSS/JS hybrid particles with built-in performance limits (15 mobile / 40 desktop).
--   **Cinematic Effects**: Animated mesh gradients, floating glow orbs, gradient text, and spinning border glows.
+-   **Cinematic Effects**: Animated mesh gradients, floating glow orbs, gradient text, spinning border glows, page-enter animation, 3D tilt cards, aurora background, text reveal, stagger system.
+-   **Shader Effects**: Pure-CSS shader effects — noise overlay, shape morphing, progress rings, gradient rotate borders, scroll-driven reveals, material ripple.
 -   **Modern CSS Features**: Container Queries, `@starting-style`, Popover API — all with fallbacks.
 -   **Premium Color System**: All surfaces tinted with accent hue — no pure neutral grays. Warm/cool/oklch variants.
 -   **Smart Theming**: 7 themes (light, dark, auto, pastel, neon, ocean, emerald) with system-level sync.
@@ -49,13 +50,13 @@ Use jsDelivr to load the minified files. We strongly recommend using a fixed ver
 
 ```html
 <!-- High-performance CSS (Fixed version with SRI) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.3.0/dist/vitra.min.css" integrity="sha256-..." crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.6.0/dist/vitra.min.css" integrity="sha256-..." crossorigin="anonymous">
 
 <!-- Optional: Modular JS Engine (Fixed version with SRI) -->
-<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@1.3.0/dist/vitra.min.js" integrity="sha256-..." crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.6.0/dist/vitra.min.js" integrity="sha256-..." crossorigin="anonymous" defer></script>
 ```
 
-> **Note:** Always use a pinned version (e.g., `@1.3.0`) for production. The SRI hashes are generated during build and stored in `dist/SRI.txt`.
+> **Note:** Always use a pinned version (e.g., `@v1.6.0`) for production. The SRI hashes are generated during build and stored in `dist/SRI.txt`.
 
 #### Option B: Local Assets
 
@@ -149,11 +150,11 @@ Vitra/
 │   ├── 01-tokens.css      # Foundation tokens (colors, spacing, typography, shadows)
 │   ├── 02-glass.css       # Glassmorphism engine with @supports fallbacks
 │   ├── 03-particles.css   # Particle systems with device-aware limits
-│   ├── 04-motion.css      # Motion engine + cinematic effects (gradient, glow, border)
+│   ├── 04-motion.css      # Motion engine + cinematic effects (gradient, glow, border, stagger, tilt, aurora, reveal)
 │   ├── 05-layout.css      # Grid, container, hero, flex, responsive utilities
 │   ├── 06-components.css  # 17 component systems (buttons, cards, modals, tables, etc.)
 │   ├── 07-utilities.css   # Spacing, display, width/height, z-index, responsive variants
-│   └── vitra.js           # 8 modules: theme, particles, reveal, modal, tooltip, toast, dropdown, spotlight
+│   └── vitra.js           # 9 modules: theme, particles, reveal, ripple, modal, tooltip, toast, dropdown, spotlight
 ├── dist/                  # Production builds + source maps + SRI hashes
 ├── docs/                  # Theming, integration, compatibility, audit
 └── tests/                 # 60 vitest tests
@@ -169,7 +170,7 @@ Vitra leverages cutting-edge CSS for progressive enhancement:
 |---------|-------|-----------------|
 | **`@layer`** | Cascade ordering (tokens < components < utilities) | Chrome 88+, FF 97+, Safari 15.4+ |
 | **`@container`** | Responsive table card layout | Chrome 105+, FF 110+, Safari 16+ |
-| **`@starting-style`** | Entry animations for modals, toasts, dropdowns | Chrome 117+, FF 129+, Safari 17.4+ |
+| **`@starting-style`** | Entry animations for modals, toasts, dropdowns | Chrome 117+, FF 128+, Safari 17.4+ |
 | **`popover` API** | Native dropdown with JS fallback | Chrome 114+, FF 125+, Safari 17.4+ |
 | **`:has()`** | Parent-aware component states | All modern browsers |
 | **`clamp()`** | Fluid spacing and typography | Chrome 79+, FF 75+ |
@@ -182,7 +183,7 @@ Vitra leverages cutting-edge CSS for progressive enhancement:
 -   **Reduced Motion**: All transitions and animations auto-disable if `prefers-reduced-motion` is detected. Supported at CSS (`0.01ms !important`) and JS levels.
 -   **Resource Safety**: Particle counts capped (15 mobile, 40 desktop) for 60fps on all devices.
 -   **Screen Reader Support**: `aria-live` announcer on theme changes, `aria-describedby` on tooltips, `role="dialog"` + `aria-modal` on modals, `.vitra-sr-only` utilities.
--   **Bundle Size**: CSS ~83 KB minified (~10.5 KB brotlied), JS ~11.7 KB minified (~3.7 KB brotlied). Monitored via `size-limit`.
+-   **Bundle Size**: CSS ~100 KB minified (~10.8 KB brotlied), JS ~14.1 KB minified (~4.2 KB brotlied). Monitored via `size-limit`.
 
 ---
 

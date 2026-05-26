@@ -34,6 +34,7 @@
     --vitra-shadow-medium: 0 4px 6px -1px rgb(0 0 0 / 10%);
     --vitra-shadow-elevated: 0 10px 15px -3px rgb(0 0 0 / 10%);
     --vitra-glass-bg: hsl(0deg 0% 100% / 40%);
+
     color-scheme: light;
   }
 
@@ -54,6 +55,7 @@
     --vitra-shadow-medium: 0 4px 12px rgb(0 0 0 / 40%);
     --vitra-shadow-elevated: 0 10px 32px rgb(0 0 0 / 50%);
     --vitra-glass-bg: hsl(var(--vitra-color-accent-h) 20% 95% / 5%);
+
     color-scheme: dark;
   }
 
@@ -79,6 +81,7 @@
     --vitra-glass-bg: hsl(300deg 100% 100% / 10%);
     --vitra-color-bg-warm: hsl(310deg 25% 95%);
     --vitra-color-bg-cool: hsl(290deg 25% 95%);
+
     color-scheme: light;
   }
 
@@ -104,6 +107,7 @@
     --vitra-glass-bg: hsl(180deg 100% 50% / 5%);
     --vitra-color-bg-warm: hsl(200deg 20% 4%);
     --vitra-color-bg-cool: hsl(220deg 20% 4%);
+
     color-scheme: dark;
   }
 
@@ -129,6 +133,7 @@
     --vitra-glass-bg: hsl(210deg 100% 60% / 5%);
     --vitra-color-bg-warm: hsl(190deg 25% 6%);
     --vitra-color-bg-cool: hsl(220deg 25% 6%);
+
     color-scheme: dark;
   }
 
@@ -154,6 +159,7 @@
     --vitra-glass-bg: hsl(160deg 100% 50% / 5%);
     --vitra-color-bg-warm: hsl(140deg 25% 5%);
     --vitra-color-bg-cool: hsl(170deg 25% 5%);
+
     color-scheme: dark;
   }
 
@@ -173,6 +179,7 @@
     --vitra-shadow-medium: 0 4px 12px rgb(0 0 0 / 40%);
     --vitra-shadow-elevated: 0 10px 32px rgb(0 0 0 / 50%);
     --vitra-glass-bg: hsl(var(--vitra-color-accent-h) 20% 95% / 5%);
+
     color-scheme: dark;
   }
 
@@ -189,6 +196,7 @@
       --vitra-color-text-tertiary: hsl(0deg 0% 0% / 50%);
       --vitra-color-text-inverse: hsl(0deg 0% 100%);
       --vitra-glass-bg: hsl(0deg 0% 100% / 40%);
+
       color-scheme: light;
     }
   }

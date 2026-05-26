@@ -344,7 +344,7 @@
       hsl(var(--vitra-color-accent-h) 100% 70%)
     );
     background-size: 300% 300%;
-    -webkit-background-clip: text;
+    background-clip: text;
     background-clip: text;
     color: transparent;
     animation: vitra-text-shift 6s ease-in-out infinite;
@@ -413,6 +413,7 @@
       opacity: 0;
       transform: scale(0.98);
     }
+
     to {
       opacity: 1;
       transform: scale(1);
@@ -564,6 +565,7 @@
     from {
       clip-path: inset(0 100% 0 0);
     }
+
     to {
       clip-path: inset(0 0 0 0);
     }
@@ -597,7 +599,7 @@
     .vitra-gradient-text {
       background: none !important;
       color: var(--vitra-color-accent) !important;
-      -webkit-background-clip: unset !important;
+      background-clip: unset !important;
       background-clip: unset !important;
     }
 
