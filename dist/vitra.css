@@ -1186,6 +1186,176 @@
   }
 
   /* ============================================
+     PAGE ENTER ANIMATION
+     Fade + scale up on page load — instant premium feel
+     Add .vitra-page-enter to <body> or page wrapper
+     ============================================ */
+
+  @keyframes vitra-page-enter {
+    from {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .vitra-page-enter {
+    animation: vitra-page-enter 0.8s var(--vitra-ease-luxury) both;
+  }
+
+  /* ============================================
+     STAGGER SYSTEM
+     Cascading delay for child elements.
+     Usage: parent gets .vitra-stagger, children get .vitra-stagger-item
+     or use .vitra-stagger-{n} for n*100ms delay
+     ============================================ */
+
+  .vitra-stagger > .vitra-stagger-item:nth-child(1) { animation-delay: 0ms; }
+  .vitra-stagger > .vitra-stagger-item:nth-child(2) { animation-delay: 80ms; }
+  .vitra-stagger > .vitra-stagger-item:nth-child(3) { animation-delay: 160ms; }
+  .vitra-stagger > .vitra-stagger-item:nth-child(4) { animation-delay: 240ms; }
+  .vitra-stagger > .vitra-stagger-item:nth-child(5) { animation-delay: 320ms; }
+  .vitra-stagger > .vitra-stagger-item:nth-child(6) { animation-delay: 400ms; }
+  .vitra-stagger > .vitra-stagger-item:nth-child(7) { animation-delay: 480ms; }
+  .vitra-stagger > .vitra-stagger-item:nth-child(8) { animation-delay: 560ms; }
+  .vitra-stagger > .vitra-stagger-item:nth-child(9) { animation-delay: 640ms; }
+  .vitra-stagger > .vitra-stagger-item:nth-child(10) { animation-delay: 720ms; }
+
+  /* ============================================
+     3D TILT CARD
+     Perspective-based 3D tilt on hover.
+     Pairs with .vitra-card or any block element.
+     ============================================ */
+
+  .vitra-tilt-card {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    transition: transform var(--vitra-duration-normal) var(--vitra-ease-luxury);
+    will-change: transform;
+  }
+
+  .vitra-tilt-card:hover {
+    transform: rotateX(4deg) rotateY(-4deg);
+  }
+
+  .vitra-tilt-card:active {
+    transform: rotateX(2deg) rotateY(-2deg) scale(0.98);
+  }
+
+  /* ============================================
+     AURORA BACKGROUND
+     Multi-layer animated aurora borealis effect.
+     Use as standalone background or inside hero/section.
+     ============================================ */
+
+  @keyframes vitra-aurora-drift {
+    0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    25% { transform: translate(20%, -15%) rotate(5deg) scale(1.05); }
+    50% { transform: translate(-10%, 10%) rotate(-3deg) scale(0.95); }
+    75% { transform: translate(15%, -5%) rotate(2deg) scale(1.02); }
+    100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+  }
+
+  @keyframes vitra-aurora-drift-2 {
+    0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    33% { transform: translate(-15%, 10%) rotate(-4deg) scale(1.03); }
+    66% { transform: translate(10%, -20%) rotate(3deg) scale(0.97); }
+    100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+  }
+
+  @keyframes vitra-aurora-hue {
+    0% { filter: hue-rotate(0deg); }
+    50% { filter: hue-rotate(30deg); }
+    100% { filter: hue-rotate(0deg); }
+  }
+
+  .vitra-aurora-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .vitra-aurora-bg::before,
+  .vitra-aurora-bg::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.15;
+    will-change: transform;
+  }
+
+  .vitra-aurora-bg::before {
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, hsl(var(--vitra-color-accent-h) 100% 70%) 0%, transparent 70%);
+    top: -20%;
+    left: -10%;
+    animation: vitra-aurora-drift 20s ease-in-out infinite;
+  }
+
+  .vitra-aurora-bg::after {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, hsl(calc(var(--vitra-color-accent-h) + 60) 100% 60%) 0%, transparent 70%);
+    bottom: -15%;
+    right: -10%;
+    animation: vitra-aurora-drift-2 16s ease-in-out infinite;
+  }
+
+  .vitra-aurora-layer {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.1;
+    will-change: transform;
+  }
+
+  .vitra-aurora-layer-1 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, hsl(calc(var(--vitra-color-accent-h) - 30) 100% 65%) 0%, transparent 70%);
+    top: 30%;
+    left: 40%;
+    animation: vitra-aurora-drift 24s ease-in-out infinite reverse;
+  }
+
+  .vitra-aurora-layer-2 {
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, hsl(calc(var(--vitra-color-accent-h) + 120) 100% 55%) 0%, transparent 70%);
+    top: 50%;
+    left: 20%;
+    animation: vitra-aurora-drift-2 18s ease-in-out infinite;
+    opacity: 0.07;
+  }
+
+  /* ============================================
+     TEXT REVEAL (clip-path)
+     Animate text in from the left using clip-path.
+     Works on any inline or block text element.
+     ============================================ */
+
+  @keyframes vitra-text-reveal {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  .vitra-text-reveal {
+    animation: vitra-text-reveal 0.8s var(--vitra-ease-luxury) both;
+  }
+
+  /* ============================================
      HIGH CONTRAST SUPPORT
      Accessibility: increase contrast for users who
      prefer stronger visual distinctions
@@ -1268,6 +1438,24 @@
       opacity: 1 !important;
       transform: none !important;
       animation: none !important;
+    }
+
+    /* Cinematic animations */
+    .vitra-tilt-card:hover {
+      transform: none !important;
+    }
+
+    .vitra-aurora-bg::before,
+    .vitra-aurora-bg::after,
+    .vitra-aurora-layer {
+      animation: none !important;
+      opacity: 0.05 !important;
+    }
+
+    .vitra-page-enter,
+    .vitra-text-reveal {
+      animation: none !important;
+      opacity: 1 !important;
     }
   }
 }
