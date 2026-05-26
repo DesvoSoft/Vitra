@@ -2132,6 +2132,15 @@
     .vitra-burger {
       display: flex;
     }
+
+    .vitra-navbar-actions {
+      gap: var(--vitra-space-1);
+    }
+
+    .vitra-navbar-actions .vitra-btn.vitra-btn-sm {
+      padding: var(--vitra-space-1) var(--vitra-space-2);
+      font-size: var(--vitra-font-size-xs);
+    }
   }
 
   /* --- DRAWER --- */
@@ -2298,9 +2307,12 @@
     align-items: center;
     justify-content: center;
 
-    /* Smooth fade-in animation */
+    /* Hidden by default: prevent click interception when invisible */
     opacity: 0;
-    transition: opacity var(--vitra-duration-normal) var(--vitra-ease-out);
+    pointer-events: none;
+    visibility: hidden;
+    transition: opacity var(--vitra-duration-normal) var(--vitra-ease-out),
+                visibility var(--vitra-duration-normal) var(--vitra-ease-out);
 
     /* Prevent background scrolling */
     overflow: hidden;
@@ -2312,6 +2324,8 @@
   .vitra-modal[open],
   .vitra-modal.vitra-modal-open {
     opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
   }
 
   @starting-style {
@@ -2365,6 +2379,7 @@
       margin: 0;
       width: 100%;
       max-width: 100%;
+      max-height: 90dvh;
       border-radius: var(--vitra-radius-lg);
     }
     .vitra-modal-sm .vitra-modal-content,
@@ -2373,6 +2388,7 @@
       width: 100%;
       padding: var(--vitra-space-4);
       height: auto;
+      max-height: 90dvh;
     }
   }
 
@@ -3565,6 +3581,13 @@
       opacity: 0;
       transform: translateY(-10px);
     }
+  }
+
+  /* Right-aligned dropdown menu variant */
+  .vitra-dropdown-menu-end,
+  .vitra-dropdown-menu[popover].vitra-dropdown-menu-end {
+    left: auto;
+    right: 0;
   }
 
   .vitra-dropdown-item {
