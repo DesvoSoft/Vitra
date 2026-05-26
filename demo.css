@@ -184,6 +184,19 @@ body {
   --vitra-border-glow-angle: 0deg;
 }
 
+#cinematic-border-glow.toggle-off {
+  opacity: 0.5;
+  border-color: var(--vitra-color-border-hover);
+}
+
+.vitra-gradient-rotate.toggle-off::before {
+  animation-play-state: paused;
+}
+
+.vitra-gradient-rotate.toggle-off {
+  opacity: 0.4;
+}
+
 /* ============================================
    Theme Studio
    ============================================ */
@@ -617,6 +630,17 @@ pre code {
 
   #particle-demo-area {
     min-height: 200px;
+  }
+
+  .vitra-navbar-actions .vitra-btn.vitra-btn-sm {
+    padding: var(--vitra-space-1) var(--vitra-space-2);
+    font-size: var(--vitra-font-size-xs);
+    white-space: nowrap;
+  }
+
+  .vitra-navbar-actions .vitra-dropdown-menu {
+    right: 0;
+    left: auto;
   }
 }
 

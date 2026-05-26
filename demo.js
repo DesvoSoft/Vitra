@@ -168,6 +168,7 @@
     var borderPreview = document.getElementById('cinematic-border-glow');
     if (borderToggle && borderPreview) {
       borderToggle.addEventListener('change', function () {
+        borderPreview.classList.toggle('toggle-off', !this.checked);
         if (this.checked) {
           borderPreview.classList.add('vitra-border-glow');
         } else {
@@ -434,17 +435,23 @@
     var drawer = document.querySelector('.vitra-drawer');
     var drawerClose = document.querySelector('.vitra-drawer-close');
     var drawerLinks = document.querySelectorAll('.vitra-drawer .vitra-navbar-link');
+    var drawerOverlay = document.querySelector('.vitra-drawer-overlay');
 
     if (!burger || !drawer) return;
 
     function closeDrawer() {
       burger.classList.remove('active');
       drawer.classList.remove('open');
+      if (drawerOverlay) drawerOverlay.classList.remove('open');
+      document.body.style.overflow = '';
     }
 
     burger.addEventListener('click', function () {
+      var opening = !drawer.classList.contains('open');
       burger.classList.toggle('active');
       drawer.classList.toggle('open');
+      if (drawerOverlay) drawerOverlay.classList.toggle('open');
+      document.body.style.overflow = opening ? 'hidden' : '';
     });
 
     if (drawerClose) {
@@ -483,6 +490,12 @@
     if (noiseToggle && noiseOverlay) {
       noiseToggle.addEventListener('change', function () {
         noiseOverlay.style.display = noiseToggle.checked ? '' : 'none';
+        if (noiseToggle.checked) {
+          noiseOverlay.style.setProperty('--vitra-noise-opacity', '0.15');
+          setTimeout(function () {
+            noiseOverlay.style.setProperty('--vitra-noise-opacity', '');
+          }, 600);
+        }
       });
     }
 
@@ -504,9 +517,7 @@
     if (gradRotateToggle) {
       gradRotateToggle.addEventListener('change', function () {
         gradRotateEls.forEach(function (el) {
-          el.style.opacity = gradRotateToggle.checked ? '1' : '0.4';
-          var pseudo = el.querySelector('::before');
-          if (pseudo) pseudo.style.animationPlayState = gradRotateToggle.checked ? 'running' : 'paused';
+          el.classList.toggle('toggle-off', !gradRotateToggle.checked);
         });
       });
     }
