@@ -114,14 +114,17 @@
     0% {
       clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
     }
-    25% {
+    20% {
       clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
     }
-    50% {
+    40% {
       clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
     }
-    75% {
+    60% {
       clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    }
+    80% {
+      clip-path: circle(50%);
     }
     100% {
       clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
@@ -208,7 +211,142 @@
   }
 
   /* ============================================
-     SCROLL REVEAL
+     ANIMATED NOISE OVERLAY
+     Like .vitra-noise-overlay but with pulsing
+     opacity for a living film grain feel.
+     ============================================ */
+
+  @keyframes vitra-noise-pulse {
+    0%, 100% { opacity: var(--vitra-noise-opacity, 0.035); }
+    50% { opacity: calc(var(--vitra-noise-opacity, 0.035) * 1.8); }
+  }
+
+  .vitra-noise-overlay-animated {
+    animation: vitra-noise-pulse 4s ease-in-out infinite;
+  }
+
+  /* ============================================
+     DASHED PROGRESS RING
+     Progress ring with dashed arc appearance.
+     Uses repeating-conic-gradient via a mask
+     to create dash-like segments.
+     ============================================ */
+
+  .vitra-progress-ring-dashed {
+    background: conic-gradient(
+      var(--vitra-color-accent) 0%,
+      var(--vitra-color-accent) var(--vitra-progress-ring-value, 0%),
+      transparent var(--vitra-progress-ring-value, 0%),
+      transparent calc(var(--vitra-progress-ring-value, 0%) + 4%),
+      var(--vitra-color-accent) calc(var(--vitra-progress-ring-value, 0%) + 4%),
+      var(--vitra-color-accent) calc(var(--vitra-progress-ring-value, 0%) + 8%),
+      transparent calc(var(--vitra-progress-ring-value, 0%) + 8%),
+      transparent 100%
+    );
+  }
+
+  /* ============================================
+     DOUBLE GRADIENT ROTATE
+     Two counter-rotating conic-gradient layers
+     for a richer, deeper animated border effect.
+     ============================================ */
+
+  .vitra-gradient-rotate-double::before {
+    animation: vitra-gradient-rotate-spin 4s linear infinite;
+  }
+
+  .vitra-gradient-rotate-double::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border-radius: inherit;
+    background: var(--vitra-color-bg);
+    z-index: -1;
+  }
+
+  .vitra-gradient-rotate-double .vitra-gradient-rotate-layer {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    z-index: -1;
+    background: conic-gradient(
+      from var(--vitra-border-glow-angle, 0deg),
+      transparent 0deg,
+      hsl(calc(var(--vitra-color-accent-h) + 120) 100% 55% / 30%) 60deg,
+      transparent 120deg
+    );
+    animation: vitra-gradient-rotate-spin 6s linear infinite reverse;
+    will-change: transform;
+  }
+
+  /* ============================================
+     CSS RIPPLE EFFECT
+     Material-like ripple on click.
+     Add .vitra-ripple to any element; JS
+     appends a .vitra-ripple-effect child
+     positioned at click coordinates.
+     ============================================ */
+
+  .vitra-ripple {
+    position: relative;
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .vitra-ripple-effect {
+    position: absolute;
+    border-radius: 50%;
+    background: hsl(0deg 0% 100% / 25%);
+    pointer-events: none;
+    transform: scale(0);
+    animation: vitra-ripple-expand 0.6s var(--vitra-ease-out) forwards;
+  }
+
+  @keyframes vitra-ripple-expand {
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+
+  /* ============================================
+     SCROLL REVEAL INTERSECTIONOBSERVER FALLBACK
+     JS reveal adds .vitra-scroll-revealed for
+     browsers without animation-timeline support.
+     Same animation as scroll-timeline variant.
+     ============================================ */
+
+  .vitra-scroll-reveal.vitra-scroll-revealed,
+  .vitra-scroll-reveal-left.vitra-scroll-revealed,
+  .vitra-scroll-reveal-right.vitra-scroll-revealed,
+  .vitra-scroll-reveal-scale.vitra-scroll-revealed {
+    animation: none;
+  }
+
+  .vitra-scroll-reveal.vitra-scroll-revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .vitra-scroll-reveal-left.vitra-scroll-revealed {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .vitra-scroll-reveal-right.vitra-scroll-revealed {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .vitra-scroll-reveal-scale.vitra-scroll-revealed {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* ============================================
+     SCROLL REVEAL (CSS-native)
      Scroll-driven entry animations using
      animation-timeline: view(). Elements fade
      and slide in as they enter the viewport.
@@ -300,10 +438,14 @@
 
   @media (prefers-reduced-motion: reduce) {
     .vitra-noise-overlay,
+    .vitra-noise-overlay-animated,
     .vitra-progress-ring,
+    .vitra-progress-ring-dashed,
     .vitra-progress-ring-indeterminate,
     .vitra-shape-morph,
     .vitra-gradient-rotate::before,
+    .vitra-gradient-rotate-double .vitra-gradient-rotate-layer,
+    .vitra-ripple-effect,
     .vitra-scroll-reveal,
     .vitra-scroll-reveal-left,
     .vitra-scroll-reveal-right,
@@ -312,7 +454,8 @@
       transition: none !important;
     }
 
-    .vitra-noise-overlay {
+    .vitra-noise-overlay,
+    .vitra-noise-overlay-animated {
       opacity: 0.015;
     }
 
@@ -320,10 +463,18 @@
       clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%) !important;
     }
 
+    .vitra-ripple-effect {
+      display: none !important;
+    }
+
     .vitra-scroll-reveal,
     .vitra-scroll-reveal-left,
     .vitra-scroll-reveal-right,
-    .vitra-scroll-reveal-scale {
+    .vitra-scroll-reveal-scale,
+    .vitra-scroll-reveal.vitra-scroll-revealed,
+    .vitra-scroll-reveal-left.vitra-scroll-revealed,
+    .vitra-scroll-reveal-right.vitra-scroll-revealed,
+    .vitra-scroll-reveal-scale.vitra-scroll-revealed {
       opacity: 1 !important;
       transform: none !important;
     }
