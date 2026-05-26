@@ -36,7 +36,7 @@
     --vitra-color-info: hsl(217deg 91% 60%);
 
     /* Premium Color Extensions */
-    --vitra-color-accent-oklch: oklch(0.65 0.25 var(--vitra-color-accent-h));
+    --vitra-color-accent-oklch: oklch(65% 0.25 var(--vitra-color-accent-h));
     --vitra-color-bg-warm: hsl(calc(var(--vitra-color-accent-h) + 30) 20% 6%);
     --vitra-color-bg-cool: hsl(calc(var(--vitra-color-accent-h) - 30) 20% 6%);
     --vitra-border-glow-angle: 0deg;
@@ -90,7 +90,7 @@
     --vitra-shadow-glow-strong: 0 0 40px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 50%);
 
     /* --- Typography (Premium Stack) --- */
-    --vitra-font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --vitra-font-family: 'Inter', -apple-system, blinkmacsystemfont, sans-serif;
     --vitra-font-heading: 'Outfit', sans-serif;
     --vitra-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
     --vitra-font-size-xs: 0.75rem;   /* 12px */
@@ -110,7 +110,6 @@
     --vitra-h4-size: clamp(1.125rem, 2.5vw, var(--vitra-font-size-xl));
     --vitra-h5-size: var(--vitra-font-size-lg);
     --vitra-h6-size: var(--vitra-font-size-base);
-
     --vitra-font-weight-normal: 400;
     --vitra-font-weight-medium: 500;
     --vitra-font-weight-semibold: 600;
@@ -296,6 +295,7 @@
     --vitra-shadow-medium: 0 4px 6px -1px rgb(0 0 0 / 10%);
     --vitra-shadow-elevated: 0 10px 15px -3px rgb(0 0 0 / 10%);
     --vitra-glass-bg: hsl(0deg 0% 100% / 40%);
+
     color-scheme: light;
   }
 
@@ -316,6 +316,7 @@
     --vitra-shadow-medium: 0 4px 12px rgb(0 0 0 / 40%);
     --vitra-shadow-elevated: 0 10px 32px rgb(0 0 0 / 50%);
     --vitra-glass-bg: hsl(var(--vitra-color-accent-h) 20% 95% / 5%);
+
     color-scheme: dark;
   }
 
@@ -341,6 +342,7 @@
     --vitra-glass-bg: hsl(300deg 100% 100% / 10%);
     --vitra-color-bg-warm: hsl(310deg 25% 95%);
     --vitra-color-bg-cool: hsl(290deg 25% 95%);
+
     color-scheme: light;
   }
 
@@ -366,6 +368,7 @@
     --vitra-glass-bg: hsl(180deg 100% 50% / 5%);
     --vitra-color-bg-warm: hsl(200deg 20% 4%);
     --vitra-color-bg-cool: hsl(220deg 20% 4%);
+
     color-scheme: dark;
   }
 
@@ -391,6 +394,7 @@
     --vitra-glass-bg: hsl(210deg 100% 60% / 5%);
     --vitra-color-bg-warm: hsl(190deg 25% 6%);
     --vitra-color-bg-cool: hsl(220deg 25% 6%);
+
     color-scheme: dark;
   }
 
@@ -416,6 +420,7 @@
     --vitra-glass-bg: hsl(160deg 100% 50% / 5%);
     --vitra-color-bg-warm: hsl(140deg 25% 5%);
     --vitra-color-bg-cool: hsl(170deg 25% 5%);
+
     color-scheme: dark;
   }
 
@@ -435,6 +440,7 @@
     --vitra-shadow-medium: 0 4px 12px rgb(0 0 0 / 40%);
     --vitra-shadow-elevated: 0 10px 32px rgb(0 0 0 / 50%);
     --vitra-glass-bg: hsl(var(--vitra-color-accent-h) 20% 95% / 5%);
+
     color-scheme: dark;
   }
 
@@ -451,6 +457,7 @@
       --vitra-color-text-tertiary: hsl(0deg 0% 0% / 50%);
       --vitra-color-text-inverse: hsl(0deg 0% 100%);
       --vitra-glass-bg: hsl(0deg 0% 100% / 40%);
+
       color-scheme: light;
     }
   }
@@ -502,6 +509,7 @@
   }
 
   /* Enhanced glass effect using backdrop-filter */
+
   /* Glass Variants - with webkit prefix for Safari < 15 */
   @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
     .vitra-glass {
@@ -527,7 +535,7 @@
         hsl(0deg 0% 100% / 10%)
       );
       mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
+      mask-composite: xor;
       mask-composite: exclude;
       pointer-events: none;
     }
@@ -1130,7 +1138,7 @@
       hsl(var(--vitra-color-accent-h) 100% 70%)
     );
     background-size: 300% 300%;
-    -webkit-background-clip: text;
+    background-clip: text;
     background-clip: text;
     color: transparent;
     animation: vitra-text-shift 6s ease-in-out infinite;
@@ -1199,6 +1207,7 @@
       opacity: 0;
       transform: scale(0.98);
     }
+
     to {
       opacity: 1;
       transform: scale(1);
@@ -1350,6 +1359,7 @@
     from {
       clip-path: inset(0 100% 0 0);
     }
+
     to {
       clip-path: inset(0 0 0 0);
     }
@@ -1383,7 +1393,7 @@
     .vitra-gradient-text {
       background: none !important;
       color: var(--vitra-color-accent) !important;
-      -webkit-background-clip: unset !important;
+      background-clip: unset !important;
       background-clip: unset !important;
     }
 
@@ -2320,7 +2330,7 @@
     transform: translateY(-7px) rotate(-48deg) scaleX(1.1);
   }
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     .vitra-navbar-links {
       display: none;
     }
@@ -2579,6 +2589,7 @@
       align-items: flex-start;
       overflow-y: auto;
     }
+
     .vitra-modal-content {
       margin: 0;
       width: 100%;
@@ -2586,6 +2597,7 @@
       max-height: 90dvh;
       border-radius: var(--vitra-radius-lg);
     }
+
     .vitra-modal-sm .vitra-modal-content,
     .vitra-modal-lg .vitra-modal-content,
     .vitra-modal-full .vitra-modal-content {
@@ -3004,21 +3016,7 @@
     transition: opacity var(--vitra-duration-normal) var(--vitra-ease-luxury),
                 visibility var(--vitra-duration-normal) var(--vitra-ease-luxury),
                  transform var(--vitra-duration-normal) var(--vitra-ease-luxury);
-    position: relative;
-    border-radius: var(--vitra-radius-lg);
-    background: var(--vitra-color-surface);
-    border: 1px solid var(--vitra-color-border);
     will-change: transform;
-    border-radius: var(--vitra-radius-md);
-    text-align: center;
-
-    /* Cursor */
-    cursor: pointer;
-
-    /* Transition */
-    transition: background-color var(--vitra-duration-fast) var(--vitra-ease-default),
-                color var(--vitra-duration-fast) var(--vitra-ease-default),
-                border-color var(--vitra-duration-fast) var(--vitra-ease-default);
   }
 
   .vitra-slider-scroll-item:hover {
@@ -4739,18 +4737,23 @@
     0% {
       clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
     }
+
     20% {
       clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
     }
+
     40% {
       clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
     }
+
     60% {
       clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
     }
+
     80% {
       clip-path: circle(50%);
     }
+
     100% {
       clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
     }
@@ -4989,6 +4992,7 @@
       opacity: 0;
       transform: translateY(40px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -5000,6 +5004,7 @@
       opacity: 0;
       transform: translateX(-40px);
     }
+
     to {
       opacity: 1;
       transform: translateX(0);
@@ -5011,6 +5016,7 @@
       opacity: 0;
       transform: translateX(40px);
     }
+
     to {
       opacity: 1;
       transform: translateX(0);
@@ -5022,6 +5028,7 @@
       opacity: 0;
       transform: scale(0.8);
     }
+
     to {
       opacity: 1;
       transform: scale(1);
