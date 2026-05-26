@@ -515,21 +515,23 @@
     height: 2px;
     background: var(--vitra-color-text-primary, #fff);
     border-radius: 2px;
-    transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
-                opacity 0.2s ease;
+    transition: transform 0.35s var(--vitra-ease-luxury),
+                opacity 0.2s var(--vitra-ease-luxury);
     transform-origin: center;
+    will-change: transform;
   }
 
   .vitra-burger.active .vitra-burger-line:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
+    transform: translateY(7px) rotate(48deg) scaleX(1.1);
   }
 
   .vitra-burger.active .vitra-burger-line:nth-child(2) {
     opacity: 0;
+    transform: scaleX(0);
   }
 
   .vitra-burger.active .vitra-burger-line:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
+    transform: translateY(-7px) rotate(-48deg) scaleX(1.1);
   }
 
   @media (max-width: 768px) {
@@ -575,7 +577,9 @@
     padding: var(--vitra-space-4);
 
     /* Smooth slide animation */
-    transition: right var(--vitra-duration-normal) var(--vitra-ease-out);
+    transition: right var(--vitra-duration-normal) var(--vitra-ease-out),
+                display var(--vitra-duration-normal) var(--vitra-ease-out) allow-discrete,
+                overlay var(--vitra-duration-normal) var(--vitra-ease-out) allow-discrete;
 
     /* Overflow scroll */
     overflow-y: auto;
@@ -584,6 +588,12 @@
   /* Drawer open state */
   .vitra-drawer.open {
     right: 0;
+  }
+
+  @starting-style {
+    .vitra-drawer.open {
+      right: -100%;
+    }
   }
 
   /* Drawer glass variant */
@@ -1216,6 +1226,25 @@
     transform: translateY(0);
   }
 
+  /* Tooltip with scale entrance */
+  .vitra-tooltip-scale::before {
+    transform: translateY(5px) scale(0.92);
+    transform-origin: bottom center;
+  }
+
+  .vitra-tooltip-scale:hover::before {
+    transform: translateY(0) scale(1);
+  }
+
+  .vitra-tooltip-scale[data-position="bottom"]::before {
+    transform: translateY(-5px) scale(0.92);
+    transform-origin: top center;
+  }
+
+  .vitra-tooltip-scale[data-position="bottom"]:hover::before {
+    transform: translateY(0) scale(1);
+  }
+
   /* --- TOOLTIP ARROW --- */
 
   /* Arrow pseudo-element */
@@ -1682,13 +1711,21 @@
 
     /* Animation */
     opacity: 0;
-    transition: opacity var(--vitra-duration-normal) var(--vitra-ease-default);
+    transition: opacity var(--vitra-duration-normal) var(--vitra-ease-default),
+                display var(--vitra-duration-normal) var(--vitra-ease-default) allow-discrete;
   }
 
   .vitra-tab-panel.vitra-active,
   .vitra-tabs-panel.vitra-active {
     display: block;
     opacity: 1;
+  }
+
+  @starting-style {
+    .vitra-tab-panel.vitra-active,
+    .vitra-tabs-panel.vitra-active {
+      opacity: 0;
+    }
   }
 
   /* --- TABS SIZE VARIANTS --- */
@@ -2099,6 +2136,17 @@
   @keyframes vitra-skeleton-shimmer {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
+  }
+
+  /* Pulse skeleton variant — gentle opacity breathing */
+  .vitra-skeleton-pulse {
+    animation: vitra-skeleton-pulse 2s ease-in-out infinite;
+    background: var(--vitra-color-surface);
+  }
+
+  @keyframes vitra-skeleton-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
   }
 
   /* Text line skeleton */
