@@ -103,6 +103,7 @@
     transform: translateY(20px) scale(0.98);
     animation-fill-mode: both;
     transition: opacity 0.6s var(--vitra-ease-luxury), transform 0.6s var(--vitra-ease-luxury);
+    will-change: transform, opacity;
   }
 
   .vitra-revealed {
@@ -151,6 +152,7 @@
     animation-name: vitra-blur-in;
     animation-duration: var(--vitra-duration-slow, 500ms);
     animation-timing-function: var(--vitra-ease-luxury);
+    will-change: filter, opacity, transform;
   }
 
   /* ============================================
@@ -419,6 +421,7 @@
 
   .vitra-page-enter {
     animation: vitra-page-enter 0.8s var(--vitra-ease-luxury) both;
+    will-change: transform, opacity;
   }
 
   /* ============================================
@@ -568,6 +571,7 @@
 
   .vitra-text-reveal {
     animation: vitra-text-reveal 0.8s var(--vitra-ease-luxury) both;
+    will-change: clip-path;
   }
 
   /* ============================================

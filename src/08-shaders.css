@@ -223,6 +223,7 @@
 
   .vitra-noise-overlay-animated {
     animation: vitra-noise-pulse 4s ease-in-out infinite;
+    will-change: opacity;
   }
 
   /* ============================================
@@ -278,6 +279,10 @@
       transparent 120deg
     );
     animation: vitra-gradient-rotate-spin 6s linear infinite reverse;
+    will-change: transform;
+  }
+
+  .vitra-gradient-rotate-double::before {
     will-change: transform;
   }
 
@@ -402,6 +407,7 @@
     animation: vitra-scroll-fade-up 1s var(--vitra-ease-luxury) both;
     animation-timeline: view();
     animation-range: entry 0% entry 30%;
+    will-change: transform, opacity;
   }
 
   .vitra-scroll-reveal-left {
@@ -411,6 +417,7 @@
     animation-fill-mode: both;
     animation-timeline: view();
     animation-range: entry 0% entry 30%;
+    will-change: transform, opacity;
   }
 
   .vitra-scroll-reveal-right {
@@ -420,6 +427,7 @@
     animation-fill-mode: both;
     animation-timeline: view();
     animation-range: entry 0% entry 30%;
+    will-change: transform, opacity;
   }
 
   .vitra-scroll-reveal-scale {
@@ -429,6 +437,7 @@
     animation-fill-mode: both;
     animation-timeline: view();
     animation-range: entry 0% entry 30%;
+    will-change: transform, opacity;
   }
 
   /* ============================================
