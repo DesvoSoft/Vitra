@@ -164,8 +164,8 @@
     margin: 0;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    transition: background-color var(--vitra-duration-normal) var(--vitra-ease-luxury),
-                color var(--vitra-duration-normal) var(--vitra-ease-luxury);
+    transition: background-color 200ms var(--vitra-ease-out),
+                color 200ms var(--vitra-ease-out);
   }
 
   h1 {
@@ -2355,7 +2355,7 @@
     margin: var(--vitra-space-4);
     max-width: 90vw;
     width: 600px;
-    max-height: 85vh;
+    max-height: 90dvh;
     overflow-y: auto;
     transform: translateY(20px) scale(0.98);
     transition: transform var(--vitra-duration-normal) var(--vitra-ease-luxury),
@@ -2478,6 +2478,7 @@
   /* Large modal */
   .vitra-modal-lg .vitra-modal-content {
     width: 800px;
+    max-width: calc(100vw - var(--vitra-space-4) * 2);
     padding: var(--vitra-space-5);
   }
 

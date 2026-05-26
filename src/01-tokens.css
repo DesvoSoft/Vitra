@@ -163,8 +163,8 @@
     margin: 0;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    transition: background-color var(--vitra-duration-normal) var(--vitra-ease-luxury),
-                color var(--vitra-duration-normal) var(--vitra-ease-luxury);
+    transition: background-color 200ms var(--vitra-ease-out),
+                color 200ms var(--vitra-ease-out);
   }
 
   h1 {
