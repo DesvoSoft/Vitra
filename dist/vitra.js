@@ -280,12 +280,28 @@ var Vitra = (() => {
             const {
               selector = ".vitra-reveal",
               threshold = 0.1,
-              stagger = 100
+              stagger = 100,
+              scrollReveal = false
             } = options;
+            let elements = [];
+            if (scrollReveal) {
+              const scrollSelectors = ".vitra-scroll-reveal, .vitra-scroll-reveal-left, .vitra-scroll-reveal-right, .vitra-scroll-reveal-scale";
+              const scrollElements = document.querySelectorAll(scrollSelectors);
+              scrollElements.forEach((el) => {
+                el.classList.add("vitra-scroll-reveal-observer");
+              });
+              elements = [...document.querySelectorAll(selector)];
+              elements.push(...scrollElements);
+            } else {
+              elements = [...document.querySelectorAll(selector)];
+            }
             if (_prefersReducedMotion()) {
-              const elements2 = document.querySelectorAll(selector);
-              elements2.forEach((el) => {
-                el.classList.add("vitra-revealed");
+              elements.forEach((el) => {
+                if (el.classList.contains("vitra-scroll-reveal-observer")) {
+                  el.classList.add("vitra-scroll-revealed");
+                } else {
+                  el.classList.add("vitra-revealed");
+                }
                 el.style.opacity = "1";
                 el.style.transform = "none";
               });
@@ -299,7 +315,11 @@ var Vitra = (() => {
               entries.forEach((entry, index) => {
                 if (entry.isIntersecting) {
                   setTimeout(() => {
-                    entry.target.classList.add("vitra-revealed");
+                    if (entry.target.classList.contains("vitra-scroll-reveal-observer")) {
+                      entry.target.classList.add("vitra-scroll-revealed");
+                    } else {
+                      entry.target.classList.add("vitra-revealed");
+                    }
                     entry.target.style.opacity = "1";
                     entry.target.style.transform = "none";
                   }, index * stagger);
@@ -308,11 +328,23 @@ var Vitra = (() => {
                 }
               });
             }, { threshold });
-            const elements = document.querySelectorAll(selector);
             elements.forEach((el) => {
+              if (el.classList.contains("vitra-scroll-reveal-observer")) {
+                if (el.classList.contains("vitra-scroll-reveal-left")) {
+                  el.style.transform = "translateX(-40px)";
+                } else if (el.classList.contains("vitra-scroll-reveal-right")) {
+                  el.style.transform = "translateX(40px)";
+                } else if (el.classList.contains("vitra-scroll-reveal-scale")) {
+                  el.style.transform = "scale(0.8)";
+                } else {
+                  el.style.transform = "translateY(40px)";
+                }
+                el.style.transition = "opacity 1s cubic-bezier(0.23, 1, 0.32, 1), transform 1s cubic-bezier(0.23, 1, 0.32, 1)";
+              } else {
+                el.style.transform = "translateY(20px)";
+                el.style.transition = "opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1), transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)";
+              }
               el.style.opacity = "0";
-              el.style.transform = "translateY(20px)";
-              el.style.transition = "opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1), transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)";
               _observer.observe(el);
             });
           };
@@ -321,9 +353,23 @@ var Vitra = (() => {
           };
           const reset = () => {
             _revealedElements.forEach((el) => {
-              el.classList.remove("vitra-revealed");
-              el.style.opacity = "0";
-              el.style.transform = "translateY(20px)";
+              if (el.classList.contains("vitra-scroll-reveal-observer")) {
+                el.classList.remove("vitra-scroll-revealed");
+                el.style.opacity = "0";
+                if (el.classList.contains("vitra-scroll-reveal-left")) {
+                  el.style.transform = "translateX(-40px)";
+                } else if (el.classList.contains("vitra-scroll-reveal-right")) {
+                  el.style.transform = "translateX(40px)";
+                } else if (el.classList.contains("vitra-scroll-reveal-scale")) {
+                  el.style.transform = "scale(0.8)";
+                } else {
+                  el.style.transform = "translateY(40px)";
+                }
+              } else {
+                el.classList.remove("vitra-revealed");
+                el.style.opacity = "0";
+                el.style.transform = "translateY(20px)";
+              }
             });
             _revealedElements = [];
           };
@@ -336,7 +382,12 @@ var Vitra = (() => {
               el.style.opacity = "";
               el.style.transform = "";
               el.style.transition = "";
-              el.classList.remove("vitra-revealed");
+              if (el.classList.contains("vitra-scroll-reveal-observer")) {
+                el.classList.remove("vitra-scroll-revealed");
+                el.classList.remove("vitra-scroll-reveal-observer");
+              } else {
+                el.classList.remove("vitra-revealed");
+              }
             });
             _revealedElements = [];
           };
@@ -346,6 +397,31 @@ var Vitra = (() => {
             reset,
             destroy
           };
+        })();
+        const ripple = /* @__PURE__ */ (() => {
+          const init = () => {
+            document.addEventListener("click", (e) => {
+              const target = e.target.closest(".vitra-ripple");
+              if (!target) return;
+              const rect = target.getBoundingClientRect();
+              const size = Math.max(rect.width, rect.height);
+              const x = e.clientX - rect.left - size / 2;
+              const y = e.clientY - rect.top - size / 2;
+              const span = document.createElement("span");
+              span.className = "vitra-ripple-effect";
+              span.style.width = `${size}px`;
+              span.style.height = `${size}px`;
+              span.style.left = `${x}px`;
+              span.style.top = `${y}px`;
+              target.appendChild(span);
+              span.addEventListener("animationend", () => {
+                span.remove();
+              });
+            });
+          };
+          const destroy = () => {
+          };
+          return { init, destroy };
         })();
         const modal = /* @__PURE__ */ (() => {
           let _activeModal = null;
@@ -746,6 +822,9 @@ var Vitra = (() => {
               const revealOptions = typeof config.reveal === "object" ? config.reveal : {};
               Vitra.reveal.init(revealOptions);
             }
+            if (config.ripple !== false) {
+              Vitra.ripple.init();
+            }
             if (config.tooltip !== false) {
               Vitra.tooltip.init();
             }
@@ -778,6 +857,7 @@ var Vitra = (() => {
         }
         const destroyAll = () => {
           reveal.destroy();
+          ripple.destroy();
           modal.destroy();
           tooltip.destroy();
           dropdown.destroy();
@@ -788,6 +868,7 @@ var Vitra = (() => {
           theme,
           particles,
           reveal,
+          ripple,
           modal,
           tooltip,
           toast,
