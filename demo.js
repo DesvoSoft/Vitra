@@ -585,4 +585,14 @@
       });
     });
   }
+
+  // ==================== Hero Particles ====================
+  window.spawnHeroParticles = function (btn) {
+    Vitra.particles.destroy('.demo-hero');
+    var spawned = Vitra.particles.spawn(15, { container: '.demo-hero' });
+    if (spawned > 0 && btn) {
+      btn.textContent = 'Particles!';
+      setTimeout(function () { btn.textContent = 'Spawn Particles'; }, 1800);
+    }
+  };
 })();
