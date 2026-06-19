@@ -26,6 +26,7 @@
     initNavigation();
     initShaderToggles();
     initProgressRing();
+    initQuickStartCopy();
 
     updateParticleInfo();
   }
@@ -566,4 +567,22 @@
       }, 1300);
     });
   };
+
+  // ==================== Quick Start Copy ====================
+  function initQuickStartCopy() {
+    var copyBtns = document.querySelectorAll('.demo-qs-copy');
+    copyBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var wrap = this.closest('.demo-qs-code-wrap');
+        var codePre = wrap ? wrap.querySelector('.demo-qs-code') : null;
+        var text = codePre ? codePre.getAttribute('data-copy') : '';
+        if (!text || !navigator.clipboard) return;
+        var self = this;
+        navigator.clipboard.writeText(text).then(function () {
+          self.textContent = 'Copied!';
+          setTimeout(function () { self.textContent = 'Copy'; }, 1500);
+        });
+      });
+    });
+  }
 })();
