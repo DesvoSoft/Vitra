@@ -427,7 +427,7 @@ body {
   background: none;
   border: none;
   cursor: pointer;
-  color: inherit;
+  color: var(--vitra-color-text-primary);
   font: inherit;
   padding: 0;
 }
@@ -443,9 +443,32 @@ body {
 
 .demo-nav-dropdown-menu {
   min-width: 180px;
+  /* ensure contrast on all themes */
+  background: var(--vitra-color-bg);
+  border-color: var(--vitra-color-border);
+  color: var(--vitra-color-text-primary);
+}
+
+.demo-nav-dropdown-menu .vitra-dropdown-item {
+  color: var(--vitra-color-text-primary);
+}
+
+.demo-nav-dropdown-menu .vitra-dropdown-item:hover {
+  background: var(--vitra-color-surface-hover);
+  color: var(--vitra-color-text-primary);
 }
 
 /* Mobile drawer sub-links */
+.demo-drawer-group-label {
+  font-size: var(--vitra-font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--vitra-color-text-tertiary);
+  padding: var(--vitra-space-3) 0 var(--vitra-space-1);
+  display: block;
+}
+
 .demo-drawer-subnav {
   display: flex;
   flex-direction: column;

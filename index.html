@@ -27,9 +27,26 @@
       </div>
       <div class="vitra-navbar-links">
         <a href="#quick-start" class="vitra-navbar-link">Get Started</a>
-        <a href="#cinematic" class="vitra-navbar-link">Cinematic</a>
-        <a href="#themes" class="vitra-navbar-link">Themes</a>
-        <a href="#modern-css" class="vitra-navbar-link">Modern CSS</a>
+
+        <!-- Features dropdown -->
+        <div class="vitra-dropdown demo-nav-dropdown">
+          <button class="vitra-navbar-link demo-nav-dropdown-btn" data-vitra-dropdown-toggle>
+            Features
+            <svg class="demo-nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="vitra-dropdown-menu demo-nav-dropdown-menu">
+            <a href="#cinematic" class="vitra-dropdown-item">Cinematic</a>
+            <a href="#themes" class="vitra-dropdown-item">Themes</a>
+            <a href="#modern-css" class="vitra-dropdown-item">Modern CSS</a>
+            <a href="#shaders" class="vitra-dropdown-item">Shaders</a>
+            <a href="#tokens" class="vitra-dropdown-item">Tokens</a>
+            <a href="#glass" class="vitra-dropdown-item">Glass</a>
+            <a href="#particles" class="vitra-dropdown-item">Particles</a>
+            <a href="#motion" class="vitra-dropdown-item">Motion</a>
+          </div>
+        </div>
+
+        <!-- Components dropdown -->
         <div class="vitra-dropdown demo-nav-dropdown">
           <button class="vitra-navbar-link demo-nav-dropdown-btn" data-vitra-dropdown-toggle>
             Components
@@ -51,11 +68,6 @@
             <a href="#comp-typography" class="vitra-dropdown-item">Typography</a>
           </div>
         </div>
-        <a href="#particles" class="vitra-navbar-link">Particles</a>
-        <a href="#shaders" class="vitra-navbar-link">Shaders</a>
-        <a href="#tokens" class="vitra-navbar-link">Tokens</a>
-        <a href="#glass" class="vitra-navbar-link">Glass</a>
-        <a href="#motion" class="vitra-navbar-link">Motion</a>
       </div>
       <div class="vitra-navbar-actions">
         <div class="vitra-dropdown">
@@ -92,11 +104,20 @@
     <div class="vitra-drawer-body">
       <nav class="vitra-flex vitra-flex-col vitra-gap-2">
         <a href="#quick-start" class="vitra-navbar-link">Get Started</a>
-        <a href="#cinematic" class="vitra-navbar-link">Cinematic</a>
-        <a href="#themes" class="vitra-navbar-link">Themes</a>
-        <a href="#modern-css" class="vitra-navbar-link">Modern CSS</a>
-        <a href="#components" class="vitra-navbar-link">Components</a>
+        <span class="demo-drawer-group-label">Features</span>
         <div class="demo-drawer-subnav">
+          <a href="#cinematic" class="vitra-navbar-link demo-drawer-sublink">↳ Cinematic</a>
+          <a href="#themes" class="vitra-navbar-link demo-drawer-sublink">↳ Themes</a>
+          <a href="#modern-css" class="vitra-navbar-link demo-drawer-sublink">↳ Modern CSS</a>
+          <a href="#shaders" class="vitra-navbar-link demo-drawer-sublink">↳ Shaders</a>
+          <a href="#tokens" class="vitra-navbar-link demo-drawer-sublink">↳ Tokens</a>
+          <a href="#glass" class="vitra-navbar-link demo-drawer-sublink">↳ Glass</a>
+          <a href="#particles" class="vitra-navbar-link demo-drawer-sublink">↳ Particles</a>
+          <a href="#motion" class="vitra-navbar-link demo-drawer-sublink">↳ Motion</a>
+        </div>
+        <span class="demo-drawer-group-label">Components</span>
+        <div class="demo-drawer-subnav">
+          <a href="#components" class="vitra-navbar-link demo-drawer-sublink">↳ All</a>
           <a href="#comp-buttons" class="vitra-navbar-link demo-drawer-sublink">↳ Buttons</a>
           <a href="#comp-cards" class="vitra-navbar-link demo-drawer-sublink">↳ Cards</a>
           <a href="#comp-forms" class="vitra-navbar-link demo-drawer-sublink">↳ Forms</a>
@@ -109,11 +130,6 @@
           <a href="#comp-avatars" class="vitra-navbar-link demo-drawer-sublink">↳ Avatars</a>
           <a href="#comp-typography" class="vitra-navbar-link demo-drawer-sublink">↳ Typography</a>
         </div>
-        <a href="#particles" class="vitra-navbar-link">Particles</a>
-        <a href="#shaders" class="vitra-navbar-link">Shaders</a>
-        <a href="#tokens" class="vitra-navbar-link">Tokens</a>
-        <a href="#glass" class="vitra-navbar-link">Glass</a>
-        <a href="#motion" class="vitra-navbar-link">Motion</a>
       </nav>
     </div>
   </aside>
