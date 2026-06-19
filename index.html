@@ -25,6 +25,7 @@
         <span class="vitra-text-gradient">Vitra CSS</span>
       </div>
       <div class="vitra-navbar-links">
+        <a href="#quick-start" class="vitra-navbar-link">Get Started</a>
         <a href="#cinematic" class="vitra-navbar-link">Cinematic</a>
         <a href="#themes" class="vitra-navbar-link">Themes</a>
         <a href="#modern-css" class="vitra-navbar-link">Modern CSS</a>
@@ -66,6 +67,7 @@
     </div>
     <div class="vitra-drawer-body">
       <nav class="vitra-flex vitra-flex-col vitra-gap-2">
+        <a href="#quick-start" class="vitra-navbar-link">Get Started</a>
         <a href="#cinematic" class="vitra-navbar-link">Cinematic</a>
         <a href="#themes" class="vitra-navbar-link">Themes</a>
         <a href="#modern-css" class="vitra-navbar-link">Modern CSS</a>
@@ -103,6 +105,67 @@
         <button class="vitra-btn vitra-btn-ghost vitra-btn-lg" onclick="Vitra.particles.spawn(15, {container: '.demo-hero'})">
           Spawn Particles
         </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       QUICK START
+       ============================================================ -->
+  <section id="quick-start" class="demo-section vitra-reveal">
+    <div class="vitra-container">
+      <span class="vitra-badge vitra-badge-primary demo-qs-eyebrow">Get Started in 30 seconds</span>
+      <h2 class="demo-section-title vitra-mt-4">Drop in. No build step.</h2>
+      <p class="demo-section-desc vitra-text-secondary">
+        Vitra CSS is a zero-dependency glassmorphism framework. Paste two lines into your HTML and you're done — CSS handles the effects, JS adds interactivity.
+      </p>
+
+      <div class="demo-qs-block">
+        <div class="demo-qs-label">1. Add the stylesheet</div>
+        <div class="demo-qs-code-wrap">
+          <pre class="demo-qs-code" data-copy='<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.6.0/dist/vitra.min.css">'><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.6.0/dist/vitra.min.css"&gt;</code></pre>
+        </div>
+      </div>
+
+      <div class="demo-qs-block">
+        <div class="demo-qs-label">2. Add the script (optional — for modals, tooltips, particles)</div>
+        <div class="demo-qs-code-wrap">
+          <pre class="demo-qs-code" data-copy='<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.6.0/dist/vitra.min.js"></script>'><code>&lt;script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.6.0/dist/vitra.min.js"&gt;&lt;/script&gt;</code></pre>
+        </div>
+      </div>
+
+      <div class="demo-qs-block">
+        <div class="demo-qs-label">3. Use a component</div>
+        <div class="demo-qs-code-wrap">
+          <pre class="demo-qs-code" data-copy='<div class="vitra-card vitra-glass">Hello, Vitra!</div>'><code>&lt;div class="vitra-card vitra-glass"&gt;Hello, Vitra!&lt;/div&gt;</code></pre>
+        </div>
+      </div>
+
+      <div class="demo-qs-block">
+        <div class="demo-qs-label">That's it. Full example:</div>
+        <div class="demo-qs-code-wrap">
+          <pre class="demo-qs-code" data-copy='<!DOCTYPE html>
+<html data-theme="auto">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.6.0/dist/vitra.min.css">
+</head>
+<body>
+  <div class="vitra-card vitra-glass">Hello, Vitra!</div>
+  <script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.6.0/dist/vitra.min.js"></script>
+</body>
+</html>'><code>&lt;!DOCTYPE html&gt;
+&lt;html data-theme="auto"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.6.0/dist/vitra.min.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class="vitra-card vitra-glass"&gt;Hello, Vitra!&lt;/div&gt;
+  &lt;script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.6.0/dist/vitra.min.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+        </div>
       </div>
     </div>
   </section>
@@ -970,6 +1033,7 @@
         <div class="footer-links">
           <h4>Resources</h4>
           <ul>
+            <li><a href="#quick-start">Quick Start</a></li>
             <li><a href="docs/integration.md">Integration</a></li>
             <li><a href="docs/themes.md">Themes Guide</a></li>
             <li><a href="https://github.com/DesvoSoft/Vitra">GitHub</a></li>
