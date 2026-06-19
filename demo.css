@@ -412,6 +412,55 @@ body {
 }
 
 /* ============================================
+   Navbar Components Dropdown
+   ============================================ */
+
+.demo-nav-dropdown {
+  display: flex;
+  align-items: center;
+}
+
+.demo-nav-dropdown-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--vitra-space-1);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  padding: 0;
+}
+
+.demo-nav-chevron {
+  transition: transform 0.2s var(--vitra-ease-out);
+  opacity: 0.6;
+}
+
+.demo-nav-dropdown.open .demo-nav-chevron {
+  transform: rotate(180deg);
+}
+
+.demo-nav-dropdown-menu {
+  min-width: 180px;
+}
+
+/* Mobile drawer sub-links */
+.demo-drawer-subnav {
+  display: flex;
+  flex-direction: column;
+  padding-left: var(--vitra-space-4);
+  margin-bottom: var(--vitra-space-2);
+}
+
+.demo-drawer-sublink {
+  font-size: var(--vitra-font-size-sm) !important;
+  opacity: 0.75;
+  padding-top: 0.15rem;
+  padding-bottom: 0.15rem;
+}
+
+/* ============================================
    Quick Start
    ============================================ */
 

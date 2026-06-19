@@ -14,6 +14,7 @@
   <style>
     :root { scroll-behavior: smooth; }
     section[id] { scroll-margin-top: 80px; }
+    div[id^="comp-"] { scroll-margin-top: 100px; }
     body { overflow-x: hidden; }
   </style>
 </head>
@@ -29,7 +30,27 @@
         <a href="#cinematic" class="vitra-navbar-link">Cinematic</a>
         <a href="#themes" class="vitra-navbar-link">Themes</a>
         <a href="#modern-css" class="vitra-navbar-link">Modern CSS</a>
-        <a href="#components" class="vitra-navbar-link">Components</a>
+        <div class="vitra-dropdown demo-nav-dropdown">
+          <button class="vitra-navbar-link demo-nav-dropdown-btn" data-vitra-dropdown-toggle>
+            Components
+            <svg class="demo-nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="vitra-dropdown-menu demo-nav-dropdown-menu">
+            <a href="#components" class="vitra-dropdown-item">All Components</a>
+            <div class="vitra-dropdown-divider"></div>
+            <a href="#comp-buttons" class="vitra-dropdown-item">Buttons</a>
+            <a href="#comp-cards" class="vitra-dropdown-item">Cards</a>
+            <a href="#comp-forms" class="vitra-dropdown-item">Forms</a>
+            <a href="#comp-tabs" class="vitra-dropdown-item">Tabs</a>
+            <a href="#comp-modals" class="vitra-dropdown-item">Modals</a>
+            <a href="#comp-tooltips" class="vitra-dropdown-item">Tooltips</a>
+            <a href="#comp-toasts" class="vitra-dropdown-item">Toasts</a>
+            <a href="#comp-progress" class="vitra-dropdown-item">Progress</a>
+            <a href="#comp-badges" class="vitra-dropdown-item">Badges</a>
+            <a href="#comp-avatars" class="vitra-dropdown-item">Avatars</a>
+            <a href="#comp-typography" class="vitra-dropdown-item">Typography</a>
+          </div>
+        </div>
         <a href="#particles" class="vitra-navbar-link">Particles</a>
         <a href="#shaders" class="vitra-navbar-link">Shaders</a>
         <a href="#tokens" class="vitra-navbar-link">Tokens</a>
@@ -75,6 +96,19 @@
         <a href="#themes" class="vitra-navbar-link">Themes</a>
         <a href="#modern-css" class="vitra-navbar-link">Modern CSS</a>
         <a href="#components" class="vitra-navbar-link">Components</a>
+        <div class="demo-drawer-subnav">
+          <a href="#comp-buttons" class="vitra-navbar-link demo-drawer-sublink">↳ Buttons</a>
+          <a href="#comp-cards" class="vitra-navbar-link demo-drawer-sublink">↳ Cards</a>
+          <a href="#comp-forms" class="vitra-navbar-link demo-drawer-sublink">↳ Forms</a>
+          <a href="#comp-tabs" class="vitra-navbar-link demo-drawer-sublink">↳ Tabs</a>
+          <a href="#comp-modals" class="vitra-navbar-link demo-drawer-sublink">↳ Modals</a>
+          <a href="#comp-tooltips" class="vitra-navbar-link demo-drawer-sublink">↳ Tooltips</a>
+          <a href="#comp-toasts" class="vitra-navbar-link demo-drawer-sublink">↳ Toasts</a>
+          <a href="#comp-progress" class="vitra-navbar-link demo-drawer-sublink">↳ Progress</a>
+          <a href="#comp-badges" class="vitra-navbar-link demo-drawer-sublink">↳ Badges</a>
+          <a href="#comp-avatars" class="vitra-navbar-link demo-drawer-sublink">↳ Avatars</a>
+          <a href="#comp-typography" class="vitra-navbar-link demo-drawer-sublink">↳ Typography</a>
+        </div>
         <a href="#particles" class="vitra-navbar-link">Particles</a>
         <a href="#shaders" class="vitra-navbar-link">Shaders</a>
         <a href="#tokens" class="vitra-navbar-link">Tokens</a>
@@ -755,7 +789,7 @@
       <p>All Vitra components with token-only styling, glass variants, and built-in accessibility.</p>
 
       <!-- Buttons -->
-      <div class="component-showcase">
+      <div class="component-showcase" id="comp-buttons">
         <h3>Buttons</h3>
         <div class="vitra-flex vitra-gap-2 vitra-flex-wrap">
           <button class="vitra-btn vitra-btn-solid">Solid</button>
@@ -775,7 +809,7 @@
       </div>
 
       <!-- Cards -->
-      <div style="margin-top: var(--vitra-space-6);">
+      <div id="comp-cards" style="margin-top: var(--vitra-space-6);">
         <h3>Cards</h3>
         <div class="demo-grid">
           <div class="vitra-card">
@@ -797,7 +831,7 @@
       </div>
 
       <!-- Form Elements -->
-      <div style="margin-top: var(--vitra-space-6);">
+      <div id="comp-forms" style="margin-top: var(--vitra-space-6);">
         <h3>Form Elements</h3>
         <div class="component-showcase">
           <div class="vitra-flex vitra-flex-col vitra-gap-4">
@@ -840,7 +874,7 @@
       </div>
 
       <!-- Tabs -->
-      <div style="margin-top: var(--vitra-space-6);">
+      <div id="comp-tabs" style="margin-top: var(--vitra-space-6);">
         <h3>Tabs</h3>
         <div class="component-showcase">
           <div class="vitra-tabs" id="demo-tabs">
@@ -868,7 +902,7 @@
       </div>
 
       <!-- Modals -->
-      <div style="margin-top: var(--vitra-space-6);">
+      <div id="comp-modals" style="margin-top: var(--vitra-space-6);">
         <h3>Modals</h3>
         <div class="component-showcase">
           <button class="vitra-btn vitra-btn-solid" data-vitra-modal-open="demo-modal">Open Modal</button>
@@ -878,7 +912,7 @@
       </div>
 
       <!-- Tooltips -->
-      <div style="margin-top: var(--vitra-space-6);">
+      <div id="comp-tooltips" style="margin-top: var(--vitra-space-6);">
         <h3>Tooltips</h3>
         <div class="component-showcase">
           <div class="vitra-flex vitra-gap-4 vitra-flex-wrap">
@@ -891,7 +925,7 @@
       </div>
 
       <!-- Toast Showcase -->
-      <div style="margin-top: var(--vitra-space-6);">
+      <div id="comp-toasts" style="margin-top: var(--vitra-space-6);">
         <h3>Toasts</h3>
         <div class="component-showcase">
           <p style="margin-top: 0;">Programmatic notifications with auto-dismiss and type variants.</p>
@@ -905,7 +939,7 @@
       </div>
 
       <!-- Progress -->
-      <div style="margin-top: var(--vitra-space-6);">
+      <div id="comp-progress" style="margin-top: var(--vitra-space-6);">
         <h3>Progress Bars</h3>
         <div class="component-showcase">
           <div style="display: flex; flex-direction: column; gap: var(--vitra-space-4);">
@@ -926,7 +960,7 @@
       </div>
 
       <!-- Badges -->
-      <div style="margin-top: var(--vitra-space-6);">
+      <div id="comp-badges" style="margin-top: var(--vitra-space-6);">
         <h3>Badges</h3>
         <div class="component-showcase">
           <div class="vitra-flex vitra-gap-2 vitra-flex-wrap vitra-items-center">
@@ -946,7 +980,7 @@
       </div>
 
       <!-- Avatars -->
-      <div style="margin-top: var(--vitra-space-6);">
+      <div id="comp-avatars" style="margin-top: var(--vitra-space-6);">
         <h3>Avatars</h3>
         <div class="component-showcase">
           <div class="vitra-flex vitra-gap-4 vitra-flex-wrap vitra-items-center">
@@ -958,7 +992,7 @@
       </div>
 
       <!-- Typography -->
-      <div style="margin-top: var(--vitra-space-6);">
+      <div id="comp-typography" style="margin-top: var(--vitra-space-6);">
         <h3>Typography Scale</h3>
         <div class="component-showcase">
           <p style="font-size: var(--vitra-font-size-xs); margin: var(--vitra-space-1) 0;">--vitra-font-size-xs: The quick brown fox</p>
