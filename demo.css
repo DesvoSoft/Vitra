@@ -495,15 +495,34 @@ body {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: 2fr 1fr 1fr;
   gap: var(--vitra-space-8);
   margin-bottom: var(--vitra-space-8);
+}
+
+@media (max-width: 640px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .footer-brand {
   font-size: var(--vitra-font-size-xl);
   font-weight: var(--vitra-font-weight-bold);
   margin-bottom: var(--vitra-space-4);
+}
+
+.footer-tagline {
+  opacity: 0.6;
+  font-size: var(--vitra-font-size-sm);
+  max-width: 300px;
+  margin-bottom: var(--vitra-space-4);
+}
+
+.footer-github-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vitra-space-2);
 }
 
 .footer-links h4 {
