@@ -135,16 +135,22 @@ var Vitra = (() => {
           _watchSystemTheme() {
             if (!window.matchMedia) return;
             const media = window.matchMedia("(prefers-color-scheme: dark)");
-            const handleChange = () => {
+            if (theme._mediaChangeHandler) {
+              if (typeof media.removeEventListener === "function") {
+                media.removeEventListener("change", theme._mediaChangeHandler);
+              } else if (typeof media.removeListener === "function") {
+                media.removeListener(theme._mediaChangeHandler);
+              }
+            }
+            theme._mediaChangeHandler = () => {
               if (theme.get() === "auto") {
-                const html = document.documentElement;
-                html.dataset.theme = "auto";
+                document.documentElement.dataset.theme = "auto";
               }
             };
             if (typeof media.addEventListener === "function") {
-              media.addEventListener("change", handleChange);
+              media.addEventListener("change", theme._mediaChangeHandler);
             } else if (typeof media.addListener === "function") {
-              media.addListener(handleChange);
+              media.addListener(theme._mediaChangeHandler);
             }
           },
           /**
@@ -212,7 +218,7 @@ var Vitra = (() => {
               console.warn(`[Vitra Particles] Particle limit reached (${limit})`);
               return 0;
             }
-            const targetContainer = container ? document.querySelector(container) || document.body : document.body;
+            const targetContainer = container ? typeof container === "string" ? document.querySelector(container) || document.body : container instanceof Element ? container : document.body : document.body;
             for (let i = 0; i < actualCount; i++) {
               const particle = document.createElement("div");
               particle.className = "vitra-particle";
@@ -312,8 +318,9 @@ var Vitra = (() => {
               return;
             }
             _observer = new IntersectionObserver((entries) => {
-              entries.forEach((entry, index) => {
+              entries.forEach((entry) => {
                 if (entry.isIntersecting) {
+                  const index = elements.indexOf(entry.target);
                   setTimeout(() => {
                     if (entry.target.classList.contains("vitra-scroll-reveal-observer")) {
                       entry.target.classList.add("vitra-scroll-revealed");
@@ -428,6 +435,7 @@ var Vitra = (() => {
           let _previousFocus = null;
           let _focusableElements = null;
           let _firstFocusable = null;
+          let _tabKeyTarget = null;
           let _lastFocusable = null;
           let _overlayClickHandler = null;
           const open = (target, options = {}) => {
@@ -484,6 +492,10 @@ var Vitra = (() => {
             _activeModal.setAttribute("aria-hidden", "true");
             document.body.style.overflow = "";
             document.removeEventListener("keydown", _handleEsc);
+            if (_tabKeyTarget) {
+              _tabKeyTarget.removeEventListener("keydown", _handleTabKey);
+              _tabKeyTarget = null;
+            }
             if (_overlayClickHandler) {
               _activeModal.removeEventListener("click", _overlayClickHandler);
               _overlayClickHandler = null;
@@ -508,6 +520,10 @@ var Vitra = (() => {
             if (_focusableElements.length === 0) return;
             _firstFocusable = _focusableElements[0];
             _lastFocusable = _focusableElements[_focusableElements.length - 1];
+            if (_tabKeyTarget) {
+              _tabKeyTarget.removeEventListener("keydown", _handleTabKey);
+            }
+            _tabKeyTarget = modalEl;
             modalEl.addEventListener("keydown", _handleTabKey);
             setTimeout(() => _firstFocusable.focus(), 100);
           };
@@ -630,8 +646,8 @@ var Vitra = (() => {
             if (top < 0) {
               top = targetRect.bottom + _offset;
             }
-            tooltip2.style.top = `${top}px`;
-            tooltip2.style.left = `${left}px`;
+            tooltip2.style.top = `${top + window.scrollY}px`;
+            tooltip2.style.left = `${left + window.scrollX}px`;
           };
           const _removeDescribedBy = (target) => {
             if (target && target.getAttribute("aria-describedby")?.startsWith("vitra-tt-")) {

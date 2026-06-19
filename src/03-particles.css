@@ -68,12 +68,12 @@
 
   /* Medium glow variant (balanced) - enhanced with token */
   .vitra-particle-glow-md {
-    box-shadow: var(--vitra-shadow-glow), 0 0 30px rgb(108 99 255 / 20%);
+    box-shadow: var(--vitra-shadow-glow), 0 0 30px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 20%);
   }
 
   /* Strong glow variant - uses strong glow token */
   .vitra-particle-glow-lg {
-    box-shadow: var(--vitra-shadow-glow-strong), 0 0 60px rgb(108 99 255 / 30%);
+    box-shadow: var(--vitra-shadow-glow-strong), 0 0 60px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 30%);
   }
 
   /* Configurable glow intensity via CSS variable */
@@ -82,11 +82,11 @@
   }
 
   .vitra-particle[data-glow="md"] {
-    box-shadow: var(--vitra-shadow-glow), 0 0 30px rgb(108 99 255 / 20%);
+    box-shadow: var(--vitra-shadow-glow), 0 0 30px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 20%);
   }
 
   .vitra-particle[data-glow="lg"] {
-    box-shadow: var(--vitra-shadow-glow-strong), 0 0 60px rgb(108 99 255 / 30%);
+    box-shadow: var(--vitra-shadow-glow-strong), 0 0 60px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 30%);
   }
 
   /* --- EMOJI PARTICLES --- */

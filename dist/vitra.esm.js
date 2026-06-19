@@ -134,16 +134,22 @@ var require_vitra = __commonJS({
         _watchSystemTheme() {
           if (!window.matchMedia) return;
           const media = window.matchMedia("(prefers-color-scheme: dark)");
-          const handleChange = () => {
+          if (theme._mediaChangeHandler) {
+            if (typeof media.removeEventListener === "function") {
+              media.removeEventListener("change", theme._mediaChangeHandler);
+            } else if (typeof media.removeListener === "function") {
+              media.removeListener(theme._mediaChangeHandler);
+            }
+          }
+          theme._mediaChangeHandler = () => {
             if (theme.get() === "auto") {
-              const html = document.documentElement;
-              html.dataset.theme = "auto";
+              document.documentElement.dataset.theme = "auto";
             }
           };
           if (typeof media.addEventListener === "function") {
-            media.addEventListener("change", handleChange);
+            media.addEventListener("change", theme._mediaChangeHandler);
           } else if (typeof media.addListener === "function") {
-            media.addListener(handleChange);
+            media.addListener(theme._mediaChangeHandler);
           }
         },
         /**
@@ -211,7 +217,7 @@ var require_vitra = __commonJS({
             console.warn(`[Vitra Particles] Particle limit reached (${limit})`);
             return 0;
           }
-          const targetContainer = container ? document.querySelector(container) || document.body : document.body;
+          const targetContainer = container ? typeof container === "string" ? document.querySelector(container) || document.body : container instanceof Element ? container : document.body : document.body;
           for (let i = 0; i < actualCount; i++) {
             const particle = document.createElement("div");
             particle.className = "vitra-particle";
@@ -279,12 +285,28 @@ var require_vitra = __commonJS({
           const {
             selector = ".vitra-reveal",
             threshold = 0.1,
-            stagger = 100
+            stagger = 100,
+            scrollReveal = false
           } = options;
+          let elements = [];
+          if (scrollReveal) {
+            const scrollSelectors = ".vitra-scroll-reveal, .vitra-scroll-reveal-left, .vitra-scroll-reveal-right, .vitra-scroll-reveal-scale";
+            const scrollElements = document.querySelectorAll(scrollSelectors);
+            scrollElements.forEach((el) => {
+              el.classList.add("vitra-scroll-reveal-observer");
+            });
+            elements = [...document.querySelectorAll(selector)];
+            elements.push(...scrollElements);
+          } else {
+            elements = [...document.querySelectorAll(selector)];
+          }
           if (_prefersReducedMotion()) {
-            const elements2 = document.querySelectorAll(selector);
-            elements2.forEach((el) => {
-              el.classList.add("vitra-revealed");
+            elements.forEach((el) => {
+              if (el.classList.contains("vitra-scroll-reveal-observer")) {
+                el.classList.add("vitra-scroll-revealed");
+              } else {
+                el.classList.add("vitra-revealed");
+              }
               el.style.opacity = "1";
               el.style.transform = "none";
             });
@@ -295,10 +317,15 @@ var require_vitra = __commonJS({
             return;
           }
           _observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
+            entries.forEach((entry) => {
               if (entry.isIntersecting) {
+                const index = elements.indexOf(entry.target);
                 setTimeout(() => {
-                  entry.target.classList.add("vitra-revealed");
+                  if (entry.target.classList.contains("vitra-scroll-reveal-observer")) {
+                    entry.target.classList.add("vitra-scroll-revealed");
+                  } else {
+                    entry.target.classList.add("vitra-revealed");
+                  }
                   entry.target.style.opacity = "1";
                   entry.target.style.transform = "none";
                 }, index * stagger);
@@ -307,11 +334,23 @@ var require_vitra = __commonJS({
               }
             });
           }, { threshold });
-          const elements = document.querySelectorAll(selector);
           elements.forEach((el) => {
+            if (el.classList.contains("vitra-scroll-reveal-observer")) {
+              if (el.classList.contains("vitra-scroll-reveal-left")) {
+                el.style.transform = "translateX(-40px)";
+              } else if (el.classList.contains("vitra-scroll-reveal-right")) {
+                el.style.transform = "translateX(40px)";
+              } else if (el.classList.contains("vitra-scroll-reveal-scale")) {
+                el.style.transform = "scale(0.8)";
+              } else {
+                el.style.transform = "translateY(40px)";
+              }
+              el.style.transition = "opacity 1s cubic-bezier(0.23, 1, 0.32, 1), transform 1s cubic-bezier(0.23, 1, 0.32, 1)";
+            } else {
+              el.style.transform = "translateY(20px)";
+              el.style.transition = "opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1), transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)";
+            }
             el.style.opacity = "0";
-            el.style.transform = "translateY(20px)";
-            el.style.transition = "opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1), transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)";
             _observer.observe(el);
           });
         };
@@ -320,9 +359,23 @@ var require_vitra = __commonJS({
         };
         const reset = () => {
           _revealedElements.forEach((el) => {
-            el.classList.remove("vitra-revealed");
-            el.style.opacity = "0";
-            el.style.transform = "translateY(20px)";
+            if (el.classList.contains("vitra-scroll-reveal-observer")) {
+              el.classList.remove("vitra-scroll-revealed");
+              el.style.opacity = "0";
+              if (el.classList.contains("vitra-scroll-reveal-left")) {
+                el.style.transform = "translateX(-40px)";
+              } else if (el.classList.contains("vitra-scroll-reveal-right")) {
+                el.style.transform = "translateX(40px)";
+              } else if (el.classList.contains("vitra-scroll-reveal-scale")) {
+                el.style.transform = "scale(0.8)";
+              } else {
+                el.style.transform = "translateY(40px)";
+              }
+            } else {
+              el.classList.remove("vitra-revealed");
+              el.style.opacity = "0";
+              el.style.transform = "translateY(20px)";
+            }
           });
           _revealedElements = [];
         };
@@ -335,7 +388,12 @@ var require_vitra = __commonJS({
             el.style.opacity = "";
             el.style.transform = "";
             el.style.transition = "";
-            el.classList.remove("vitra-revealed");
+            if (el.classList.contains("vitra-scroll-reveal-observer")) {
+              el.classList.remove("vitra-scroll-revealed");
+              el.classList.remove("vitra-scroll-reveal-observer");
+            } else {
+              el.classList.remove("vitra-revealed");
+            }
           });
           _revealedElements = [];
         };
@@ -346,11 +404,37 @@ var require_vitra = __commonJS({
           destroy
         };
       })();
+      const ripple = /* @__PURE__ */ (() => {
+        const init = () => {
+          document.addEventListener("click", (e) => {
+            const target = e.target.closest(".vitra-ripple");
+            if (!target) return;
+            const rect = target.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            const span = document.createElement("span");
+            span.className = "vitra-ripple-effect";
+            span.style.width = `${size}px`;
+            span.style.height = `${size}px`;
+            span.style.left = `${x}px`;
+            span.style.top = `${y}px`;
+            target.appendChild(span);
+            span.addEventListener("animationend", () => {
+              span.remove();
+            });
+          });
+        };
+        const destroy = () => {
+        };
+        return { init, destroy };
+      })();
       const modal = /* @__PURE__ */ (() => {
         let _activeModal = null;
         let _previousFocus = null;
         let _focusableElements = null;
         let _firstFocusable = null;
+        let _tabKeyTarget = null;
         let _lastFocusable = null;
         let _overlayClickHandler = null;
         const open = (target, options = {}) => {
@@ -407,6 +491,10 @@ var require_vitra = __commonJS({
           _activeModal.setAttribute("aria-hidden", "true");
           document.body.style.overflow = "";
           document.removeEventListener("keydown", _handleEsc);
+          if (_tabKeyTarget) {
+            _tabKeyTarget.removeEventListener("keydown", _handleTabKey);
+            _tabKeyTarget = null;
+          }
           if (_overlayClickHandler) {
             _activeModal.removeEventListener("click", _overlayClickHandler);
             _overlayClickHandler = null;
@@ -431,6 +519,10 @@ var require_vitra = __commonJS({
           if (_focusableElements.length === 0) return;
           _firstFocusable = _focusableElements[0];
           _lastFocusable = _focusableElements[_focusableElements.length - 1];
+          if (_tabKeyTarget) {
+            _tabKeyTarget.removeEventListener("keydown", _handleTabKey);
+          }
+          _tabKeyTarget = modalEl;
           modalEl.addEventListener("keydown", _handleTabKey);
           setTimeout(() => _firstFocusable.focus(), 100);
         };
@@ -553,8 +645,8 @@ var require_vitra = __commonJS({
           if (top < 0) {
             top = targetRect.bottom + _offset;
           }
-          tooltip2.style.top = `${top}px`;
-          tooltip2.style.left = `${left}px`;
+          tooltip2.style.top = `${top + window.scrollY}px`;
+          tooltip2.style.left = `${left + window.scrollX}px`;
         };
         const _removeDescribedBy = (target) => {
           if (target && target.getAttribute("aria-describedby")?.startsWith("vitra-tt-")) {
@@ -745,6 +837,9 @@ var require_vitra = __commonJS({
             const revealOptions = typeof config.reveal === "object" ? config.reveal : {};
             Vitra.reveal.init(revealOptions);
           }
+          if (config.ripple !== false) {
+            Vitra.ripple.init();
+          }
           if (config.tooltip !== false) {
             Vitra.tooltip.init();
           }
@@ -777,6 +872,7 @@ var require_vitra = __commonJS({
       }
       const destroyAll = () => {
         reveal.destroy();
+        ripple.destroy();
         modal.destroy();
         tooltip.destroy();
         dropdown.destroy();
@@ -787,6 +883,7 @@ var require_vitra = __commonJS({
         theme,
         particles,
         reveal,
+        ripple,
         modal,
         tooltip,
         toast,

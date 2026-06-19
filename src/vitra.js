@@ -175,18 +175,25 @@ const Vitra = (() => {
 
       const media = window.matchMedia('(prefers-color-scheme: dark)');
 
-      const handleChange = () => {
+      // Remove previous listener before adding new one to avoid accumulation
+      if (theme._mediaChangeHandler) {
+        if (typeof media.removeEventListener === 'function') {
+          media.removeEventListener('change', theme._mediaChangeHandler);
+        } else if (typeof media.removeListener === 'function') {
+          media.removeListener(theme._mediaChangeHandler);
+        }
+      }
+
+      theme._mediaChangeHandler = () => {
         if (theme.get() === 'auto') {
-          // Re-apply auto to trigger potential CSS changes
-          const html = document.documentElement;
-          html.dataset.theme = 'auto';
+          document.documentElement.dataset.theme = 'auto';
         }
       };
 
       if (typeof media.addEventListener === 'function') {
-        media.addEventListener('change', handleChange);
+        media.addEventListener('change', theme._mediaChangeHandler);
       } else if (typeof media.addListener === 'function') {
-        media.addListener(handleChange);
+        media.addListener(theme._mediaChangeHandler);
       }
     },
 
@@ -287,7 +294,9 @@ const Vitra = (() => {
         return 0;
       }
 
-      const targetContainer = container ? document.querySelector(container) || document.body : document.body;
+      const targetContainer = container
+        ? (typeof container === 'string' ? document.querySelector(container) || document.body : (container instanceof Element ? container : document.body))
+        : document.body;
 
       for (let i = 0; i < actualCount; i++) {
         const particle = document.createElement('div');
@@ -433,9 +442,10 @@ const Vitra = (() => {
       }
 
       _observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry, index) => {
+        entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            // Apply stagger delay
+            const index = elements.indexOf(entry.target);
+            // Apply stagger delay in DOM order
             setTimeout(() => {
               if (entry.target.classList.contains('vitra-scroll-reveal-observer')) {
                 entry.target.classList.add('vitra-scroll-revealed');
@@ -591,6 +601,7 @@ const Vitra = (() => {
     let _previousFocus = null;
     let _focusableElements = null;
     let _firstFocusable = null;
+    let _tabKeyTarget = null;
     let _lastFocusable = null;
     let _overlayClickHandler = null;
 
@@ -683,6 +694,10 @@ const Vitra = (() => {
 
       // Remove event listeners
       document.removeEventListener('keydown', _handleEsc);
+      if (_tabKeyTarget) {
+        _tabKeyTarget.removeEventListener('keydown', _handleTabKey);
+        _tabKeyTarget = null;
+      }
       if (_overlayClickHandler) {
         _activeModal.removeEventListener('click', _overlayClickHandler);
         _overlayClickHandler = null;
@@ -718,7 +733,11 @@ const Vitra = (() => {
       _firstFocusable = _focusableElements[0];
       _lastFocusable = _focusableElements[_focusableElements.length - 1];
 
-      // Trap focus
+      // Trap focus — remove previous listener first to avoid accumulation
+      if (_tabKeyTarget) {
+        _tabKeyTarget.removeEventListener('keydown', _handleTabKey);
+      }
+      _tabKeyTarget = modalEl;
       modalEl.addEventListener('keydown', _handleTabKey);
 
       // Focus first element
@@ -903,8 +922,8 @@ const Vitra = (() => {
         top = targetRect.bottom + _offset; // Flip to bottom
       }
 
-      tooltip.style.top = `${top}px`;
-      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${top + window.scrollY}px`;
+      tooltip.style.left = `${left + window.scrollX}px`;
     };
 
     /**

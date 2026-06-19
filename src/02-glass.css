@@ -99,6 +99,16 @@
     background: var(--vitra-glass-bg-fallback);
   }
 
+  /* Reduce blur on mobile for GPU performance */
+  @media (width <= 768px) {
+    :root {
+      --vitra-blur-sm: 8px;
+      --vitra-blur-md: 14px;
+      --vitra-blur-lg: 24px;
+      --vitra-blur-xl: 36px;
+    }
+  }
+
   /* Reflective Surface (Luxury addition) */
   .vitra-glass-reflect {
     background: linear-gradient(

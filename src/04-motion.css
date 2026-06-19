@@ -139,12 +139,25 @@
     transform: translateX(-20px);
   }
 
+  /* Fade Scale - element fades in with scale up from 92% */
+  @keyframes vitra-fade-scale {
+    from {
+      opacity: 0;
+      transform: scale(0.92);
+    }
+
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
   /* Reveal Scale - fade in with scale up */
   .vitra-reveal-scale {
-    animation-name: vitra-fade-up;
+    animation-name: vitra-fade-scale;
     animation-duration: var(--vitra-duration-normal, 300ms);
     animation-timing-function: var(--vitra-ease-luxury);
-    transform: scale(0.95);
+    transform: scale(0.92);
   }
 
   /* Reveal Blur - elegant blur reveal */
@@ -217,11 +230,11 @@
   }
 
   .vitra-hover-glow:hover {
-    box-shadow: var(--vitra-shadow-glow, 0 0 20px rgb(108 99 255 / 30%));
+    box-shadow: var(--vitra-shadow-glow, 0 0 20px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 30%));
   }
 
   .vitra-hover-glow:focus-visible {
-    box-shadow: var(--vitra-shadow-glow, 0 0 20px rgb(108 99 255 / 30%));
+    box-shadow: var(--vitra-shadow-glow, 0 0 20px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 30%));
   }
 
   /* Hover Accent Line - pseudo-element line effect */
@@ -338,17 +351,43 @@
   .vitra-gradient-text {
     background: linear-gradient(
       135deg,
-      hsl(var(--vitra-color-accent-h) 100% 70%),
-      hsl(calc(var(--vitra-color-accent-h) + 40) 100% 65%),
-      hsl(calc(var(--vitra-color-accent-h) - 20) 100% 70%),
-      hsl(var(--vitra-color-accent-h) 100% 70%)
+      hsl(var(--vitra-color-accent-h) 85% 55%),
+      hsl(calc(var(--vitra-color-accent-h) + 40) 85% 50%),
+      hsl(calc(var(--vitra-color-accent-h) - 20) 85% 55%),
+      hsl(var(--vitra-color-accent-h) 85% 55%)
     );
     background-size: 300% 300%;
-    background-clip: text;
     background-clip: text;
     color: transparent;
     animation: vitra-text-shift 6s ease-in-out infinite;
     will-change: background-position;
+  }
+
+  /* Light theme: darken gradient text for contrast on light bg */
+  html[data-theme="light"] .vitra-gradient-text {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--vitra-color-accent-h) 85% 35%),
+      hsl(calc(var(--vitra-color-accent-h) + 40) 85% 30%),
+      hsl(calc(var(--vitra-color-accent-h) - 20) 85% 35%),
+      hsl(var(--vitra-color-accent-h) 85% 35%)
+    );
+    background-size: 300% 300%;
+    background-clip: text;
+  }
+
+  @media (prefers-color-scheme: light) {
+    html[data-theme="auto"] .vitra-gradient-text {
+      background: linear-gradient(
+        135deg,
+        hsl(var(--vitra-color-accent-h) 85% 35%),
+        hsl(calc(var(--vitra-color-accent-h) + 40) 85% 30%),
+        hsl(calc(var(--vitra-color-accent-h) - 20) 85% 35%),
+        hsl(var(--vitra-color-accent-h) 85% 35%)
+      );
+      background-size: 300% 300%;
+      background-clip: text;
+    }
   }
 
   /* --- Animated Gradient Border --- */
@@ -599,7 +638,6 @@
     .vitra-gradient-text {
       background: none !important;
       color: var(--vitra-color-accent) !important;
-      background-clip: unset !important;
       background-clip: unset !important;
     }
 

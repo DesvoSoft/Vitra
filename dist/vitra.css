@@ -20,11 +20,11 @@
        ============================================ */
 
     /* --- Colors (HSL System for flexibility) --- */
-    --vitra-color-accent-h: 245;
-    --vitra-color-accent-s: 100%;
-    --vitra-color-accent-l: 70%;
+    --vitra-color-accent-h: 177;
+    --vitra-color-accent-s: 80%;
+    --vitra-color-accent-l: 60%;
     --vitra-color-accent: hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l));
-    --vitra-color-accent-rgb: 108, 99, 255;
+    --vitra-color-accent-rgb: 61, 219, 203;
     --vitra-color-border-rgb: 255, 255, 255;
     --vitra-color-accent-hover: hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) calc(var(--vitra-color-accent-l) + 5%));
     --vitra-color-accent-active: hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) calc(var(--vitra-color-accent-l) - 10%));
@@ -34,6 +34,20 @@
     --vitra-color-warning: hsl(38deg 92% 50%);
     --vitra-color-error: hsl(0deg 84% 60%);
     --vitra-color-info: hsl(217deg 91% 60%);
+
+    /* Semantic State Surfaces */
+    --vitra-color-success-surface: hsl(150deg 84% 39% / 10%);
+    --vitra-color-success-border:  hsl(150deg 84% 39% / 30%);
+    --vitra-color-success-text:    hsl(150deg 84% 55%);
+    --vitra-color-warning-surface: hsl(38deg 92% 50% / 10%);
+    --vitra-color-warning-border:  hsl(38deg 92% 50% / 30%);
+    --vitra-color-warning-text:    hsl(38deg 92% 60%);
+    --vitra-color-error-surface:   hsl(0deg 84% 60% / 10%);
+    --vitra-color-error-border:    hsl(0deg 84% 60% / 30%);
+    --vitra-color-error-text:      hsl(0deg 84% 70%);
+    --vitra-color-info-surface:    hsl(217deg 91% 60% / 10%);
+    --vitra-color-info-border:     hsl(217deg 91% 60% / 30%);
+    --vitra-color-info-text:       hsl(217deg 91% 70%);
 
     /* Premium Color Extensions */
     --vitra-color-accent-oklch: oklch(65% 0.25 var(--vitra-color-accent-h));
@@ -78,14 +92,15 @@
     --vitra-radius-full: 9999px;
 
     /* --- Shadows (Layered for Depth) --- */
-    --vitra-shadow-subtle: 0 1px 2px rgb(0 0 0 / 10%);
-    --vitra-shadow-medium: 
-      0 4px 6px -1px rgb(0 0 0 / 10%), 
-      0 2px 4px -1px rgb(0 0 0 / 6%);
-    --vitra-shadow-elevated: 
-      0 10px 15px -3px rgb(0 0 0 / 10%), 
-      0 4px 6px -2px rgb(0 0 0 / 5%),
-      0 0 0 1px hsl(0deg 0% 100% / 5%);
+    --vitra-shadow-subtle:
+      0 1px 3px rgb(0 0 0 / 40%),
+      0 0 0 1px hsl(0deg 0% 100% / 4%);
+    --vitra-shadow-medium:
+      0 4px 16px rgb(0 0 0 / 50%),
+      0 0 0 1px hsl(0deg 0% 100% / 6%);
+    --vitra-shadow-elevated:
+      0 10px 40px rgb(0 0 0 / 60%),
+      0 0 0 1px hsl(0deg 0% 100% / 8%);
     --vitra-shadow-glow: 0 0 20px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 30%);
     --vitra-shadow-glow-strong: 0 0 40px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 50%);
 
@@ -280,21 +295,21 @@
 
   /* --- LIGHT THEME --- */
   html[data-theme="light"] {
-    --vitra-color-bg: hsl(var(--vitra-color-accent-h) 10% 98%);
-    --vitra-bg-accent: hsl(var(--vitra-color-accent-h) 15% 94%);
-    --vitra-color-surface: hsl(var(--vitra-color-accent-h) 20% 10% / 4%);
-    --vitra-color-surface-hover: hsl(var(--vitra-color-accent-h) 20% 10% / 8%);
-    --vitra-color-surface-active: hsl(var(--vitra-color-accent-h) 20% 10% / 12%);
-    --vitra-color-border: hsl(var(--vitra-color-accent-h) 20% 10% / 10%);
-    --vitra-color-border-hover: hsl(var(--vitra-color-accent-h) 20% 10% / 20%);
-    --vitra-color-text-primary: hsl(0deg 0% 0% / 95%);
-    --vitra-color-text-secondary: hsl(0deg 0% 0% / 70%);
-    --vitra-color-text-tertiary: hsl(0deg 0% 0% / 50%);
+    --vitra-color-bg: hsl(185deg 18% 97%);
+    --vitra-bg-accent: hsl(185deg 22% 93%);
+    --vitra-color-surface: hsl(185deg 30% 10% / 5%);
+    --vitra-color-surface-hover: hsl(185deg 30% 10% / 9%);
+    --vitra-color-surface-active: hsl(185deg 30% 10% / 13%);
+    --vitra-color-border: hsl(185deg 25% 15% / 10%);
+    --vitra-color-border-hover: hsl(185deg 25% 15% / 22%);
+    --vitra-color-text-primary: hsl(185deg 20% 8%);
+    --vitra-color-text-secondary: hsl(185deg 10% 30%);
+    --vitra-color-text-tertiary: hsl(185deg 8% 50%);
     --vitra-color-text-inverse: hsl(0deg 0% 100%);
-    --vitra-shadow-subtle: 0 1px 2px rgb(0 0 0 / 5%);
-    --vitra-shadow-medium: 0 4px 6px -1px rgb(0 0 0 / 10%);
-    --vitra-shadow-elevated: 0 10px 15px -3px rgb(0 0 0 / 10%);
-    --vitra-glass-bg: hsl(0deg 0% 100% / 40%);
+    --vitra-shadow-subtle: 0 1px 3px rgb(0 40 50 / 8%), 0 0 0 1px hsl(185deg 25% 15% / 5%);
+    --vitra-shadow-medium: 0 4px 16px rgb(0 40 50 / 10%), 0 0 0 1px hsl(185deg 25% 15% / 6%);
+    --vitra-shadow-elevated: 0 10px 32px rgb(0 40 50 / 12%), 0 0 0 1px hsl(185deg 25% 15% / 8%);
+    --vitra-glass-bg: hsl(185deg 40% 96% / 70%);
 
     color-scheme: light;
   }
@@ -312,9 +327,6 @@
     --vitra-color-text-secondary: hsl(0deg 0% 100% / 70%);
     --vitra-color-text-tertiary: hsl(0deg 0% 100% / 50%);
     --vitra-color-text-inverse: hsl(var(--vitra-color-accent-h) 15% 4%);
-    --vitra-shadow-subtle: 0 1px 2px rgb(0 0 0 / 30%);
-    --vitra-shadow-medium: 0 4px 12px rgb(0 0 0 / 40%);
-    --vitra-shadow-elevated: 0 10px 32px rgb(0 0 0 / 50%);
     --vitra-glass-bg: hsl(var(--vitra-color-accent-h) 20% 95% / 5%);
 
     color-scheme: dark;
@@ -331,15 +343,15 @@
     --vitra-color-border-hover: hsl(300deg 30% 50% / 35%);
     --vitra-color-accent-h: 320;
     --vitra-color-accent-s: 70%;
-    --vitra-color-accent-l: 65%;
+    --vitra-color-accent-l: 55%;
     --vitra-color-text-primary: hsl(300deg 20% 20%);
     --vitra-color-text-secondary: hsl(300deg 10% 40%);
     --vitra-color-text-tertiary: hsl(300deg 10% 50% / 60%);
     --vitra-color-text-inverse: hsl(300deg 20% 98%);
-    --vitra-shadow-subtle: 0 1px 2px rgb(200 150 200 / 15%);
-    --vitra-shadow-medium: 0 4px 12px rgb(200 150 200 / 20%);
-    --vitra-shadow-elevated: 0 10px 32px rgb(200 150 200 / 25%);
-    --vitra-glass-bg: hsl(300deg 100% 100% / 10%);
+    --vitra-shadow-subtle: 0 1px 3px rgb(150 50 150 / 12%), 0 0 0 1px hsl(300deg 30% 60% / 8%);
+    --vitra-shadow-medium: 0 4px 16px rgb(150 50 150 / 15%), 0 0 0 1px hsl(300deg 30% 60% / 10%);
+    --vitra-shadow-elevated: 0 10px 32px rgb(150 50 150 / 20%), 0 0 0 1px hsl(300deg 30% 60% / 12%);
+    --vitra-glass-bg: hsl(300deg 80% 98% / 65%);
     --vitra-color-bg-warm: hsl(310deg 25% 95%);
     --vitra-color-bg-cool: hsl(290deg 25% 95%);
 
@@ -362,9 +374,9 @@
     --vitra-color-text-secondary: hsl(180deg 50% 70%);
     --vitra-color-text-tertiary: hsl(180deg 30% 50% / 50%);
     --vitra-color-text-inverse: hsl(260deg 30% 2%);
-    --vitra-shadow-subtle: 0 1px 2px rgb(0 200 200 / 10%);
-    --vitra-shadow-medium: 0 4px 12px rgb(0 200 200 / 15%);
-    --vitra-shadow-elevated: 0 10px 32px rgb(0 200 200 / 20%);
+    --vitra-shadow-subtle: 0 1px 3px rgb(0 0 0 / 50%), 0 0 0 1px hsl(180deg 100% 50% / 8%);
+    --vitra-shadow-medium: 0 4px 16px rgb(0 0 0 / 60%), 0 0 0 1px hsl(180deg 100% 50% / 10%);
+    --vitra-shadow-elevated: 0 10px 32px rgb(0 0 0 / 70%), 0 0 0 1px hsl(180deg 100% 50% / 12%);
     --vitra-glass-bg: hsl(180deg 100% 50% / 5%);
     --vitra-color-bg-warm: hsl(200deg 20% 4%);
     --vitra-color-bg-cool: hsl(220deg 20% 4%);
@@ -388,9 +400,9 @@
     --vitra-color-text-secondary: hsl(210deg 40% 75%);
     --vitra-color-text-tertiary: hsl(210deg 30% 55% / 50%);
     --vitra-color-text-inverse: hsl(210deg 30% 4%);
-    --vitra-shadow-subtle: 0 1px 2px rgb(50 150 220 / 10%);
-    --vitra-shadow-medium: 0 4px 12px rgb(50 150 220 / 15%);
-    --vitra-shadow-elevated: 0 10px 32px rgb(50 150 220 / 20%);
+    --vitra-shadow-subtle: 0 1px 3px rgb(0 0 0 / 50%), 0 0 0 1px hsl(210deg 60% 60% / 8%);
+    --vitra-shadow-medium: 0 4px 16px rgb(0 0 0 / 60%), 0 0 0 1px hsl(210deg 60% 60% / 10%);
+    --vitra-shadow-elevated: 0 10px 32px rgb(0 0 0 / 70%), 0 0 0 1px hsl(210deg 60% 60% / 12%);
     --vitra-glass-bg: hsl(210deg 100% 60% / 5%);
     --vitra-color-bg-warm: hsl(190deg 25% 6%);
     --vitra-color-bg-cool: hsl(220deg 25% 6%);
@@ -414,9 +426,9 @@
     --vitra-color-text-secondary: hsl(160deg 40% 75%);
     --vitra-color-text-tertiary: hsl(160deg 30% 55% / 50%);
     --vitra-color-text-inverse: hsl(160deg 20% 3%);
-    --vitra-shadow-subtle: 0 1px 2px rgb(50 200 130 / 10%);
-    --vitra-shadow-medium: 0 4px 12px rgb(50 200 130 / 15%);
-    --vitra-shadow-elevated: 0 10px 32px rgb(50 200 130 / 20%);
+    --vitra-shadow-subtle: 0 1px 3px rgb(0 0 0 / 50%), 0 0 0 1px hsl(160deg 80% 45% / 8%);
+    --vitra-shadow-medium: 0 4px 16px rgb(0 0 0 / 60%), 0 0 0 1px hsl(160deg 80% 45% / 10%);
+    --vitra-shadow-elevated: 0 10px 32px rgb(0 0 0 / 70%), 0 0 0 1px hsl(160deg 80% 45% / 12%);
     --vitra-glass-bg: hsl(160deg 100% 50% / 5%);
     --vitra-color-bg-warm: hsl(140deg 25% 5%);
     --vitra-color-bg-cool: hsl(170deg 25% 5%);
@@ -436,9 +448,6 @@
     --vitra-color-text-secondary: hsl(0deg 0% 100% / 70%);
     --vitra-color-text-tertiary: hsl(0deg 0% 100% / 50%);
     --vitra-color-text-inverse: hsl(var(--vitra-color-accent-h) 15% 4%);
-    --vitra-shadow-subtle: 0 1px 2px rgb(0 0 0 / 30%);
-    --vitra-shadow-medium: 0 4px 12px rgb(0 0 0 / 40%);
-    --vitra-shadow-elevated: 0 10px 32px rgb(0 0 0 / 50%);
     --vitra-glass-bg: hsl(var(--vitra-color-accent-h) 20% 95% / 5%);
 
     color-scheme: dark;
@@ -446,17 +455,21 @@
 
   @media (prefers-color-scheme: light) {
     html[data-theme="auto"] {
-      --vitra-color-bg: hsl(var(--vitra-color-accent-h) 8% 99%);
-      --vitra-color-surface: hsl(var(--vitra-color-accent-h) 20% 10% / 4%);
-      --vitra-color-surface-hover: hsl(var(--vitra-color-accent-h) 20% 10% / 8%);
-      --vitra-color-surface-active: hsl(var(--vitra-color-accent-h) 20% 10% / 12%);
-      --vitra-color-border: hsl(var(--vitra-color-accent-h) 20% 10% / 10%);
-      --vitra-color-border-hover: hsl(var(--vitra-color-accent-h) 20% 10% / 20%);
-      --vitra-color-text-primary: hsl(0deg 0% 0% / 95%);
-      --vitra-color-text-secondary: hsl(0deg 0% 0% / 70%);
-      --vitra-color-text-tertiary: hsl(0deg 0% 0% / 50%);
+      --vitra-color-bg: hsl(185deg 18% 97%);
+      --vitra-bg-accent: hsl(185deg 22% 93%);
+      --vitra-color-surface: hsl(185deg 30% 10% / 5%);
+      --vitra-color-surface-hover: hsl(185deg 30% 10% / 9%);
+      --vitra-color-surface-active: hsl(185deg 30% 10% / 13%);
+      --vitra-color-border: hsl(185deg 25% 15% / 10%);
+      --vitra-color-border-hover: hsl(185deg 25% 15% / 22%);
+      --vitra-color-text-primary: hsl(185deg 20% 8%);
+      --vitra-color-text-secondary: hsl(185deg 10% 30%);
+      --vitra-color-text-tertiary: hsl(185deg 8% 50%);
       --vitra-color-text-inverse: hsl(0deg 0% 100%);
-      --vitra-glass-bg: hsl(0deg 0% 100% / 40%);
+      --vitra-shadow-subtle: 0 1px 3px rgb(0 40 50 / 8%), 0 0 0 1px hsl(185deg 25% 15% / 5%);
+      --vitra-shadow-medium: 0 4px 16px rgb(0 40 50 / 10%), 0 0 0 1px hsl(185deg 25% 15% / 6%);
+      --vitra-shadow-elevated: 0 10px 32px rgb(0 40 50 / 12%), 0 0 0 1px hsl(185deg 25% 15% / 8%);
+      --vitra-glass-bg: hsl(185deg 40% 96% / 70%);
 
       color-scheme: light;
     }
@@ -566,6 +579,16 @@
     background: var(--vitra-glass-bg-fallback);
   }
 
+  /* Reduce blur on mobile for GPU performance */
+  @media (width <= 768px) {
+    :root {
+      --vitra-blur-sm: 8px;
+      --vitra-blur-md: 14px;
+      --vitra-blur-lg: 24px;
+      --vitra-blur-xl: 36px;
+    }
+  }
+
   /* Reflective Surface (Luxury addition) */
   .vitra-glass-reflect {
     background: linear-gradient(
@@ -656,12 +679,12 @@
 
   /* Medium glow variant (balanced) - enhanced with token */
   .vitra-particle-glow-md {
-    box-shadow: var(--vitra-shadow-glow), 0 0 30px rgb(108 99 255 / 20%);
+    box-shadow: var(--vitra-shadow-glow), 0 0 30px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 20%);
   }
 
   /* Strong glow variant - uses strong glow token */
   .vitra-particle-glow-lg {
-    box-shadow: var(--vitra-shadow-glow-strong), 0 0 60px rgb(108 99 255 / 30%);
+    box-shadow: var(--vitra-shadow-glow-strong), 0 0 60px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 30%);
   }
 
   /* Configurable glow intensity via CSS variable */
@@ -670,11 +693,11 @@
   }
 
   .vitra-particle[data-glow="md"] {
-    box-shadow: var(--vitra-shadow-glow), 0 0 30px rgb(108 99 255 / 20%);
+    box-shadow: var(--vitra-shadow-glow), 0 0 30px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 20%);
   }
 
   .vitra-particle[data-glow="lg"] {
-    box-shadow: var(--vitra-shadow-glow-strong), 0 0 60px rgb(108 99 255 / 30%);
+    box-shadow: var(--vitra-shadow-glow-strong), 0 0 60px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 30%);
   }
 
   /* --- EMOJI PARTICLES --- */
@@ -933,12 +956,25 @@
     transform: translateX(-20px);
   }
 
+  /* Fade Scale - element fades in with scale up from 92% */
+  @keyframes vitra-fade-scale {
+    from {
+      opacity: 0;
+      transform: scale(0.92);
+    }
+
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
   /* Reveal Scale - fade in with scale up */
   .vitra-reveal-scale {
-    animation-name: vitra-fade-up;
+    animation-name: vitra-fade-scale;
     animation-duration: var(--vitra-duration-normal, 300ms);
     animation-timing-function: var(--vitra-ease-luxury);
-    transform: scale(0.95);
+    transform: scale(0.92);
   }
 
   /* Reveal Blur - elegant blur reveal */
@@ -1011,11 +1047,11 @@
   }
 
   .vitra-hover-glow:hover {
-    box-shadow: var(--vitra-shadow-glow, 0 0 20px rgb(108 99 255 / 30%));
+    box-shadow: var(--vitra-shadow-glow, 0 0 20px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 30%));
   }
 
   .vitra-hover-glow:focus-visible {
-    box-shadow: var(--vitra-shadow-glow, 0 0 20px rgb(108 99 255 / 30%));
+    box-shadow: var(--vitra-shadow-glow, 0 0 20px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 30%));
   }
 
   /* Hover Accent Line - pseudo-element line effect */
@@ -1132,17 +1168,43 @@
   .vitra-gradient-text {
     background: linear-gradient(
       135deg,
-      hsl(var(--vitra-color-accent-h) 100% 70%),
-      hsl(calc(var(--vitra-color-accent-h) + 40) 100% 65%),
-      hsl(calc(var(--vitra-color-accent-h) - 20) 100% 70%),
-      hsl(var(--vitra-color-accent-h) 100% 70%)
+      hsl(var(--vitra-color-accent-h) 85% 55%),
+      hsl(calc(var(--vitra-color-accent-h) + 40) 85% 50%),
+      hsl(calc(var(--vitra-color-accent-h) - 20) 85% 55%),
+      hsl(var(--vitra-color-accent-h) 85% 55%)
     );
     background-size: 300% 300%;
-    background-clip: text;
     background-clip: text;
     color: transparent;
     animation: vitra-text-shift 6s ease-in-out infinite;
     will-change: background-position;
+  }
+
+  /* Light theme: darken gradient text for contrast on light bg */
+  html[data-theme="light"] .vitra-gradient-text {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--vitra-color-accent-h) 85% 35%),
+      hsl(calc(var(--vitra-color-accent-h) + 40) 85% 30%),
+      hsl(calc(var(--vitra-color-accent-h) - 20) 85% 35%),
+      hsl(var(--vitra-color-accent-h) 85% 35%)
+    );
+    background-size: 300% 300%;
+    background-clip: text;
+  }
+
+  @media (prefers-color-scheme: light) {
+    html[data-theme="auto"] .vitra-gradient-text {
+      background: linear-gradient(
+        135deg,
+        hsl(var(--vitra-color-accent-h) 85% 35%),
+        hsl(calc(var(--vitra-color-accent-h) + 40) 85% 30%),
+        hsl(calc(var(--vitra-color-accent-h) - 20) 85% 35%),
+        hsl(var(--vitra-color-accent-h) 85% 35%)
+      );
+      background-size: 300% 300%;
+      background-clip: text;
+    }
   }
 
   /* --- Animated Gradient Border --- */
@@ -1393,7 +1455,6 @@
     .vitra-gradient-text {
       background: none !important;
       color: var(--vitra-color-accent) !important;
-      background-clip: unset !important;
       background-clip: unset !important;
     }
 
@@ -1897,7 +1958,7 @@
 
   .vitra-btn-solid:hover:not(:disabled) {
     background-color: var(--vitra-color-accent-hover);
-    box-shadow: 0 6px 20px rgb(var(--vitra-color-accent-rgb), 0.23);
+    box-shadow: 0 6px 20px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 35%);
   }
 
   .vitra-btn:active:not(:disabled) {
@@ -2060,8 +2121,7 @@
     .vitra-card-hover:hover {
       transform: none;
     }
-
-    }
+  }
 
   /* ============================================
       FORM ELEMENTS (COMP-03)
@@ -2467,7 +2527,7 @@
 
   .vitra-drawer-link.active {
     color: var(--vitra-color-accent);
-    background-color: rgb(var(--vitra-color-accent-rgb),  0.1);
+    background-color: hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 10%);
   }
 
   /* --- DRAWER OVERLAY --- */
@@ -2510,8 +2570,10 @@
     position: fixed;
     inset: 0;
 
-    /* Semi-transparent dark backdrop */
-    background-color: rgb(0 0 0 / 60%);
+    /* Radial gradient backdrop — more premium than flat black */
+    background: radial-gradient(ellipse at 50% 40%, rgb(0 0 0 / 45%), rgb(0 0 0 / 72%));
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 
     /* Ensure overlay appears above all content */
     z-index: 1000;
@@ -2554,24 +2616,29 @@
     .vitra-modal-overlay.vitra-modal-open .vitra-modal-content,
     .vitra-modal[open] .vitra-modal-content,
     .vitra-modal.vitra-modal-open .vitra-modal-content {
-      transform: translateY(20px) scale(0.98);
+      transform: translateY(24px) scale(0.97);
     }
   }
 
   /* --- MODAL CONTENT --- */
   .vitra-modal-content {
-    background-color: hsl(240deg 15% 8% / 95%);
-    backdrop-filter: blur(var(--vitra-blur-lg));
-    border: 1px solid hsl(0deg 0% 100% / 10%);
+    background: hsl(var(--vitra-color-accent-h) 14% 5% / 96%);
+    backdrop-filter: blur(var(--vitra-blur-xl));
+    -webkit-backdrop-filter: blur(var(--vitra-blur-xl));
+    border: 1px solid hsl(var(--vitra-color-accent-h) 40% 70% / 10%);
+    border-top-color: hsl(var(--vitra-color-accent-h) 40% 70% / 22%);
     border-radius: var(--vitra-radius-xl);
-    box-shadow: var(--vitra-shadow-elevated);
+    box-shadow:
+      0 32px 80px rgb(0 0 0 / 65%),
+      0 0 0 1px hsl(var(--vitra-color-accent-h) 60% 60% / 6%),
+      inset 0 1px 0 hsl(0deg 0% 100% / 8%);
     padding: var(--vitra-space-6);
     margin: var(--vitra-space-4);
     max-width: 90vw;
     width: 600px;
     max-height: 90dvh;
     overflow-y: auto;
-    transform: translateY(20px) scale(0.98);
+    transform: translateY(24px) scale(0.97);
     transition: transform var(--vitra-duration-normal) var(--vitra-ease-luxury),
                 opacity var(--vitra-duration-normal) var(--vitra-ease-luxury);
   }
@@ -2650,32 +2717,26 @@
 
   /* --- MODAL CLOSE BUTTON --- */
   .vitra-modal-close {
-    /* Button reset */
-    background: none;
-    border: none;
+    background: hsl(0deg 0% 100% / 4%);
+    border: 1px solid hsl(0deg 0% 100% / 6%);
     cursor: pointer;
-
-    /* Sizing */
-    width: 32px;
-    height: 32px;
-
-    /* Flexbox for icon centering */
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    /* Styling */
     color: var(--vitra-color-text-secondary);
-    border-radius: var(--vitra-radius-sm);
-
-    /* Transition */
+    border-radius: var(--vitra-radius-md);
+    flex-shrink: 0;
     transition: color var(--vitra-duration-fast) var(--vitra-ease-default),
-                background-color var(--vitra-duration-fast) var(--vitra-ease-default);
+                background-color var(--vitra-duration-fast) var(--vitra-ease-default),
+                border-color var(--vitra-duration-fast) var(--vitra-ease-default);
   }
 
   .vitra-modal-close:hover {
     color: var(--vitra-color-text-primary);
-    background-color: var(--vitra-color-surface-hover);
+    background-color: hsl(0deg 0% 100% / 8%);
+    border-color: hsl(0deg 0% 100% / 12%);
   }
 
   .vitra-modal-close:focus-visible {
@@ -3711,8 +3772,8 @@
 
   /* Alert variants */
   .vitra-alert-success {
-    border-color: var(--vitra-color-success);
-    background: hsl(150deg 84% 39% / 10%);
+    border-color: var(--vitra-color-success-border);
+    background: var(--vitra-color-success-surface);
     color: var(--vitra-color-text-primary);
   }
 
@@ -3724,8 +3785,8 @@
   }
 
   .vitra-alert-warning {
-    border-color: var(--vitra-color-warning);
-    background: hsl(38deg 92% 50% / 10%);
+    border-color: var(--vitra-color-warning-border);
+    background: var(--vitra-color-warning-surface);
     color: var(--vitra-color-text-primary);
   }
 
@@ -3737,8 +3798,8 @@
   }
 
   .vitra-alert-error {
-    border-color: var(--vitra-color-error);
-    background: hsl(0deg 84% 60% / 10%);
+    border-color: var(--vitra-color-error-border);
+    background: var(--vitra-color-error-surface);
     color: var(--vitra-color-text-primary);
   }
 
@@ -3750,8 +3811,8 @@
   }
 
   .vitra-alert-info {
-    border-color: var(--vitra-color-info);
-    background: hsl(217deg 91% 60% / 10%);
+    border-color: var(--vitra-color-info-border);
+    background: var(--vitra-color-info-surface);
     color: var(--vitra-color-text-primary);
   }
 
