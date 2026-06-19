@@ -412,8 +412,34 @@ body {
 }
 
 /* ============================================
-   Navbar Components Dropdown
+   Navbar Overrides & Dropdowns
    ============================================ */
+
+/* Tighten link area gap */
+.vitra-navbar-links {
+  gap: var(--vitra-space-2);
+}
+
+/* Tighten actions area */
+.vitra-navbar-actions {
+  gap: var(--vitra-space-2);
+}
+
+/* Theme button — compact, fixed width so theme name change doesn't shift layout */
+.demo-theme-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: var(--vitra-space-1) var(--vitra-space-2);
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.demo-theme-btn #current-theme-name {
+  min-width: 44px;
+  text-align: left;
+  font-size: var(--vitra-font-size-xs);
+}
 
 .demo-nav-dropdown {
   display: flex;
@@ -423,27 +449,35 @@ body {
 .demo-nav-dropdown-btn {
   display: flex;
   align-items: center;
-  gap: var(--vitra-space-1);
+  gap: 4px;
   background: none;
   border: none;
   cursor: pointer;
   color: var(--vitra-color-text-primary);
-  font: inherit;
+  font-size: var(--vitra-font-size-sm);
+  font-weight: var(--vitra-font-weight-medium);
+  font-family: inherit;
+  letter-spacing: .02em;
+  opacity: 0.7;
   padding: 0;
+  transition: opacity var(--vitra-duration-fast) var(--vitra-ease-default);
+}
+
+.demo-nav-dropdown-btn:hover {
+  opacity: 1;
 }
 
 .demo-nav-chevron {
   transition: transform 0.2s var(--vitra-ease-out);
-  opacity: 0.6;
 }
 
 .demo-nav-dropdown.open .demo-nav-chevron {
   transform: rotate(180deg);
 }
 
+/* Dropdown menu — theme-adaptive contrast */
 .demo-nav-dropdown-menu {
   min-width: 180px;
-  /* ensure contrast on all themes */
   background: var(--vitra-color-bg);
   border-color: var(--vitra-color-border);
   color: var(--vitra-color-text-primary);
@@ -451,6 +485,7 @@ body {
 
 .demo-nav-dropdown-menu .vitra-dropdown-item {
   color: var(--vitra-color-text-primary);
+  font-size: var(--vitra-font-size-sm);
 }
 
 .demo-nav-dropdown-menu .vitra-dropdown-item:hover {
