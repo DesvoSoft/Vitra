@@ -338,6 +338,72 @@ ripple.init();
 // Click ripple is handled automatically via event delegation
 ```
 
+### Toast Module
+
+```javascript
+import { toast } from './vitra.js';
+
+// Show a toast notification
+toast.show('Saved successfully!', {
+  type: 'success',  // 'success' | 'error' | 'info' | 'default'
+  duration: 3000    // Auto-dismiss after ms (0 = no auto-dismiss)
+});
+
+// HTML structure is created automatically — no markup needed.
+// CSS classes applied: .vitra-toast, .vitra-toast-success / -error / -info
+```
+
+### Dropdown Module
+
+```javascript
+import { dropdown } from './vitra.js';
+
+// Initialize (handles click outside, keyboard, Popover API when available)
+dropdown.init();
+dropdown.destroy();
+
+// HTML structure:
+/*
+<div class="vitra-dropdown">
+  <button data-vitra-dropdown-toggle>Options</button>
+  <div class="vitra-dropdown-menu">
+    <button class="vitra-dropdown-item">Edit</button>
+    <button class="vitra-dropdown-item">Delete</button>
+  </div>
+</div>
+
+// Right-aligned variant:
+<div class="vitra-dropdown-menu vitra-dropdown-menu-end">...</div>
+
+// Popover API (modern browsers) — add popover attribute:
+<div class="vitra-dropdown-menu" popover>...</div>
+*/
+```
+
+### Spotlight Module
+
+```javascript
+import { spotlight } from './vitra.js';
+
+// Initialize — tracks mouse position and applies spotlight to .vitra-spotlight elements
+spotlight.init();
+spotlight.destroy();
+
+// HTML: add .vitra-spotlight to any card or container
+/*
+<div class="vitra-card vitra-spotlight">
+  Content with radial gradient following cursor
+</div>
+*/
+```
+
+### destroyAll
+
+```javascript
+// Tear down all modules (removes listeners, resets state)
+Vitra.destroyAll();
+```
+
 ### Tooltip Module
 
 ```javascript
@@ -397,7 +463,10 @@ npx esbuild src/vitra.js --bundle --outfile=dist/vitra.js --format=esm --tree-sh
 | `ripple` | ~0.5 KB | Click ripple effect |
 | `modal` | ~2 KB | Modal open/close, focus trap |
 | `tooltip` | ~2 KB | Tooltip show/hide, positioning |
-| **Full `Vitra`** | ~14 KB | All modules combined |
+| `toast` | ~1 KB | Toast notifications |
+| `dropdown` | ~1 KB | Dropdown menus with Popover API support |
+| `spotlight` | ~1 KB | Mouse-tracking radial gradient effect |
+| **Full `Vitra`** | ~15 KB | All modules combined |
 
 ---
 

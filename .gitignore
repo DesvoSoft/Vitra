@@ -1,8 +1,11 @@
 # ===========================================
-# GSD Workflow Files
+# AI / Claude Code / Serena
 # ===========================================
+.claude/
+.serena/
 .planning/
 agent/
+CLAUDE.md
 
 # ===========================================
 # Node.js
