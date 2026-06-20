@@ -7,8 +7,7 @@
   <meta name="color-scheme" content="dark light">
   <meta name="theme-color" content="#0a0a14">
   <title>Vitra CSS — Interactive Demo</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.6.0/dist/vitra.min.css" crossorigin="anonymous">
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.6.0/dist/vitra.min.css" crossorigin="anonymous">
   <link rel="stylesheet" href="demo.css">
 
   <style>
@@ -171,10 +170,10 @@
        ============================================================ -->
   <section id="quick-start" class="demo-section vitra-reveal">
     <div class="vitra-container">
-      <span class="vitra-badge vitra-badge-primary demo-qs-eyebrow">Get Started in 30 seconds</span>
-      <h2 class="demo-section-title vitra-mt-4">Drop in. No build step.</h2>
+      <span class="vitra-badge vitra-badge-primary demo-qs-eyebrow">Quick Start</span>
+      <h2 class="demo-section-title vitra-mt-4">Beautiful by default. Instant to ship.</h2>
       <p class="demo-section-desc vitra-text-secondary">
-        Vitra CSS is a zero-dependency glassmorphism framework. Paste two lines into your HTML and you're done — CSS handles the effects, JS adds interactivity.
+        Glassmorphism, cinematic animations, and a full design system — all in a single lightweight CSS file. Drop two lines into any HTML page and start building.
       </p>
 
       <div class="demo-qs-block">
@@ -348,12 +347,42 @@
 
       <!-- Theme Swatches -->
       <div class="theme-swatches" id="theme-swatches">
-        <button class="theme-swatch" data-theme-value="light" style="background: #f8f8fc; --swatch-border: #ccc;" title="Light"></button>
-        <button class="theme-swatch active" data-theme-value="dark" style="background: #0a0a14; --swatch-border: #333;" title="Dark"></button>
-        <button class="theme-swatch" data-theme-value="pastel" style="background: #1a0f1a; --swatch-border: #3a2a3a;" title="Pastel"></button>
-        <button class="theme-swatch" data-theme-value="neon" style="background: #050a0a; --swatch-border: #1a2a2a;" title="Neon"></button>
-        <button class="theme-swatch" data-theme-value="ocean" style="background: #080e14; --swatch-border: #1a2a3a;" title="Ocean"></button>
-        <button class="theme-swatch" data-theme-value="emerald" style="background: #080f0a; --swatch-border: #1a2a1a;" title="Emerald"></button>
+        <div class="theme-swatch-wrap">
+          <button class="theme-swatch" data-theme-value="light"
+            style="background: linear-gradient(135deg, hsl(168 10% 95%) 0%, hsl(168 40% 82%) 100%); --swatch-border: hsl(168 30% 70%);"
+            title="Light"></button>
+          <span class="theme-swatch-label">Light</span>
+        </div>
+        <div class="theme-swatch-wrap">
+          <button class="theme-swatch active" data-theme-value="dark"
+            style="background: linear-gradient(135deg, hsl(168 15% 5%) 0%, hsl(168 60% 28%) 100%); --swatch-border: hsl(168 50% 35%);"
+            title="Dark"></button>
+          <span class="theme-swatch-label">Dark</span>
+        </div>
+        <div class="theme-swatch-wrap">
+          <button class="theme-swatch" data-theme-value="pastel"
+            style="background: linear-gradient(135deg, hsl(300 30% 95%) 0%, hsl(320 65% 75%) 100%); --swatch-border: hsl(320 50% 68%);"
+            title="Pastel"></button>
+          <span class="theme-swatch-label">Pastel</span>
+        </div>
+        <div class="theme-swatch-wrap">
+          <button class="theme-swatch" data-theme-value="neon"
+            style="background: linear-gradient(135deg, hsl(260 30% 4%) 0%, hsl(180 100% 42%) 100%); --swatch-border: hsl(180 100% 45%);"
+            title="Neon"></button>
+          <span class="theme-swatch-label">Neon</span>
+        </div>
+        <div class="theme-swatch-wrap">
+          <button class="theme-swatch" data-theme-value="ocean"
+            style="background: linear-gradient(135deg, hsl(210 30% 5%) 0%, hsl(200 80% 45%) 100%); --swatch-border: hsl(200 70% 50%);"
+            title="Ocean"></button>
+          <span class="theme-swatch-label">Ocean</span>
+        </div>
+        <div class="theme-swatch-wrap">
+          <button class="theme-swatch" data-theme-value="emerald"
+            style="background: linear-gradient(135deg, hsl(160 20% 4%) 0%, hsl(155 75% 38%) 100%); --swatch-border: hsl(155 65% 42%);"
+            title="Emerald"></button>
+          <span class="theme-swatch-label">Emerald</span>
+        </div>
       </div>
 
       <div style="text-align: center; margin-top: var(--vitra-space-2);">

@@ -33,15 +33,23 @@
 
   // ==================== Hero Spotlight ====================
   function initHeroSpotlight() {
-    const hero = document.querySelector('.demo-hero');
+    var hero = document.querySelector('.demo-hero');
     if (!hero) return;
 
+    var _rafPending = false;
+    var _pendingX = 0, _pendingY = 0;
+
     hero.addEventListener('mousemove', function (e) {
-      const rect = this.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      this.style.setProperty('--spotlight-x', x + '%');
-      this.style.setProperty('--spotlight-y', y + '%');
+      var rect = hero.getBoundingClientRect();
+      _pendingX = ((e.clientX - rect.left) / rect.width) * 100;
+      _pendingY = ((e.clientY - rect.top) / rect.height) * 100;
+      if (_rafPending) return;
+      _rafPending = true;
+      requestAnimationFrame(function () {
+        hero.style.setProperty('--spotlight-x', _pendingX + '%');
+        hero.style.setProperty('--spotlight-y', _pendingY + '%');
+        _rafPending = false;
+      });
     });
   }
 
@@ -589,13 +597,69 @@
     });
   }
 
-  // ==================== Hero Particles ====================
-  window.spawnHeroParticles = function (btn) {
+  // ==================== Hero Particles + BSOD Prank ====================
+  var _heroClickCount = 0;
+  var _bsodActive = false;
+
+  var _btnLabels = [
+    'Spawn Particles',
+    'More! 🔥',
+    'EVEN MORE!! 💥',
+    'TOO MANY!!! ⚠️',
+    'SYSTEM OVERLOAD ☠️'
+  ];
+
+  function _triggerBSOD() {
+    if (_bsodActive) return;
+    _bsodActive = true;
+
+    var overlay = document.createElement('div');
+    overlay.id = 'demo-bsod';
+    overlay.innerHTML = [
+      '<div class="bsod-inner">',
+      '  <div class="bsod-emoji">:(</div>',
+      '  <h1 class="bsod-title">Your PC ran into a problem</h1>',
+      '  <p class="bsod-msg">Too many particles were spawned. We\'ll restart Vitra CSS for you.</p>',
+      '  <p class="bsod-code">PARTICLE_OVERFLOW_EXCEPTION</p>',
+      '  <div class="bsod-progress-wrap">',
+      '    <div class="bsod-bar"></div>',
+      '  </div>',
+      '  <p class="bsod-pct" id="bsod-pct">0% complete</p>',
+      '  <p class="bsod-footer">For more information visit <u>vitra.css/bsod</u></p>',
+      '</div>'
+    ].join('');
+    document.body.appendChild(overlay);
+
+    var pctEl = document.getElementById('bsod-pct');
+    var barEl = overlay.querySelector('.bsod-bar');
+    var pct = 0;
+    var ticker = setInterval(function () {
+      pct += Math.floor(Math.random() * 8) + 2;
+      if (pct >= 100) { pct = 100; clearInterval(ticker); }
+      pctEl.textContent = pct + '% complete';
+      barEl.style.width = pct + '%';
+    }, 80);
+
+    setTimeout(function () {
+      overlay.classList.add('bsod-fade-out');
+      setTimeout(function () {
+        overlay.remove();
+        _bsodActive = false;
+        _heroClickCount = 0;
+      }, 600);
+    }, 4000);
+  }
+
+  window.spawnHeroParticles = function () {
+    _heroClickCount++;
+    var counts = [8, 18, 35, 60, 90];
+    var count = counts[Math.min(_heroClickCount - 1, counts.length - 1)];
+
     Vitra.particles.destroy('.demo-hero');
-    var spawned = Vitra.particles.spawn(15, { container: '.demo-hero' });
-    if (spawned > 0 && btn) {
-      btn.textContent = 'Particles!';
-      setTimeout(function () { btn.textContent = 'Spawn Particles'; }, 1800);
+    Vitra.particles.spawn(count, { container: '.demo-hero' });
+
+    if (_heroClickCount >= 5) {
+      setTimeout(_triggerBSOD, 400);
     }
   };
 })();
