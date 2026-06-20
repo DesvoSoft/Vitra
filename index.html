@@ -7,7 +7,7 @@
   <meta name="color-scheme" content="dark light">
   <meta name="theme-color" content="#0a0a14">
   <title>Vitra CSS — Interactive Demo</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.1/dist/vitra.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.2/dist/vitra.min.css" crossorigin="anonymous">
   <link rel="stylesheet" href="demo.css">
 
   <style>
@@ -29,9 +29,9 @@
 
         <!-- Features dropdown -->
         <div class="vitra-dropdown demo-nav-dropdown">
-          <button class="vitra-navbar-link demo-nav-dropdown-btn" data-vitra-dropdown-toggle>
+          <button class="vitra-navbar-link demo-nav-dropdown-btn" data-vitra-dropdown-toggle aria-haspopup="true" aria-expanded="false">
             Features
-            <svg class="demo-nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            <svg class="demo-nav-chevron" aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </button>
           <div class="vitra-dropdown-menu demo-nav-dropdown-menu">
             <a href="#cinematic" class="vitra-dropdown-item">Cinematic</a>
@@ -47,9 +47,9 @@
 
         <!-- Components dropdown -->
         <div class="vitra-dropdown demo-nav-dropdown">
-          <button class="vitra-navbar-link demo-nav-dropdown-btn" data-vitra-dropdown-toggle>
+          <button class="vitra-navbar-link demo-nav-dropdown-btn" data-vitra-dropdown-toggle aria-haspopup="true" aria-expanded="false">
             Components
-            <svg class="demo-nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            <svg class="demo-nav-chevron" aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </button>
           <div class="vitra-dropdown-menu demo-nav-dropdown-menu">
             <a href="#components" class="vitra-dropdown-item">All Components</a>
@@ -70,10 +70,10 @@
       </div>
       <div class="vitra-navbar-actions">
         <div class="vitra-dropdown">
-          <button class="vitra-btn vitra-btn-glass vitra-btn-sm demo-theme-btn" data-vitra-dropdown-toggle>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <button class="vitra-btn vitra-btn-glass vitra-btn-sm demo-theme-btn" data-vitra-dropdown-toggle aria-haspopup="true" aria-expanded="false" aria-label="Switch theme">
+            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
             <span id="current-theme-name">Auto</span>
-            <svg class="dropdown-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            <svg class="dropdown-chevron" aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </button>
           <div class="vitra-dropdown-menu">
             <button class="vitra-dropdown-item theme-dropdown-item" data-theme-value="light">Light</button>
@@ -146,7 +146,7 @@
     <div class="vitra-glow-orb vitra-glow-orb-2"></div>
     <div class="vitra-glow-orb vitra-glow-orb-3"></div>
     <div class="vitra-container vitra-text-center">
-      <p class="demo-hero-badge vitra-badge vitra-badge-primary">v1.7.1</p>
+      <p class="demo-hero-badge vitra-badge vitra-badge-primary">v1.7.2</p>
       <h1 class="vitra-gradient-text demo-hero-title">Vitra CSS</h1>
       <p class="vitra-text-xl vitra-text-secondary demo-hero-sub" style="max-width: 600px; margin-left: auto; margin-right: auto;">
         A premium glassmorphism framework with cinematic effects, modern CSS APIs, and obsessive attention to detail.
@@ -179,7 +179,7 @@
       <div class="demo-qs-block">
         <div class="demo-qs-label">1. Add the stylesheet</div>
         <div class="demo-qs-code-wrap">
-          <pre class="demo-qs-code" data-copy='<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.1/dist/vitra.min.css">'><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.1/dist/vitra.min.css"&gt;</code></pre>
+          <pre class="demo-qs-code" data-copy='<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.2/dist/vitra.min.css">'><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.2/dist/vitra.min.css"&gt;</code></pre>
           <button class="demo-qs-copy vitra-btn vitra-btn-ghost vitra-btn-sm">Copy</button>
         </div>
       </div>
@@ -187,7 +187,7 @@
       <div class="demo-qs-block">
         <div class="demo-qs-label">2. Add the script (optional — for modals, tooltips, particles, toasts, dropdowns &amp; more)</div>
         <div class="demo-qs-code-wrap">
-          <pre class="demo-qs-code" data-copy='<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.1/dist/vitra.min.js"></script>'><code>&lt;script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.1/dist/vitra.min.js"&gt;&lt;/script&gt;</code></pre>
+          <pre class="demo-qs-code" data-copy='<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.2/dist/vitra.min.js"></script>'><code>&lt;script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.2/dist/vitra.min.js"&gt;&lt;/script&gt;</code></pre>
           <button class="demo-qs-copy vitra-btn vitra-btn-ghost vitra-btn-sm">Copy</button>
         </div>
       </div>
@@ -207,21 +207,21 @@
 <html data-theme="auto">
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.1/dist/vitra.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.2/dist/vitra.min.css">
 </head>
 <body>
   <div class="vitra-card vitra-glass">Hello, Vitra!</div>
-  <script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.1/dist/vitra.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.2/dist/vitra.min.js"></script>
 </body>
 </html>'><code>&lt;!DOCTYPE html&gt;
 &lt;html data-theme="auto"&gt;
 &lt;head&gt;
   &lt;meta charset="UTF-8"&gt;
-  &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.1/dist/vitra.min.css"&gt;
+  &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.2/dist/vitra.min.css"&gt;
 &lt;/head&gt;
 &lt;body&gt;
   &lt;div class="vitra-card vitra-glass"&gt;Hello, Vitra!&lt;/div&gt;
-  &lt;script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.1/dist/vitra.min.js"&gt;&lt;/script&gt;
+  &lt;script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.2/dist/vitra.min.js"&gt;&lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
           <button class="demo-qs-copy vitra-btn vitra-btn-ghost vitra-btn-sm">Copy</button>
@@ -229,7 +229,7 @@
       </div>
 
       <p class="demo-qs-note vitra-text-secondary">
-        That's it — no build step, no configuration. <a href="https://github.com/DesvoSoft/Vitra" class="vitra-link" target="_blank" rel="noopener">GitHub →</a>
+        That's it — no build step, no configuration. <a href="https://github.com/DesvoSoft/Vitra" class="vitra-link" target="_blank" rel="noopener noreferrer">GitHub →</a>
       </p>
     </div>
   </section>
@@ -1113,7 +1113,7 @@
           <p class="footer-tagline">
             A high-end glassmorphism framework for modern web experiences. Engineered for performance and elegance.
           </p>
-          <a href="https://github.com/DesvoSoft/Vitra" class="vitra-btn vitra-btn-glass vitra-btn-sm footer-github-btn" target="_blank" rel="noopener">
+          <a href="https://github.com/DesvoSoft/Vitra" class="vitra-btn vitra-btn-glass vitra-btn-sm footer-github-btn" target="_blank" rel="noopener noreferrer">
             GitHub →
           </a>
         </div>
@@ -1131,20 +1131,20 @@
         <div class="footer-links">
           <h4>Resources</h4>
           <ul>
-            <li><a href="https://github.com/DesvoSoft/Vitra" target="_blank" rel="noopener">Integration Guide</a></li>
+            <li><a href="https://github.com/DesvoSoft/Vitra" target="_blank" rel="noopener noreferrer">Integration Guide</a></li>
             <li><a href="docs/themes.md">Themes Guide</a></li>
-            <li><a href="https://github.com/DesvoSoft/Vitra" target="_blank" rel="noopener">GitHub</a></li>
+            <li><a href="https://github.com/DesvoSoft/Vitra" target="_blank" rel="noopener noreferrer">GitHub</a></li>
           </ul>
         </div>
       </div>
       <div class="footer-bottom">
-        <span>© 2026 DesvoSoft — Vitra CSS v1.7.1</span>
+        <span>© 2026 DesvoSoft — Vitra CSS v1.7.2</span>
       </div>
     </div>
   </footer>
 
   <!-- Framework JS -->
-  <script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.1/dist/vitra.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.2/dist/vitra.min.js" crossorigin="anonymous"></script>
   <script src="demo.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
