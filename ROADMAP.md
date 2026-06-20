@@ -1,6 +1,6 @@
 # Vitra CSS Framework — Roadmap
 
-**Current version:** v1.6  
+**Current version:** v1.7.2  
 **Last updated:** 2026-06-19
 
 ---
@@ -48,60 +48,64 @@
 - `aria-live` announcer for theme changes
 - `focus-visible` on all interactive components
 
-### v1.5 — Demo Interactiva
-- Full interactive demo (`index.html`, `demo.css`, `demo.js`)
-- Live theme switcher, particle controls, component showcase
-- Zero external dependencies
+### v1.5 — CSS Shader Components
+- Pure-CSS shader effects: noise overlay, shape morphing, progress rings, gradient rotate borders
+- Scroll-driven reveals, material ripple, `@layer shaders` added to layer stack
+- Interactive demo site (`index.html`, `demo.css`, `demo.js`)
 
 ### v1.6 — Technical Cleanup
 - `will-change` audit — removed from non-animating elements
 - Orphaned styles in `tooltip::before` removed
 - Build pipeline verified (lightningcss + esbuild)
 
----
+### v1.7 — Audit & Quality Pass ✅
+- Full code audit across all CSS and JS
+- Branch architecture fixed: `demo` branch now CDN-only, no `dist/` in demo
+- GitHub Pages fixed: `.nojekyll` added to prevent Jekyll stripping CSS
 
-## Active Bugs (v1.6)
+**CSS fixes:**
+- `navbar-glass`, `drawer-glass`, `dropdown-menu`, `tooltip`, `toast` — all replaced hardcoded dark `hsl(240deg 15% ...)` with `--vitra-glass-bg` tokens
+- Added `@supports (backdrop-filter)` guards to all glass components (dropdown, tooltip, toast, navbar, drawer)
+- `dropdown-item` hover — replaced hardcoded white with `--vitra-color-surface-hover`
+- `_watchSystemTheme` — listener deduplication (B8 ✅)
 
-Issues identified in audit — pending fix in v1.7:
+**JS fixes:**
+- `ripple.destroy()` — now actually removes listener; guard prevents double-init (B8-adjacent ✅)
+- `data-config` theme string — was silently dropped; now correctly passed as `{ default: value }` ✅
+- `_setupFocusTrap` — collapsed redundant `querySelectorAll` + `Array.from` to one call ✅
+- `dropdown` — `aria-expanded` now synced on toggle and close-others, both popover and fallback paths ✅
 
-| # | File | Issue |
-|---|------|-------|
-| B1 | `vitra.js:361` | `particles.init()` passes DOM element instead of CSS selector to `spawn()` |
-| B2 | `vitra.js:436` | Reveal stagger uses `entries` index (non-DOM order) instead of element order |
-| B3 | `vitra.js:722` | Focus trap `keydown` listener accumulates on each modal open |
-| B4 | `vitra.js:863` | Tooltip position ignores `window.scrollY`/`scrollX` — wrong position on scroll |
-| B5 | `06-components.css:105` | Invalid `rgb(var(), 0.x)` syntax in `.vitra-btn-solid` hover shadow |
-| B6 | `06-components.css:675` | Same invalid `rgb()` syntax in `.vitra-drawer-link.active` |
-| B7 | `06-components.css:269` | Orphaned `}` in card `prefers-reduced-motion` block |
-| B8 | `vitra.js:173` | `_watchSystemTheme` accumulates listeners on repeat calls |
-| B9 | `04-motion.css:143` | `.vitra-reveal-scale` uses `vitra-fade-up` instead of a scale keyframe |
-
----
-
-## v1.7 — Bug Fix Release (Next)
-
-**Goal:** Resolve all active bugs from audit.
-
-- Fix particle `container` type mismatch (B1)
-- Fix reveal stagger ordering (B2)
-- Fix modal focus trap listener leak (B3)
-- Fix tooltip scroll offset (B4)
-- Fix invalid `rgb()` CSS syntax (B5, B6)
-- Fix orphaned `}` in components (B7)
-- Deduplicate `_watchSystemTheme` listeners (B8)
-- Fix `.vitra-reveal-scale` keyframe (B9)
-- Fix `tooltip._positionTooltip` reference — uses `tooltip` local before declaration
-- Add `window.scrollY/X` correction to tooltip positioning
+**Demo fixes:**
+- Dropdown overflow clipped (`overflow: hidden` + `max-width`)
+- `aria-haspopup`, `aria-expanded`, `aria-hidden`, `aria-label` on all nav elements
+- `rel="noopener noreferrer"` on all external links
+- Version badge, footer, and QS code blocks updated
 
 ---
 
-## v1.8 — Polish & DX
+## Known Open Issues
 
+| # | Priority | Area | Issue |
+|---|----------|------|-------|
+| R1 | Medium | `src/vitra.js` | Tooltip ignores `window.scrollY/scrollX` — wrong position when page scrolled |
+| R2 | Medium | `src/vitra.js` | Modal focus trap `keydown` listener can stack if modal opens without full close cycle |
+| R3 | Low | `src/vitra.js` | Reveal stagger uses observation order, not DOM order — wrong on complex layouts |
+| R4 | Low | `src/vitra.js` | `particles.init()` passes DOM element to `spawn()` in auto-init path — should be selector or type-guarded |
+| R5 | Low | `src/04-motion.css` | `.vitra-reveal-scale` uses `vitra-fade-up` keyframe instead of a scale keyframe |
+| R6 | Low | `src/vitra.js` | Tooltip expands DOM nodes with `._vitraTooltipInstance` — `WeakMap` preferred |
+| D1 | Medium | demo | Heavy particle/cinematic sections not paused off-screen — can drop frames on mobile |
+| D2 | Low | demo | `demo.js` parses CSS custom props with string replace — breaks on nested vars |
+
+---
+
+## v1.8 — Polish & DX (Next)
+
+- Fix tooltip scroll offset (R1)
+- Fix modal focus trap stacking (R2)
 - `--vitra-color-accent-rgb` token for consumers using `rgb()` notation
-- `Vitra.toast`, `Vitra.dropdown`, `Vitra.spotlight` documented in integration guide
-- `WeakMap` for tooltip target → element mapping (replace DOM property expansion)
-- Theme count: add missing `earth`, `mono`, `midnight` themes OR remove from docs
-- `ripple.destroy()` removes global click listener
+- Document `Vitra.toast`, `Vitra.dropdown`, `Vitra.spotlight` in integration guide
+- `WeakMap` for tooltip target → element mapping (R6)
+- Demo performance: `IntersectionObserver` to pause off-screen effects (D1)
 
 ---
 
@@ -111,7 +115,7 @@ Issues identified in audit — pending fix in v1.7:
 - CSS Layers exposed for consumer override documentation
 - CSS custom properties for animation durations per-component
 - `Vitra.destroyAll()` comprehensive teardown
-- Potential CDN distribution
+- npm publish for shorter CDN URLs (`cdn.jsdelivr.net/npm/vitra-css@latest/...`)
 
 ---
 
