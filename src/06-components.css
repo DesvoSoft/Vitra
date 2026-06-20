@@ -443,10 +443,16 @@
   }
 
   .vitra-navbar-glass {
-    background: hsl(var(--vitra-color-accent-h) 20% 5% / 70%);
-    backdrop-filter: blur(var(--vitra-blur-md));
-    border-bottom-color: hsl(0deg 0% 100% / 10%);
+    background: var(--vitra-glass-bg-fallback);
+    border-bottom-color: var(--vitra-color-border);
     z-index: 100;
+  }
+
+  @supports (backdrop-filter: blur(1px)) {
+    .vitra-navbar-glass {
+      background: var(--vitra-glass-bg);
+      backdrop-filter: blur(var(--vitra-blur-md));
+    }
   }
 
   /* --- NAVBAR BRAND --- */
@@ -598,12 +604,12 @@
 
   /* Drawer glass variant */
   .vitra-drawer-glass {
-    background: var(--vitra-color-surface);
+    background: var(--vitra-glass-bg-fallback);
   }
 
   @supports (backdrop-filter: blur(4px)) {
     .vitra-drawer-glass {
-      background: rgb(255 255 255 / 8%);
+      background: var(--vitra-glass-bg);
       backdrop-filter: blur(var(--vitra-blur-md));
     }
   }
