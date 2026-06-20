@@ -1081,12 +1081,16 @@ const Vitra = (() => {
         if (toggle) {
           e.preventDefault();
           menu.togglePopover();
+          const isOpen = menu.matches(':popover-open');
+          toggle.setAttribute('aria-expanded', String(isOpen));
         }
       } else {
         // Fallback: close all other dropdowns
         document.querySelectorAll('.vitra-dropdown.open').forEach(dd => {
           if (!toggle || dd !== dropdown) {
             dd.classList.remove('open');
+            const btn = dd.querySelector('[data-vitra-dropdown-toggle]');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
           }
         });
 
@@ -1094,6 +1098,8 @@ const Vitra = (() => {
           e.preventDefault();
           if (dropdown) {
             dropdown.classList.toggle('open');
+            const isOpen = dropdown.classList.contains('open');
+            toggle.setAttribute('aria-expanded', String(isOpen));
           }
         }
       }

@@ -759,17 +759,23 @@ var require_vitra = __commonJS({
             if (toggle) {
               e.preventDefault();
               menu.togglePopover();
+              const isOpen = menu.matches(":popover-open");
+              toggle.setAttribute("aria-expanded", String(isOpen));
             }
           } else {
             document.querySelectorAll(".vitra-dropdown.open").forEach((dd) => {
               if (!toggle || dd !== dropdown2) {
                 dd.classList.remove("open");
+                const btn = dd.querySelector("[data-vitra-dropdown-toggle]");
+                if (btn) btn.setAttribute("aria-expanded", "false");
               }
             });
             if (toggle) {
               e.preventDefault();
               if (dropdown2) {
                 dropdown2.classList.toggle("open");
+                const isOpen = dropdown2.classList.contains("open");
+                toggle.setAttribute("aria-expanded", String(isOpen));
               }
             }
           }
