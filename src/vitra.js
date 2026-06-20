@@ -554,11 +554,11 @@ const Vitra = (() => {
   // =========================================================================
 
   const ripple = (() => {
-    /**
-     * Initialize ripple on all .vitra-ripple elements
-     */
+    let _clickHandler = null;
+
     const init = () => {
-      document.addEventListener('click', (e) => {
+      if (_clickHandler) return;
+      _clickHandler = (e) => {
         const target = e.target.closest('.vitra-ripple');
         if (!target) return;
 
@@ -575,17 +575,16 @@ const Vitra = (() => {
         span.style.top = `${y}px`;
 
         target.appendChild(span);
-        span.addEventListener('animationend', () => {
-          span.remove();
-        });
-      });
+        span.addEventListener('animationend', () => span.remove(), { once: true });
+      };
+      document.addEventListener('click', _clickHandler);
     };
 
-    /**
-     * Destroy ripple - cleanup is handled by animationend
-     */
     const destroy = () => {
-      // No-op: event listener is global, lifecycle managed by animationend
+      if (_clickHandler) {
+        document.removeEventListener('click', _clickHandler);
+        _clickHandler = null;
+      }
     };
 
     return { init, destroy };
@@ -1173,7 +1172,9 @@ const Vitra = (() => {
 
       // 1. Theme Configuration
       if (config.theme) {
-        const themeOptions = typeof config.theme === 'object' ? config.theme : {};
+        const themeOptions = typeof config.theme === 'object'
+          ? config.theme
+          : (typeof config.theme === 'string' ? { default: config.theme } : {});
         Vitra.theme.init(themeOptions);
       }
 

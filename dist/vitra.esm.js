@@ -405,8 +405,10 @@ var require_vitra = __commonJS({
         };
       })();
       const ripple = /* @__PURE__ */ (() => {
+        let _clickHandler = null;
         const init = () => {
-          document.addEventListener("click", (e) => {
+          if (_clickHandler) return;
+          _clickHandler = (e) => {
             const target = e.target.closest(".vitra-ripple");
             if (!target) return;
             const rect = target.getBoundingClientRect();
@@ -420,12 +422,15 @@ var require_vitra = __commonJS({
             span.style.left = `${x}px`;
             span.style.top = `${y}px`;
             target.appendChild(span);
-            span.addEventListener("animationend", () => {
-              span.remove();
-            });
-          });
+            span.addEventListener("animationend", () => span.remove(), { once: true });
+          };
+          document.addEventListener("click", _clickHandler);
         };
         const destroy = () => {
+          if (_clickHandler) {
+            document.removeEventListener("click", _clickHandler);
+            _clickHandler = null;
+          }
         };
         return { init, destroy };
       })();
@@ -823,7 +828,7 @@ var require_vitra = __commonJS({
         try {
           const config = JSON.parse(el.getAttribute("data-config"));
           if (config.theme) {
-            const themeOptions = typeof config.theme === "object" ? config.theme : {};
+            const themeOptions = typeof config.theme === "object" ? config.theme : typeof config.theme === "string" ? { default: config.theme } : {};
             Vitra.theme.init(themeOptions);
           }
           if (config.particles) {
