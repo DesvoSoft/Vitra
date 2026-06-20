@@ -3062,10 +3062,9 @@
     content: attr(data-tooltip);
     position: absolute;
     z-index: 9999;
-    background-color: hsl(240deg 15% 4% / 90%);
-    backdrop-filter: blur(var(--vitra-blur-md));
+    background-color: var(--vitra-glass-bg-fallback);
     color: var(--vitra-color-text-primary);
-    border: 1px solid hsl(0deg 0% 100% / 10%);
+    border: 1px solid var(--vitra-color-border);
     border-radius: var(--vitra-radius-md);
     padding: var(--vitra-space-1) var(--vitra-space-3);
     font-size: var(--vitra-font-size-sm);
@@ -3096,6 +3095,13 @@
     .vitra-slider-thumb,
     .vitra-slider-scroll-item {
       transition: none;
+    }
+  }
+
+  @supports (backdrop-filter: blur(1px)) {
+    .vitra-tooltip::before {
+      background-color: var(--vitra-glass-bg);
+      backdrop-filter: blur(var(--vitra-blur-md));
     }
   }
 
@@ -3446,9 +3452,8 @@
   }
 
   .vitra-toast {
-    background: hsl(240deg 15% 8% / 85%);
-    backdrop-filter: blur(var(--vitra-blur-md));
-    border: 1px solid hsl(0deg 0% 100% / 10%);
+    background: var(--vitra-glass-bg-fallback);
+    border: 1px solid var(--vitra-color-border);
     border-radius: var(--vitra-radius-md);
     padding: var(--vitra-space-3) var(--vitra-space-4);
     color: var(--vitra-color-text-primary);
@@ -3481,6 +3486,13 @@
   .vitra-toast-error { border-left: 4px solid var(--vitra-color-error); }
   .vitra-toast-info { border-left: 4px solid var(--vitra-color-info); }
 
+  @supports (backdrop-filter: blur(1px)) {
+    .vitra-toast {
+      background: var(--vitra-glass-bg);
+      backdrop-filter: blur(var(--vitra-blur-md));
+    }
+  }
+
   /* ============================================
       DROPDOWNS (COMP-11)
       Custom UI Dropdowns
@@ -3497,9 +3509,8 @@
     top: calc(100% + var(--vitra-space-2));
     left: 0;
     min-width: 200px;
-    background: hsl(240deg 15% 8% / 90%);
-    backdrop-filter: blur(var(--vitra-blur-lg));
-    border: 1px solid hsl(0deg 0% 100% / 10%);
+    background: var(--vitra-glass-bg-fallback);
+    border: 1px solid var(--vitra-color-border);
     border-radius: var(--vitra-radius-md);
     box-shadow: var(--vitra-shadow-elevated);
     padding: var(--vitra-space-2) 0;
@@ -3552,9 +3563,17 @@
 
   .vitra-dropdown-item:hover,
   .vitra-dropdown-item:focus-visible {
-    background: hsl(0deg 0% 100% / 8%);
+    background: var(--vitra-color-surface-hover);
     color: var(--vitra-color-text-primary);
     outline: none;
+  }
+
+  @supports (backdrop-filter: blur(1px)) {
+    .vitra-dropdown-menu,
+    .vitra-dropdown-menu[popover] {
+      background: var(--vitra-glass-bg);
+      backdrop-filter: blur(var(--vitra-blur-lg));
+    }
   }
 
   /* ============================================
