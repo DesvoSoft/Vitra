@@ -1,9 +1,15 @@
 # Vitra CSS - Interactive Demo
 
-This branch (`demo`) contains the source code for the interactive Vitra CSS demo website.
+This branch (`demo`) contains the source for the interactive Vitra CSS demo website, hosted on GitHub Pages.
 
-The demo imports the core framework via CDN (jsDelivr) and showcases all the components, animations, and features of the framework.
+The demo loads the framework via CDN (jsDelivr) — no build step needed.
 
-> **Note:** The core framework source code, documentation, and build scripts are maintained in the `main` branch. 
+> **Framework source code**, docs, and build scripts are in the `main` branch.
 
-Visit the live demo: [https://desvosoft.github.io/Vitra/](https://desvosoft.github.io/Vitra/)
+**CDN (v1.7.1):**
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.1/dist/vitra.min.css" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.1/dist/vitra.min.js" crossorigin="anonymous" defer></script>
+```
+
+Live demo: [https://desvosoft.github.io/Vitra/](https://desvosoft.github.io/Vitra/)

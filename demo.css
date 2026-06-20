@@ -533,6 +533,8 @@ html[data-theme="pastel"] .demo-hero h1.demo-hero-title {
 /* Dropdown menu — theme-adaptive contrast */
 .demo-nav-dropdown-menu {
   min-width: 180px;
+  max-width: 220px;
+  overflow: hidden;
   border-color: var(--vitra-color-border);
   color: var(--vitra-color-text-primary);
 }
