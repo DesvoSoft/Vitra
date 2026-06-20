@@ -519,8 +519,7 @@ var require_vitra = __commonJS({
             "select:not([disabled])",
             '[tabindex]:not([tabindex="-1"])'
           ].join(", ");
-          _focusableElements = modalEl.querySelectorAll(focusableSelectors);
-          _focusableElements = Array.from(_focusableElements);
+          _focusableElements = Array.from(modalEl.querySelectorAll(focusableSelectors));
           if (_focusableElements.length === 0) return;
           _firstFocusable = _focusableElements[0];
           _lastFocusable = _focusableElements[_focusableElements.length - 1];

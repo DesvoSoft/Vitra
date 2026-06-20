@@ -2579,7 +2579,7 @@
     /* Radial gradient backdrop — more premium than flat black */
     background: radial-gradient(ellipse at 50% 40%, rgb(0 0 0 / 45%), rgb(0 0 0 / 72%));
     backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
 
     /* Ensure overlay appears above all content */
     z-index: 1000;
@@ -2630,7 +2630,7 @@
   .vitra-modal-content {
     background: hsl(var(--vitra-color-accent-h) 14% 5% / 96%);
     backdrop-filter: blur(var(--vitra-blur-xl));
-    -webkit-backdrop-filter: blur(var(--vitra-blur-xl));
+    backdrop-filter: blur(var(--vitra-blur-xl));
     border: 1px solid hsl(var(--vitra-color-accent-h) 40% 70% / 10%);
     border-top-color: hsl(var(--vitra-color-accent-h) 40% 70% / 22%);
     border-radius: var(--vitra-radius-xl);
