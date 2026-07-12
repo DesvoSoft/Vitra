@@ -29,4 +29,25 @@
     --vitra-scenery-opacity-mid: 0.45;
     --vitra-scenery-opacity-near: 0.55;
   }
+
+  /* --- ROOT CONTAINERS --- */
+
+  /* Full-page fixed ambient backdrop, sits behind all content */
+  .vitra-scenery {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  /* Container-scoped variant: drop into any position:relative;
+     overflow:hidden host (hero section, large card) */
+  .vitra-scenery-inline {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
 }
