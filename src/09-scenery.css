@@ -50,4 +50,53 @@
     pointer-events: none;
     z-index: 0;
   }
+
+  /* --- SKY LAYER --- */
+
+  /* Full-bleed gradient base, theme-derived hue */
+  .vitra-scenery-sky {
+    position: absolute;
+    inset: -10%;
+    background: linear-gradient(
+      175deg,
+      var(--vitra-color-bg) 0%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 12% / 60%) 55%,
+      var(--vitra-color-bg) 100%
+    );
+  }
+
+  /* --- HALO LAYER --- */
+
+  /* Diffuse light source (sun/moon-like), slow opacity drift */
+  .vitra-scenery-halo {
+    position: absolute;
+    top: -20%;
+    left: 50%;
+    width: 70%;
+    aspect-ratio: 1;
+    translate: -50% 0;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      hsl(var(--vitra-scenery-hue) var(--vitra-scenery-sat) 70% / 40%) 0%,
+      hsl(var(--vitra-scenery-hue) var(--vitra-scenery-sat) 70% / 0%) 70%
+    );
+    filter: blur(var(--vitra-scenery-blur-mid));
+    animation: vitra-scenery-halo-drift calc(18s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
+    will-change: opacity;
+  }
+
+  @keyframes vitra-scenery-halo-drift {
+    0% { opacity: 0.6; }
+    100% { opacity: 1; }
+  }
+
+  /* --- ACCESSIBILITY: Reduced Motion --- */
+
+  @media (prefers-reduced-motion: reduce) {
+    .vitra-scenery-halo {
+      animation: none;
+      opacity: 0.8;
+    }
+  }
 }
