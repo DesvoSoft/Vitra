@@ -14,6 +14,7 @@ const sourceFiles = [
   '02-glass.css',     // Glass layer
   '03-particles.css', // Particles layer
   '04-motion.css',    // Motion layer
+  '09-scenery.css',   // Scenery layer (ambient blob-landscape backdrop)
   '05-layout.css',    // Layout layer
   '06-components.css', // Components layer
   '07-utilities.css',  // Utilities layer

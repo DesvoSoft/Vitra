@@ -1,0 +1,32 @@
+/* 09-scenery.css - Ambient Scenery System */
+
+/* Part of Vitra CSS Framework */
+
+/* ============================================
+   SCENERY LAYER - Vitra CSS Framework
+   CSS-only ambient blob-landscape backdrop.
+   Gives .vitra-glass panels a "window onto a
+   scene" feel instead of a flat color fill.
+   Six layers: sky, halo, ridge-far/mid/near, grain.
+   ============================================ */
+
+@layer scenery {
+  :root {
+    /* --- SCENERY COLOR TOKENS (derived from theme accent) --- */
+    --vitra-scenery-hue: var(--vitra-color-accent-h);
+    --vitra-scenery-sat: var(--vitra-color-accent-s);
+
+    /* --- SCENERY MOTION TOKENS --- */
+    --vitra-scenery-speed: 1;
+
+    /* --- SCENERY BLUR TOKENS --- */
+    --vitra-scenery-blur-far: 60px;
+    --vitra-scenery-blur-mid: 40px;
+    --vitra-scenery-blur-near: 24px;
+
+    /* --- SCENERY OPACITY TOKENS --- */
+    --vitra-scenery-opacity-far: 0.35;
+    --vitra-scenery-opacity-mid: 0.45;
+    --vitra-scenery-opacity-near: 0.55;
+  }
+}

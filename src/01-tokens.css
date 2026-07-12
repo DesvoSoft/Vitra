@@ -4,10 +4,8 @@
 
 /* Phase 1: Tokens & Themes - Plan 01 */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap');
-
 /* Define cascade layer order */
-@layer tokens, glass, particles, layout, motion, components, utilities, shaders;
+@layer tokens, glass, particles, motion, scenery, layout, components, utilities, shaders;
 
 /* Tokens layer - immutable design tokens */
 @layer tokens {
