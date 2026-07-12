@@ -91,12 +91,81 @@
     100% { opacity: 1; }
   }
 
+  /* --- RIDGE LAYERS (blob landscape, back to front) --- */
+
+  .vitra-scenery-ridge-far {
+    position: absolute;
+    bottom: -15%;
+    left: -10%;
+    width: 130%;
+    height: 55%;
+    background:
+      radial-gradient(ellipse 40% 60% at 20% 100%, hsl(var(--vitra-scenery-hue) var(--vitra-scenery-sat) 30% / var(--vitra-scenery-opacity-far)) 0%, transparent 70%),
+      radial-gradient(ellipse 35% 50% at 55% 100%, hsl(calc(var(--vitra-scenery-hue) + 20) var(--vitra-scenery-sat) 25% / var(--vitra-scenery-opacity-far)) 0%, transparent 70%),
+      radial-gradient(ellipse 45% 65% at 85% 100%, hsl(calc(var(--vitra-scenery-hue) - 15) var(--vitra-scenery-sat) 28% / var(--vitra-scenery-opacity-far)) 0%, transparent 70%);
+    filter: blur(var(--vitra-scenery-blur-far));
+    animation: vitra-scenery-drift-far calc(55s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
+    will-change: transform;
+  }
+
+  @keyframes vitra-scenery-drift-far {
+    0% { transform: translateX(-2%) scale(1); }
+    100% { transform: translateX(2%) scale(1.05); }
+  }
+
+  .vitra-scenery-ridge-mid {
+    position: absolute;
+    bottom: -10%;
+    left: -8%;
+    width: 120%;
+    height: 42%;
+    background:
+      radial-gradient(ellipse 32% 55% at 10% 100%, hsl(calc(var(--vitra-scenery-hue) + 10) var(--vitra-scenery-sat) 32% / var(--vitra-scenery-opacity-mid)) 0%, transparent 72%),
+      radial-gradient(ellipse 38% 60% at 48% 100%, hsl(var(--vitra-scenery-hue) var(--vitra-scenery-sat) 35% / var(--vitra-scenery-opacity-mid)) 0%, transparent 72%),
+      radial-gradient(ellipse 30% 50% at 82% 100%, hsl(calc(var(--vitra-scenery-hue) - 10) var(--vitra-scenery-sat) 30% / var(--vitra-scenery-opacity-mid)) 0%, transparent 72%);
+    filter: blur(var(--vitra-scenery-blur-mid));
+    animation: vitra-scenery-drift-mid calc(38s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
+    will-change: transform;
+  }
+
+  @keyframes vitra-scenery-drift-mid {
+    0% { transform: translateX(2%) scale(1.03); }
+    100% { transform: translateX(-2.5%) scale(1); }
+  }
+
+  .vitra-scenery-ridge-near {
+    position: absolute;
+    bottom: -8%;
+    left: -5%;
+    width: 110%;
+    height: 30%;
+    background:
+      radial-gradient(ellipse 28% 60% at 15% 100%, hsl(var(--vitra-scenery-hue) var(--vitra-scenery-sat) 40% / var(--vitra-scenery-opacity-near)) 0%, transparent 75%),
+      radial-gradient(ellipse 34% 65% at 60% 100%, hsl(calc(var(--vitra-scenery-hue) + 8) var(--vitra-scenery-sat) 38% / var(--vitra-scenery-opacity-near)) 0%, transparent 75%),
+      radial-gradient(ellipse 26% 55% at 92% 100%, hsl(calc(var(--vitra-scenery-hue) - 8) var(--vitra-scenery-sat) 36% / var(--vitra-scenery-opacity-near)) 0%, transparent 75%);
+    filter: blur(var(--vitra-scenery-blur-near));
+    animation: vitra-scenery-drift-near calc(26s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
+    will-change: transform;
+  }
+
+  @keyframes vitra-scenery-drift-near {
+    0% { transform: translateX(-1.5%) scale(1); }
+    100% { transform: translateX(1.5%) scale(1.04); }
+  }
+
   /* --- ACCESSIBILITY: Reduced Motion --- */
 
   @media (prefers-reduced-motion: reduce) {
     .vitra-scenery-halo {
       animation: none;
       opacity: 0.8;
+    }
+
+    .vitra-scenery-ridge-far,
+    .vitra-scenery-ridge-mid,
+    .vitra-scenery-ridge-near {
+      animation: none;
+      transform: none;
     }
   }
 }
