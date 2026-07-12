@@ -168,4 +168,40 @@
       transform: none;
     }
   }
+
+  /* --- GRAIN LAYER --- */
+
+  /* Subtle noise texture, breaks up gradient banding.
+     Data-URI SVG feTurbulence, no external asset. */
+  .vitra-scenery-grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-repeat: repeat;
+  }
+
+  /* Grain relies on mix-blend-mode; skip entirely where unsupported
+     rather than render a flat noisy rectangle over the scene */
+  @supports not (mix-blend-mode: overlay) {
+    .vitra-scenery-grain {
+      display: none;
+    }
+  }
+
+  /* --- MOBILE PERFORMANCE --- */
+
+  /* Reduce blur cost and drop the least-visible layer on small viewports */
+  @media (width <= 768px) {
+    :root {
+      --vitra-scenery-blur-far: 30px;
+      --vitra-scenery-blur-mid: 22px;
+      --vitra-scenery-blur-near: 14px;
+    }
+
+    .vitra-scenery-ridge-far {
+      display: none;
+    }
+  }
 }
