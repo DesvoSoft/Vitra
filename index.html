@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vitra CSS Demo</title>
+  <link rel="stylesheet" href="dist/vitra.css">
+  <style>
+    body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: sans-serif; }
+    .demo-panel { max-width: 32rem; padding: 2.5rem; text-align: center; }
+    .demo-panel h1 { margin-top: 0; }
+    select { margin-top: 1.5rem; }
+  </style>
+</head>
+<body>
+  <div class="vitra-scenery" aria-hidden="true">
+    <div class="vitra-scenery-sky"></div>
+    <div class="vitra-scenery-halo"></div>
+    <div class="vitra-scenery-ridge-far"></div>
+    <div class="vitra-scenery-ridge-mid"></div>
+    <div class="vitra-scenery-ridge-near"></div>
+    <div class="vitra-scenery-grain"></div>
+  </div>
+
+  <div class="vitra-glass demo-panel">
+    <h1>Vitra CSS</h1>
+    <p>Glassmorphism, ambient scenery, particles, and motion — CSS-only, zero dependencies.</p>
+    <label for="theme-picker">Theme:</label>
+    <select id="theme-picker" onchange="document.documentElement.setAttribute('data-theme', this.value)">
+      <option value="dark" selected>Dark</option>
+      <option value="light">Light</option>
+      <option value="pastel">Pastel</option>
+      <option value="neon">Neon</option>
+      <option value="ocean">Ocean</option>
+      <option value="emerald">Emerald</option>
+      <option value="auto">Auto</option>
+    </select>
+  </div>
+
+  <script src="dist/vitra.js"></script>
+</body>
+</html>

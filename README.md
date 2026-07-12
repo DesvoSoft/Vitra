@@ -139,6 +139,35 @@ Vitra.particles.spawn(15, {
 </div>
 ```
 
+### Scenery — Ambient Blob Landscape (CSS-only, no JS needed)
+
+Six-layer ambient backdrop that turns `.vitra-glass` panels into an actual window onto a scene, instead of a translucent card floating on a flat color. Colors derive automatically from the active theme's accent hue. Continuous slow drift, respects `prefers-reduced-motion`, drops the farthest layer on mobile for performance.
+
+```html
+<!-- Full-page fixed backdrop, sits behind all content -->
+<div class="vitra-scenery" aria-hidden="true">
+  <div class="vitra-scenery-sky"></div>
+  <div class="vitra-scenery-halo"></div>
+  <div class="vitra-scenery-ridge-far"></div>
+  <div class="vitra-scenery-ridge-mid"></div>
+  <div class="vitra-scenery-ridge-near"></div>
+  <div class="vitra-scenery-grain"></div>
+</div>
+
+<!-- Or scope it to one container (hero, large card) -->
+<section style="position: relative; overflow: hidden;">
+  <div class="vitra-scenery-inline" aria-hidden="true">
+    <div class="vitra-scenery-sky"></div>
+    <div class="vitra-scenery-halo"></div>
+    <div class="vitra-scenery-ridge-far"></div>
+    <div class="vitra-scenery-ridge-mid"></div>
+    <div class="vitra-scenery-ridge-near"></div>
+    <div class="vitra-scenery-grain"></div>
+  </div>
+  <div class="vitra-glass" style="position: relative;">Content over the scene</div>
+</section>
+```
+
 ---
 
 ## Project Structure

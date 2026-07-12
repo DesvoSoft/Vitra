@@ -433,6 +433,50 @@ tooltip.init();
 
 ---
 
+## CSS-Only Features (No JS Import Needed)
+
+### Scenery Module
+
+Ambient, six-layer blob-landscape backdrop. Pure CSS — no JS module, no `import`, no `data-config` entry. Colors derive automatically from the active theme's `--vitra-color-accent-h`/`-s` tokens, so switching themes re-colors the scene automatically.
+
+```html
+<!-- Full-page: position:fixed, sits behind all content -->
+<div class="vitra-scenery" aria-hidden="true">
+  <div class="vitra-scenery-sky"></div>
+  <div class="vitra-scenery-halo"></div>
+  <div class="vitra-scenery-ridge-far"></div>
+  <div class="vitra-scenery-ridge-mid"></div>
+  <div class="vitra-scenery-ridge-near"></div>
+  <div class="vitra-scenery-grain"></div>
+</div>
+
+<!-- Inline: position:absolute, scope to any position:relative; overflow:hidden container -->
+<div class="vitra-scenery-inline" aria-hidden="true">
+  <div class="vitra-scenery-sky"></div>
+  <div class="vitra-scenery-halo"></div>
+  <div class="vitra-scenery-ridge-far"></div>
+  <div class="vitra-scenery-ridge-mid"></div>
+  <div class="vitra-scenery-ridge-near"></div>
+  <div class="vitra-scenery-grain"></div>
+</div>
+```
+
+The six child layers are always the same regardless of which root class is used — only the root's positioning changes. The root element must always carry `aria-hidden="true"`; it's decorative only.
+
+**Overridable tokens:**
+
+| Token | Default | Purpose |
+|---|---|---|
+| `--vitra-scenery-hue` | `var(--vitra-color-accent-h)` | Base hue for the whole scene |
+| `--vitra-scenery-sat` | `var(--vitra-color-accent-s)` | Base saturation |
+| `--vitra-scenery-speed` | `1` | Drift speed multiplier (higher = faster) |
+| `--vitra-scenery-blur-far` / `-mid` / `-near` | `60px` / `40px` / `24px` | Per-layer blur (auto-reduced on mobile) |
+| `--vitra-scenery-opacity-far` / `-mid` / `-near` | `0.35` / `0.45` / `0.55` | Per-layer opacity |
+
+On viewports `<= 768px`, `ridge-far` is hidden and blur tokens drop automatically for GPU cost. Under `prefers-reduced-motion: reduce`, all layers stop animating and hold their mid-cycle position — the scene stays visible, just static.
+
+---
+
 ## Tree-Shaking (Only Import What You Need)
 
 If you're using ES modules and a bundler like esbuild or webpack, you can tree-shake unused modules.
