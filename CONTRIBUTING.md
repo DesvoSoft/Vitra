@@ -22,7 +22,7 @@ npm run build:esm   # src/vitra.js -> dist/vitra.esm.js
 
 ## Running Checks Locally
 
-Run these before opening a pull request — CI runs the same checks on Linux, macOS, and Windows:
+Run these before opening a pull request — CI runs the same checks on Linux and Windows:
 
 ```bash
 npm run build   # must succeed
