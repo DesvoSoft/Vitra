@@ -1,7 +1,11 @@
 var Vitra = (() => {
   var __getOwnPropNames = Object.getOwnPropertyNames;
   var __commonJS = (cb, mod) => function __require() {
-    return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+    try {
+      return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+    } catch (e) {
+      throw mod = 0, e;
+    }
   };
 
   // src/vitra.js
@@ -226,7 +230,6 @@ var Vitra = (() => {
                 particle.setAttribute("data-emoji", emoji);
                 particle.className = "vitra-particles-emoji";
                 particle.style.fontSize = `${size * 4}px`;
-                particle.textContent = emoji;
               } else {
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
@@ -716,6 +719,7 @@ var Vitra = (() => {
         })();
         const toast = /* @__PURE__ */ (() => {
           let _container = null;
+          const _pendingTimeouts = /* @__PURE__ */ new Set();
           const _ensureContainer = () => {
             if (!_container) {
               _container = document.createElement("div");
@@ -723,6 +727,14 @@ var Vitra = (() => {
               document.body.appendChild(_container);
             }
             return _container;
+          };
+          const _schedule = (fn, delay) => {
+            const id = setTimeout(() => {
+              _pendingTimeouts.delete(id);
+              fn();
+            }, delay);
+            _pendingTimeouts.add(id);
+            return id;
           };
           const show = (message, options = {}) => {
             const { type = "default", duration = 3e3 } = options;
@@ -734,11 +746,11 @@ var Vitra = (() => {
             }
             el.textContent = message;
             container.appendChild(el);
-            setTimeout(() => el.classList.add("show"), 10);
+            _schedule(() => el.classList.add("show"), 10);
             if (duration > 0) {
-              setTimeout(() => {
+              _schedule(() => {
                 el.classList.remove("show");
-                setTimeout(() => {
+                _schedule(() => {
                   if (el.parentNode === container) {
                     container.removeChild(el);
                   }
@@ -747,7 +759,15 @@ var Vitra = (() => {
             }
             return el;
           };
-          return { show };
+          const destroy = () => {
+            _pendingTimeouts.forEach((id) => clearTimeout(id));
+            _pendingTimeouts.clear();
+            if (_container && _container.parentNode) {
+              _container.parentNode.removeChild(_container);
+            }
+            _container = null;
+          };
+          return { show, destroy };
         })();
         const dropdown = (() => {
           const _supportsPopover = typeof HTMLElement !== "undefined" && "showPopover" in HTMLElement.prototype;
@@ -886,6 +906,7 @@ var Vitra = (() => {
           ripple.destroy();
           modal.destroy();
           tooltip.destroy();
+          toast.destroy();
           dropdown.destroy();
           spotlight.destroy();
           particles.destroy();
