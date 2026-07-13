@@ -1,6 +1,6 @@
 {
   "name": "vitra-css",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "description": "A lightweight CSS framework focused on glassmorphism, configurable particles with glow effects, and smooth motion",
   "main": "dist/vitra.js",
   "module": "dist/vitra.esm.js",
@@ -36,15 +36,15 @@
   "size-limit": [
     {
       "path": "dist/vitra.min.css",
-      "limit": "85 kB"
+      "limit": "16 kB"
     },
     {
       "path": "dist/vitra.min.js",
-      "limit": "15 kB"
+      "limit": "6 kB"
     },
     {
       "path": "dist/vitra.esm.js",
-      "limit": "30 kB"
+      "limit": "8 kB"
     }
   ],
   "devDependencies": {

@@ -1,9 +1,9 @@
 # Vitra CSS Framework
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
-[![Version](https://img.shields.io/badge/version-1.7.1-blue)](https://github.com/DesvoSoft/Vitra)
+[![Version](https://img.shields.io/badge/version-1.8.0-blue)](https://github.com/DesvoSoft/Vitra)
 [![License](https://img.shields.io/badge/license-ISC-blue)](https://github.com/DesvoSoft/Vitra)
-[![Bundle Size](https://img.shields.io/badge/css-10.8%20KB%20brotlied-brightgreen)](https://github.com/DesvoSoft/Vitra)
+[![Bundle Size](https://img.shields.io/badge/css-13.7%20KB%20brotlied-brightgreen)](https://github.com/DesvoSoft/Vitra)
 [![Tests](https://img.shields.io/badge/tests-60%20passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
 
 Vitra is a high-performance, premium CSS framework engineered for modern web applications. It specializes in Glassmorphism, Motion Design, Interactive Particles, and Cinematic Visual Effects, providing a sophisticated aesthetic out of the box with zero external dependencies.
@@ -19,6 +19,7 @@ Unlike generic utility-first frameworks, Vitra is built with a specific aestheti
 -   **Motion Engine**: 25+ choreographed keyframes that automatically respect `prefers-reduced-motion`.
 -   **Particle System**: Native CSS/JS hybrid particles with built-in performance limits (15 mobile / 40 desktop).
 -   **Cinematic Effects**: Animated mesh gradients, floating glow orbs, gradient text, spinning border glows, page-enter animation, 3D tilt cards, aurora background, text reveal, stagger system.
+-   **Ambient Scenery**: CSS-only mountain-landscape backdrop with SVG-silhouette ridgelines, parallax drift, and theme-derived color — turns glass panels into windows onto a scene.
 -   **Shader Effects**: Pure-CSS shader effects — noise overlay, shape morphing, progress rings, gradient rotate borders, scroll-driven reveals, material ripple.
 -   **Modern CSS Features**: Container Queries, `@starting-style`, Popover API — all with fallbacks.
 -   **Premium Color System**: All surfaces tinted with accent hue — no pure neutral grays. Warm/cool/oklch variants.
@@ -50,13 +51,13 @@ Use jsDelivr to load the minified files. We strongly recommend using a fixed ver
 
 ```html
 <!-- High-performance CSS (Fixed version with SRI) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.2/dist/vitra.min.css" integrity="sha256-..." crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.8.0/dist/vitra.min.css" integrity="sha256-..." crossorigin="anonymous">
 
 <!-- Optional: Modular JS Engine (Fixed version with SRI) -->
-<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.2/dist/vitra.min.js" integrity="sha256-..." crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.8.0/dist/vitra.min.js" integrity="sha256-..." crossorigin="anonymous" defer></script>
 ```
 
-> **Note:** Always use a pinned version (e.g., `@v1.7.2`) for production. The SRI hashes are generated during build and stored in `dist/SRI.txt`.
+> **Note:** Always use a pinned version (e.g., `@v1.8.0`) for production. The SRI hashes are generated during build and stored in `dist/SRI.txt`.
 
 #### Option B: Local Assets
 
@@ -77,10 +78,12 @@ Vitra uses a strict @layer cascade to prevent specificity leaks and ensure consi
 1.  tokens: Immutable design primitives (colors, spacing, shadows).
 2.  glass: The core glassmorphism engine.
 3.  particles: Background effects and glow systems.
-4.  layout: Structural utilities (Flex, Grid, Container).
-5.  motion: Animation engine and reveal logic.
-6.  components: Premium UI elements (Buttons, Cards, Forms).
-7.  utilities: High-precedence helper classes.
+4.  motion: Animation engine and reveal logic.
+5.  scenery: Ambient mountain-landscape backdrop.
+6.  layout: Structural utilities (Flex, Grid, Container).
+7.  components: Premium UI elements (Buttons, Cards, Forms).
+8.  utilities: High-precedence helper classes.
+9.  shaders: Pure-CSS shader effects.
 
 ---
 
@@ -139,9 +142,9 @@ Vitra.particles.spawn(15, {
 </div>
 ```
 
-### Scenery — Ambient Blob Landscape (CSS-only, no JS needed)
+### Scenery — Ambient Mountain Landscape (CSS-only, no JS needed)
 
-Six-layer ambient backdrop that turns `.vitra-glass` panels into an actual window onto a scene, instead of a translucent card floating on a flat color. Colors derive automatically from the active theme's accent hue. Continuous slow drift, respects `prefers-reduced-motion`, drops the farthest layer on mobile for performance.
+Six-layer ambient backdrop that turns `.vitra-glass` panels into an actual window onto a scene, instead of a translucent card floating on a flat color. SVG-silhouette mountain ranges at three depths with differential-speed parallax drift, a crisp sun/moon disc with layered glow, and atmospheric-perspective haze. Colors derive automatically from the active theme's accent hue; respects `prefers-reduced-motion`.
 
 ```html
 <!-- Full-page fixed backdrop, sits behind all content -->
@@ -183,6 +186,7 @@ Vitra/
 │   ├── 05-layout.css      # Grid, container, hero, flex, responsive utilities
 │   ├── 06-components.css  # 17 component systems (buttons, cards, modals, tables, etc.)
 │   ├── 07-utilities.css   # Spacing, display, width/height, z-index, responsive variants
+│   ├── 09-scenery.css     # Ambient mountain-landscape backdrop (SVG-silhouette parallax)
 │   └── vitra.js           # 9 modules: theme, particles, reveal, ripple, modal, tooltip, toast, dropdown, spotlight
 ├── dist/                  # Production builds + source maps + SRI hashes
 ├── docs/                  # Theming, integration, compatibility, audit

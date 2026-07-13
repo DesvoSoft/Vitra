@@ -1,11 +1,34 @@
 # Vitra CSS Framework — Roadmap
 
-**Current version:** v1.7.2  
-**Last updated:** 2026-06-19
+**Current version:** v1.8.0  
+**Last updated:** 2026-07-13
 
 ---
 
 ## Released
+
+### v1.8 — Scenery & Audit Fix Pass ✅
+
+**New feature:**
+- **Scenery system** (`.vitra-scenery` / `.vitra-scenery-inline`, `@layer scenery`): CSS-only ambient mountain landscape — SVG-silhouette ridgelines at three depths, sun/moon disc with glow, atmospheric-perspective haze, differential-speed parallax drift, grain finish. Theme-derived color via accent tokens, `mask-image` fallback, reduced-motion safe.
+
+**Critical/High fixes (full audit pass, 29 findings):**
+- `@layer` order corrected (`motion` before `layout`, matching build order) — cascade bug
+- Google Fonts `@import` removed — no third-party network request; fonts now opt-in
+- Orphaned `.vitra-slider-*` CSS removed (correction: v1.0 listed sliders, but no base class ever shipped)
+- `:focus-visible` rings added to `.vitra-btn` and `.vitra-dropdown-item`
+- Emoji particle double-render fixed (single `::before` render path)
+- `toast.destroy()` added with timeout tracking; wired into `destroyAll()`
+- Reduced-motion coverage extended: toast, dropdown menu, input shake, spotlight
+- Input validation states: `!important` dropped for compound-selector specificity
+- Duplicate `.vitra-grid` removed from utilities layer
+- `size-limit` budgets corrected (brotli-measured: 16 kB CSS gate vs 13.7 kB actual)
+
+**Infrastructure:**
+- CI: Windows build matrix, `npm audit` gate, weekly Dependabot
+- Governance: `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `CHANGELOG.md`
+- Root `index.html` demo restored (scenery + glass + theme switcher)
+- Dev dependencies patched via `npm audit fix` (0 known vulnerabilities)
 
 ### v1.0 — Foundation
 - CSS `@layer` architecture (`tokens → glass → particles → motion → layout → components → utilities`)
@@ -87,20 +110,21 @@
 
 | # | Priority | Area | Issue |
 |---|----------|------|-------|
-| R1 | Medium | `src/vitra.js` | Tooltip ignores `window.scrollY/scrollX` — wrong position when page scrolled |
 | R2 | Medium | `src/vitra.js` | Modal focus trap `keydown` listener can stack if modal opens without full close cycle |
-| R3 | Low | `src/vitra.js` | Reveal stagger uses observation order, not DOM order — wrong on complex layouts |
 | R4 | Low | `src/vitra.js` | `particles.init()` passes DOM element to `spawn()` in auto-init path — should be selector or type-guarded |
-| R5 | Low | `src/04-motion.css` | `.vitra-reveal-scale` uses `vitra-fade-up` keyframe instead of a scale keyframe |
 | R6 | Low | `src/vitra.js` | Tooltip expands DOM nodes with `._vitraTooltipInstance` — `WeakMap` preferred |
 | D1 | Medium | demo | Heavy particle/cinematic sections not paused off-screen — can drop frames on mobile |
 | D2 | Low | demo | `demo.js` parses CSS custom props with string replace — breaks on nested vars |
 
+> R1 (tooltip scroll offset), R3 (reveal stagger order), and R5 (`.vitra-reveal-scale` keyframe) were re-verified during the v1.8 audit and are already fixed in current code — closed.
+
+**Audit backlog (medium/low tier, deferred from the v1.8 pass):** glass-variant components (`badge/input/alert/table/spinner-glass`) still hardcode `hsl()` instead of glass tokens and lack `@supports` guards; `.vitra-table-stack` duplicated across media/container queries; glass variant fallback leaks outside `@supports` guard in `02-glass.css`; `vitra.d.ts` dropdown/spotlight interface drift; `spotlight`/`dropdown` lack `data-config` opt-out gating; `.vitra-container-sm` naming; dead keyframes `vitra-aurora-hue`/`vitra-shimmer`; tooltip `cloneNode` teardown; focus-trap `setTimeout(100)` → `requestAnimationFrame`; `--vitra-color-border-rgb` light-theme verification; dropdown/spotlight interaction tests.
+
 ---
 
-## v1.8 — Polish & DX (Next)
+## v1.9 — Polish & DX (Next)
 
-- Fix tooltip scroll offset (R1)
+- Audit backlog above (medium/low tier)
 - Fix modal focus trap stacking (R2)
 - `--vitra-color-accent-rgb` token for consumers using `rgb()` notation
 - Document `Vitra.toast`, `Vitra.dropdown`, `Vitra.spotlight` in integration guide

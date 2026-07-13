@@ -437,7 +437,7 @@ tooltip.init();
 
 ### Scenery Module
 
-Ambient, six-layer blob-landscape backdrop. Pure CSS — no JS module, no `import`, no `data-config` entry. Colors derive automatically from the active theme's `--vitra-color-accent-h`/`-s` tokens, so switching themes re-colors the scene automatically.
+Ambient, six-layer mountain-landscape backdrop. Pure CSS — no JS module, no `import`, no `data-config` entry. Colors derive automatically from the active theme's `--vitra-color-accent-h`/`-s` tokens, so switching themes re-colors the scene automatically.
 
 ```html
 <!-- Full-page: position:fixed, sits behind all content -->
@@ -470,10 +470,10 @@ The six child layers are always the same regardless of which root class is used 
 | `--vitra-scenery-hue` | `var(--vitra-color-accent-h)` | Base hue for the whole scene |
 | `--vitra-scenery-sat` | `var(--vitra-color-accent-s)` | Base saturation |
 | `--vitra-scenery-speed` | `1` | Drift speed multiplier (higher = faster) |
-| `--vitra-scenery-blur-far` / `-mid` / `-near` | `60px` / `40px` / `24px` | Per-layer blur (auto-reduced on mobile) |
-| `--vitra-scenery-opacity-far` / `-mid` / `-near` | `0.35` / `0.45` / `0.55` | Per-layer opacity |
+| `--vitra-scenery-blur-far` / `-mid` / `-near` | `3px` / `1.5px` / `0px` | Per-layer atmospheric haze |
+| `--vitra-scenery-opacity-far` / `-mid` / `-near` | `0.5` / `0.68` / `0.85` | Per-layer opacity (atmospheric perspective) |
 
-On viewports `<= 768px`, `ridge-far` is hidden and blur tokens drop automatically for GPU cost. Under `prefers-reduced-motion: reduce`, all layers stop animating and hold their mid-cycle position — the scene stays visible, just static.
+Ridge silhouettes come from inline SVG masks (shape) colored by theme tokens (color) — no external assets. Where `mask-image` is unsupported, ridges gracefully fall back to soft gradient horizon bands. Under `prefers-reduced-motion: reduce`, all layers stop animating and hold position — the scene stays visible, just static.
 
 ---
 
