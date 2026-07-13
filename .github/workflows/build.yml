@@ -8,7 +8,10 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v4
@@ -21,6 +24,9 @@ jobs:
 
     - name: Install dependencies
       run: npm ci
+
+    - name: Audit dependencies
+      run: npm audit --audit-level=high
 
     - name: Run Lint
       run: npm run lint
@@ -35,6 +41,7 @@ jobs:
       run: npm run size
 
     - name: Verify Build Artifacts
+      shell: bash
       run: |
         if [ ! -f dist/vitra.min.css ]; then
           echo "Build failed: dist/vitra.min.css not found!"
