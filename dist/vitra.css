@@ -1647,49 +1647,49 @@
   .vitra-scenery-ridge-near {
     position: absolute;
     bottom: 0;
-    left: -5%;
-    width: 110%;
+    left: -15%;
+    width: 130%;
     will-change: transform;
   }
 
   /* Fallback (no mask support): soft gradient bands still give a
      horizon impression, just without the ridgeline silhouettes */
   .vitra-scenery-ridge-far {
-    height: 52%;
+    height: 58%;
     background: linear-gradient(
       to bottom,
-      transparent 0%,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 50% / 35%) 45%,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 32% / 55%) 100%
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.4) 78% / 45%) 0%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 50% / 40%) 22%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 32% / 60%) 100%
     );
     opacity: var(--vitra-scenery-opacity-far);
     filter: blur(var(--vitra-scenery-blur-far));
-    animation: vitra-scenery-drift-far calc(55s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
+    animation: vitra-scenery-drift-far calc(60s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
   }
 
   .vitra-scenery-ridge-mid {
-    height: 36%;
+    height: 40%;
     background: linear-gradient(
       to bottom,
-      transparent 0%,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.65) 34% / 55%) 40%,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.7) 22% / 75%) 100%
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.55) 58% / 40%) 0%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.65) 34% / 60%) 30%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.7) 20% / 80%) 100%
     );
     opacity: var(--vitra-scenery-opacity-mid);
     filter: blur(var(--vitra-scenery-blur-mid));
-    animation: vitra-scenery-drift-mid calc(38s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
+    animation: vitra-scenery-drift-mid calc(36s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
   }
 
   .vitra-scenery-ridge-near {
-    height: 22%;
+    height: 24%;
     background: linear-gradient(
       to bottom,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.75) 18% / 80%) 0%,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.8) 10% / 95%) 100%
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.75) 16% / 85%) 0%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.8) 8% / 96%) 100%
     );
     opacity: var(--vitra-scenery-opacity-near);
     filter: blur(var(--vitra-scenery-blur-near));
-    animation: vitra-scenery-drift-near calc(26s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
+    animation: vitra-scenery-drift-near calc(22s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
   }
 
   /* SVG-silhouette ridgelines. The mask defines the SHAPE
@@ -1698,41 +1698,46 @@
      stays translucent so peaks haze into the sky (atmospheric
      perspective). */
   @supports (mask-image: url("")) or (-webkit-mask-image: url("")) {
-    /* Far: angular mountain peaks */
+    /* Far: dramatic alpine range - varied peak heights, deep
+       valleys, one dominant massif left-of-center and a second
+       echo right, keeping the sun's spot clear */
     .vitra-scenery-ridge-far {
-      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V240L60 190L140 235L230 150L330 225L420 175L520 240L610 160L720 230L810 185L900 245L990 170L1090 235L1180 195L1270 250L1360 205L1440 240V400Z'/></svg>");
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V280L70 225L130 260L210 130L265 205L320 90L385 190L440 155L510 245L580 175L650 260L740 60L800 165L850 120L920 230L990 190L1060 275L1150 110L1215 195L1270 160L1340 240L1400 210L1440 245V400Z'/></svg>");
       mask-size: 100% 100%;
       mask-repeat: no-repeat;
     }
 
-    /* Mid: rolling hills */
+    /* Mid: rugged foothills - overlaps the far range's valleys so
+       ranges read as stacked one behind another */
     .vitra-scenery-ridge-mid {
-      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V280C120 240 240 300 380 270C520 240 600 310 760 285C920 260 1020 320 1160 290C1300 265 1380 300 1440 285V400Z'/></svg>");
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V290L90 235C130 215 170 250 230 235L330 165L420 255L510 205C570 180 620 230 690 220L780 150L870 245L960 200L1060 265L1150 180L1250 255C1320 230 1380 265 1440 245V400Z'/></svg>");
       mask-size: 100% 100%;
       mask-repeat: no-repeat;
     }
 
-    /* Near: soft low dunes */
+    /* Near: soft treeline hills, darkest silhouette */
     .vitra-scenery-ridge-near {
-      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V330C180 295 320 345 520 325C720 305 880 350 1080 330C1240 315 1360 340 1440 330V400Z'/></svg>");
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V320C120 290 220 335 340 315C460 296 560 340 700 320C840 300 950 345 1080 325C1200 308 1330 340 1440 322V400Z'/></svg>");
       mask-size: 100% 100%;
       mask-repeat: no-repeat;
     }
   }
 
+  /* Parallax by differential speed: the nearer the layer, the
+     farther and faster it travels (real-world depth cue) */
   @keyframes vitra-scenery-drift-far {
     0% { transform: translateX(-1.5%) scale(1); }
-    100% { transform: translateX(1.5%) scale(1.02); }
+    100% { transform: translateX(1.5%) scale(1.015); }
   }
 
   @keyframes vitra-scenery-drift-mid {
-    0% { transform: translateX(1.5%) scale(1.015); }
-    100% { transform: translateX(-2%) scale(1); }
+    0% { transform: translateX(3%) scale(1.01); }
+    100% { transform: translateX(-3.5%) scale(1); }
   }
 
   @keyframes vitra-scenery-drift-near {
-    0% { transform: translateX(-1%) scale(1); }
-    100% { transform: translateX(1%) scale(1.02); }
+    0% { transform: translateX(-5%) scale(1); }
+    100% { transform: translateX(5%) scale(1.02); }
   }
 
   /* --- GRAIN LAYER --- */
