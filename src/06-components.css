@@ -109,6 +109,11 @@
     transform: translateY(0) scale(0.98);
   }
 
+  .vitra-btn:focus-visible {
+    outline: 2px solid var(--vitra-color-accent);
+    outline-offset: 2px;
+  }
+
   /* --- BUTTON SIZE VARIANTS --- */
   .vitra-btn-sm {
     padding: var(--vitra-space-1) var(--vitra-space-3);
@@ -723,7 +728,6 @@
     /* Radial gradient backdrop — more premium than flat black */
     background: radial-gradient(ellipse at 50% 40%, rgb(0 0 0 / 45%), rgb(0 0 0 / 72%));
     backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
 
     /* Ensure overlay appears above all content */
     z-index: 1000;
@@ -774,7 +778,6 @@
   .vitra-modal-content {
     background: hsl(var(--vitra-color-accent-h) 14% 5% / 96%);
     backdrop-filter: blur(var(--vitra-blur-xl));
-    -webkit-backdrop-filter: blur(var(--vitra-blur-xl));
     border: 1px solid hsl(var(--vitra-color-accent-h) 40% 70% / 10%);
     border-top-color: hsl(var(--vitra-color-accent-h) 40% 70% / 22%);
     border-radius: var(--vitra-radius-xl);
@@ -1227,25 +1230,6 @@
                 visibility var(--vitra-duration-normal) var(--vitra-ease-luxury),
                  transform var(--vitra-duration-normal) var(--vitra-ease-luxury);
     will-change: transform;
-  }
-
-  .vitra-slider-scroll-item:hover {
-    background-color: var(--vitra-color-surface-hover);
-  }
-
-  .vitra-slider-scroll-item.vitra-active {
-    background-color: var(--vitra-color-accent);
-    color: var(--vitra-color-text-inverse);
-    border-color: var(--vitra-color-accent);
-  }
-
-  /* --- prefers-reduced-motion --- */
-  @media (prefers-reduced-motion: reduce) {
-    .vitra-slider-fill,
-    .vitra-slider-thumb,
-    .vitra-slider-scroll-item {
-      transition: none;
-    }
   }
 
   @supports (backdrop-filter: blur(1px)) {
@@ -1715,7 +1699,11 @@
   .vitra-dropdown-item:focus-visible {
     background: var(--vitra-color-surface-hover);
     color: var(--vitra-color-text-primary);
-    outline: none;
+  }
+
+  .vitra-dropdown-item:focus-visible {
+    outline: 2px solid var(--vitra-color-accent);
+    outline-offset: -2px;
   }
 
   @supports (backdrop-filter: blur(1px)) {
@@ -1731,21 +1719,21 @@
       Input validation states and animations
       ============================================ */
 
-  .vitra-input-valid {
-    border-color: var(--vitra-color-success, #10b981) !important;
+  .vitra-input.vitra-input-valid {
+    border-color: var(--vitra-color-success, #10b981);
   }
 
-  .vitra-input-valid:focus {
-    box-shadow: 0 0 0 2px hsl(160deg 84% 39% / 20%) !important;
+  .vitra-input.vitra-input-valid:focus {
+    box-shadow: 0 0 0 2px hsl(160deg 84% 39% / 20%);
   }
 
-  .vitra-input-invalid {
-    border-color: var(--vitra-color-error, #ef4444) !important;
+  .vitra-input.vitra-input-invalid {
+    border-color: var(--vitra-color-error, #ef4444);
     animation: vitra-shake 0.4s ease-in-out;
   }
 
-  .vitra-input-invalid:focus {
-    box-shadow: 0 0 0 2px hsl(0deg 84% 60% / 20%) !important;
+  .vitra-input.vitra-input-invalid:focus {
+    box-shadow: 0 0 0 2px hsl(0deg 84% 60% / 20%);
   }
 
   @keyframes vitra-shake {
@@ -2173,6 +2161,23 @@
     .vitra-burger.active .vitra-burger-line:nth-child(1),
     .vitra-burger.active .vitra-burger-line:nth-child(3) {
       transform: none;
+    }
+
+    .vitra-toast {
+      transition: opacity var(--vitra-duration-fast) linear;
+    }
+
+    .vitra-dropdown-menu,
+    .vitra-dropdown-menu[popover] {
+      transition: opacity var(--vitra-duration-fast) linear;
+    }
+
+    .vitra-input-invalid {
+      animation: none;
+    }
+
+    .vitra-spotlight::before {
+      transition: none;
     }
   }
 

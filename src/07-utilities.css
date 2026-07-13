@@ -521,7 +521,6 @@
   .vitra-inline { display: inline; }
   .vitra-inline-block { display: inline-block; }
   .vitra-hidden { display: none; }
-  .vitra-grid { display: grid; gap: var(--vitra-space-3); }
 
   /* Responsive display */
   @media (width >= 768px) {
