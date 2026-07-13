@@ -4,9 +4,12 @@
 
 /* ============================================
    SCENERY LAYER - Vitra CSS Framework
-   CSS-only ambient blob-landscape backdrop.
+   CSS-only ambient landscape backdrop.
    Gives .vitra-glass panels a "window onto a
    scene" feel instead of a flat color fill.
+   SVG-silhouette ridgelines (masked, so color
+   stays token-driven), crisp sun/moon disc,
+   atmospheric-perspective depth, grain finish.
    Six layers: sky, halo, ridge-far/mid/near, grain.
    ============================================ */
 
@@ -19,15 +22,15 @@
     /* --- SCENERY MOTION TOKENS --- */
     --vitra-scenery-speed: 1;
 
-    /* --- SCENERY BLUR TOKENS --- */
-    --vitra-scenery-blur-far: 60px;
-    --vitra-scenery-blur-mid: 40px;
-    --vitra-scenery-blur-near: 24px;
+    /* --- SCENERY SOFTENING TOKENS (atmospheric haze per depth) --- */
+    --vitra-scenery-blur-far: 3px;
+    --vitra-scenery-blur-mid: 1.5px;
+    --vitra-scenery-blur-near: 0px;
 
-    /* --- SCENERY OPACITY TOKENS --- */
-    --vitra-scenery-opacity-far: 0.35;
-    --vitra-scenery-opacity-mid: 0.45;
-    --vitra-scenery-opacity-near: 0.55;
+    /* --- SCENERY OPACITY TOKENS (atmospheric perspective) --- */
+    --vitra-scenery-opacity-far: 0.5;
+    --vitra-scenery-opacity-mid: 0.68;
+    --vitra-scenery-opacity-near: 0.85;
   }
 
   /* --- ROOT CONTAINERS --- */
@@ -53,120 +56,145 @@
 
   /* --- SKY LAYER --- */
 
-  /* Full-bleed gradient base, theme-derived hue */
+  /* Zenith fades from page bg into an accent-tinted glow band
+     at the horizon, where the sun/ridges sit */
   .vitra-scenery-sky {
     position: absolute;
-    inset: -10%;
-    background: linear-gradient(
-      175deg,
-      var(--vitra-color-bg) 0%,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 12% / 60%) 55%,
-      var(--vitra-color-bg) 100%
-    );
+    inset: 0;
+    background:
+      linear-gradient(
+        to top,
+        hsl(var(--vitra-scenery-hue) var(--vitra-scenery-sat) 62% / 30%) 0%,
+        hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.8) 55% / 14%) 32%,
+        transparent 58%
+      ),
+      linear-gradient(
+        to bottom,
+        var(--vitra-color-bg) 0%,
+        hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 40% / 25%) 100%
+      );
   }
 
-  /* --- HALO LAYER --- */
+  /* --- HALO LAYER (sun / moon) --- */
 
-  /* Diffuse light source (sun/moon-like), slow opacity drift */
+  /* Crisp disc with layered glow, sitting just above the far ridge.
+     A defined disc is what makes the scene read as a landscape
+     with a light source, not an abstract blur. */
   .vitra-scenery-halo {
     position: absolute;
-    top: -20%;
-    left: 50%;
-    width: 70%;
+    top: 26%;
+    left: 63%;
+    width: clamp(64px, 12vmin, 150px);
     aspect-ratio: 1;
-    translate: -50% 0;
     border-radius: 50%;
-    background: radial-gradient(
-      circle,
-      hsl(var(--vitra-scenery-hue) var(--vitra-scenery-sat) 70% / 40%) 0%,
-      hsl(var(--vitra-scenery-hue) var(--vitra-scenery-sat) 70% / 0%) 70%
-    );
-    filter: blur(var(--vitra-scenery-blur-mid));
-    animation: vitra-scenery-halo-drift calc(18s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
+    background: hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.7) 88%);
+    box-shadow:
+      0 0 30px 10px hsl(var(--vitra-scenery-hue) var(--vitra-scenery-sat) 75% / 50%),
+      0 0 110px 55px hsl(var(--vitra-scenery-hue) var(--vitra-scenery-sat) 65% / 22%);
+    animation: vitra-scenery-halo-drift calc(24s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
     will-change: opacity;
   }
 
   @keyframes vitra-scenery-halo-drift {
-    0% { opacity: 0.6; }
+    0% { opacity: 0.75; }
     100% { opacity: 1; }
   }
 
-  /* --- RIDGE LAYERS (blob landscape, back to front) --- */
+  /* --- RIDGE LAYERS (landscape silhouettes, back to front) --- */
 
-  .vitra-scenery-ridge-far {
+  /* Shared geometry: anchored to the bottom, wider than the
+     viewport so the slow horizontal drift never exposes edges */
+  .vitra-scenery-ridge-far,
+  .vitra-scenery-ridge-mid,
+  .vitra-scenery-ridge-near {
     position: absolute;
-    bottom: -15%;
-    left: -10%;
-    width: 130%;
-    height: 55%;
-    background:
-      radial-gradient(ellipse 40% 60% at 20% 100%, hsl(var(--vitra-scenery-hue) var(--vitra-scenery-sat) 30% / var(--vitra-scenery-opacity-far)) 0%, transparent 70%),
-      radial-gradient(ellipse 35% 50% at 55% 100%, hsl(calc(var(--vitra-scenery-hue) + 20) var(--vitra-scenery-sat) 25% / var(--vitra-scenery-opacity-far)) 0%, transparent 70%),
-      radial-gradient(ellipse 45% 65% at 85% 100%, hsl(calc(var(--vitra-scenery-hue) - 15) var(--vitra-scenery-sat) 28% / var(--vitra-scenery-opacity-far)) 0%, transparent 70%);
-    filter: blur(var(--vitra-scenery-blur-far));
-    animation: vitra-scenery-drift-far calc(55s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
+    bottom: 0;
+    left: -5%;
+    width: 110%;
     will-change: transform;
   }
 
-  @keyframes vitra-scenery-drift-far {
-    0% { transform: translateX(-2%) scale(1); }
-    100% { transform: translateX(2%) scale(1.05); }
+  /* Fallback (no mask support): soft gradient bands still give a
+     horizon impression, just without the ridgeline silhouettes */
+  .vitra-scenery-ridge-far {
+    height: 52%;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 50% / 35%) 45%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 32% / 55%) 100%
+    );
+    opacity: var(--vitra-scenery-opacity-far);
+    filter: blur(var(--vitra-scenery-blur-far));
+    animation: vitra-scenery-drift-far calc(55s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
   }
 
   .vitra-scenery-ridge-mid {
-    position: absolute;
-    bottom: -10%;
-    left: -8%;
-    width: 120%;
-    height: 42%;
-    background:
-      radial-gradient(ellipse 32% 55% at 10% 100%, hsl(calc(var(--vitra-scenery-hue) + 10) var(--vitra-scenery-sat) 32% / var(--vitra-scenery-opacity-mid)) 0%, transparent 72%),
-      radial-gradient(ellipse 38% 60% at 48% 100%, hsl(var(--vitra-scenery-hue) var(--vitra-scenery-sat) 35% / var(--vitra-scenery-opacity-mid)) 0%, transparent 72%),
-      radial-gradient(ellipse 30% 50% at 82% 100%, hsl(calc(var(--vitra-scenery-hue) - 10) var(--vitra-scenery-sat) 30% / var(--vitra-scenery-opacity-mid)) 0%, transparent 72%);
+    height: 36%;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.65) 34% / 55%) 40%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.7) 22% / 75%) 100%
+    );
+    opacity: var(--vitra-scenery-opacity-mid);
     filter: blur(var(--vitra-scenery-blur-mid));
     animation: vitra-scenery-drift-mid calc(38s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
-    will-change: transform;
-  }
-
-  @keyframes vitra-scenery-drift-mid {
-    0% { transform: translateX(2%) scale(1.03); }
-    100% { transform: translateX(-2.5%) scale(1); }
   }
 
   .vitra-scenery-ridge-near {
-    position: absolute;
-    bottom: -8%;
-    left: -5%;
-    width: 110%;
-    height: 30%;
-    background:
-      radial-gradient(ellipse 28% 60% at 15% 100%, hsl(var(--vitra-scenery-hue) var(--vitra-scenery-sat) 40% / var(--vitra-scenery-opacity-near)) 0%, transparent 75%),
-      radial-gradient(ellipse 34% 65% at 60% 100%, hsl(calc(var(--vitra-scenery-hue) + 8) var(--vitra-scenery-sat) 38% / var(--vitra-scenery-opacity-near)) 0%, transparent 75%),
-      radial-gradient(ellipse 26% 55% at 92% 100%, hsl(calc(var(--vitra-scenery-hue) - 8) var(--vitra-scenery-sat) 36% / var(--vitra-scenery-opacity-near)) 0%, transparent 75%);
+    height: 22%;
+    background: linear-gradient(
+      to bottom,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.75) 18% / 80%) 0%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.8) 10% / 95%) 100%
+    );
+    opacity: var(--vitra-scenery-opacity-near);
     filter: blur(var(--vitra-scenery-blur-near));
     animation: vitra-scenery-drift-near calc(26s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
-    will-change: transform;
+  }
+
+  /* SVG-silhouette ridgelines. The mask defines the SHAPE
+     (peaks, rolling hills, dunes); the gradient above defines the
+     COLOR, so theming via tokens is untouched. Top of each gradient
+     stays translucent so peaks haze into the sky (atmospheric
+     perspective). */
+  @supports (mask-image: url("")) or (-webkit-mask-image: url("")) {
+    /* Far: angular mountain peaks */
+    .vitra-scenery-ridge-far {
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V240L60 190L140 235L230 150L330 225L420 175L520 240L610 160L720 230L810 185L900 245L990 170L1090 235L1180 195L1270 250L1360 205L1440 240V400Z'/></svg>");
+      mask-size: 100% 100%;
+      mask-repeat: no-repeat;
+    }
+
+    /* Mid: rolling hills */
+    .vitra-scenery-ridge-mid {
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V280C120 240 240 300 380 270C520 240 600 310 760 285C920 260 1020 320 1160 290C1300 265 1380 300 1440 285V400Z'/></svg>");
+      mask-size: 100% 100%;
+      mask-repeat: no-repeat;
+    }
+
+    /* Near: soft low dunes */
+    .vitra-scenery-ridge-near {
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V330C180 295 320 345 520 325C720 305 880 350 1080 330C1240 315 1360 340 1440 330V400Z'/></svg>");
+      mask-size: 100% 100%;
+      mask-repeat: no-repeat;
+    }
+  }
+
+  @keyframes vitra-scenery-drift-far {
+    0% { transform: translateX(-1.5%) scale(1); }
+    100% { transform: translateX(1.5%) scale(1.02); }
+  }
+
+  @keyframes vitra-scenery-drift-mid {
+    0% { transform: translateX(1.5%) scale(1.015); }
+    100% { transform: translateX(-2%) scale(1); }
   }
 
   @keyframes vitra-scenery-drift-near {
-    0% { transform: translateX(-1.5%) scale(1); }
-    100% { transform: translateX(1.5%) scale(1.04); }
-  }
-
-  /* --- ACCESSIBILITY: Reduced Motion --- */
-
-  @media (prefers-reduced-motion: reduce) {
-    .vitra-scenery-halo {
-      animation: none;
-      opacity: 0.8;
-    }
-
-    .vitra-scenery-ridge-far,
-    .vitra-scenery-ridge-mid,
-    .vitra-scenery-ridge-near {
-      animation: none;
-      transform: none;
-    }
+    0% { transform: translateX(-1%) scale(1); }
+    100% { transform: translateX(1%) scale(1.02); }
   }
 
   /* --- GRAIN LAYER --- */
@@ -190,18 +218,19 @@
     }
   }
 
-  /* --- MOBILE PERFORMANCE --- */
+  /* --- ACCESSIBILITY: Reduced Motion --- */
 
-  /* Reduce blur cost and drop the least-visible layer on small viewports */
-  @media (width <= 768px) {
-    :root {
-      --vitra-scenery-blur-far: 30px;
-      --vitra-scenery-blur-mid: 22px;
-      --vitra-scenery-blur-near: 14px;
+  @media (prefers-reduced-motion: reduce) {
+    .vitra-scenery-halo {
+      animation: none;
+      opacity: 0.9;
     }
 
-    .vitra-scenery-ridge-far {
-      display: none;
+    .vitra-scenery-ridge-far,
+    .vitra-scenery-ridge-mid,
+    .vitra-scenery-ridge-near {
+      animation: none;
+      transform: none;
     }
   }
 }
