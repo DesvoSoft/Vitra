@@ -306,7 +306,6 @@ const Vitra = (() => {
           particle.setAttribute('data-emoji', emoji);
           particle.className = 'vitra-particles-emoji';
           particle.style.fontSize = `${size * 4}px`;
-          particle.textContent = emoji;
         } else {
           particle.style.width = `${size}px`;
           particle.style.height = `${size}px`;
@@ -1013,6 +1012,7 @@ const Vitra = (() => {
 
   const toast = (() => {
     let _container = null;
+    const _pendingTimeouts = new Set();
 
     const _ensureContainer = () => {
       if (!_container) {
@@ -1021,6 +1021,15 @@ const Vitra = (() => {
         document.body.appendChild(_container);
       }
       return _container;
+    };
+
+    const _schedule = (fn, delay) => {
+      const id = setTimeout(() => {
+        _pendingTimeouts.delete(id);
+        fn();
+      }, delay);
+      _pendingTimeouts.add(id);
+      return id;
     };
 
     /**
@@ -1042,13 +1051,13 @@ const Vitra = (() => {
       container.appendChild(el);
 
       // Trigger animation
-      setTimeout(() => el.classList.add('show'), 10);
+      _schedule(() => el.classList.add('show'), 10);
 
       // Remove after duration
       if (duration > 0) {
-        setTimeout(() => {
+        _schedule(() => {
           el.classList.remove('show');
-          setTimeout(() => {
+          _schedule(() => {
             if (el.parentNode === container) {
               container.removeChild(el);
             }
@@ -1059,7 +1068,19 @@ const Vitra = (() => {
       return el;
     };
 
-    return { show };
+    /**
+     * Clear pending timers and remove all toasts and the container.
+     */
+    const destroy = () => {
+      _pendingTimeouts.forEach(id => clearTimeout(id));
+      _pendingTimeouts.clear();
+      if (_container && _container.parentNode) {
+        _container.parentNode.removeChild(_container);
+      }
+      _container = null;
+    };
+
+    return { show, destroy };
   })();
 
   // =========================================================================
@@ -1246,6 +1267,7 @@ const Vitra = (() => {
     ripple.destroy();
     modal.destroy();
     tooltip.destroy();
+    toast.destroy();
     dropdown.destroy();
     spotlight.destroy();
     particles.destroy();
