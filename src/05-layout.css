@@ -288,7 +288,7 @@
     font-size: clamp(1.25rem, 3vw, 1.5rem);
   }
 
-  /* --- VITRA BLOCKS (Layouts Pre-construidos) --- */
+  /* --- VITRA BLOCKS (Pre-built Layouts) --- */
   
   .vitra-section {
     position: relative;

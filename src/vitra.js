@@ -739,8 +739,8 @@ const Vitra = (() => {
       _tabKeyTarget = modalEl;
       modalEl.addEventListener('keydown', _handleTabKey);
 
-      // Focus first element
-      setTimeout(() => _firstFocusable.focus(), 100);
+      // Focus first element once the open paint has committed
+      requestAnimationFrame(() => requestAnimationFrame(() => _firstFocusable.focus()));
     };
 
     /**
@@ -799,6 +799,7 @@ const Vitra = (() => {
     let _activeTooltip = null;
     let _showTimeout = null;
     const _offset = 8;
+    const _listeners = new WeakMap();
 
     /**
      * Show a tooltip
@@ -979,10 +980,19 @@ const Vitra = (() => {
         const position = el.getAttribute('data-vitra-tooltip-position') || 'top';
         const delay = parseInt(el.getAttribute('data-vitra-tooltip-delay') || '0', 10);
 
-        el.addEventListener('mouseenter', () => show(el, text, { position, delay }));
-        el.addEventListener('mouseleave', () => hide(el));
-        el.addEventListener('focus', () => show(el, text, { position, delay }));
-        el.addEventListener('blur', () => hide(el));
+        const handlers = {
+          mouseenter: () => show(el, text, { position, delay }),
+          mouseleave: () => hide(el),
+          focus: () => show(el, text, { position, delay }),
+          blur: () => hide(el)
+        };
+
+        el.addEventListener('mouseenter', handlers.mouseenter);
+        el.addEventListener('mouseleave', handlers.mouseleave);
+        el.addEventListener('focus', handlers.focus);
+        el.addEventListener('blur', handlers.blur);
+
+        _listeners.set(el, handlers);
       });
     };
 
@@ -993,9 +1003,14 @@ const Vitra = (() => {
       hide();
       const elements = document.querySelectorAll('[data-vitra-tooltip]');
       elements.forEach(el => {
-        // Clone and replace to remove all event listeners
-        const clone = el.cloneNode(true);
-        el.parentNode.replaceChild(clone, el);
+        const handlers = _listeners.get(el);
+        if (handlers) {
+          el.removeEventListener('mouseenter', handlers.mouseenter);
+          el.removeEventListener('mouseleave', handlers.mouseleave);
+          el.removeEventListener('focus', handlers.focus);
+          el.removeEventListener('blur', handlers.blur);
+          _listeners.delete(el);
+        }
       });
     };
 

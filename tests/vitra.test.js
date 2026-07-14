@@ -319,14 +319,131 @@ describe('Toast Module', () => {
 });
 
 describe('Dropdown Module', () => {
+  afterEach(() => {
+    Vitra.dropdown.destroy();
+    document.body.innerHTML = '';
+  });
+
   it('should initialize without error', () => {
     expect(() => Vitra.dropdown.init()).not.toThrow();
+  });
+
+  it('should open a dropdown on toggle click and set aria-expanded', () => {
+    document.body.innerHTML = `
+      <div class="vitra-dropdown">
+        <button data-vitra-dropdown-toggle aria-expanded="false">Menu</button>
+        <div class="vitra-dropdown-menu"></div>
+      </div>
+    `;
+    Vitra.dropdown.init();
+    const dd = document.querySelector('.vitra-dropdown');
+    const toggle = document.querySelector('[data-vitra-dropdown-toggle]');
+
+    toggle.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+
+    expect(dd.classList.contains('open')).toBe(true);
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('should close an open dropdown on a second toggle click', () => {
+    document.body.innerHTML = `
+      <div class="vitra-dropdown">
+        <button data-vitra-dropdown-toggle aria-expanded="false">Menu</button>
+        <div class="vitra-dropdown-menu"></div>
+      </div>
+    `;
+    Vitra.dropdown.init();
+    const dd = document.querySelector('.vitra-dropdown');
+    const toggle = document.querySelector('[data-vitra-dropdown-toggle]');
+
+    toggle.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    toggle.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+
+    expect(dd.classList.contains('open')).toBe(false);
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('should close other open dropdowns when a different one is opened', () => {
+    document.body.innerHTML = `
+      <div class="vitra-dropdown" id="dd1">
+        <button data-vitra-dropdown-toggle aria-expanded="false">A</button>
+        <div class="vitra-dropdown-menu"></div>
+      </div>
+      <div class="vitra-dropdown" id="dd2">
+        <button data-vitra-dropdown-toggle aria-expanded="false">B</button>
+        <div class="vitra-dropdown-menu"></div>
+      </div>
+    `;
+    Vitra.dropdown.init();
+    const dd1 = document.getElementById('dd1');
+    const dd2 = document.getElementById('dd2');
+    const toggle1 = dd1.querySelector('[data-vitra-dropdown-toggle]');
+    const toggle2 = dd2.querySelector('[data-vitra-dropdown-toggle]');
+
+    toggle1.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    expect(dd1.classList.contains('open')).toBe(true);
+
+    toggle2.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    expect(dd2.classList.contains('open')).toBe(true);
+    expect(dd1.classList.contains('open')).toBe(false);
+    expect(toggle1.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('should not respond to clicks after destroy', () => {
+    document.body.innerHTML = `
+      <div class="vitra-dropdown">
+        <button data-vitra-dropdown-toggle aria-expanded="false">Menu</button>
+        <div class="vitra-dropdown-menu"></div>
+      </div>
+    `;
+    Vitra.dropdown.init();
+    Vitra.dropdown.destroy();
+    const dd = document.querySelector('.vitra-dropdown');
+    const toggle = document.querySelector('[data-vitra-dropdown-toggle]');
+
+    toggle.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+
+    expect(dd.classList.contains('open')).toBe(false);
   });
 });
 
 describe('Spotlight Module', () => {
+  afterEach(() => {
+    Vitra.spotlight.destroy();
+    document.body.innerHTML = '';
+  });
+
   it('should initialize without error', () => {
     expect(() => Vitra.spotlight.init()).not.toThrow();
+  });
+
+  it('should update --mouse-x/--mouse-y custom properties on mousemove', async () => {
+    document.body.innerHTML = '<div class="vitra-spotlight"></div>';
+    const el = document.querySelector('.vitra-spotlight');
+    el.getBoundingClientRect = () => ({ left: 10, top: 20, right: 110, bottom: 120, width: 100, height: 100 });
+
+    Vitra.spotlight.init();
+    document.dispatchEvent(new MouseEvent('mousemove', { clientX: 60, clientY: 70 }));
+
+    await new Promise(resolve => requestAnimationFrame(resolve));
+
+    expect(el.style.getPropertyValue('--mouse-x')).toBe('50px');
+    expect(el.style.getPropertyValue('--mouse-y')).toBe('50px');
+  });
+
+  it('should not update properties after destroy', async () => {
+    document.body.innerHTML = '<div class="vitra-spotlight"></div>';
+    const el = document.querySelector('.vitra-spotlight');
+    el.getBoundingClientRect = () => ({ left: 0, top: 0, right: 100, bottom: 100, width: 100, height: 100 });
+
+    Vitra.spotlight.init();
+    Vitra.spotlight.destroy();
+    document.dispatchEvent(new MouseEvent('mousemove', { clientX: 60, clientY: 70 }));
+
+    await new Promise(resolve => requestAnimationFrame(resolve));
+
+    expect(el.style.getPropertyValue('--mouse-x')).toBe('');
+    expect(el.style.getPropertyValue('--mouse-y')).toBe('');
   });
 });
 

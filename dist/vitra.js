@@ -531,7 +531,7 @@ var Vitra = (() => {
             }
             _tabKeyTarget = modalEl;
             modalEl.addEventListener("keydown", _handleTabKey);
-            setTimeout(() => _firstFocusable.focus(), 100);
+            requestAnimationFrame(() => requestAnimationFrame(() => _firstFocusable.focus()));
           };
           const _handleTabKey = (e) => {
             if (e.key !== "Tab") return;
@@ -568,6 +568,7 @@ var Vitra = (() => {
           let _activeTooltip = null;
           let _showTimeout = null;
           const _offset = 8;
+          const _listeners = /* @__PURE__ */ new WeakMap();
           const show = (target, text, options = {}) => {
             const {
               position = "top",
@@ -695,18 +696,31 @@ var Vitra = (() => {
               const text = el.getAttribute("data-vitra-tooltip");
               const position = el.getAttribute("data-vitra-tooltip-position") || "top";
               const delay = parseInt(el.getAttribute("data-vitra-tooltip-delay") || "0", 10);
-              el.addEventListener("mouseenter", () => show(el, text, { position, delay }));
-              el.addEventListener("mouseleave", () => hide(el));
-              el.addEventListener("focus", () => show(el, text, { position, delay }));
-              el.addEventListener("blur", () => hide(el));
+              const handlers = {
+                mouseenter: () => show(el, text, { position, delay }),
+                mouseleave: () => hide(el),
+                focus: () => show(el, text, { position, delay }),
+                blur: () => hide(el)
+              };
+              el.addEventListener("mouseenter", handlers.mouseenter);
+              el.addEventListener("mouseleave", handlers.mouseleave);
+              el.addEventListener("focus", handlers.focus);
+              el.addEventListener("blur", handlers.blur);
+              _listeners.set(el, handlers);
             });
           };
           const destroy = () => {
             hide();
             const elements = document.querySelectorAll("[data-vitra-tooltip]");
             elements.forEach((el) => {
-              const clone = el.cloneNode(true);
-              el.parentNode.replaceChild(clone, el);
+              const handlers = _listeners.get(el);
+              if (handlers) {
+                el.removeEventListener("mouseenter", handlers.mouseenter);
+                el.removeEventListener("mouseleave", handlers.mouseleave);
+                el.removeEventListener("focus", handlers.focus);
+                el.removeEventListener("blur", handlers.blur);
+                _listeners.delete(el);
+              }
             });
           };
           return {

@@ -302,6 +302,7 @@
     --vitra-color-surface-active: hsl(222deg 30% 10% / 13%);
     --vitra-color-border: hsl(222deg 25% 15% / 10%);
     --vitra-color-border-hover: hsl(222deg 25% 15% / 22%);
+    --vitra-color-border-rgb: 25, 33, 51;
     --vitra-color-text-primary: hsl(222deg 28% 10%);
     --vitra-color-text-secondary: hsl(222deg 12% 32%);
     --vitra-color-text-tertiary: hsl(222deg 8% 52%);
@@ -341,6 +342,7 @@
     --vitra-color-surface-active: hsl(330deg 100% 50% / 25%);
     --vitra-color-border: hsl(330deg 30% 60% / 20%);
     --vitra-color-border-hover: hsl(330deg 30% 50% / 35%);
+    --vitra-color-border-rgb: 140, 90, 120;
     --vitra-color-accent-h: 330;
     --vitra-color-accent-s: 70%;
     --vitra-color-accent-l: 55%;
@@ -456,6 +458,7 @@
       --vitra-color-surface-active: hsl(222deg 30% 10% / 13%);
       --vitra-color-border: hsl(222deg 25% 15% / 10%);
       --vitra-color-border-hover: hsl(222deg 25% 15% / 22%);
+      --vitra-color-border-rgb: 25, 33, 51;
       --vitra-color-text-primary: hsl(222deg 28% 10%);
       --vitra-color-text-secondary: hsl(222deg 12% 32%);
       --vitra-color-text-tertiary: hsl(222deg 8% 52%);
@@ -855,16 +858,6 @@
     }
   }
 
-  /* Shimmer - subtle light sweep effect */
-  @keyframes vitra-shimmer {
-    0% {
-      background-position: -200% center;
-    }
-
-    100% {
-      background-position: 200% center;
-    }
-  }
 
   /* Breathe - subtle scale pulse */
   @keyframes vitra-breathe {
@@ -1340,12 +1333,6 @@
     33% { transform: translate(-15%, 10%) rotate(-4deg) scale(1.03); }
     66% { transform: translate(10%, -20%) rotate(3deg) scale(0.97); }
     100% { transform: translate(0, 0) rotate(0deg) scale(1); }
-  }
-
-  @keyframes vitra-aurora-hue {
-    0% { filter: hue-rotate(0deg); }
-    50% { filter: hue-rotate(30deg); }
-    100% { filter: hue-rotate(0deg); }
   }
 
   .vitra-aurora-bg {
@@ -2109,7 +2096,7 @@
     font-size: clamp(1.25rem, 3vw, 1.5rem);
   }
 
-  /* --- VITRA BLOCKS (Layouts Pre-construidos) --- */
+  /* --- VITRA BLOCKS (Pre-built Layouts) --- */
   
   .vitra-section {
     position: relative;
