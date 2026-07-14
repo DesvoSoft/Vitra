@@ -662,4 +662,20 @@
       setTimeout(_triggerBSOD, 400);
     }
   };
+
+  window.setScenerySpeed = function (btn, speed) {
+    var showcase = document.getElementById('scenery-showcase');
+    if (!showcase) return;
+    showcase.style.setProperty('--vitra-scenery-speed', speed);
+
+    var group = btn.closest('[role="group"]');
+    if (group) {
+      group.querySelectorAll('.vitra-btn').forEach(function (b) {
+        b.classList.remove('vitra-btn-solid');
+        b.classList.add('vitra-btn-ghost');
+      });
+    }
+    btn.classList.remove('vitra-btn-ghost');
+    btn.classList.add('vitra-btn-solid');
+  };
 })();

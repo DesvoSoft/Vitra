@@ -24,6 +24,18 @@ body {
   contain-intrinsic-size: auto 800px;
 }
 
+/* Alternating tint gives the page vertical rhythm - sections read
+   as distinct rooms instead of one endless scroll */
+.demo-section:nth-of-type(even) {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    hsla(var(--vitra-color-accent-h), 40%, 50%, 0.035) 12%,
+    hsla(var(--vitra-color-accent-h), 40%, 50%, 0.035) 88%,
+    transparent
+  );
+}
+
 .demo-section-title {
   font-size: var(--vitra-font-size-3xl, 2rem);
   margin-bottom: var(--vitra-space-2);
@@ -58,11 +70,22 @@ body {
 .demo-hero {
   position: relative;
   overflow: hidden;
-  min-height: 85vh;
+  min-height: 92vh;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--vitra-color-bg);
+}
+
+/* Seamless fade from the scenery landscape into the page below */
+.demo-hero::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 22%;
+  z-index: 1;
+  background: linear-gradient(to bottom, transparent, var(--vitra-color-bg));
+  pointer-events: none;
 }
 
 /* Hero gradient-text — dark themes use light stops, light themes use dark stops */
@@ -1026,6 +1049,44 @@ pre code {
 .bsod-footer {
   font-size: 0.78rem;
   opacity: 0.55;
+}
+
+/* ============================================
+   Scenery Section (NEW in v1.8)
+   ============================================ */
+
+.demo-scenery-showcase {
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(340px, 55vh, 520px);
+  border-radius: var(--vitra-radius-lg);
+  border: 1px solid var(--vitra-color-border);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: var(--vitra-space-6);
+}
+
+.demo-scenery-panel {
+  position: relative;
+  z-index: 1;
+  max-width: 340px;
+  padding: var(--vitra-space-4) var(--vitra-space-5);
+  border-radius: var(--vitra-radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--vitra-space-2);
+}
+
+.demo-scenery-panel strong {
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+.demo-scenery-panel span {
+  font-size: 0.875rem;
+  color: var(--vitra-color-text-secondary);
+  line-height: 1.5;
 }
 
 @media print {
