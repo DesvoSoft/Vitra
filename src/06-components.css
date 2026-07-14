@@ -306,12 +306,20 @@
     background-color: hsl(0deg 0% 100% / 8%);
   }
 
-  /* Glass input variant */
+  /* Glass input variant - solid fallback when backdrop-filter
+     is unsupported; translucent + blurred when it is. */
   .vitra-input-glass {
-    background: hsl(0deg 0% 100% / 3%);
-    backdrop-filter: blur(var(--vitra-blur-md));
-    border-color: hsl(0deg 0% 100% / 15%);
+    background: var(--vitra-glass-bg-fallback);
+    border-color: var(--vitra-color-border);
     color: var(--vitra-color-text-primary);
+  }
+
+  @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
+    .vitra-input-glass {
+      background: var(--vitra-glass-bg);
+      backdrop-filter: blur(var(--vitra-blur-md));
+      border-color: hsl(0deg 0% 100% / 15%);
+    }
   }
 
   /* Custom Select Styling */
@@ -973,11 +981,20 @@
                 border-color var(--vitra-duration-normal) var(--vitra-ease-luxury);
   }
 
+  /* Solid fallback when backdrop-filter is unsupported;
+     translucent + blurred when it is. */
   .vitra-badge-glass {
-    background: hsl(0deg 0% 100% / 10%);
-    backdrop-filter: blur(var(--vitra-blur-sm));
-    border: 1px solid hsl(0deg 0% 100% / 10%);
+    background: var(--vitra-glass-bg-fallback);
+    border: 1px solid var(--vitra-color-border);
     color: var(--vitra-color-text-primary);
+  }
+
+  @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
+    .vitra-badge-glass {
+      background: hsl(0deg 0% 100% / 10%);
+      backdrop-filter: blur(var(--vitra-blur-sm));
+      border-color: hsl(0deg 0% 100% / 10%);
+    }
   }
 
   /* --- BADGE SIZE VARIANTS --- */
@@ -1890,10 +1907,18 @@
     border-width: 4px;
   }
 
-  /* Spinner glass variant */
+  /* Spinner glass variant - border-only, no background/blur to
+     guard, but kept consistent with the glass color language */
   .vitra-spinner-glass {
-    border-color: hsl(0deg 0% 100% / 10%);
-    border-top-color: hsl(0deg 0% 100% / 80%);
+    border-color: var(--vitra-color-border);
+    border-top-color: var(--vitra-color-accent);
+  }
+
+  @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
+    .vitra-spinner-glass {
+      border-color: hsl(0deg 0% 100% / 10%);
+      border-top-color: hsl(0deg 0% 100% / 80%);
+    }
   }
 
   /* Spinner with label */
@@ -1980,11 +2005,19 @@
     flex-shrink: 0;
   }
 
-  /* Alert glass variant */
+  /* Alert glass variant - solid fallback when backdrop-filter
+     is unsupported; translucent + blurred when it is. */
   .vitra-alert-glass {
-    background: hsl(0deg 0% 100% / 3%);
-    backdrop-filter: blur(var(--vitra-blur-sm));
-    border-color: hsl(0deg 0% 100% / 10%);
+    background: var(--vitra-glass-bg-fallback);
+    border-color: var(--vitra-color-border);
+  }
+
+  @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
+    .vitra-alert-glass {
+      background: hsl(0deg 0% 100% / 3%);
+      backdrop-filter: blur(var(--vitra-blur-sm));
+      border-color: hsl(0deg 0% 100% / 10%);
+    }
   }
 
   /* Alert dismiss button */
@@ -2057,10 +2090,17 @@
     border-bottom: none;
   }
 
-  /* Table glass variant */
+  /* Table glass variant - solid fallback when backdrop-filter
+     is unsupported; translucent + blurred when it is. */
   .vitra-table-glass {
-    background: hsl(0deg 0% 100% / 2%);
-    backdrop-filter: blur(var(--vitra-blur-sm));
+    background: var(--vitra-glass-bg-fallback);
+  }
+
+  @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
+    .vitra-table-glass {
+      background: hsl(0deg 0% 100% / 2%);
+      backdrop-filter: blur(var(--vitra-blur-sm));
+    }
   }
 
   /* Table striped variant */

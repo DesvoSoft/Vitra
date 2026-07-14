@@ -94,9 +94,16 @@
     }
   }
 
-  /* Fallback for glass variants when backdrop-filter not supported */
-  .vitra-glass-sm, .vitra-glass-md, .vitra-glass-lg, .vitra-glass-xl {
-    background: var(--vitra-glass-bg-fallback);
+  /* Fallback for glass variants when backdrop-filter not supported.
+     Scoped to the negated @supports query - without it, this rule's
+     background (solid, opaque) overrides the translucent glass
+     background from the supported branch above on every browser
+     that DOES support backdrop-filter, since both rules match and
+     this one comes later in source order. */
+  @supports not ((backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))) {
+    .vitra-glass-sm, .vitra-glass-md, .vitra-glass-lg, .vitra-glass-xl {
+      background: var(--vitra-glass-bg-fallback);
+    }
   }
 
   /* Reduce blur on mobile for GPU performance */
