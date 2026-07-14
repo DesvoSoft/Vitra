@@ -47,10 +47,6 @@
     --vitra-color-info-border:     hsl(217deg 91% 60% / 30%);
     --vitra-color-info-text:       hsl(217deg 91% 70%);
 
-    /* Premium Color Extensions */
-    --vitra-color-accent-oklch: oklch(65% 0.25 var(--vitra-color-accent-h));
-    --vitra-color-bg-warm: hsl(calc(var(--vitra-color-accent-h) + 30) 20% 6%);
-    --vitra-color-bg-cool: hsl(calc(var(--vitra-color-accent-h) - 30) 20% 6%);
     --vitra-border-glow-angle: 0deg;
 
     /* Background & Surface (Default Dark) */
@@ -357,8 +353,6 @@
     --vitra-shadow-medium: 0 4px 16px rgb(150 50 130 / 15%), 0 0 0 1px hsl(330deg 30% 60% / 10%);
     --vitra-shadow-elevated: 0 10px 32px rgb(150 50 130 / 20%), 0 0 0 1px hsl(330deg 30% 60% / 12%);
     --vitra-glass-bg: hsl(330deg 80% 98% / 65%);
-    --vitra-color-bg-warm: hsl(340deg 25% 95%);
-    --vitra-color-bg-cool: hsl(310deg 25% 95%);
 
     color-scheme: light;
   }
@@ -383,8 +377,6 @@
     --vitra-shadow-medium: 0 4px 16px rgb(0 0 0 / 60%), 0 0 0 1px hsl(285deg 100% 58% / 10%);
     --vitra-shadow-elevated: 0 10px 32px rgb(0 0 0 / 70%), 0 0 0 1px hsl(285deg 100% 58% / 12%);
     --vitra-glass-bg: hsl(285deg 100% 60% / 5%);
-    --vitra-color-bg-warm: hsl(305deg 25% 5%);
-    --vitra-color-bg-cool: hsl(265deg 25% 5%);
 
     color-scheme: dark;
   }
@@ -409,8 +401,6 @@
     --vitra-shadow-medium: 0 4px 16px rgb(0 0 0 / 60%), 0 0 0 1px hsl(205deg 60% 60% / 10%);
     --vitra-shadow-elevated: 0 10px 32px rgb(0 0 0 / 70%), 0 0 0 1px hsl(205deg 60% 60% / 12%);
     --vitra-glass-bg: hsl(205deg 100% 60% / 5%);
-    --vitra-color-bg-warm: hsl(195deg 25% 6%);
-    --vitra-color-bg-cool: hsl(220deg 25% 6%);
 
     color-scheme: dark;
   }
@@ -435,8 +425,6 @@
     --vitra-shadow-medium: 0 4px 16px rgb(0 0 0 / 60%), 0 0 0 1px hsl(145deg 80% 45% / 10%);
     --vitra-shadow-elevated: 0 10px 32px rgb(0 0 0 / 70%), 0 0 0 1px hsl(145deg 80% 45% / 12%);
     --vitra-glass-bg: hsl(145deg 100% 50% / 5%);
-    --vitra-color-bg-warm: hsl(125deg 25% 5%);
-    --vitra-color-bg-cool: hsl(165deg 25% 5%);
 
     color-scheme: dark;
   }

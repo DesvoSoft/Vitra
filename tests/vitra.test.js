@@ -495,17 +495,11 @@ describe('CSS Cinematic Effects', () => {
 });
 
 describe('CSS Premium Tokens', () => {
-  it('should define --vitra-color-accent-oklch in source', () => {
-    const rootRules = [...document.styleSheets].flatMap(s =>
-      [...s.cssRules].filter(r => r.selectorText === ':root' || r.selectorText?.includes(':root'))
-    );
-    // Check via import of compiled CSS
-    const style = getComputedStyle(document.documentElement);
-    // oklch may not be supported in jsdom, so we check the source file presence
+  it('should not reintroduce the removed accent-oklch/bg-warm/bg-cool dead tokens', () => {
     const src = require('fs').readFileSync(require('path').resolve(__dirname, '../src/01-tokens.css'), 'utf8');
-    expect(src).toContain('--vitra-color-accent-oklch');
-    expect(src).toContain('--vitra-color-bg-warm');
-    expect(src).toContain('--vitra-color-bg-cool');
+    expect(src).not.toContain('--vitra-color-accent-oklch');
+    expect(src).not.toContain('--vitra-color-bg-warm');
+    expect(src).not.toContain('--vitra-color-bg-cool');
   });
 
   it('should define --vitra-space-16 in source', () => {
@@ -527,11 +521,6 @@ describe('CSS Premium Tokens', () => {
     });
   });
 
-  it('should define warm and cool variants in source', () => {
-    const src = require('fs').readFileSync(require('path').resolve(__dirname, '../src/01-tokens.css'), 'utf8');
-    expect(src).toContain('--vitra-color-bg-warm');
-    expect(src).toContain('--vitra-color-bg-cool');
-  });
 });
 
 describe('vitra.d.ts drift guard', () => {
