@@ -4,6 +4,18 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.3] - 2026-07-14
+
+### Changed
+
+- **Themes given distinct hues** — `light` and `dark` previously both fell back to the base token hue (177°), making them read as near-identical besides brightness; `neon` (180°) and `emerald` (155°) were also only a few degrees from that same base hue. All 7 themes now sit at deliberately separated hues across the wheel (dark 177, light 222, emerald 145, ocean 205, neon 285, pastel 330), so switching themes actually changes color character, not just contrast — this is most visible in the scenery backdrop, which derives its palette from the same accent-hue tokens.
+- **Scenery contrast tuned per color-scheme** — ridge opacity was a flat constant regardless of theme; on light-scheme themes (`light`, `pastel`) the translucent mist bands were washing out against a bright sky. Light-scheme themes now get heavier ridge opacity and a dialed-back sky glow to keep the horizon legible.
+- **Parallax now drifts one direction, true loop** — ridges previously used `ease-in-out infinite alternate`, which reads as layers breathing back and forth rather than a camera pan. Each ridge's SVG silhouette is now tiled twice inside a 200%-wide strip; animating `translate3d(0%) -> translate3d(-50%)` linear/infinite lands on a frame pixel-identical to the start, so the loop is seamless and travels one direction only (near ridge fastest, far ridge slowest — real depth-parallax cue).
+
+### Fixed
+
+- Far/mid ridge SVG paths had a vertical mismatch between their start and end anchor points (26px / 30px), which would have shown as a visible step at the tile seam once ridges became seamless loops — corrected so each path's edges meet at the same height.
+
 ## [1.8.2] - 2026-07-13
 
 ### Added

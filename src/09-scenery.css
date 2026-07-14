@@ -14,6 +14,11 @@
    Compositor-only animation: every moving layer
    animates transform exclusively - no filters,
    no blend modes, no per-frame repaints.
+   Each ridge is a seamless horizontal tile (its SVG
+   silhouette repeated once inside a 200%-wide layer)
+   drifting one direction only, 0% -> -50%, linear
+   infinite - the tile boundary is invisible so the
+   loop never reverses or visibly resets.
    ============================================ */
 
 @layer scenery {
@@ -25,10 +30,22 @@
     /* --- SCENERY MOTION TOKENS --- */
     --vitra-scenery-speed: 1;
 
-    /* --- SCENERY OPACITY TOKENS (atmospheric perspective) --- */
+    /* --- SCENERY OPACITY TOKENS (atmospheric perspective) ---
+       Dark-scheme defaults: ridges sit on a dark sky, so a
+       lighter mist band read as haze without washing out. */
     --vitra-scenery-opacity-far: 0.6;
     --vitra-scenery-opacity-mid: 0.75;
     --vitra-scenery-opacity-near: 0.92;
+  }
+
+  /* Light-scheme themes (light, pastel) sit on a bright sky:
+     the same translucent mist bands lose contrast against it,
+     so ridges read heavier/more saturated and the sky glow
+     band is dialed back to keep the horizon legible. */
+  :where([data-theme="light"], [data-theme="pastel"]) {
+    --vitra-scenery-opacity-far: 0.78;
+    --vitra-scenery-opacity-mid: 0.88;
+    --vitra-scenery-opacity-near: 0.97;
   }
 
   /* --- ROOT CONTAINERS --- */
@@ -75,6 +92,21 @@
       );
   }
 
+  :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-sky {
+    background:
+      linear-gradient(
+        to top,
+        hsl(var(--vitra-scenery-hue) var(--vitra-scenery-sat) 55% / 22%) 0%,
+        hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.7) 50% / 10%) 32%,
+        transparent 58%
+      ),
+      linear-gradient(
+        to bottom,
+        var(--vitra-color-bg) 0%,
+        hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 60% / 16%) 100%
+      );
+  }
+
   /* --- HALO LAYER (sun / moon) --- */
 
   /* Crisp disc with layered glow, sitting just above the far ridge.
@@ -102,21 +134,20 @@
 
   /* --- RIDGE LAYERS (landscape silhouettes, back to front) --- */
 
-  /* Shared geometry: anchored to the bottom, wider than the
-     viewport so the slow horizontal drift never exposes edges.
-     Depth comes from three cheap cues, no filters needed:
-     1. Atmospheric perspective - each ridge's TOP starts as a
-        bright mist band (valley fog), bases go progressively
-        darker front-to-back
-     2. Opacity steps - far ridge lets the sky bleed through
-     3. Differential drift - near travels 3x farther and faster */
+  /* Each ridge is a 200%-wide strip holding its silhouette
+     TWICE, back to back (background-size 50% 100%, repeat-x).
+     Because both copies are identical, translating exactly
+     one copy-width (-50% of the strip) lands on a frame that
+     is pixel-identical to frame 0 - the animation can run
+     linear, one direction, infinite, with no visible seam and
+     no ease-in-out "breathing" reversal. */
   .vitra-scenery-ridge-far,
   .vitra-scenery-ridge-mid,
   .vitra-scenery-ridge-near {
     position: absolute;
     bottom: 0;
-    left: -15%;
-    width: 130%;
+    left: 0;
+    width: 200%;
     will-change: transform;
   }
 
@@ -131,7 +162,7 @@
       hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 34% / 65%) 100%
     );
     opacity: var(--vitra-scenery-opacity-far);
-    animation: vitra-scenery-drift-far calc(60s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
+    animation: vitra-scenery-drift-far calc(90s / var(--vitra-scenery-speed)) linear infinite;
   }
 
   .vitra-scenery-ridge-mid {
@@ -143,7 +174,7 @@
       hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.7) 20% / 85%) 100%
     );
     opacity: var(--vitra-scenery-opacity-mid);
-    animation: vitra-scenery-drift-mid calc(36s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
+    animation: vitra-scenery-drift-mid calc(55s / var(--vitra-scenery-speed)) linear infinite;
   }
 
   .vitra-scenery-ridge-near {
@@ -154,59 +185,69 @@
       hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.8) 8% / 97%) 100%
     );
     opacity: var(--vitra-scenery-opacity-near);
-    animation: vitra-scenery-drift-near calc(22s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
+    animation: vitra-scenery-drift-near calc(30s / var(--vitra-scenery-speed)) linear infinite;
   }
 
   /* SVG-silhouette ridgelines. The mask defines the SHAPE
      (peaks, foothills, treeline); the gradient above defines the
      COLOR, so theming via tokens is untouched. Each ridge's mist
      band sits at its silhouette top, visually separating it from
-     the range behind. */
+     the range behind. mask-size 50% 100% + repeat-x tiles the
+     single 1440-wide path twice across the 200%-wide element. */
   @supports (mask-image: url("")) or (-webkit-mask-image: url("")) {
     /* Far: mountain panorama built like a painting - flowing
        bezier ridgeline, summit hierarchy (one dominant massif at
        x535, secondary at x1168), asymmetric slopes, eroded round
        valleys. Sun sits cradled in the saddle between them. */
     .vitra-scenery-ridge-far {
-      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V258C50 252 95 240 135 222C165 208 190 186 220 172C240 163 258 168 275 158C295 146 310 128 330 118L345 110C360 122 372 138 390 148C405 156 418 152 432 144C450 134 462 116 478 104L495 92C505 85 512 78 522 70L535 60C555 80 570 104 592 122C615 141 640 152 668 162C700 173 730 180 760 190C795 202 825 215 858 224C888 232 920 236 950 234C980 232 1008 222 1035 208C1060 195 1080 176 1105 160L1125 146C1135 138 1143 130 1155 124L1168 117C1185 135 1200 155 1222 170C1250 189 1280 200 1310 210C1350 222 1395 230 1440 232V400Z'/></svg>");
-      mask-size: 100% 100%;
-      mask-repeat: no-repeat;
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V258C50 252 95 240 135 222C165 208 190 186 220 172C240 163 258 168 275 158C295 146 310 128 330 118L345 110C360 122 372 138 390 148C405 156 418 152 432 144C450 134 462 116 478 104L495 92C505 85 512 78 522 70L535 60C555 80 570 104 592 122C615 141 640 152 668 162C700 173 730 180 760 190C795 202 825 215 858 224C888 232 920 236 950 234C980 232 1008 222 1035 208C1060 195 1080 176 1105 160L1125 146C1135 138 1143 130 1155 124L1168 117C1185 135 1200 155 1222 170C1250 189 1280 200 1310 210C1350 222 1395 227 1440 258V400Z'/></svg>");
+      mask-size: 50% 100%;
+      mask-repeat: repeat-x;
+      mask-size: 50% 100%;
+      mask-repeat: repeat-x;
     }
 
     /* Mid: soft rolling foothills, one gentle crest left-of-center,
        long calm undulation elsewhere - lets the far range be the
        drama while providing the depth overlap */
     .vitra-scenery-ridge-mid {
-      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V292C60 284 110 268 165 258C220 248 260 232 310 220C340 213 365 202 395 196L415 192C450 200 480 214 520 224C570 236 615 244 665 248C720 252 770 246 820 236C860 228 895 216 935 210C975 204 1010 208 1050 216C1100 226 1150 240 1200 248C1280 260 1360 264 1440 262V400Z'/></svg>");
-      mask-size: 100% 100%;
-      mask-repeat: no-repeat;
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V292C60 284 110 268 165 258C220 248 260 232 310 220C340 213 365 202 395 196L415 192C450 200 480 214 520 224C570 236 615 244 665 248C720 252 770 246 820 236C860 228 895 216 935 210C975 204 1010 208 1050 216C1100 226 1150 240 1200 248C1280 260 1360 274 1440 292V400Z'/></svg>");
+      mask-size: 50% 100%;
+      mask-repeat: repeat-x;
+      mask-size: 50% 100%;
+      mask-repeat: repeat-x;
     }
 
     /* Near: quiet dark treeline, barely undulating */
     .vitra-scenery-ridge-near {
       mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V348C110 338 210 350 330 344C450 338 550 352 680 346C810 340 920 354 1050 348C1180 342 1310 352 1440 348V400Z'/></svg>");
-      mask-size: 100% 100%;
-      mask-repeat: no-repeat;
+      mask-size: 50% 100%;
+      mask-repeat: repeat-x;
+      mask-size: 50% 100%;
+      mask-repeat: repeat-x;
     }
   }
 
   /* Parallax by differential speed: the nearer the layer, the
-     farther and faster it travels (real-world depth cue).
-     translate3d keeps each ridge on its own compositor layer -
-     the whole animation runs without touching paint. */
+     faster it travels (real-world depth cue). All three drift in
+     the SAME direction (right-to-left) at different speeds, which
+     reads as true camera-pan parallax rather than layers
+     oscillating independently. translate3d keeps each ridge on
+     its own compositor layer; the -50% endpoint is exactly one
+     tile-width, so looping back to 0% is seamless. */
   @keyframes vitra-scenery-drift-far {
-    0% { transform: translate3d(-1.5%, 0, 0) scale(1); }
-    100% { transform: translate3d(1.5%, 0, 0) scale(1.015); }
+    0% { transform: translate3d(0%, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); }
   }
 
   @keyframes vitra-scenery-drift-mid {
-    0% { transform: translate3d(3%, 0, 0) scale(1.01); }
-    100% { transform: translate3d(-3.5%, 0, 0) scale(1); }
+    0% { transform: translate3d(0%, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); }
   }
 
   @keyframes vitra-scenery-drift-near {
-    0% { transform: translate3d(-5%, 0, 0) scale(1); }
-    100% { transform: translate3d(5%, 0, 0) scale(1.02); }
+    0% { transform: translate3d(0%, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); }
   }
 
   /* --- GRAIN LAYER --- */
