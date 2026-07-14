@@ -1757,8 +1757,6 @@
       mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V258C50 252 95 240 135 222C165 208 190 186 220 172C240 163 258 168 275 158C295 146 310 128 330 118L345 110C360 122 372 138 390 148C405 156 418 152 432 144C450 134 462 116 478 104L495 92C505 85 512 78 522 70L535 60C555 80 570 104 592 122C615 141 640 152 668 162C700 173 730 180 760 190C795 202 825 215 858 224C888 232 920 236 950 234C980 232 1008 222 1035 208C1060 195 1080 176 1105 160L1125 146C1135 138 1143 130 1155 124L1168 117C1185 135 1200 155 1222 170C1250 189 1280 200 1310 210C1350 222 1395 227 1440 258V400Z'/></svg>");
       mask-size: 50% 100%;
       mask-repeat: repeat-x;
-      mask-size: 50% 100%;
-      mask-repeat: repeat-x;
     }
 
     /* Mid: soft rolling foothills, one gentle crest left-of-center,
@@ -1768,15 +1766,11 @@
       mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V292C60 284 110 268 165 258C220 248 260 232 310 220C340 213 365 202 395 196L415 192C450 200 480 214 520 224C570 236 615 244 665 248C720 252 770 246 820 236C860 228 895 216 935 210C975 204 1010 208 1050 216C1100 226 1150 240 1200 248C1280 260 1360 274 1440 292V400Z'/></svg>");
       mask-size: 50% 100%;
       mask-repeat: repeat-x;
-      mask-size: 50% 100%;
-      mask-repeat: repeat-x;
     }
 
     /* Near: quiet dark treeline, barely undulating */
     .vitra-scenery-ridge-near {
       mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V348C110 338 210 350 330 344C450 338 550 352 680 346C810 340 920 354 1050 348C1180 342 1310 352 1440 348V400Z'/></svg>");
-      mask-size: 50% 100%;
-      mask-repeat: repeat-x;
       mask-size: 50% 100%;
       mask-repeat: repeat-x;
     }
@@ -1865,6 +1859,11 @@
     --vitra-container-lg: 960px;
     --vitra-container-xl: 1200px;
 
+    /* Narrow content max-width for .vitra-container-sm (article/form
+       reading measure) - distinct from --vitra-container-sm above,
+       which is the mobile-first breakpoint width for .vitra-container */
+    --vitra-container-narrow: 560px;
+
     /* Fluid spacing scale using clamp() */
     --vitra-fluid-space-1: clamp(0.25rem, 1vw, 0.5rem);    /* 4-8px */
     --vitra-fluid-space-2: clamp(0.5rem, 2vw, 1rem);        /* 8-16px */
@@ -1918,9 +1917,9 @@
 
   /* --- CONTAINER SIZE VARIANTS --- */
 
-  /* Small container - narrower content */
+  /* Small container - narrower content (reading measure) */
   .vitra-container-sm {
-    max-width: var(--vitra-container-md);
+    max-width: var(--vitra-container-narrow);
   }
 
   /* Large container - wider content */
@@ -4264,8 +4263,12 @@
     background: hsl(0deg 0% 100% / 2%);
   }
 
-  /* Table responsive card layout on mobile */
-  @media (width <= 768px) {
+  /* Table responsive card layout - container query when an ancestor
+     opts into container-type, else falls back to a viewport media
+     query. The two rule sets are intentionally kept behind mutually
+     exclusive conditions (@supports not) so only one is ever active;
+     if you change one of these rule sets, change the other to match. */
+  @container (max-width: 500px) {
     .vitra-table-stack thead {
       position: absolute;
       width: 1px;
@@ -4298,36 +4301,38 @@
     }
   }
 
-  @container (max-width: 500px) {
-    .vitra-table-stack thead {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-    }
+  @supports not (container-type: inline-size) {
+    @media (width <= 768px) {
+      .vitra-table-stack thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+      }
 
-    .vitra-table-stack tr {
-      display: block;
-      padding: var(--vitra-space-3);
-      border-bottom: 1px solid var(--vitra-color-border);
-    }
+      .vitra-table-stack tr {
+        display: block;
+        padding: var(--vitra-space-3);
+        border-bottom: 1px solid var(--vitra-color-border);
+      }
 
-    .vitra-table-stack td {
-      display: block;
-      padding: var(--vitra-space-1) 0;
-      border: none;
-    }
+      .vitra-table-stack td {
+        display: block;
+        padding: var(--vitra-space-1) 0;
+        border: none;
+      }
 
-    .vitra-table-stack td::before {
-      content: attr(data-label);
-      display: block;
-      font-weight: var(--vitra-font-weight-semibold);
-      color: var(--vitra-color-text-primary);
-      font-size: var(--vitra-font-size-xs);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: var(--vitra-space-1);
+      .vitra-table-stack td::before {
+        content: attr(data-label);
+        display: block;
+        font-weight: var(--vitra-font-weight-semibold);
+        color: var(--vitra-color-text-primary);
+        font-size: var(--vitra-font-size-xs);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: var(--vitra-space-1);
+      }
     }
   }
 

@@ -80,25 +80,35 @@ declare namespace Vitra {
 
   interface ToastModule {
     show(message: string, options?: ToastOptions): HTMLElement;
+    destroy(): void;
+  }
+
+  interface RippleModule {
+    init(): void;
+    destroy(): void;
   }
 
   interface DropdownModule {
     init(): void;
+    destroy(): void;
   }
 
   interface SpotlightModule {
     init(): void;
+    destroy(): void;
   }
 
   interface VitraInstance {
     theme: ThemeModule;
     particles: ParticlesModule;
     reveal: RevealModule;
+    ripple: RippleModule;
     modal: ModalModule;
     tooltip: TooltipModule;
     toast: ToastModule;
     dropdown: DropdownModule;
     spotlight: SpotlightModule;
+    destroyAll(): void;
   }
 }
 

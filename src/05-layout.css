@@ -25,6 +25,11 @@
     --vitra-container-lg: 960px;
     --vitra-container-xl: 1200px;
 
+    /* Narrow content max-width for .vitra-container-sm (article/form
+       reading measure) - distinct from --vitra-container-sm above,
+       which is the mobile-first breakpoint width for .vitra-container */
+    --vitra-container-narrow: 560px;
+
     /* Fluid spacing scale using clamp() */
     --vitra-fluid-space-1: clamp(0.25rem, 1vw, 0.5rem);    /* 4-8px */
     --vitra-fluid-space-2: clamp(0.5rem, 2vw, 1rem);        /* 8-16px */
@@ -78,9 +83,9 @@
 
   /* --- CONTAINER SIZE VARIANTS --- */
 
-  /* Small container - narrower content */
+  /* Small container - narrower content (reading measure) */
   .vitra-container-sm {
-    max-width: var(--vitra-container-md);
+    max-width: var(--vitra-container-narrow);
   }
 
   /* Large container - wider content */

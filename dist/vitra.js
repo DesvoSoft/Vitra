@@ -873,6 +873,12 @@ var Vitra = (() => {
             if (config.tooltip !== false) {
               Vitra.tooltip.init();
             }
+            if (config.dropdown !== false) {
+              Vitra.dropdown.init();
+            }
+            if (config.spotlight !== false) {
+              Vitra.spotlight.init();
+            }
           } catch (e) {
             console.warn("[Vitra] Failed to parse data-config:", e.message);
           }
@@ -891,13 +897,9 @@ var Vitra = (() => {
           if (document.readyState === "loading") {
             document.addEventListener("DOMContentLoaded", () => {
               _parseDataConfig();
-              dropdown.init();
-              spotlight.init();
             });
           } else {
             _parseDataConfig();
-            dropdown.init();
-            spotlight.init();
           }
         }
         const destroyAll = () => {

@@ -2108,8 +2108,12 @@
     background: hsl(0deg 0% 100% / 2%);
   }
 
-  /* Table responsive card layout on mobile */
-  @media (width <= 768px) {
+  /* Table responsive card layout - container query when an ancestor
+     opts into container-type, else falls back to a viewport media
+     query. The two rule sets are intentionally kept behind mutually
+     exclusive conditions (@supports not) so only one is ever active;
+     if you change one of these rule sets, change the other to match. */
+  @container (max-width: 500px) {
     .vitra-table-stack thead {
       position: absolute;
       width: 1px;
@@ -2142,36 +2146,38 @@
     }
   }
 
-  @container (max-width: 500px) {
-    .vitra-table-stack thead {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-    }
+  @supports not (container-type: inline-size) {
+    @media (width <= 768px) {
+      .vitra-table-stack thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+      }
 
-    .vitra-table-stack tr {
-      display: block;
-      padding: var(--vitra-space-3);
-      border-bottom: 1px solid var(--vitra-color-border);
-    }
+      .vitra-table-stack tr {
+        display: block;
+        padding: var(--vitra-space-3);
+        border-bottom: 1px solid var(--vitra-color-border);
+      }
 
-    .vitra-table-stack td {
-      display: block;
-      padding: var(--vitra-space-1) 0;
-      border: none;
-    }
+      .vitra-table-stack td {
+        display: block;
+        padding: var(--vitra-space-1) 0;
+        border: none;
+      }
 
-    .vitra-table-stack td::before {
-      content: attr(data-label);
-      display: block;
-      font-weight: var(--vitra-font-weight-semibold);
-      color: var(--vitra-color-text-primary);
-      font-size: var(--vitra-font-size-xs);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: var(--vitra-space-1);
+      .vitra-table-stack td::before {
+        content: attr(data-label);
+        display: block;
+        font-weight: var(--vitra-font-weight-semibold);
+        color: var(--vitra-color-text-primary);
+        font-size: var(--vitra-font-size-xs);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: var(--vitra-space-1);
+      }
     }
   }
 

@@ -1230,6 +1230,16 @@ const Vitra = (() => {
       if (config.tooltip !== false) {
         Vitra.tooltip.init();
       }
+
+      // 6. Dropdown Configuration
+      if (config.dropdown !== false) {
+        Vitra.dropdown.init();
+      }
+
+      // 7. Spotlight Configuration
+      if (config.spotlight !== false) {
+        Vitra.spotlight.init();
+      }
     } catch (e) {
       console.warn('[Vitra] Failed to parse data-config:', e.message);
     }
@@ -1253,13 +1263,9 @@ const Vitra = (() => {
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => {
         _parseDataConfig();
-        dropdown.init();
-        spotlight.init();
       });
     } else {
       _parseDataConfig();
-      dropdown.init();
-      spotlight.init();
     }
   }
 

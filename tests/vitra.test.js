@@ -533,3 +533,42 @@ describe('CSS Premium Tokens', () => {
     expect(src).toContain('--vitra-color-bg-cool');
   });
 });
+
+describe('vitra.d.ts drift guard', () => {
+  const dtsSrc = require('fs').readFileSync(
+    require('path').resolve(__dirname, '../dist/vitra.d.ts'),
+    'utf8'
+  );
+
+  // Extracts the member names (method/property keys) declared inside a
+  // named `interface Foo { ... }` block from the raw .d.ts text.
+  const interfaceMembers = (interfaceName) => {
+    const match = dtsSrc.match(new RegExp(`interface ${interfaceName} \\{([^}]*)\\}`));
+    if (!match) return [];
+    return match[1]
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((line) => line.match(/^(\w+)/)?.[1])
+      .filter(Boolean);
+  };
+
+  it.each([
+    ['ripple', 'RippleModule'],
+    ['dropdown', 'DropdownModule'],
+    ['spotlight', 'SpotlightModule'],
+    ['toast', 'ToastModule']
+  ])('%s runtime keys match declared %s interface', (moduleName, interfaceName) => {
+    const runtimeKeys = Object.keys(Vitra[moduleName]).sort();
+    const declaredKeys = interfaceMembers(interfaceName).sort();
+    expect(runtimeKeys).toEqual(declaredKeys);
+  });
+
+  it('VitraInstance declares every top-level Vitra module', () => {
+    const declaredTopLevel = interfaceMembers('VitraInstance');
+    const runtimeTopLevel = Object.keys(Vitra);
+    runtimeTopLevel.forEach((key) => {
+      expect(declaredTopLevel).toContain(key);
+    });
+  });
+});
