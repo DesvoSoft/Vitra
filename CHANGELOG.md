@@ -4,6 +4,20 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.1] - 2026-07-13
+
+### Changed
+
+- **Scenery performance overhaul** — the whole system now animates on the compositor only:
+  - `filter: blur()` removed from ridge layers (was re-rasterizing 130%-wide surfaces); atmospheric haze now comes from translucent mist-band gradients at each ridge top.
+  - Grain layer dropped `mix-blend-mode: overlay` (forced full-stack re-blend every animation frame); now plain low opacity.
+  - Drift keyframes use `translate3d` to pin each ridge to its own compositor layer; `contain: strict` on both scenery roots.
+- **Scenery silhouettes reworked**: far ridge is a dense-detail alpine range (36 points, dominant massif, micro-jitter rock texture), mid ridge mixes sharp spurs with rounded shoulders overlapping the far range's valleys, near ridge is a soft dark treeline. Valley-fog mist bands between ranges strengthen depth separation.
+
+### Removed
+
+- `--vitra-scenery-blur-far/-mid/-near` tokens (obsolete with the no-filter design; introduced in 1.8.0).
+
 ## [1.8.0] - 2026-07-13
 
 ### Added

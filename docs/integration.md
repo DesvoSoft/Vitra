@@ -470,8 +470,7 @@ The six child layers are always the same regardless of which root class is used 
 | `--vitra-scenery-hue` | `var(--vitra-color-accent-h)` | Base hue for the whole scene |
 | `--vitra-scenery-sat` | `var(--vitra-color-accent-s)` | Base saturation |
 | `--vitra-scenery-speed` | `1` | Drift speed multiplier (higher = faster) |
-| `--vitra-scenery-blur-far` / `-mid` / `-near` | `3px` / `1.5px` / `0px` | Per-layer atmospheric haze |
-| `--vitra-scenery-opacity-far` / `-mid` / `-near` | `0.5` / `0.68` / `0.85` | Per-layer opacity (atmospheric perspective) |
+| `--vitra-scenery-opacity-far` / `-mid` / `-near` | `0.6` / `0.75` / `0.92` | Per-layer opacity (atmospheric perspective) |
 
 Ridge silhouettes come from inline SVG masks (shape) colored by theme tokens (color) — no external assets. Where `mask-image` is unsupported, ridges gracefully fall back to soft gradient horizon bands. Under `prefers-reduced-motion: reduce`, all layers stop animating and hold position — the scene stays visible, just static.
 

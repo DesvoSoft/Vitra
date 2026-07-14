@@ -1549,6 +1549,9 @@
    stays token-driven), crisp sun/moon disc,
    atmospheric-perspective depth, grain finish.
    Six layers: sky, halo, ridge-far/mid/near, grain.
+   Compositor-only animation: every moving layer
+   animates transform exclusively - no filters,
+   no blend modes, no per-frame repaints.
    ============================================ */
 
 @layer scenery {
@@ -1560,15 +1563,10 @@
     /* --- SCENERY MOTION TOKENS --- */
     --vitra-scenery-speed: 1;
 
-    /* --- SCENERY SOFTENING TOKENS (atmospheric haze per depth) --- */
-    --vitra-scenery-blur-far: 3px;
-    --vitra-scenery-blur-mid: 1.5px;
-    --vitra-scenery-blur-near: 0px;
-
     /* --- SCENERY OPACITY TOKENS (atmospheric perspective) --- */
-    --vitra-scenery-opacity-far: 0.5;
-    --vitra-scenery-opacity-mid: 0.68;
-    --vitra-scenery-opacity-near: 0.85;
+    --vitra-scenery-opacity-far: 0.6;
+    --vitra-scenery-opacity-mid: 0.75;
+    --vitra-scenery-opacity-near: 0.92;
   }
 
   /* --- ROOT CONTAINERS --- */
@@ -1580,6 +1578,7 @@
     z-index: -1;
     overflow: hidden;
     pointer-events: none;
+    contain: strict;
   }
 
   /* Container-scoped variant: drop into any position:relative;
@@ -1590,6 +1589,7 @@
     overflow: hidden;
     pointer-events: none;
     z-index: 0;
+    contain: strict;
   }
 
   /* --- SKY LAYER --- */
@@ -1641,7 +1641,13 @@
   /* --- RIDGE LAYERS (landscape silhouettes, back to front) --- */
 
   /* Shared geometry: anchored to the bottom, wider than the
-     viewport so the slow horizontal drift never exposes edges */
+     viewport so the slow horizontal drift never exposes edges.
+     Depth comes from three cheap cues, no filters needed:
+     1. Atmospheric perspective - each ridge's TOP starts as a
+        bright mist band (valley fog), bases go progressively
+        darker front-to-back
+     2. Opacity steps - far ridge lets the sky bleed through
+     3. Differential drift - near travels 3x farther and faster */
   .vitra-scenery-ridge-far,
   .vitra-scenery-ridge-mid,
   .vitra-scenery-ridge-near {
@@ -1658,12 +1664,11 @@
     height: 58%;
     background: linear-gradient(
       to bottom,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.4) 78% / 45%) 0%,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 50% / 40%) 22%,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 32% / 60%) 100%
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.35) 82% / 55%) 0%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 55% / 45%) 18%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 34% / 65%) 100%
     );
     opacity: var(--vitra-scenery-opacity-far);
-    filter: blur(var(--vitra-scenery-blur-far));
     animation: vitra-scenery-drift-far calc(60s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
   }
 
@@ -1671,12 +1676,11 @@
     height: 40%;
     background: linear-gradient(
       to bottom,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.55) 58% / 40%) 0%,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.65) 34% / 60%) 30%,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.7) 20% / 80%) 100%
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.45) 68% / 50%) 0%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.65) 36% / 65%) 25%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.7) 20% / 85%) 100%
     );
     opacity: var(--vitra-scenery-opacity-mid);
-    filter: blur(var(--vitra-scenery-blur-mid));
     animation: vitra-scenery-drift-mid calc(36s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
   }
 
@@ -1684,81 +1688,77 @@
     height: 24%;
     background: linear-gradient(
       to bottom,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.75) 16% / 85%) 0%,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.8) 8% / 96%) 100%
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.7) 22% / 85%) 0%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.8) 8% / 97%) 100%
     );
     opacity: var(--vitra-scenery-opacity-near);
-    filter: blur(var(--vitra-scenery-blur-near));
     animation: vitra-scenery-drift-near calc(22s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
   }
 
   /* SVG-silhouette ridgelines. The mask defines the SHAPE
-     (peaks, rolling hills, dunes); the gradient above defines the
-     COLOR, so theming via tokens is untouched. Top of each gradient
-     stays translucent so peaks haze into the sky (atmospheric
-     perspective). */
+     (peaks, foothills, treeline); the gradient above defines the
+     COLOR, so theming via tokens is untouched. Each ridge's mist
+     band sits at its silhouette top, visually separating it from
+     the range behind. */
   @supports (mask-image: url("")) or (-webkit-mask-image: url("")) {
-    /* Far: dramatic alpine range - varied peak heights, deep
-       valleys, one dominant massif left-of-center and a second
-       echo right, keeping the sun's spot clear */
+    /* Far: alpine range. Dense micro-jitter points give rock
+       texture; dominant massif left-of-center (y55 at x700),
+       secondary summits echo right. Sun zone stays clear. */
     .vitra-scenery-ridge-far {
-      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V280L70 225L130 260L210 130L265 205L320 90L385 190L440 155L510 245L580 175L650 260L740 60L800 165L850 120L920 230L990 190L1060 275L1150 110L1215 195L1270 160L1340 240L1400 210L1440 245V400Z'/></svg>");
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V265L45 235L90 250L130 205L175 230L215 185L255 215L300 160L340 195L380 150L425 185L465 130L505 170L545 115L585 150L625 75L665 120L700 55L740 110L775 85L815 140L855 105L880 130L920 170L960 145L1000 190L1040 160L1080 205L1120 135L1155 165L1190 120L1230 155L1270 135L1310 180L1350 160L1395 200L1440 185V400Z'/></svg>");
       mask-size: 100% 100%;
       mask-repeat: no-repeat;
     }
 
-    /* Mid: rugged foothills - overlaps the far range's valleys so
-       ranges read as stacked one behind another */
+    /* Mid: rugged foothills - mixes sharp spurs with rounded
+       shoulders, overlapping the far range's valleys so the two
+       read as stacked ranges */
     .vitra-scenery-ridge-mid {
-      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V290L90 235C130 215 170 250 230 235L330 165L420 255L510 205C570 180 620 230 690 220L780 150L870 245L960 200L1060 265L1150 180L1250 255C1320 230 1380 265 1440 245V400Z'/></svg>");
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V295C40 285 70 265 110 255L160 225C200 205 240 235 285 225L340 185L395 235C440 250 480 220 525 210L580 175L640 230C690 245 730 215 775 205L830 170L890 225C935 240 975 215 1020 200L1075 165L1130 220C1180 235 1220 210 1265 195L1320 225C1360 240 1400 230 1440 235V400Z'/></svg>");
       mask-size: 100% 100%;
       mask-repeat: no-repeat;
     }
 
-    /* Near: soft treeline hills, darkest silhouette */
+    /* Near: soft dark treeline, gentle undulation */
     .vitra-scenery-ridge-near {
-      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V320C120 290 220 335 340 315C460 296 560 340 700 320C840 300 950 345 1080 325C1200 308 1330 340 1440 322V400Z'/></svg>");
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V345C90 330 170 350 260 338C350 326 430 348 530 336C630 324 710 346 810 334C910 322 990 344 1090 332C1190 320 1280 342 1370 330L1440 336V400Z'/></svg>");
       mask-size: 100% 100%;
       mask-repeat: no-repeat;
     }
   }
 
   /* Parallax by differential speed: the nearer the layer, the
-     farther and faster it travels (real-world depth cue) */
+     farther and faster it travels (real-world depth cue).
+     translate3d keeps each ridge on its own compositor layer -
+     the whole animation runs without touching paint. */
   @keyframes vitra-scenery-drift-far {
-    0% { transform: translateX(-1.5%) scale(1); }
-    100% { transform: translateX(1.5%) scale(1.015); }
+    0% { transform: translate3d(-1.5%, 0, 0) scale(1); }
+    100% { transform: translate3d(1.5%, 0, 0) scale(1.015); }
   }
 
   @keyframes vitra-scenery-drift-mid {
-    0% { transform: translateX(3%) scale(1.01); }
-    100% { transform: translateX(-3.5%) scale(1); }
+    0% { transform: translate3d(3%, 0, 0) scale(1.01); }
+    100% { transform: translate3d(-3.5%, 0, 0) scale(1); }
   }
 
   @keyframes vitra-scenery-drift-near {
-    0% { transform: translateX(-5%) scale(1); }
-    100% { transform: translateX(5%) scale(1.02); }
+    0% { transform: translate3d(-5%, 0, 0) scale(1); }
+    100% { transform: translate3d(5%, 0, 0) scale(1.02); }
   }
 
   /* --- GRAIN LAYER --- */
 
   /* Subtle noise texture, breaks up gradient banding.
-     Data-URI SVG feTurbulence, no external asset. */
+     Data-URI SVG feTurbulence, no external asset. Plain low
+     opacity, no blend mode: mix-blend-mode would force the
+     compositor to re-blend the full stack on every animation
+     frame of the layers underneath. */
   .vitra-scenery-grain {
     position: absolute;
     inset: 0;
-    opacity: 0.05;
-    mix-blend-mode: overlay;
+    opacity: 0.04;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
     background-repeat: repeat;
-  }
-
-  /* Grain relies on mix-blend-mode; skip entirely where unsupported
-     rather than render a flat noisy rectangle over the scene */
-  @supports not (mix-blend-mode: overlay) {
-    .vitra-scenery-grain {
-      display: none;
-    }
   }
 
   /* --- ACCESSIBILITY: Reduced Motion --- */
