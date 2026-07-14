@@ -4,6 +4,23 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.6] - 2026-07-14
+
+### Fixed
+
+- `tooltip.destroy()` used a `cloneNode`/`replaceChild` trick to strip listeners, unlike every other module's explicit `removeEventListener` teardown. `init()` now stores each element's four listener references in a `WeakMap`; `destroy()` removes them explicitly.
+- Focus-trap autofocus used `setTimeout(fn, 100)`, a guessed fixed delay. Replaced with a double `requestAnimationFrame`, which waits for the open paint to actually commit.
+- `--vitra-color-border-rgb` was hardcoded white (`255, 255, 255`) at the base token level with no per-theme override — `.vitra-glass`'s border rendered white-on-near-white (invisible) on the `light`/`pastel` themes and `auto`'s light-media branch. Added theme-appropriate dark-tint overrides for those three.
+- Stray Spanish comment in `05-layout.css` translated to English.
+
+### Removed
+
+- Dead keyframes `vitra-shimmer` and `vitra-aurora-hue` — no `animation:` reference anywhere in the codebase.
+
+### Added
+
+- Real interaction tests for `dropdown` (open/close/`aria-expanded` cycle, closing sibling dropdowns, no-op after `destroy()`) and `spotlight` (`--mouse-x`/`--mouse-y` update on `mousemove`, no-op after `destroy()`), replacing the old smoke-only "doesn't throw" tests. This closes the 29-item enterprise audit pass started in v1.8.0.
+
 ## [1.8.5] - 2026-07-14
 
 ### Removed

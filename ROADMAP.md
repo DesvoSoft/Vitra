@@ -1,6 +1,6 @@
 # Vitra CSS Framework — Roadmap
 
-**Current version:** v1.8.5  
+**Current version:** v1.8.6  
 **Last updated:** 2026-07-14
 
 ---
@@ -33,7 +33,15 @@
 - CI now fails a tagged release if `package.json` version doesn't match the git tag
 - `.vitra-container-sm` fixed — was using the same width as default `.vitra-container` at the md breakpoint (720px); added `--vitra-container-narrow` (560px) so the "sm" variant is genuinely narrower
 
-**Still open (findings 24-29, low-priority):** dead `vitra-shimmer`/`vitra-aurora-hue` keyframes, tooltip `destroy()` via `cloneNode` trick, focus-trap `setTimeout` → `requestAnimationFrame`, stray Spanish comment in `05-layout.css`, `--vitra-color-border-rgb` light-theme verification, real dropdown/spotlight interaction tests. Also still open despite being listed under high-priority above: `--vitra-color-bg-warm`/`-cool`/`--vitra-color-accent-oklch` dead tokens were never actually removed from `01-tokens.css` — a test in `vitra.test.js` still asserts they exist, so removing them now requires updating that test first.
+**Low-priority fixes (findings 24-29 of the 29-item audit):**
+- Removed dead keyframes `vitra-shimmer`/`vitra-aurora-hue` (no `animation:` reference anywhere in the codebase)
+- `tooltip.destroy()` now stores per-element listener references in a `WeakMap` set during `init()` and calls `removeEventListener` explicitly, replacing the `cloneNode`/`replaceChild` strip trick
+- Focus-trap autofocus swaps `setTimeout(fn, 100)` for a double `requestAnimationFrame`, waiting for the open paint to commit instead of guessing a fixed delay
+- Stray Spanish comment in `05-layout.css` translated
+- `--vitra-color-border-rgb` was hardcoded white at the base token level with no per-theme override, so `.vitra-glass`'s border rendered white-on-near-white (invisible) on the `light`/`pastel` themes and `auto`'s light-media branch — added theme-appropriate dark-tint overrides for those three
+- Added real interaction tests for `dropdown` (open/close/`aria-expanded` cycle, closing sibling dropdowns, no-op after `destroy()`) and `spotlight` (`--mouse-x`/`--mouse-y` update on `mousemove`, no-op after `destroy()`), replacing the old smoke-only "doesn't throw" tests
+
+All 29 audit findings are now closed. (Note: findings 12's dead-token removal — `--vitra-color-bg-warm`/`-cool`/`--vitra-color-accent-oklch` — was marked complete under high-priority above but not actually applied until v1.8.5, once the test asserting their existence was corrected.)
 
 **Infrastructure:**
 - CI: Windows build matrix, `npm audit` gate, weekly Dependabot
