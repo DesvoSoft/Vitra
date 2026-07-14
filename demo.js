@@ -391,8 +391,9 @@
     if (Vitra.reveal) {
       Vitra.reveal.init({
         selector: '.vitra-reveal',
-        threshold: 0.1,
-        stagger: 100
+        threshold: 0,
+        rootMargin: '0px 0px 10% 0px',
+        stagger: 80
       });
     }
   }
