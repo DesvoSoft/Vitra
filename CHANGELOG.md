@@ -4,6 +4,21 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.4] - 2026-07-14
+
+### Fixed
+
+- **Glass fallback leaks** — `.vitra-input-glass`, `.vitra-badge-glass`, `.vitra-spinner-glass`, `.vitra-alert-glass`, `.vitra-table-glass` set a translucent `hsl()` background with no `@supports` guard at all, so the glass look silently applied even where `backdrop-filter` isn't supported, with no opaque fallback underneath. Each now gets a solid fallback background outside `@supports`, translucent + blur only inside the positive branch, matching the pattern already used elsewhere in the framework.
+- `02-glass.css`'s size-variant fallback rule (`.vitra-glass-sm/md/lg/xl`) was unconditional, silently overriding the enhanced translucent background in every browser that DOES support `backdrop-filter` since both rules matched and the fallback came later in source order. Scoped it to `@supports not (...)`.
+- `.vitra-table-stack` had identical rule sets duplicated verbatim under both a `@container` query and a `@media` query, so both fired redundantly in browsers that support container queries. The `@media` fallback is now scoped behind `@supports not (container-type: inline-size)` so only one is ever active.
+- `.vitra-container-sm` used the same max-width as plain `.vitra-container` at its md breakpoint (720px) — the "sm" variant wasn't actually narrower. Added `--vitra-container-narrow` (560px) and pointed the class at it.
+- `dropdown.init()`/`spotlight.init()` ran unconditionally on `DOMContentLoaded` regardless of `data-config`, unlike `ripple`/`tooltip` which already respect a `!== false` opt-out. Both now gate on `config.dropdown`/`config.spotlight`.
+- `vitra.d.ts` was stale against the runtime module: the `ripple` module and `destroyAll()` weren't declared at all, and `destroy()` was missing from the `Toast`/`Dropdown`/`Spotlight` interfaces. Synced all four; added a drift-guard test that diffs `Object.keys()` of each runtime module against its declared interface so future drift fails CI instead of shipping silently-wrong types.
+
+### Added
+
+- CI now fails a tagged release if `package.json`'s version doesn't match the pushed git tag (`v*`).
+
 ## [1.8.3] - 2026-07-14
 
 ### Changed

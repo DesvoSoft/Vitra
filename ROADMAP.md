@@ -1,7 +1,7 @@
 # Vitra CSS Framework — Roadmap
 
-**Current version:** v1.8.3  
-**Last updated:** 2026-07-13
+**Current version:** v1.8.4  
+**Last updated:** 2026-07-14
 
 ---
 
@@ -12,7 +12,7 @@
 **New feature:**
 - **Scenery system** (`.vitra-scenery` / `.vitra-scenery-inline`, `@layer scenery`): CSS-only ambient mountain landscape — SVG-silhouette ridgelines at three depths, sun/moon disc with glow, atmospheric-perspective haze, differential-speed parallax drift, grain finish. Theme-derived color via accent tokens, `mask-image` fallback, reduced-motion safe.
 
-**Critical/High fixes (full audit pass, 29 findings):**
+**Critical/High fixes (findings 1-15 of the 29-item audit):**
 - `@layer` order corrected (`motion` before `layout`, matching build order) — cascade bug
 - Google Fonts `@import` removed — no third-party network request; fonts now opt-in
 - Orphaned `.vitra-slider-*` CSS removed (correction: v1.0 listed sliders, but no base class ever shipped)
@@ -23,6 +23,17 @@
 - Input validation states: `!important` dropped for compound-selector specificity
 - Duplicate `.vitra-grid` removed from utilities layer
 - `size-limit` budgets corrected (brotli-measured: 16 kB CSS gate vs 13.7 kB actual)
+
+**Medium-priority fixes (findings 16-23 of the 29-item audit):**
+- Glass fallback/`@supports` guard fixed on `.vitra-input-glass`, `.vitra-badge-glass`, `.vitra-spinner-glass`, `.vitra-alert-glass`, `.vitra-table-glass` (previously unconditional translucent backgrounds, no opaque fallback)
+- `02-glass.css` size-variant fallback rule scoped to `@supports not (...)` — was silently overriding the enhanced background in browsers that DO support `backdrop-filter`
+- `.vitra-table-stack` container-query and media-query rule sets deduplicated behind `@supports not (container-type: inline-size)` so only one is ever active
+- `vitra.d.ts` synced with runtime: `ripple` module and `destroyAll()` were undeclared; `destroy()` missing from `Toast`/`Dropdown`/`Spotlight` interfaces. Added a drift-guard test that fails CI if runtime module keys and declared interface keys diverge again
+- `dropdown.init()`/`spotlight.init()` now respect `data-config` opt-out (`config.dropdown/spotlight !== false`), matching the existing `ripple`/`tooltip` pattern — previously ran unconditionally regardless of config
+- CI now fails a tagged release if `package.json` version doesn't match the git tag
+- `.vitra-container-sm` fixed — was using the same width as default `.vitra-container` at the md breakpoint (720px); added `--vitra-container-narrow` (560px) so the "sm" variant is genuinely narrower
+
+**Still open (findings 24-29, low-priority):** dead `vitra-shimmer`/`vitra-aurora-hue` keyframes, tooltip `destroy()` via `cloneNode` trick, focus-trap `setTimeout` → `requestAnimationFrame`, stray Spanish comment in `05-layout.css`, `--vitra-color-border-rgb` light-theme verification, real dropdown/spotlight interaction tests. Also still open despite being listed under high-priority above: `--vitra-color-bg-warm`/`-cool`/`--vitra-color-accent-oklch` dead tokens were never actually removed from `01-tokens.css` — a test in `vitra.test.js` still asserts they exist, so removing them now requires updating that test first.
 
 **Infrastructure:**
 - CI: Windows build matrix, `npm audit` gate, weekly Dependabot
