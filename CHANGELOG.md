@@ -4,6 +4,12 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.5] - 2026-07-14
+
+### Removed
+
+- **Dead tokens** `--vitra-color-accent-oklch`, `--vitra-color-bg-warm`, `--vitra-color-bg-cool` — defined at the base and overridden across four theme blocks, never consumed by any `var()` reference anywhere in the codebase. This was audit item 12, marked complete on the internal tracker despite a test still asserting the tokens must exist, which meant they were never actually deleted. Removed from source; the test now asserts they stay gone.
+
 ## [1.8.4] - 2026-07-14
 
 ### Fixed
