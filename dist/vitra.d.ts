@@ -42,6 +42,8 @@ declare namespace Vitra {
     selector?: string;
     threshold?: number;
     stagger?: number;
+    rootMargin?: string;
+    scrollReveal?: boolean;
   }
 
   interface RevealModule {

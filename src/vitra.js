@@ -398,12 +398,14 @@ const Vitra = (() => {
      * @param {string} options.selector - CSS selector for elements to reveal (default: '.vitra-reveal')
      * @param {number} options.threshold - Visibility threshold (default: 0.1)
      * @param {number} options.stagger - Stagger delay in ms (default: 100)
+     * @param {string} options.rootMargin - Observer rootMargin, e.g. '0px 0px 15% 0px' to pre-trigger before entry (default: '0px')
      */
     const init = (options = {}) => {
       const {
         selector = '.vitra-reveal',
         threshold = 0.1,
         stagger = 100,
+        rootMargin = '0px',
         scrollReveal = false
       } = options;
 
@@ -441,25 +443,25 @@ const Vitra = (() => {
       }
 
       _observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const index = elements.indexOf(entry.target);
-            // Apply stagger delay in DOM order
-            setTimeout(() => {
-              if (entry.target.classList.contains('vitra-scroll-reveal-observer')) {
-                entry.target.classList.add('vitra-scroll-revealed');
-              } else {
-                entry.target.classList.add('vitra-revealed');
-              }
-              entry.target.style.opacity = '1';
-              entry.target.style.transform = 'none';
-            }, index * stagger);
+        // Stagger within the batch that became visible together —
+        // staggering by global element index would make late
+        // sections wait (index * stagger) ms after entering view
+        const visible = entries.filter((entry) => entry.isIntersecting);
+        visible.forEach((entry, batchIndex) => {
+          setTimeout(() => {
+            if (entry.target.classList.contains('vitra-scroll-reveal-observer')) {
+              entry.target.classList.add('vitra-scroll-revealed');
+            } else {
+              entry.target.classList.add('vitra-revealed');
+            }
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'none';
+          }, batchIndex * stagger);
 
-            _observer.unobserve(entry.target);
-            _revealedElements.push(entry.target);
-          }
+          _observer.unobserve(entry.target);
+          _revealedElements.push(entry.target);
         });
-      }, { threshold });
+      }, { threshold, rootMargin });
 
       elements.forEach(el => {
         // Initial state

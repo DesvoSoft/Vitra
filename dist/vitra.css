@@ -1620,7 +1620,7 @@
      with a light source, not an abstract blur. */
   .vitra-scenery-halo {
     position: absolute;
-    top: 26%;
+    top: 34%;
     left: 63%;
     width: clamp(64px, 12vmin, 150px);
     aspect-ratio: 1;
@@ -1701,27 +1701,28 @@
      band sits at its silhouette top, visually separating it from
      the range behind. */
   @supports (mask-image: url("")) or (-webkit-mask-image: url("")) {
-    /* Far: alpine range. Dense micro-jitter points give rock
-       texture; dominant massif left-of-center (y55 at x700),
-       secondary summits echo right. Sun zone stays clear. */
+    /* Far: mountain panorama built like a painting - flowing
+       bezier ridgeline, summit hierarchy (one dominant massif at
+       x535, secondary at x1168), asymmetric slopes, eroded round
+       valleys. Sun sits cradled in the saddle between them. */
     .vitra-scenery-ridge-far {
-      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V265L45 235L90 250L130 205L175 230L215 185L255 215L300 160L340 195L380 150L425 185L465 130L505 170L545 115L585 150L625 75L665 120L700 55L740 110L775 85L815 140L855 105L880 130L920 170L960 145L1000 190L1040 160L1080 205L1120 135L1155 165L1190 120L1230 155L1270 135L1310 180L1350 160L1395 200L1440 185V400Z'/></svg>");
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V258C50 252 95 240 135 222C165 208 190 186 220 172C240 163 258 168 275 158C295 146 310 128 330 118L345 110C360 122 372 138 390 148C405 156 418 152 432 144C450 134 462 116 478 104L495 92C505 85 512 78 522 70L535 60C555 80 570 104 592 122C615 141 640 152 668 162C700 173 730 180 760 190C795 202 825 215 858 224C888 232 920 236 950 234C980 232 1008 222 1035 208C1060 195 1080 176 1105 160L1125 146C1135 138 1143 130 1155 124L1168 117C1185 135 1200 155 1222 170C1250 189 1280 200 1310 210C1350 222 1395 230 1440 232V400Z'/></svg>");
       mask-size: 100% 100%;
       mask-repeat: no-repeat;
     }
 
-    /* Mid: rugged foothills - mixes sharp spurs with rounded
-       shoulders, overlapping the far range's valleys so the two
-       read as stacked ranges */
+    /* Mid: soft rolling foothills, one gentle crest left-of-center,
+       long calm undulation elsewhere - lets the far range be the
+       drama while providing the depth overlap */
     .vitra-scenery-ridge-mid {
-      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V295C40 285 70 265 110 255L160 225C200 205 240 235 285 225L340 185L395 235C440 250 480 220 525 210L580 175L640 230C690 245 730 215 775 205L830 170L890 225C935 240 975 215 1020 200L1075 165L1130 220C1180 235 1220 210 1265 195L1320 225C1360 240 1400 230 1440 235V400Z'/></svg>");
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V292C60 284 110 268 165 258C220 248 260 232 310 220C340 213 365 202 395 196L415 192C450 200 480 214 520 224C570 236 615 244 665 248C720 252 770 246 820 236C860 228 895 216 935 210C975 204 1010 208 1050 216C1100 226 1150 240 1200 248C1280 260 1360 264 1440 262V400Z'/></svg>");
       mask-size: 100% 100%;
       mask-repeat: no-repeat;
     }
 
-    /* Near: soft dark treeline, gentle undulation */
+    /* Near: quiet dark treeline, barely undulating */
     .vitra-scenery-ridge-near {
-      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V345C90 330 170 350 260 338C350 326 430 348 530 336C630 324 710 346 810 334C910 322 990 344 1090 332C1190 320 1280 342 1370 330L1440 336V400Z'/></svg>");
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V348C110 338 210 350 330 344C450 338 550 352 680 346C810 340 920 354 1050 348C1180 342 1310 352 1440 348V400Z'/></svg>");
       mask-size: 100% 100%;
       mask-repeat: no-repeat;
     }

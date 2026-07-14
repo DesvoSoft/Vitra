@@ -4,6 +4,20 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.2] - 2026-07-13
+
+### Added
+
+- `rootMargin` option on `Vitra.reveal.init()` — lets consumers pre-trigger reveals before elements enter the viewport (e.g. `'0px 0px 15% 0px'`). Typed in `vitra.d.ts` (with previously missing `scrollReveal`).
+
+### Changed
+
+- **Scenery silhouettes redrawn as a painterly panorama**: flowing cubic-bezier ridgeline with summit hierarchy (dominant massif, secondary summit, eroded round valleys, asymmetric slopes) replacing the uniform zigzag; sun repositioned to sit cradled in the saddle between massifs.
+
+### Fixed
+
+- **Reveal stagger used the global element index** — an element revealed alone still waited `(its index) × stagger` ms after entering the viewport, so late-page sections appeared up to seconds late. Stagger is now per-visibility-batch.
+
 ## [1.8.1] - 2026-07-13
 
 ### Changed

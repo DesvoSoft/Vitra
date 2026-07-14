@@ -290,6 +290,7 @@ var Vitra = (() => {
               selector = ".vitra-reveal",
               threshold = 0.1,
               stagger = 100,
+              rootMargin = "0px",
               scrollReveal = false
             } = options;
             let elements = [];
@@ -321,23 +322,21 @@ var Vitra = (() => {
               return;
             }
             _observer = new IntersectionObserver((entries) => {
-              entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                  const index = elements.indexOf(entry.target);
-                  setTimeout(() => {
-                    if (entry.target.classList.contains("vitra-scroll-reveal-observer")) {
-                      entry.target.classList.add("vitra-scroll-revealed");
-                    } else {
-                      entry.target.classList.add("vitra-revealed");
-                    }
-                    entry.target.style.opacity = "1";
-                    entry.target.style.transform = "none";
-                  }, index * stagger);
-                  _observer.unobserve(entry.target);
-                  _revealedElements.push(entry.target);
-                }
+              const visible = entries.filter((entry) => entry.isIntersecting);
+              visible.forEach((entry, batchIndex) => {
+                setTimeout(() => {
+                  if (entry.target.classList.contains("vitra-scroll-reveal-observer")) {
+                    entry.target.classList.add("vitra-scroll-revealed");
+                  } else {
+                    entry.target.classList.add("vitra-revealed");
+                  }
+                  entry.target.style.opacity = "1";
+                  entry.target.style.transform = "none";
+                }, batchIndex * stagger);
+                _observer.unobserve(entry.target);
+                _revealedElements.push(entry.target);
               });
-            }, { threshold });
+            }, { threshold, rootMargin });
             elements.forEach((el) => {
               if (el.classList.contains("vitra-scroll-reveal-observer")) {
                 if (el.classList.contains("vitra-scroll-reveal-left")) {
