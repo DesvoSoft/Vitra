@@ -295,6 +295,7 @@
     --vitra-color-accent-h: 222;
     --vitra-color-accent-s: 72%;
     --vitra-color-accent-l: 52%;
+    --vitra-color-accent-rgb: 44, 97, 221;
     --vitra-color-bg: hsl(222deg 32% 97%);
     --vitra-bg-accent: hsl(222deg 35% 93%);
     --vitra-color-surface: hsl(222deg 30% 10% / 5%);
@@ -346,6 +347,7 @@
     --vitra-color-accent-h: 330;
     --vitra-color-accent-s: 70%;
     --vitra-color-accent-l: 55%;
+    --vitra-color-accent-rgb: 221, 60, 140;
     --vitra-color-text-primary: hsl(330deg 20% 20%);
     --vitra-color-text-secondary: hsl(330deg 10% 40%);
     --vitra-color-text-tertiary: hsl(330deg 10% 50% / 60%);
@@ -370,6 +372,7 @@
     --vitra-color-accent-h: 285;
     --vitra-color-accent-s: 100%;
     --vitra-color-accent-l: 58%;
+    --vitra-color-accent-rgb: 201, 41, 255;
     --vitra-color-text-primary: hsl(285deg 100% 96%);
     --vitra-color-text-secondary: hsl(285deg 50% 78%);
     --vitra-color-text-tertiary: hsl(285deg 30% 58% / 50%);
@@ -394,6 +397,7 @@
     --vitra-color-accent-h: 205;
     --vitra-color-accent-s: 90%;
     --vitra-color-accent-l: 55%;
+    --vitra-color-accent-rgb: 37, 157, 244;
     --vitra-color-text-primary: hsl(205deg 100% 95%);
     --vitra-color-text-secondary: hsl(205deg 40% 75%);
     --vitra-color-text-tertiary: hsl(205deg 30% 55% / 50%);
@@ -418,6 +422,7 @@
     --vitra-color-accent-h: 145;
     --vitra-color-accent-s: 80%;
     --vitra-color-accent-l: 45%;
+    --vitra-color-accent-rgb: 23, 207, 99;
     --vitra-color-text-primary: hsl(145deg 100% 95%);
     --vitra-color-text-secondary: hsl(145deg 40% 75%);
     --vitra-color-text-tertiary: hsl(145deg 30% 55% / 50%);
@@ -451,6 +456,7 @@
     html[data-theme="auto"] {
       --vitra-color-accent-h: 222;
       --vitra-color-accent-s: 72%;
+      --vitra-color-accent-rgb: 44, 97, 221;
       --vitra-color-bg: hsl(222deg 32% 97%);
       --vitra-bg-accent: hsl(222deg 35% 93%);
       --vitra-color-surface: hsl(222deg 30% 10% / 5%);
@@ -669,6 +675,37 @@
     50% {
       transform: translateY(-20px) scale(1.1);
       opacity: 1;
+    }
+  }
+
+  /* --- DIRECTIONAL PARTICLE DRIFT (opt-in) --- */
+
+  /* Set by JS (spawn({ direction })) via data-direction + inline
+     --vitra-particle-drift-x/-y custom properties. Base .vitra-particle
+     and its default vitra-particle-float animation are untouched -
+     particles without data-direction keep the original symmetric bob. */
+  .vitra-particle[data-direction] {
+    animation-name: vitra-particle-drift;
+    animation-timing-function: linear;
+  }
+
+  @keyframes vitra-particle-drift {
+    0% {
+      transform: translate3d(0, -10%, 0) scale(1);
+      opacity: 0;
+    }
+
+    10% {
+      opacity: 0.85;
+    }
+
+    90% {
+      opacity: 0.85;
+    }
+
+    100% {
+      transform: translate3d(var(--vitra-particle-drift-x, -20px), var(--vitra-particle-drift-y, 110%), 0) scale(0.85);
+      opacity: 0;
     }
   }
 
@@ -1564,6 +1601,7 @@
     --vitra-scenery-opacity-far: 0.6;
     --vitra-scenery-opacity-mid: 0.75;
     --vitra-scenery-opacity-near: 0.92;
+    --vitra-scenery-opacity-clouds: 0.35;
   }
 
   /* Light-scheme themes (light, pastel) sit on a bright sky:
@@ -1574,6 +1612,7 @@
     --vitra-scenery-opacity-far: 0.78;
     --vitra-scenery-opacity-mid: 0.88;
     --vitra-scenery-opacity-near: 0.97;
+    --vitra-scenery-opacity-clouds: 0.5;
   }
 
   /* --- ROOT CONTAINERS --- */
@@ -1607,6 +1646,11 @@
     position: absolute;
     inset: 0;
     background:
+      radial-gradient(
+        circle at 63% 34%,
+        hsl(calc(var(--vitra-scenery-hue) - 25) calc(var(--vitra-scenery-sat) * 0.6) 70% / 18%) 0%,
+        transparent 40%
+      ),
       linear-gradient(
         to top,
         hsl(var(--vitra-scenery-hue) var(--vitra-scenery-sat) 62% / 30%) 0%,
@@ -1622,6 +1666,11 @@
 
   :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-sky {
     background:
+      radial-gradient(
+        circle at 63% 34%,
+        hsl(calc(var(--vitra-scenery-hue) - 25) calc(var(--vitra-scenery-sat) * 0.5) 75% / 14%) 0%,
+        transparent 40%
+      ),
       linear-gradient(
         to top,
         hsl(var(--vitra-scenery-hue) var(--vitra-scenery-sat) 55% / 22%) 0%,
@@ -1633,6 +1682,73 @@
         var(--vitra-color-bg) 0%,
         hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 60% / 16%) 100%
       );
+  }
+
+  /* --- CLOUD LAYER --- */
+
+  /* Same seamless-loop technique as the ridges below: a single
+     soft-blob silhouette tiled twice across a 200%-wide strip,
+     translate3d(0% -> -50%) lands on an identical frame so the
+     loop has no seam. Drifts the same right-to-left direction as
+     the ridges (slower than even the far ridge) to read as the
+     same wind moving the whole scene, not an independent layer. */
+  .vitra-scenery-clouds {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 45%;
+    opacity: var(--vitra-scenery-opacity-clouds);
+    background: linear-gradient(
+      to bottom,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.2) 92% / 45%) 0%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.15) 90% / 0%) 100%
+    );
+    animation: vitra-scenery-drift-clouds calc(130s / var(--vitra-scenery-speed)) linear infinite;
+    will-change: transform;
+  }
+
+  @supports (mask-image: url("")) or (-webkit-mask-image: url("")) {
+    .vitra-scenery-clouds {
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 300' preserveAspectRatio='none'><ellipse cx='120' cy='80' rx='110' ry='34'/><ellipse cx='210' cy='95' rx='80' ry='26'/><ellipse cx='460' cy='50' rx='140' ry='40'/><ellipse cx='560' cy='70' rx='90' ry='28'/><ellipse cx='860' cy='100' rx='120' ry='36'/><ellipse cx='950' cy='115' rx='85' ry='24'/><ellipse cx='1230' cy='60' rx='130' ry='38'/><ellipse cx='1330' cy='80' rx='90' ry='26'/></svg>");
+      mask-size: 50% 100%;
+      mask-repeat: repeat-x;
+      mask-position: left top;
+    }
+  }
+
+  @keyframes vitra-scenery-drift-clouds {
+    0% { transform: translate3d(0%, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); }
+  }
+
+  /* --- STAR FIELD (dark-appropriate themes only) --- */
+
+  /* Small tiled data-URI SVG, scattered dots at varied radius/
+     opacity so the tile repeat isn't obvious. Static by default;
+     the twinkle keyframe only touches ::before/::after opacity so
+     the base layer itself never repaints. Hidden on light-scheme
+     themes where a star field would make no visual sense. */
+  .vitra-scenery-stars {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='200'><circle cx='18' cy='24' r='1.1' fill='white' opacity='0.8'/><circle cx='62' cy='58' r='0.7' fill='white' opacity='0.5'/><circle cx='104' cy='16' r='1.3' fill='white' opacity='0.9'/><circle cx='140' cy='72' r='0.6' fill='white' opacity='0.4'/><circle cx='176' cy='30' r='1' fill='white' opacity='0.7'/><circle cx='210' cy='90' r='0.8' fill='white' opacity='0.6'/><circle cx='238' cy='12' r='1.2' fill='white' opacity='0.85'/><circle cx='266' cy='54' r='0.7' fill='white' opacity='0.5'/><circle cx='292' cy='100' r='0.9' fill='white' opacity='0.65'/><circle cx='36' cy='118' r='0.8' fill='white' opacity='0.55'/><circle cx='84' cy='140' r='1.1' fill='white' opacity='0.75'/><circle cx='128' cy='160' r='0.6' fill='white' opacity='0.45'/><circle cx='166' cy='124' r='1' fill='white' opacity='0.7'/><circle cx='198' cy='168' r='0.7' fill='white' opacity='0.5'/><circle cx='250' cy='150' r='0.9' fill='white' opacity='0.6'/></svg>");
+    background-repeat: repeat;
+  }
+
+  :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"]) .vitra-scenery-stars {
+    opacity: 0.8;
+  }
+
+  html[data-theme="auto"] .vitra-scenery-stars {
+    opacity: 0;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    html[data-theme="auto"] .vitra-scenery-stars {
+      opacity: 0.8;
+    }
   }
 
   /* --- HALO LAYER (sun / moon) --- */
@@ -1685,9 +1801,9 @@
     height: 58%;
     background: linear-gradient(
       to bottom,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.35) 82% / 55%) 0%,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 55% / 45%) 18%,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 34% / 65%) 100%
+      hsl(calc(var(--vitra-scenery-hue) - 15) calc(var(--vitra-scenery-sat) * 0.35) 82% / 55%) 0%,
+      hsl(calc(var(--vitra-scenery-hue) - 15) calc(var(--vitra-scenery-sat) * 0.5) 55% / 45%) 18%,
+      hsl(calc(var(--vitra-scenery-hue) - 15) calc(var(--vitra-scenery-sat) * 0.6) 34% / 65%) 100%
     );
     opacity: var(--vitra-scenery-opacity-far);
     animation: vitra-scenery-drift-far calc(90s / var(--vitra-scenery-speed)) linear infinite;
@@ -1709,8 +1825,8 @@
     height: 24%;
     background: linear-gradient(
       to bottom,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.7) 22% / 85%) 0%,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.8) 8% / 97%) 100%
+      hsl(calc(var(--vitra-scenery-hue) + 20) calc(var(--vitra-scenery-sat) * 0.7) 22% / 85%) 0%,
+      hsl(calc(var(--vitra-scenery-hue) + 20) calc(var(--vitra-scenery-sat) * 0.8) 8% / 97%) 100%
     );
     opacity: var(--vitra-scenery-opacity-near);
     animation: vitra-scenery-drift-near calc(30s / var(--vitra-scenery-speed)) linear infinite;
@@ -1797,7 +1913,8 @@
 
     .vitra-scenery-ridge-far,
     .vitra-scenery-ridge-mid,
-    .vitra-scenery-ridge-near {
+    .vitra-scenery-ridge-near,
+    .vitra-scenery-clouds {
       animation: none;
       transform: none;
     }

@@ -1,7 +1,7 @@
 {
   "name": "vitra-css",
-  "version": "1.8.6",
-  "description": "A lightweight CSS framework focused on glassmorphism, configurable particles with glow effects, and smooth motion",
+  "version": "1.9.0",
+  "description": "A lightweight, zero-dependency CSS framework focused on glassmorphism, directional particles, ambient scenery, and smooth motion",
   "main": "dist/vitra.js",
   "module": "dist/vitra.esm.js",
   "style": "dist/vitra.css",
@@ -64,7 +64,10 @@
     "particles",
     "motion",
     "design-system",
-    "ui-components"
+    "ui-components",
+    "scenery",
+    "vanilla-js",
+    "zero-dependency"
   ],
   "author": "DesvoSoft",
   "license": "ISC",

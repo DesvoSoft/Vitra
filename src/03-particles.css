@@ -57,6 +57,37 @@
     }
   }
 
+  /* --- DIRECTIONAL PARTICLE DRIFT (opt-in) --- */
+
+  /* Set by JS (spawn({ direction })) via data-direction + inline
+     --vitra-particle-drift-x/-y custom properties. Base .vitra-particle
+     and its default vitra-particle-float animation are untouched -
+     particles without data-direction keep the original symmetric bob. */
+  .vitra-particle[data-direction] {
+    animation-name: vitra-particle-drift;
+    animation-timing-function: linear;
+  }
+
+  @keyframes vitra-particle-drift {
+    0% {
+      transform: translate3d(0, -10%, 0) scale(1);
+      opacity: 0;
+    }
+
+    10% {
+      opacity: 0.85;
+    }
+
+    90% {
+      opacity: 0.85;
+    }
+
+    100% {
+      transform: translate3d(var(--vitra-particle-drift-x, -20px), var(--vitra-particle-drift-y, 110%), 0) scale(0.85);
+      opacity: 0;
+    }
+  }
+
   /* --- PARTICLE GLOW VARIANTS --- */
 
   /* Glow intensity classes for configurable glow effects */

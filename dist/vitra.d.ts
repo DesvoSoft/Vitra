@@ -23,6 +23,7 @@ declare namespace Vitra {
     size?: number;
     emoji?: string | null;
     container?: string;
+    direction?: string | number | null;
   }
 
   interface ParticleLimits {
@@ -50,6 +51,7 @@ declare namespace Vitra {
     init(options?: RevealOptions): void;
     count(): number;
     reset(): void;
+    destroy(): void;
   }
 
   interface ModalOptions {
@@ -60,6 +62,7 @@ declare namespace Vitra {
   interface ModalModule {
     open(target: string | HTMLElement, options?: ModalOptions): boolean;
     close(): void;
+    destroy(): void;
   }
 
   interface TooltipOptions {
@@ -71,6 +74,7 @@ declare namespace Vitra {
     show(target: string | HTMLElement, text: string, options?: TooltipOptions): boolean;
     hide(target?: string | HTMLElement | null): void;
     init(): void;
+    destroy(): void;
   }
 
   interface ToastOptions {

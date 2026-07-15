@@ -260,6 +260,24 @@ const Vitra = (() => {
       return 40; // Desktop
     };
 
+    // Named direction presets -> angle in degrees (0 = up, 90 = right, 180 = down, 270 = left)
+    const _DIRECTION_ANGLES = {
+      down: 180,
+      'down-left': 210,
+      'down-right': 150
+    };
+
+    const _resolveAngle = (direction) => {
+      if (typeof direction === 'number') {
+        return direction;
+      }
+      if (Object.prototype.hasOwnProperty.call(_DIRECTION_ANGLES, direction)) {
+        return _DIRECTION_ANGLES[direction];
+      }
+      console.warn(`[Vitra Particles] Unknown direction "${direction}", falling back to "down"`);
+      return _DIRECTION_ANGLES.down;
+    };
+
     /**
      * Spawn particles
      * @param {number} count - Number of particles to spawn
@@ -268,6 +286,8 @@ const Vitra = (() => {
      * @param {number} options.size - Particle size in pixels
      * @param {string} options.emoji - Emoji to use instead of dot
      * @param {string} options.container - CSS selector for container (default: body)
+     * @param {string|number} options.direction - Opt-in directional drift: 'down', 'down-left',
+     *   'down-right', or a custom angle in degrees. Omitted/null keeps the default symmetric bob.
      * @returns {number} Number of particles actually spawned
      */
     const spawn = (count, options = {}) => {
@@ -281,7 +301,8 @@ const Vitra = (() => {
         color = 'var(--vitra-color-accent, #6c63ff)',
         size = 4,
         emoji = null,
-        container
+        container,
+        direction = null
       } = options;
 
       // Apply device limit
@@ -298,6 +319,8 @@ const Vitra = (() => {
         ? (typeof container === 'string' ? document.querySelector(container) || document.body : (container instanceof Element ? container : document.body))
         : document.body;
 
+      const angle = direction !== null ? _resolveAngle(direction) : null;
+
       for (let i = 0; i < actualCount; i++) {
         const particle = document.createElement('div');
         particle.className = 'vitra-particle';
@@ -312,12 +335,21 @@ const Vitra = (() => {
           particle.style.background = color;
           particle.style.borderRadius = '50%';
           particle.style.position = 'absolute';
-          particle.style.top = `${Math.random() * 100}%`;
           particle.style.left = `${Math.random() * 100}%`;
+          particle.style.top = angle !== null ? `${Math.random() * -20}%` : `${Math.random() * 100}%`;
         }
 
         particle.style.animationDuration = `${3 + Math.random() * 2}s`;
         particle.style.opacity = '0.7';
+
+        if (angle !== null) {
+          const angleRad = (angle * Math.PI) / 180;
+          const driftDistance = 60 + Math.random() * 60;
+          const driftX = Math.sin(angleRad) * driftDistance + (Math.random() * 30 - 15);
+          particle.dataset.direction = direction;
+          particle.style.setProperty('--vitra-particle-drift-x', `${driftX.toFixed(1)}px`);
+          particle.style.setProperty('--vitra-particle-drift-y', '120%');
+        }
 
         targetContainer.appendChild(particle);
         _activeParticles.push(particle);
@@ -366,7 +398,8 @@ const Vitra = (() => {
         const count = parseInt(container.dataset.vitraParticles || '10', 10);
         const color = container.dataset.vitraParticleColor || undefined;
         const emoji = container.dataset.vitraParticleEmoji || null;
-        spawn(count, { color, emoji, container: container || null });
+        const direction = container.dataset.vitraParticleDirection || null;
+        spawn(count, { color, emoji, container, direction });
       });
     };
 
@@ -1143,14 +1176,28 @@ const Vitra = (() => {
       }
     };
 
+    const _escHandler = (e) => {
+      if (e.key !== 'Escape') return;
+      document.querySelectorAll('.vitra-dropdown.open').forEach(dd => {
+        dd.classList.remove('open');
+        const btn = dd.querySelector('[data-vitra-dropdown-toggle]');
+        if (btn) {
+          btn.setAttribute('aria-expanded', 'false');
+          btn.focus();
+        }
+      });
+    };
+
     const init = () => {
       if (_initialized) return;
       document.addEventListener('click', _clickHandler);
+      document.addEventListener('keydown', _escHandler);
       _initialized = true;
     };
 
     const destroy = () => {
       document.removeEventListener('click', _clickHandler);
+      document.removeEventListener('keydown', _escHandler);
       _initialized = false;
     };
 

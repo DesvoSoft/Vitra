@@ -26,6 +26,7 @@
     --vitra-color-accent-h: 222;
     --vitra-color-accent-s: 72%;
     --vitra-color-accent-l: 52%;
+    --vitra-color-accent-rgb: 44, 97, 221;
     --vitra-color-bg: hsl(222deg 32% 97%);
     --vitra-bg-accent: hsl(222deg 35% 93%);
     --vitra-color-surface: hsl(222deg 30% 10% / 5%);
@@ -77,6 +78,7 @@
     --vitra-color-accent-h: 330;
     --vitra-color-accent-s: 70%;
     --vitra-color-accent-l: 55%;
+    --vitra-color-accent-rgb: 221, 60, 140;
     --vitra-color-text-primary: hsl(330deg 20% 20%);
     --vitra-color-text-secondary: hsl(330deg 10% 40%);
     --vitra-color-text-tertiary: hsl(330deg 10% 50% / 60%);
@@ -101,6 +103,7 @@
     --vitra-color-accent-h: 285;
     --vitra-color-accent-s: 100%;
     --vitra-color-accent-l: 58%;
+    --vitra-color-accent-rgb: 201, 41, 255;
     --vitra-color-text-primary: hsl(285deg 100% 96%);
     --vitra-color-text-secondary: hsl(285deg 50% 78%);
     --vitra-color-text-tertiary: hsl(285deg 30% 58% / 50%);
@@ -125,6 +128,7 @@
     --vitra-color-accent-h: 205;
     --vitra-color-accent-s: 90%;
     --vitra-color-accent-l: 55%;
+    --vitra-color-accent-rgb: 37, 157, 244;
     --vitra-color-text-primary: hsl(205deg 100% 95%);
     --vitra-color-text-secondary: hsl(205deg 40% 75%);
     --vitra-color-text-tertiary: hsl(205deg 30% 55% / 50%);
@@ -149,6 +153,7 @@
     --vitra-color-accent-h: 145;
     --vitra-color-accent-s: 80%;
     --vitra-color-accent-l: 45%;
+    --vitra-color-accent-rgb: 23, 207, 99;
     --vitra-color-text-primary: hsl(145deg 100% 95%);
     --vitra-color-text-secondary: hsl(145deg 40% 75%);
     --vitra-color-text-tertiary: hsl(145deg 30% 55% / 50%);
@@ -182,6 +187,7 @@
     html[data-theme="auto"] {
       --vitra-color-accent-h: 222;
       --vitra-color-accent-s: 72%;
+      --vitra-color-accent-rgb: 44, 97, 221;
       --vitra-color-bg: hsl(222deg 32% 97%);
       --vitra-bg-accent: hsl(222deg 35% 93%);
       --vitra-color-surface: hsl(222deg 30% 10% / 5%);

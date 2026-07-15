@@ -1,6 +1,6 @@
 # Vitra CSS Framework — Roadmap
 
-**Current version:** v1.8.6  
+**Current version:** v1.9.0  
 **Last updated:** 2026-07-14
 
 ---
@@ -129,26 +129,29 @@ All 29 audit findings are now closed. (Note: findings 12's dead-token removal �
 
 | # | Priority | Area | Issue |
 |---|----------|------|-------|
-| R2 | Medium | `src/vitra.js` | Modal focus trap `keydown` listener can stack if modal opens without full close cycle |
-| R4 | Low | `src/vitra.js` | `particles.init()` passes DOM element to `spawn()` in auto-init path — should be selector or type-guarded |
-| R6 | Low | `src/vitra.js` | Tooltip expands DOM nodes with `._vitraTooltipInstance` — `WeakMap` preferred |
+| R7 | Low | `src/vitra.js` | `theme` module is a plain object literal, not a closure — its `_getSystemTheme`/`_isLocalStorageAvailable`/`_watchSystemTheme` "private" helpers leak as real enumerable own-properties on `Vitra.theme`, unlike every other module's closure-scoped-private pattern |
 | D1 | Medium | demo | Heavy particle/cinematic sections not paused off-screen — can drop frames on mobile |
 | D2 | Low | demo | `demo.js` parses CSS custom props with string replace — breaks on nested vars |
 
-> R1 (tooltip scroll offset), R3 (reveal stagger order), and R5 (`.vitra-reveal-scale` keyframe) were re-verified during the v1.8 audit and are already fixed in current code — closed.
+> R2 (modal focus-trap listener stacking), R4 (`particles.init()` type-guard), and R6 (tooltip `WeakMap`) were re-verified during the v1.9 audit and are already fixed in current code — closed. R1, R3, R5 closed previously (v1.8).
 
-**Audit backlog (medium/low tier, deferred from the v1.8 pass):** glass-variant components (`badge/input/alert/table/spinner-glass`) still hardcode `hsl()` instead of glass tokens and lack `@supports` guards; `.vitra-table-stack` duplicated across media/container queries; glass variant fallback leaks outside `@supports` guard in `02-glass.css`; `vitra.d.ts` dropdown/spotlight interface drift; `spotlight`/`dropdown` lack `data-config` opt-out gating; `.vitra-container-sm` naming; dead keyframes `vitra-aurora-hue`/`vitra-shimmer`; tooltip `cloneNode` teardown; focus-trap `setTimeout(100)` → `requestAnimationFrame`; `--vitra-color-border-rgb` light-theme verification; dropdown/spotlight interaction tests.
+**Audit backlog (medium/low tier, deferred from the v1.8 pass):** glass-variant components (`badge/input/alert/table/spinner-glass`) still hardcode `hsl()` instead of glass tokens and lack `@supports` guards; `.vitra-table-stack` duplicated across media/container queries; glass variant fallback leaks outside `@supports` guard in `02-glass.css`; `.vitra-container-sm` naming.
 
 ---
 
-## v1.9 — Polish & DX (Next)
+## v1.9 — Scenery Depth, Directional Particles & Definitive Audit ✅
 
-- Audit backlog above (medium/low tier)
-- Fix modal focus trap stacking (R2)
-- `--vitra-color-accent-rgb` token for consumers using `rgb()` notation
-- Document `Vitra.toast`, `Vitra.dropdown`, `Vitra.spotlight` in integration guide
-- `WeakMap` for tooltip target → element mapping (R6)
-- Demo performance: `IntersectionObserver` to pause off-screen effects (D1)
+**New features:**
+- **Scenery**: cloud layer (`.vitra-scenery-clouds`), star field (`.vitra-scenery-stars`, dark-appropriate themes only), atmospheric radial-gradient grading on the sky layer — eight layers total, same seamless right-to-left drift read, full reduced-motion coverage
+- **Directional particles** (opt-in, non-breaking): `Vitra.particles.spawn(count, { direction })` — `'down'`/`'down-left'`/`'down-right'`/numeric degree angle; default (`direction` omitted) is byte-identical to the existing symmetric bob. Declarative `data-vitra-particle-direction` attribute supported too.
+- **Scenery**: far and near ridge layers shift hue away from the base `--vitra-scenery-hue` token (`-15deg` far, `+20deg` near) instead of sharing one hue and varying only lightness/saturation — the near ridge previously read as "the same mountains, just darker." Verified across all 8 themes, no clipping/banding.
+
+**Audit fixes:**
+- `--vitra-color-accent-rgb` was only ever defined once at `:root` — every non-default theme (`light`/`pastel`/`neon`/`ocean`/`emerald`/`auto`'s light branch) silently kept the dark theme's RGB triplet instead of its own accent color. Added correct per-theme overrides (same fix `--vitra-color-border-rgb` already got in v1.8.6).
+- Dropdown had no keyboard dismissal path in its non-popover fallback (Escape did nothing; popover-based dropdowns already got this for free from the browser). Added an `Escape` handler that closes open dropdowns and refocuses the toggle.
+- `.d.ts` drift-guard test extended to cover `particles`/`reveal`/`modal`/`tooltip` (previously only `ripple`/`dropdown`/`spotlight`/`toast`) — this surfaced and fixed 3 real gaps: `reveal.destroy()`, `modal.destroy()`, and `tooltip.destroy()` all existed at runtime but were missing from `dist/vitra.d.ts`.
+- Keyboard-only walkthrough (Tab/Shift-Tab/Escape, no mouse) across dropdown/modal/tooltip/spotlight: modal's focus-trap and Escape handling confirmed already correct; tooltip's focus/blur-driven show/hide needs no Escape by design (non-interactive, `pointer-events: none`); spotlight has no focusable semantics of its own.
+- Found (not fixed — filed as R7): `theme` module's `_`-prefixed helpers leak onto the public `Vitra.theme` object, unlike every other module. Real fix requires restructuring `theme` into a closure like the rest of the codebase; deferred to avoid rushing a mid-release refactor.
 
 ---
 

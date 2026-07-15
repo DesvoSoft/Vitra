@@ -4,6 +4,24 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2026-07-14
+
+### Added
+
+- **Scenery**: cloud layer (`.vitra-scenery-clouds`) and star field (`.vitra-scenery-stars`, gated to dark-appropriate themes) — eight scenery layers total, same seamless one-direction parallax drift as the existing ridges, full `prefers-reduced-motion` coverage. Atmospheric radial-gradient grading added to `.vitra-scenery-sky`, no new DOM.
+- **Scenery**: far and near ridge layers shift hue away from the base `--vitra-scenery-hue` token (`-15deg` far, `+20deg` near) instead of sharing one hue and varying only lightness/saturation. A flat lightness ramp read as "the same mountains, just darker" toward the front; the hue shift gives each layer a genuinely distinct atmospheric tint (far: hazier/warmer toward the horizon glow; near: cooler/deeper foreground shadow), verified across all 8 themes with no clipping or banding.
+- **Directional particles** (opt-in, non-breaking): `Vitra.particles.spawn(count, { direction })` accepts `'down'`, `'down-left'`, `'down-right'`, or a numeric degree angle. Particles fade in, drift toward that angle, and fade out via a new `vitra-particle-drift` keyframe. Omitting `direction` keeps the existing symmetric `vitra-particle-float` bob byte-identical. Declarative `data-vitra-particle-direction` attribute supported in the auto-init path.
+- `--vitra-color-accent-rgb` per-theme overrides for `light`, `pastel`, `neon`, `ocean`, `emerald`, and `auto`'s light-media branch — the token was previously only defined once at `:root`, so every non-default theme silently kept the dark theme's RGB triplet instead of its own accent color (same class of bug `--vitra-color-border-rgb` had before v1.8.6).
+- Dropdown `Escape` key support in the non-popover fallback path — closes any open dropdown and refocuses its toggle. Popover-based dropdowns already got this for free from the browser's native light-dismiss behavior.
+
+### Fixed
+
+- `dist/vitra.d.ts` was missing `destroy()` on the `RevealModule`, `ModalModule`, and `TooltipModule` interfaces despite all three existing at runtime. Found by extending the `.d.ts` drift-guard test to cover every module, not just `ripple`/`dropdown`/`spotlight`/`toast`.
+
+### Known issues
+
+- `Vitra.theme` is structured as a plain object literal rather than a closure like every other module, so its `_getSystemTheme`/`_isLocalStorageAvailable`/`_watchSystemTheme` helpers leak onto the public object as real enumerable own-properties instead of staying private. Tracked in ROADMAP as R7; deferred rather than restructuring the module mid-release.
+
 ## [1.8.6] - 2026-07-14
 
 ### Fixed

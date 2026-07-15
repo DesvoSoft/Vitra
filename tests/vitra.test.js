@@ -151,6 +151,35 @@ describe('Particles Module', () => {
     expect(limits).toHaveProperty('available');
     expect(limits.max).toBeGreaterThan(0);
   });
+
+  it('should not set data-direction or drift custom properties when direction is omitted', () => {
+    Vitra.particles.spawn(5);
+    const particles = document.body.querySelectorAll('.vitra-particle');
+    particles.forEach(p => {
+      expect(p.dataset.direction).toBeUndefined();
+      expect(p.style.getPropertyValue('--vitra-particle-drift-x')).toBe('');
+      expect(p.style.getPropertyValue('--vitra-particle-drift-y')).toBe('');
+    });
+  });
+
+  it('should set data-direction and drift custom properties for a named direction', () => {
+    Vitra.particles.spawn(5, { direction: 'down' });
+    const particles = document.body.querySelectorAll('.vitra-particle');
+    particles.forEach(p => {
+      expect(p.dataset.direction).toBe('down');
+      expect(p.style.getPropertyValue('--vitra-particle-drift-x')).toMatch(/px$/);
+      expect(p.style.getPropertyValue('--vitra-particle-drift-y')).toBe('120%');
+    });
+  });
+
+  it('should accept a numeric angle for direction', () => {
+    Vitra.particles.spawn(3, { direction: 45 });
+    const particles = document.body.querySelectorAll('.vitra-particle');
+    particles.forEach(p => {
+      expect(p.dataset.direction).toBe('45');
+      expect(p.style.getPropertyValue('--vitra-particle-drift-x')).toMatch(/px$/);
+    });
+  });
 });
 
 describe('Reveal Module', () => {
@@ -387,6 +416,27 @@ describe('Dropdown Module', () => {
     expect(dd2.classList.contains('open')).toBe(true);
     expect(dd1.classList.contains('open')).toBe(false);
     expect(toggle1.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('should close an open dropdown and refocus the toggle on Escape', () => {
+    document.body.innerHTML = `
+      <div class="vitra-dropdown">
+        <button data-vitra-dropdown-toggle aria-expanded="false">Menu</button>
+        <div class="vitra-dropdown-menu"></div>
+      </div>
+    `;
+    Vitra.dropdown.init();
+    const dd = document.querySelector('.vitra-dropdown');
+    const toggle = document.querySelector('[data-vitra-dropdown-toggle]');
+
+    toggle.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    expect(dd.classList.contains('open')).toBe(true);
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+
+    expect(dd.classList.contains('open')).toBe(false);
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    expect(document.activeElement).toBe(toggle);
   });
 
   it('should not respond to clicks after destroy', () => {
@@ -659,11 +709,18 @@ describe('vitra.d.ts drift guard', () => {
       .filter(Boolean);
   };
 
+  // theme excluded: its module object leaks _-prefixed private helpers as
+  // real own-properties (object-literal pattern, unlike every other module's
+  // closure-scoped privates) - tracked as a v1.9 audit finding, not .d.ts drift.
   it.each([
     ['ripple', 'RippleModule'],
     ['dropdown', 'DropdownModule'],
     ['spotlight', 'SpotlightModule'],
-    ['toast', 'ToastModule']
+    ['toast', 'ToastModule'],
+    ['particles', 'ParticlesModule'],
+    ['reveal', 'RevealModule'],
+    ['modal', 'ModalModule'],
+    ['tooltip', 'TooltipModule']
   ])('%s runtime keys match declared %s interface', (moduleName, interfaceName) => {
     const runtimeKeys = Object.keys(Vitra[moduleName]).sort();
     const declaredKeys = interfaceMembers(interfaceName).sort();

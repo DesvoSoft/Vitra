@@ -258,8 +258,14 @@ const spawned = particles.spawn(10, {
   color: 'var(--vitra-color-accent)',
   size: 4,
   emoji: null,        // Or '✨' for emoji particles
-  container: 'body'  // CSS selector
+  container: 'body',  // CSS selector or element
+  direction: null     // Opt-in: 'down', 'down-left', 'down-right', or a degree angle (number)
 });
+
+// direction omitted/null: unchanged symmetric bob (vitra-particle-float)
+// direction set: particles fall/drift toward that angle and fade out (vitra-particle-drift)
+particles.spawn(15, { direction: 'down' });
+particles.spawn(15, { direction: 45 }); // custom angle in degrees
 
 // Destroy particles
 particles.destroy(5);  // Destroy 5, or all if no argument
@@ -437,12 +443,14 @@ tooltip.init();
 
 ### Scenery Module
 
-Ambient, six-layer mountain-landscape backdrop. Pure CSS — no JS module, no `import`, no `data-config` entry. Colors derive automatically from the active theme's `--vitra-color-accent-h`/`-s` tokens, so switching themes re-colors the scene automatically.
+Ambient, eight-layer mountain-landscape backdrop. Pure CSS — no JS module, no `import`, no `data-config` entry. Colors derive automatically from the active theme's `--vitra-color-accent-h`/`-s` tokens, so switching themes re-colors the scene automatically.
 
 ```html
 <!-- Full-page: position:fixed, sits behind all content -->
 <div class="vitra-scenery" aria-hidden="true">
   <div class="vitra-scenery-sky"></div>
+  <div class="vitra-scenery-clouds"></div>
+  <div class="vitra-scenery-stars"></div>
   <div class="vitra-scenery-halo"></div>
   <div class="vitra-scenery-ridge-far"></div>
   <div class="vitra-scenery-ridge-mid"></div>
@@ -453,6 +461,8 @@ Ambient, six-layer mountain-landscape backdrop. Pure CSS — no JS module, no `i
 <!-- Inline: position:absolute, scope to any position:relative; overflow:hidden container -->
 <div class="vitra-scenery-inline" aria-hidden="true">
   <div class="vitra-scenery-sky"></div>
+  <div class="vitra-scenery-clouds"></div>
+  <div class="vitra-scenery-stars"></div>
   <div class="vitra-scenery-halo"></div>
   <div class="vitra-scenery-ridge-far"></div>
   <div class="vitra-scenery-ridge-mid"></div>
@@ -461,7 +471,7 @@ Ambient, six-layer mountain-landscape backdrop. Pure CSS — no JS module, no `i
 </div>
 ```
 
-The six child layers are always the same regardless of which root class is used — only the root's positioning changes. The root element must always carry `aria-hidden="true"`; it's decorative only.
+The eight child layers are always the same regardless of which root class is used — only the root's positioning changes. The root element must always carry `aria-hidden="true"`; it's decorative only. `.vitra-scenery-stars` is opacity-gated to `0` on light-scheme themes (`light`, `pastel`, and `auto` under a light OS scheme) — safe to always include in markup, it just won't render there.
 
 **Overridable tokens:**
 
@@ -471,8 +481,9 @@ The six child layers are always the same regardless of which root class is used 
 | `--vitra-scenery-sat` | `var(--vitra-color-accent-s)` | Base saturation |
 | `--vitra-scenery-speed` | `1` | Drift speed multiplier (higher = faster) |
 | `--vitra-scenery-opacity-far` / `-mid` / `-near` | `0.6` / `0.75` / `0.92` | Per-layer opacity (atmospheric perspective) |
+| `--vitra-scenery-opacity-clouds` | `0.35` | Cloud layer opacity |
 
-Ridge silhouettes come from inline SVG masks (shape) colored by theme tokens (color) — no external assets. Where `mask-image` is unsupported, ridges gracefully fall back to soft gradient horizon bands. Under `prefers-reduced-motion: reduce`, all layers stop animating and hold position — the scene stays visible, just static.
+Ridge and cloud silhouettes come from inline SVG masks (shape) colored by theme tokens (color) — no external assets. Where `mask-image` is unsupported, ridges/clouds gracefully fall back to soft gradient bands. The star field is a small tiled data-URI SVG, static by default. All layers drift the same right-to-left direction at different speeds (clouds slowest, near ridge fastest) for a consistent parallax/wind read. Under `prefers-reduced-motion: reduce`, all layers stop animating and hold position — the scene stays visible, just static.
 
 ---
 
@@ -534,10 +545,12 @@ Vitra uses data attributes for declaritive configuration without JavaScript.
 | `data-vitra-particles` | Count | Number of particles to spawn |
 | `data-vitra-particle-color` | Color | Particle color |
 | `data-vitra-particle-emoji` | Emoji | Use emoji instead of dots |
+| `data-vitra-particle-direction` | `down`, `down-left`, `down-right`, or a degree angle | Opt-in falling direction (omit for the default symmetric bob) |
 
 ```html
 <div data-vitra-particles="10" data-vitra-particle-color="#ff6b6b"></div>
 <div data-vitra-particles="5" data-vitra-particle-emoji="✨"></div>
+<div data-vitra-particles="15" data-vitra-particle-direction="down"></div>
 ```
 
 ### Tooltips
