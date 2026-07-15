@@ -20,6 +20,7 @@
     initPopoverDemo();
     initStartingStyleDemo();
     initParticleControls();
+    initHeroParticles();
     initMotionDemo();
     initTabs();
     initModalDemo();
@@ -663,13 +664,53 @@
     }, 4000);
   }
 
+  // Re-parents freshly spawned .vitra-particle nodes into the scenery's
+  // depth stack so they fall behind the near ridge instead of on top of
+  // the whole hero (Vitra.particles.spawn always appends to the
+  // container element itself, with no z-index/insertion-point option).
+  function _sinkParticlesIntoScenery(hero) {
+    var scenery = hero.querySelector('.vitra-scenery-inline');
+    var nearRidge = hero.querySelector('.vitra-scenery-ridge-near');
+    if (!scenery || !nearRidge) return;
+
+    var particles = hero.querySelectorAll(':scope > .vitra-particle');
+    particles.forEach(function (p) {
+      // spawn() places directional particles at top: -20%..0% (above the
+      // container) so they can fall/fade in from off-screen against a
+      // full-viewport spawn; .demo-hero has overflow: hidden, which clips
+      // that entire band and reads as "particles don't show up". Remap
+      // into the visible band so the fall plays out over the ridges.
+      if (p.hasAttribute('data-direction')) {
+        p.style.top = (Math.random() * 35) + '%';
+      }
+      scenery.insertBefore(p, nearRidge);
+    });
+  }
+
+  // Falling particles are the hero's default look: fire once on load so
+  // visitors see the depth effect without needing to click a button.
+  function initHeroParticles() {
+    var hero = document.querySelector('.demo-hero');
+    if (!hero) return;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    window.spawnHeroParticles();
+  }
+
   window.spawnHeroParticles = function () {
+    var hero = document.querySelector('.demo-hero');
+    if (!hero) return;
+
     _heroClickCount++;
     var counts = [8, 18, 35, 60, 90];
     var count = counts[Math.min(_heroClickCount - 1, counts.length - 1)];
 
     Vitra.particles.destroy();
-    Vitra.particles.spawn(count, { container: '.demo-hero', direction: 'down' });
+    Vitra.particles.spawn(count, { container: '.demo-hero', direction: 'down', size: 7 });
+    hero.querySelectorAll(':scope > .vitra-particle[data-direction]').forEach(function (p) {
+      p.setAttribute('data-glow', 'sm');
+    });
+    _sinkParticlesIntoScenery(hero);
 
     if (_heroClickCount >= 5) {
       setTimeout(_triggerBSOD, 400);
@@ -677,8 +718,12 @@
   };
 
   window.spawnHeroParticlesClassic = function () {
+    var hero = document.querySelector('.demo-hero');
+    if (!hero) return;
+
     Vitra.particles.destroy();
     Vitra.particles.spawn(18, { container: '.demo-hero' });
+    _sinkParticlesIntoScenery(hero);
   };
 
   window.setScenerySpeed = function (btn, speed) {

@@ -177,6 +177,36 @@ html[data-theme="pastel"] .demo-hero h1.demo-hero-title {
   z-index: 1;
 }
 
+/* Hero particles sit inside .vitra-scenery-inline (moved there by demo.js
+   so they fall behind the near ridge), so they need enough size/contrast
+   to read against the sky gradient instead of the framework's flat default. */
+.demo-hero .vitra-scenery-inline .vitra-particle {
+  --vitra-particle-color: hsl(var(--vitra-color-accent-h) 90% 75%);
+  box-shadow: 0 0 6px hsl(var(--vitra-color-accent-h) 90% 75% / 70%);
+}
+
+/* Classic (non-directional) hero particles: amplify the built-in float
+   keyframe's opacity pulse into a visible flicker for depth cueing
+   against the static mountain ridges. */
+.demo-hero .vitra-scenery-inline .vitra-particle:not([data-direction]) {
+  animation-name: demo-hero-particle-flicker;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes demo-hero-particle-flicker {
+  0%, 100% { opacity: 0.25; transform: translateY(0) scale(1); }
+  25% { opacity: 0.9; transform: translateY(-8px) scale(1.15); }
+  50% { opacity: 0.35; transform: translateY(-20px) scale(0.95); }
+  75% { opacity: 1; transform: translateY(-12px) scale(1.1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-hero .vitra-scenery-inline .vitra-particle:not([data-direction]) {
+    animation: none !important;
+    opacity: 0.6;
+  }
+}
+
 /* ============================================
    Cinematic Section
    ============================================ */
