@@ -18,7 +18,8 @@ node_modules/
 # ===========================================
 # Build & Distribution
 # ===========================================
-# Keep dist/ files for demo branch deployment
+# Page loads Vitra from jsdelivr CDN, not local dist/ -- vestigial, ignored
+dist/
 
 # ===========================================
 # OS & Editor Files

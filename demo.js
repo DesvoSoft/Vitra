@@ -307,17 +307,29 @@
     });
   }
 
+  window.setParticleDirection = function (direction, btn) {
+    var group = document.getElementById('particle-direction-group');
+    if (!group) return;
+    group.dataset.selected = direction;
+    Array.prototype.forEach.call(group.querySelectorAll('button'), function (b) {
+      b.classList.toggle('vitra-btn-solid', b === btn);
+      b.classList.toggle('vitra-btn-ghost', b !== btn);
+    });
+  };
+
   window.spawnParticles = function () {
     var count = parseInt(document.getElementById('particle-count')?.value || '10', 10);
     var color = document.getElementById('particle-color')?.value || '#6c63ff';
     var size = parseInt(document.getElementById('particle-size')?.value || '4', 10);
     var speed = parseInt(document.getElementById('particle-speed')?.value || '3', 10);
+    var direction = document.getElementById('particle-direction-group')?.dataset.selected || '';
 
     Vitra.particles.destroy();
 
     var spawned = Vitra.particles.spawn(count, {
       color: color,
       size: size,
+      direction: direction || null,
       container: '#particle-demo-area'
     });
 
@@ -656,12 +668,17 @@
     var counts = [8, 18, 35, 60, 90];
     var count = counts[Math.min(_heroClickCount - 1, counts.length - 1)];
 
-    Vitra.particles.destroy('.demo-hero');
-    Vitra.particles.spawn(count, { container: '.demo-hero' });
+    Vitra.particles.destroy();
+    Vitra.particles.spawn(count, { container: '.demo-hero', direction: 'down' });
 
     if (_heroClickCount >= 5) {
       setTimeout(_triggerBSOD, 400);
     }
+  };
+
+  window.spawnHeroParticlesClassic = function () {
+    Vitra.particles.destroy();
+    Vitra.particles.spawn(18, { container: '.demo-hero' });
   };
 
   window.setScenerySpeed = function (btn, speed) {
