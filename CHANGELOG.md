@@ -4,6 +4,18 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.1] - 2026-07-15
+
+### Fixed
+
+- **Scenery**: stars no longer show through the semi-transparent ridges — the star field now occupies only the upper 58% of the scene and fades out via a linear-gradient mask before the ridge peaks begin (mask on the parent also clips the drift/twinkle pseudo-layers).
+
+### Changed
+
+- **Scenery**: ridge parallax slowed to roughly half speed (far 90s → 160s, mid 55s → 100s, near 30s → 55s; clouds 130s → 260s) — same differential-speed ordering, calmer scene.
+- **Scenery**: cloud mask redrawn as five distinct formations (three-lobe cumulus, thin stratus wisp, tall double-lobe, small high wisp, medium cluster) at varied altitudes with per-ellipse `fill-opacity` density — clouds no longer read as identical blobs.
+- **Scenery**: twinkle rebuilt as an irregular 8-stop 13s cycle (end = start, no `alternate`) instead of the uniform 9s ping-pong — shimmer no longer reads as a metronome.
+
 ## [1.10.0] - 2026-07-15
 
 ### Added
