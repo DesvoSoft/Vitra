@@ -55,7 +55,7 @@
     "size-limit": "^12.1.0",
     "stylelint": "^17.11.1",
     "stylelint-config-standard": "^40.0.0",
-    "vitest": "^4.1.6"
+    "vitest": "^4.1.10"
   },
   "keywords": [
     "css",
