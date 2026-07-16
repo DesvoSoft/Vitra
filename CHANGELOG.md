@@ -4,6 +4,18 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.2] - 2026-07-15
+
+### Performance
+
+- **Scenery**: animated star layers (drift/twinkle tile and shooting star) moved off the masked `.vitra-scenery-stars` element onto `.vitra-scenery-sky::before`/`::after`. A mask is a group effect — transform-animated children inside a masked group can force the whole group to re-rasterize every frame. The stars element is now static-only under its mask (rasterized once); each animated layer composites on its own layer and carries its own copy of the vertical fade mask (drift is horizontal-only, so a mask traveling with the layer is visually identical). Sky pseudos are visibility-gated to dark themes, brightness pre-multiplied by the 0.8 the old parent contributed. No markup change.
+
+### Changed
+
+- **Scenery**: parallax slowed further and spread wider apart for motion comfort and clearer depth (near 55s → 75s, mid 100s → 150s, far 160s → 260s, clouds 260s → 400s; ratio now ~1 : 2 : 3.5).
+- **Scenery**: mid ridge lightened and hue-shifted (−8) into a far(−15) → mid(−8) → near(+20) hue ladder — stronger contrast between the dark near treeline and the range behind it.
+- **Scenery**: clouds softened — opacity tokens 0.35 → 0.28 (dark) / 0.5 → 0.42 (light), gentler per-ellipse mask densities, and low-opacity skirt ellipses feathering each formation's underside.
+
 ## [1.10.1] - 2026-07-15
 
 ### Fixed
