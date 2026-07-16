@@ -1598,7 +1598,7 @@
     /* --- SCENERY OPACITY TOKENS (atmospheric perspective) ---
        Dark-scheme defaults: ridges sit on a dark sky, so a
        lighter mist band read as haze without washing out. */
-    --vitra-scenery-opacity-far: 0.6;
+    --vitra-scenery-opacity-far: 0.55;
     --vitra-scenery-opacity-mid: 0.75;
     --vitra-scenery-opacity-near: 0.92;
     --vitra-scenery-opacity-clouds: 0.35;
@@ -1660,7 +1660,7 @@
       linear-gradient(
         to bottom,
         var(--vitra-color-bg) 0%,
-        hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 40% / 25%) 100%
+        hsl(calc(var(--vitra-scenery-hue) + 8) calc(var(--vitra-scenery-sat) * 0.65) 45% / 30%) 100%
       );
   }
 
@@ -1865,9 +1865,9 @@
     height: 58%;
     background: linear-gradient(
       to bottom,
-      hsl(calc(var(--vitra-scenery-hue) - 15) calc(var(--vitra-scenery-sat) * 0.35) 82% / 55%) 0%,
-      hsl(calc(var(--vitra-scenery-hue) - 15) calc(var(--vitra-scenery-sat) * 0.5) 55% / 45%) 18%,
-      hsl(calc(var(--vitra-scenery-hue) - 15) calc(var(--vitra-scenery-sat) * 0.6) 34% / 65%) 100%
+      hsl(calc(var(--vitra-scenery-hue) - 15) calc(var(--vitra-scenery-sat) * 0.25) 86% / 38%) 0%,
+      hsl(calc(var(--vitra-scenery-hue) - 15) calc(var(--vitra-scenery-sat) * 0.4) 58% / 42%) 22%,
+      hsl(calc(var(--vitra-scenery-hue) - 15) calc(var(--vitra-scenery-sat) * 0.5) 36% / 62%) 100%
     );
     opacity: var(--vitra-scenery-opacity-far);
     animation: vitra-scenery-drift-far calc(90s / var(--vitra-scenery-speed)) linear infinite;
@@ -1877,9 +1877,9 @@
     height: 40%;
     background: linear-gradient(
       to bottom,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.45) 68% / 50%) 0%,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.65) 36% / 65%) 25%,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.7) 20% / 85%) 100%
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.4) 68% / 50%) 0%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.55) 36% / 65%) 25%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 20% / 85%) 100%
     );
     opacity: var(--vitra-scenery-opacity-mid);
     animation: vitra-scenery-drift-mid calc(55s / var(--vitra-scenery-speed)) linear infinite;
@@ -1889,8 +1889,8 @@
     height: 24%;
     background: linear-gradient(
       to bottom,
-      hsl(calc(var(--vitra-scenery-hue) + 20) calc(var(--vitra-scenery-sat) * 0.7) 22% / 85%) 0%,
-      hsl(calc(var(--vitra-scenery-hue) + 20) calc(var(--vitra-scenery-sat) * 0.8) 8% / 97%) 100%
+      hsl(calc(var(--vitra-scenery-hue) + 20) calc(var(--vitra-scenery-sat) * 0.7) 18% / 88%) 0%,
+      hsl(calc(var(--vitra-scenery-hue) + 20) calc(var(--vitra-scenery-sat) * 0.8) 5% / 98%) 100%
     );
     opacity: var(--vitra-scenery-opacity-near);
     animation: vitra-scenery-drift-near calc(30s / var(--vitra-scenery-speed)) linear infinite;
