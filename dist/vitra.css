@@ -1724,17 +1724,81 @@
 
   /* --- STAR FIELD (dark-appropriate themes only) --- */
 
-  /* Small tiled data-URI SVG, scattered dots at varied radius/
-     opacity so the tile repeat isn't obvious. Static by default;
-     the twinkle keyframe only touches ::before/::after opacity so
-     the base layer itself never repaints. Hidden on light-scheme
-     themes where a star field would make no visual sense. */
+  /* Three overlapping data-URI star tiles with different tile
+     periods (420x280, 660x440 on the base element; 540x360 on
+     ::before) - non-synchronized repeats destroy the visible
+     grid a single tile produces. ::before also drifts with the
+     scene wind and twinkles (transform/opacity only). ::after
+     is an occasional shooting star. All layers inherit the
+     parent's theme-gated opacity, so light themes hide
+     everything with no extra rules. */
   .vitra-scenery-stars {
     position: absolute;
     inset: 0;
     opacity: 0;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='200'><circle cx='18' cy='24' r='1.1' fill='white' opacity='0.8'/><circle cx='62' cy='58' r='0.7' fill='white' opacity='0.5'/><circle cx='104' cy='16' r='1.3' fill='white' opacity='0.9'/><circle cx='140' cy='72' r='0.6' fill='white' opacity='0.4'/><circle cx='176' cy='30' r='1' fill='white' opacity='0.7'/><circle cx='210' cy='90' r='0.8' fill='white' opacity='0.6'/><circle cx='238' cy='12' r='1.2' fill='white' opacity='0.85'/><circle cx='266' cy='54' r='0.7' fill='white' opacity='0.5'/><circle cx='292' cy='100' r='0.9' fill='white' opacity='0.65'/><circle cx='36' cy='118' r='0.8' fill='white' opacity='0.55'/><circle cx='84' cy='140' r='1.1' fill='white' opacity='0.75'/><circle cx='128' cy='160' r='0.6' fill='white' opacity='0.45'/><circle cx='166' cy='124' r='1' fill='white' opacity='0.7'/><circle cx='198' cy='168' r='0.7' fill='white' opacity='0.5'/><circle cx='250' cy='150' r='0.9' fill='white' opacity='0.6'/></svg>");
+    background-image:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='660' height='440'><circle cx='37' cy='68' r='1.3' fill='white' opacity='0.85'/><circle cx='118' cy='301' r='1.1' fill='white' opacity='0.7'/><circle cx='176' cy='142' r='1.5' fill='white' opacity='0.9'/><circle cx='243' cy='388' r='1' fill='white' opacity='0.65'/><circle cx='312' cy='52' r='1.2' fill='white' opacity='0.8'/><circle cx='398' cy='247' r='1.4' fill='white' opacity='0.85'/><circle cx='451' cy='109' r='1' fill='white' opacity='0.6'/><circle cx='505' cy='354' r='1.2' fill='white' opacity='0.75'/><circle cx='571' cy='183' r='1.5' fill='white' opacity='0.9'/><circle cx='622' cy='71' r='1.1' fill='white' opacity='0.7'/><circle cx='89' cy='412' r='1' fill='white' opacity='0.6'/><circle cx='270' cy='203' r='0.9' fill='white' opacity='0.6'/><circle cx='532' cy='26' r='1' fill='white' opacity='0.65'/><circle cx='645' cy='296' r='1.3' fill='white' opacity='0.8'/></svg>"),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='420' height='280'><circle cx='23' cy='31' r='0.9' fill='white' opacity='0.5'/><circle cx='57' cy='142' r='0.6' fill='white' opacity='0.4'/><circle cx='81' cy='66' r='1' fill='white' opacity='0.65'/><circle cx='99' cy='214' r='0.5' fill='white' opacity='0.35'/><circle cx='131' cy='109' r='0.8' fill='white' opacity='0.55'/><circle cx='148' cy='17' r='0.7' fill='white' opacity='0.45'/><circle cx='172' cy='253' r='0.9' fill='white' opacity='0.6'/><circle cx='189' cy='83' r='0.5' fill='white' opacity='0.4'/><circle cx='214' cy='178' r='1' fill='white' opacity='0.7'/><circle cx='243' cy='41' r='0.6' fill='white' opacity='0.45'/><circle cx='259' cy='231' r='0.8' fill='white' opacity='0.5'/><circle cx='287' cy='132' r='0.7' fill='white' opacity='0.55'/><circle cx='301' cy='12' r='0.5' fill='white' opacity='0.35'/><circle cx='322' cy='199' r='0.9' fill='white' opacity='0.65'/><circle cx='352' cy='91' r='0.6' fill='white' opacity='0.4'/><circle cx='369' cy='262' r='0.7' fill='white' opacity='0.5'/><circle cx='391' cy='155' r='0.8' fill='white' opacity='0.6'/><circle cx='407' cy='48' r='0.5' fill='white' opacity='0.4'/><circle cx='44' cy='251' r='0.7' fill='white' opacity='0.5'/><circle cx='117' cy='161' r='0.6' fill='white' opacity='0.45'/><circle cx='203' cy='124' r='0.55' fill='white' opacity='0.35'/><circle cx='276' cy='74' r='0.9' fill='white' opacity='0.6'/><circle cx='338' cy='28' r='0.65' fill='white' opacity='0.45'/><circle cx='413' cy='222' r='0.75' fill='white' opacity='0.55'/></svg>");
     background-repeat: repeat;
+  }
+
+  /* Drifting + twinkling third tile. Seamless drift loop:
+     the layer is one tile-width (540px) wider than the
+     viewport strip and translates exactly one tile width,
+     landing on a pixel-identical frame. Twinkle rides the
+     same pseudo-element as a second, opacity-only animation. */
+  .vitra-scenery-stars::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: calc(100% + 540px);
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='540' height='360'><circle cx='29' cy='47' r='0.8' fill='white' opacity='0.6'/><circle cx='71' cy='183' r='1.1' fill='white' opacity='0.75'/><circle cx='108' cy='312' r='0.6' fill='white' opacity='0.5'/><circle cx='142' cy='96' r='0.9' fill='white' opacity='0.65'/><circle cx='187' cy='241' r='0.7' fill='white' opacity='0.55'/><circle cx='216' cy='29' r='1.2' fill='white' opacity='0.8'/><circle cx='251' cy='157' r='0.6' fill='white' opacity='0.5'/><circle cx='289' cy='334' r='1' fill='white' opacity='0.7'/><circle cx='317' cy='88' r='0.8' fill='white' opacity='0.6'/><circle cx='348' cy='213' r='0.7' fill='white' opacity='0.5'/><circle cx='382' cy='21' r='1.1' fill='white' opacity='0.75'/><circle cx='411' cy='299' r='0.6' fill='white' opacity='0.5'/><circle cx='446' cy='132' r='0.9' fill='white' opacity='0.65'/><circle cx='478' cy='251' r='0.7' fill='white' opacity='0.55'/><circle cx='509' cy='63' r='1' fill='white' opacity='0.7'/><circle cx='527' cy='341' r='0.8' fill='white' opacity='0.6'/><circle cx='63' cy='268' r='0.65' fill='white' opacity='0.5'/><circle cx='334' cy='152' r='0.75' fill='white' opacity='0.55'/></svg>");
+    background-repeat: repeat;
+    opacity: 0.7;
+    will-change: transform, opacity;
+    animation:
+      vitra-scenery-stars-drift calc(220s / var(--vitra-scenery-speed)) linear infinite,
+      vitra-scenery-stars-twinkle 9s ease-in-out infinite alternate;
+  }
+
+  /* Shooting star: thin streak, visible only during the first
+     ~5% of a 17s cycle. Fixed path (CSS cannot randomize);
+     the long period keeps it feeling occasional. rotate(-35deg)
+     tilts the travel axis so translating -x moves down-left. */
+  .vitra-scenery-stars::after {
+    content: '';
+    position: absolute;
+    top: 14%;
+    left: 66%;
+    width: 90px;
+    height: 2px;
+    border-radius: 1px;
+    background: linear-gradient(to left, white 0%, hsl(0deg 0% 100% / 40%) 35%, transparent 100%);
+    opacity: 0;
+    transform: rotate(-35deg) translate3d(0, 0, 0);
+    will-change: transform, opacity;
+    animation: vitra-scenery-shooting-star 17s linear 4s infinite;
+  }
+
+  @keyframes vitra-scenery-stars-drift {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-540px, 0, 0); }
+  }
+
+  @keyframes vitra-scenery-stars-twinkle {
+    0% { opacity: 0.55; }
+    35% { opacity: 0.8; }
+    60% { opacity: 0.6; }
+    100% { opacity: 0.9; }
+  }
+
+  @keyframes vitra-scenery-shooting-star {
+    0% { transform: rotate(-35deg) translate3d(0, 0, 0); opacity: 0; }
+    1% { opacity: 0.9; }
+    5% { transform: rotate(-35deg) translate3d(-340px, 0, 0); opacity: 0; }
+    100% { transform: rotate(-35deg) translate3d(-340px, 0, 0); opacity: 0; }
   }
 
   :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"]) .vitra-scenery-stars {
@@ -1917,6 +1981,16 @@
     .vitra-scenery-clouds {
       animation: none;
       transform: none;
+    }
+
+    .vitra-scenery-stars::before {
+      animation: none;
+      transform: none;
+    }
+
+    .vitra-scenery-stars::after {
+      animation: none;
+      opacity: 0;
     }
   }
 }
