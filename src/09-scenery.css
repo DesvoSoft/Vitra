@@ -139,13 +139,18 @@
       hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.2) 92% / 45%) 0%,
       hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.15) 90% / 0%) 100%
     );
-    animation: vitra-scenery-drift-clouds calc(130s / var(--vitra-scenery-speed)) linear infinite;
+    animation: vitra-scenery-drift-clouds calc(260s / var(--vitra-scenery-speed)) linear infinite;
     will-change: transform;
   }
 
   @supports (mask-image: url("")) or (-webkit-mask-image: url("")) {
     .vitra-scenery-clouds {
-      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 300' preserveAspectRatio='none'><ellipse cx='120' cy='80' rx='110' ry='34'/><ellipse cx='210' cy='95' rx='80' ry='26'/><ellipse cx='460' cy='50' rx='140' ry='40'/><ellipse cx='560' cy='70' rx='90' ry='28'/><ellipse cx='860' cy='100' rx='120' ry='36'/><ellipse cx='950' cy='115' rx='85' ry='24'/><ellipse cx='1230' cy='60' rx='130' ry='38'/><ellipse cx='1330' cy='80' rx='90' ry='26'/></svg>");
+      /* Five distinct formations instead of uniform blobs: a puffy
+         three-lobe cumulus, a long thin stratus wisp, a tall
+         double-lobe, a small high wisp, and a medium cluster -
+         varied altitudes and per-ellipse fill-opacity (mask alpha)
+         so density differs cloud to cloud. */
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 300' preserveAspectRatio='none'><ellipse cx='150' cy='88' rx='95' ry='30' fill-opacity='0.9'/><ellipse cx='215' cy='70' rx='60' ry='24' fill-opacity='0.7'/><ellipse cx='102' cy='72' rx='48' ry='18' fill-opacity='0.55'/><ellipse cx='500' cy='146' rx='130' ry='12' fill-opacity='0.5'/><ellipse cx='565' cy='135' rx='70' ry='8' fill-opacity='0.35'/><ellipse cx='830' cy='68' rx='85' ry='32' fill-opacity='0.85'/><ellipse cx='902' cy='94' rx='70' ry='22' fill-opacity='0.6'/><ellipse cx='772' cy='96' rx='55' ry='16' fill-opacity='0.5'/><ellipse cx='1098' cy='184' rx='60' ry='10' fill-opacity='0.4'/><ellipse cx='1300' cy='66' rx='90' ry='26' fill-opacity='0.8'/><ellipse cx='1372' cy='86' rx='58' ry='18' fill-opacity='0.55'/><ellipse cx='1243' cy='90' rx='45' ry='14' fill-opacity='0.45'/></svg>");
       mask-size: 50% 100%;
       mask-repeat: repeat-x;
       mask-position: left top;
@@ -166,11 +171,18 @@
      scene wind and twinkles (transform/opacity only). ::after
      is an occasional shooting star. All layers inherit the
      parent's theme-gated opacity, so light themes hide
-     everything with no extra rules. */
+     everything with no extra rules.
+     The field only occupies the upper 58% of the scene and
+     fades out via mask before the ridge peaks begin - stars
+     belong to the sky and must never show through the
+     semi-transparent mountains in front of them. The mask on
+     the parent clips the pseudo-element layers too. */
   .vitra-scenery-stars {
     position: absolute;
-    inset: 0;
+    inset: 0 0 auto;
+    height: 58%;
     opacity: 0;
+    mask-image: linear-gradient(to bottom, white 0%, white 55%, transparent 92%);
     background-image:
       url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='660' height='440'><circle cx='37' cy='68' r='1.3' fill='white' opacity='0.85'/><circle cx='118' cy='301' r='1.1' fill='white' opacity='0.7'/><circle cx='176' cy='142' r='1.5' fill='white' opacity='0.9'/><circle cx='243' cy='388' r='1' fill='white' opacity='0.65'/><circle cx='312' cy='52' r='1.2' fill='white' opacity='0.8'/><circle cx='398' cy='247' r='1.4' fill='white' opacity='0.85'/><circle cx='451' cy='109' r='1' fill='white' opacity='0.6'/><circle cx='505' cy='354' r='1.2' fill='white' opacity='0.75'/><circle cx='571' cy='183' r='1.5' fill='white' opacity='0.9'/><circle cx='622' cy='71' r='1.1' fill='white' opacity='0.7'/><circle cx='89' cy='412' r='1' fill='white' opacity='0.6'/><circle cx='270' cy='203' r='0.9' fill='white' opacity='0.6'/><circle cx='532' cy='26' r='1' fill='white' opacity='0.65'/><circle cx='645' cy='296' r='1.3' fill='white' opacity='0.8'/></svg>"),
       url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='420' height='280'><circle cx='23' cy='31' r='0.9' fill='white' opacity='0.5'/><circle cx='57' cy='142' r='0.6' fill='white' opacity='0.4'/><circle cx='81' cy='66' r='1' fill='white' opacity='0.65'/><circle cx='99' cy='214' r='0.5' fill='white' opacity='0.35'/><circle cx='131' cy='109' r='0.8' fill='white' opacity='0.55'/><circle cx='148' cy='17' r='0.7' fill='white' opacity='0.45'/><circle cx='172' cy='253' r='0.9' fill='white' opacity='0.6'/><circle cx='189' cy='83' r='0.5' fill='white' opacity='0.4'/><circle cx='214' cy='178' r='1' fill='white' opacity='0.7'/><circle cx='243' cy='41' r='0.6' fill='white' opacity='0.45'/><circle cx='259' cy='231' r='0.8' fill='white' opacity='0.5'/><circle cx='287' cy='132' r='0.7' fill='white' opacity='0.55'/><circle cx='301' cy='12' r='0.5' fill='white' opacity='0.35'/><circle cx='322' cy='199' r='0.9' fill='white' opacity='0.65'/><circle cx='352' cy='91' r='0.6' fill='white' opacity='0.4'/><circle cx='369' cy='262' r='0.7' fill='white' opacity='0.5'/><circle cx='391' cy='155' r='0.8' fill='white' opacity='0.6'/><circle cx='407' cy='48' r='0.5' fill='white' opacity='0.4'/><circle cx='44' cy='251' r='0.7' fill='white' opacity='0.5'/><circle cx='117' cy='161' r='0.6' fill='white' opacity='0.45'/><circle cx='203' cy='124' r='0.55' fill='white' opacity='0.35'/><circle cx='276' cy='74' r='0.9' fill='white' opacity='0.6'/><circle cx='338' cy='28' r='0.65' fill='white' opacity='0.45'/><circle cx='413' cy='222' r='0.75' fill='white' opacity='0.55'/></svg>");
@@ -195,7 +207,7 @@
     will-change: transform, opacity;
     animation:
       vitra-scenery-stars-drift calc(220s / var(--vitra-scenery-speed)) linear infinite,
-      vitra-scenery-stars-twinkle 9s ease-in-out infinite alternate;
+      vitra-scenery-stars-twinkle 13s ease-in-out infinite;
   }
 
   /* Shooting star: thin streak, visible only during the first
@@ -222,11 +234,18 @@
     100% { transform: translate3d(-540px, 0, 0); }
   }
 
+  /* Irregular multi-bump cycle (end = start, no alternate) so the
+     shimmer never reads as a metronome. Prime-ish 13s period plus
+     the 220s drift means the two loops almost never re-align. */
   @keyframes vitra-scenery-stars-twinkle {
-    0% { opacity: 0.55; }
-    35% { opacity: 0.8; }
-    60% { opacity: 0.6; }
-    100% { opacity: 0.9; }
+    0% { opacity: 0.72; }
+    13% { opacity: 0.58; }
+    22% { opacity: 0.8; }
+    41% { opacity: 0.65; }
+    55% { opacity: 0.88; }
+    68% { opacity: 0.6; }
+    83% { opacity: 0.78; }
+    100% { opacity: 0.72; }
   }
 
   @keyframes vitra-scenery-shooting-star {
@@ -305,7 +324,7 @@
       hsl(calc(var(--vitra-scenery-hue) - 15) calc(var(--vitra-scenery-sat) * 0.5) 36% / 62%) 100%
     );
     opacity: var(--vitra-scenery-opacity-far);
-    animation: vitra-scenery-drift-far calc(90s / var(--vitra-scenery-speed)) linear infinite;
+    animation: vitra-scenery-drift-far calc(160s / var(--vitra-scenery-speed)) linear infinite;
   }
 
   .vitra-scenery-ridge-mid {
@@ -317,7 +336,7 @@
       hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 20% / 85%) 100%
     );
     opacity: var(--vitra-scenery-opacity-mid);
-    animation: vitra-scenery-drift-mid calc(55s / var(--vitra-scenery-speed)) linear infinite;
+    animation: vitra-scenery-drift-mid calc(100s / var(--vitra-scenery-speed)) linear infinite;
   }
 
   .vitra-scenery-ridge-near {
@@ -328,7 +347,7 @@
       hsl(calc(var(--vitra-scenery-hue) + 20) calc(var(--vitra-scenery-sat) * 0.8) 5% / 98%) 100%
     );
     opacity: var(--vitra-scenery-opacity-near);
-    animation: vitra-scenery-drift-near calc(30s / var(--vitra-scenery-speed)) linear infinite;
+    animation: vitra-scenery-drift-near calc(55s / var(--vitra-scenery-speed)) linear infinite;
   }
 
   /* SVG-silhouette ridgelines. The mask defines the SHAPE
