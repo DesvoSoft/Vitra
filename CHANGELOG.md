@@ -4,6 +4,19 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0] - 2026-07-15
+
+### Added
+
+- **Scenery**: star field rebuilt as three overlapping data-URI tiles (660×440 + 420×280 on the base element, 540×360 on `::before`) — non-synchronized tile periods eliminate the visible repeat grid a single tile produced. No new DOM: same single `.vitra-scenery-stars` div.
+- **Scenery**: star drift layer — `::before` tile drifts right-to-left with the scene wind (`--vitra-scenery-speed` aware, slower than clouds) with a staggered opacity twinkle riding the same pseudo-element. Seamless loop: layer oversized by exactly one tile width, translates exactly one tile width.
+- **Scenery**: occasional shooting star (`::after`) — thin gradient streak falling down-left during the first ~5% of a 17s cycle. Transform/opacity only, like every other scenery animation.
+- All new star animations disabled under `prefers-reduced-motion` (static two-tile field stays visible; streak fully hidden).
+
+### Changed
+
+- **Scenery** atmospheric depth retune: far ridge melts into the sky haze (lighter, desaturated, lower-alpha summit stops; `--vitra-scenery-opacity-far` 0.6 → 0.55 on dark schemes), mid ridge mildly desaturated, near ridge deepened (18%→5% lightness ramp at higher alpha), dark-sky horizon band slightly warmer (+8 hue) and stronger. Light/pastel overrides untouched.
+
 ## [1.9.0] - 2026-07-14
 
 ### Added
