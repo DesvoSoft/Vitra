@@ -1601,7 +1601,7 @@
     --vitra-scenery-opacity-far: 0.55;
     --vitra-scenery-opacity-mid: 0.75;
     --vitra-scenery-opacity-near: 0.92;
-    --vitra-scenery-opacity-clouds: 0.35;
+    --vitra-scenery-opacity-clouds: 0.28;
   }
 
   /* Light-scheme themes (light, pastel) sit on a bright sky:
@@ -1612,7 +1612,7 @@
     --vitra-scenery-opacity-far: 0.78;
     --vitra-scenery-opacity-mid: 0.88;
     --vitra-scenery-opacity-near: 0.97;
-    --vitra-scenery-opacity-clouds: 0.5;
+    --vitra-scenery-opacity-clouds: 0.42;
   }
 
   /* --- ROOT CONTAINERS --- */
@@ -1704,7 +1704,7 @@
       hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.2) 92% / 45%) 0%,
       hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.15) 90% / 0%) 100%
     );
-    animation: vitra-scenery-drift-clouds calc(260s / var(--vitra-scenery-speed)) linear infinite;
+    animation: vitra-scenery-drift-clouds calc(400s / var(--vitra-scenery-speed)) linear infinite;
     will-change: transform;
   }
 
@@ -1715,7 +1715,7 @@
          double-lobe, a small high wisp, and a medium cluster -
          varied altitudes and per-ellipse fill-opacity (mask alpha)
          so density differs cloud to cloud. */
-      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 300' preserveAspectRatio='none'><ellipse cx='150' cy='88' rx='95' ry='30' fill-opacity='0.9'/><ellipse cx='215' cy='70' rx='60' ry='24' fill-opacity='0.7'/><ellipse cx='102' cy='72' rx='48' ry='18' fill-opacity='0.55'/><ellipse cx='500' cy='146' rx='130' ry='12' fill-opacity='0.5'/><ellipse cx='565' cy='135' rx='70' ry='8' fill-opacity='0.35'/><ellipse cx='830' cy='68' rx='85' ry='32' fill-opacity='0.85'/><ellipse cx='902' cy='94' rx='70' ry='22' fill-opacity='0.6'/><ellipse cx='772' cy='96' rx='55' ry='16' fill-opacity='0.5'/><ellipse cx='1098' cy='184' rx='60' ry='10' fill-opacity='0.4'/><ellipse cx='1300' cy='66' rx='90' ry='26' fill-opacity='0.8'/><ellipse cx='1372' cy='86' rx='58' ry='18' fill-opacity='0.55'/><ellipse cx='1243' cy='90' rx='45' ry='14' fill-opacity='0.45'/></svg>");
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 300' preserveAspectRatio='none'><ellipse cx='150' cy='88' rx='95' ry='30' fill-opacity='0.7'/><ellipse cx='215' cy='70' rx='60' ry='24' fill-opacity='0.5'/><ellipse cx='102' cy='72' rx='48' ry='18' fill-opacity='0.4'/><ellipse cx='158' cy='104' rx='125' ry='18' fill-opacity='0.25'/><ellipse cx='500' cy='146' rx='130' ry='12' fill-opacity='0.35'/><ellipse cx='565' cy='135' rx='70' ry='8' fill-opacity='0.22'/><ellipse cx='830' cy='68' rx='85' ry='32' fill-opacity='0.62'/><ellipse cx='902' cy='94' rx='70' ry='22' fill-opacity='0.42'/><ellipse cx='772' cy='96' rx='55' ry='16' fill-opacity='0.35'/><ellipse cx='838' cy='108' rx='115' ry='16' fill-opacity='0.22'/><ellipse cx='1098' cy='184' rx='60' ry='10' fill-opacity='0.26'/><ellipse cx='1300' cy='66' rx='90' ry='26' fill-opacity='0.55'/><ellipse cx='1372' cy='86' rx='58' ry='18' fill-opacity='0.38'/><ellipse cx='1243' cy='90' rx='45' ry='14' fill-opacity='0.3'/><ellipse cx='1306' cy='98' rx='105' ry='14' fill-opacity='0.2'/></svg>");
       mask-size: 50% 100%;
       mask-repeat: repeat-x;
       mask-position: left top;
@@ -1730,18 +1730,18 @@
   /* --- STAR FIELD (dark-appropriate themes only) --- */
 
   /* Three overlapping data-URI star tiles with different tile
-     periods (420x280, 660x440 on the base element; 540x360 on
-     ::before) - non-synchronized repeats destroy the visible
-     grid a single tile produces. ::before also drifts with the
-     scene wind and twinkles (transform/opacity only). ::after
-     is an occasional shooting star. All layers inherit the
-     parent's theme-gated opacity, so light themes hide
-     everything with no extra rules.
+     periods (420x280 + 660x440 here; 540x360 on the drift layer
+     hosted on .vitra-scenery-sky::before) - non-synchronized
+     repeats destroy the visible grid a single tile produces.
      The field only occupies the upper 58% of the scene and
      fades out via mask before the ridge peaks begin - stars
      belong to the sky and must never show through the
-     semi-transparent mountains in front of them. The mask on
-     the parent clips the pseudo-element layers too. */
+     semi-transparent mountains in front of them.
+     This element is deliberately static-only: its mask is a
+     group effect, and transform-animated children inside a
+     masked group can force per-frame re-rasterization. The
+     animated star layers therefore live on the unmasked sky
+     element's pseudo-elements (below). */
   .vitra-scenery-stars {
     position: absolute;
     inset: 0 0 auto;
@@ -1754,21 +1754,30 @@
     background-repeat: repeat;
   }
 
-  /* Drifting + twinkling third tile. Seamless drift loop:
-     the layer is one tile-width (540px) wider than the
-     viewport strip and translates exactly one tile width,
-     landing on a pixel-identical frame. Twinkle rides the
-     same pseudo-element as a second, opacity-only animation. */
-  .vitra-scenery-stars::before {
+  /* Drifting + twinkling third tile, hosted on the UNMASKED sky
+     element so it composites on its own layer (see note above).
+     Seamless drift loop: the layer is one tile-width (540px)
+     wider than the viewport strip and translates exactly one
+     tile width, landing on a pixel-identical frame. It carries
+     its own copy of the vertical fade mask - the drift is
+     horizontal-only, so a mask traveling with the layer is
+     visually identical to a static one. Sky pseudos don't
+     inherit the stars element's theme-gated opacity, so they
+     are visibility-gated to the same dark themes below;
+     brightness is pre-multiplied by the 0.8 the stars element
+     would have contributed. */
+  .vitra-scenery-sky::before {
     content: '';
     position: absolute;
     top: 0;
-    bottom: 0;
     left: 0;
+    height: 58%;
     width: calc(100% + 540px);
+    visibility: hidden;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='540' height='360'><circle cx='29' cy='47' r='0.8' fill='white' opacity='0.6'/><circle cx='71' cy='183' r='1.1' fill='white' opacity='0.75'/><circle cx='108' cy='312' r='0.6' fill='white' opacity='0.5'/><circle cx='142' cy='96' r='0.9' fill='white' opacity='0.65'/><circle cx='187' cy='241' r='0.7' fill='white' opacity='0.55'/><circle cx='216' cy='29' r='1.2' fill='white' opacity='0.8'/><circle cx='251' cy='157' r='0.6' fill='white' opacity='0.5'/><circle cx='289' cy='334' r='1' fill='white' opacity='0.7'/><circle cx='317' cy='88' r='0.8' fill='white' opacity='0.6'/><circle cx='348' cy='213' r='0.7' fill='white' opacity='0.5'/><circle cx='382' cy='21' r='1.1' fill='white' opacity='0.75'/><circle cx='411' cy='299' r='0.6' fill='white' opacity='0.5'/><circle cx='446' cy='132' r='0.9' fill='white' opacity='0.65'/><circle cx='478' cy='251' r='0.7' fill='white' opacity='0.55'/><circle cx='509' cy='63' r='1' fill='white' opacity='0.7'/><circle cx='527' cy='341' r='0.8' fill='white' opacity='0.6'/><circle cx='63' cy='268' r='0.65' fill='white' opacity='0.5'/><circle cx='334' cy='152' r='0.75' fill='white' opacity='0.55'/></svg>");
     background-repeat: repeat;
-    opacity: 0.7;
+    opacity: 0.56;
+    mask-image: linear-gradient(to bottom, white 0%, white 55%, transparent 92%);
     will-change: transform, opacity;
     animation:
       vitra-scenery-stars-drift calc(220s / var(--vitra-scenery-speed)) linear infinite,
@@ -1778,8 +1787,10 @@
   /* Shooting star: thin streak, visible only during the first
      ~5% of a 17s cycle. Fixed path (CSS cannot randomize);
      the long period keeps it feeling occasional. rotate(-35deg)
-     tilts the travel axis so translating -x moves down-left. */
-  .vitra-scenery-stars::after {
+     tilts the travel axis so translating -x moves down-left.
+     Lives at top 14%, far above the ridge peaks, so it needs
+     no fade mask of its own. */
+  .vitra-scenery-sky::after {
     content: '';
     position: absolute;
     top: 14%;
@@ -1787,6 +1798,7 @@
     width: 90px;
     height: 2px;
     border-radius: 1px;
+    visibility: hidden;
     background: linear-gradient(to left, white 0%, hsl(0deg 0% 100% / 40%) 35%, transparent 100%);
     opacity: 0;
     transform: rotate(-35deg) translate3d(0, 0, 0);
@@ -1803,19 +1815,19 @@
      shimmer never reads as a metronome. Prime-ish 13s period plus
      the 220s drift means the two loops almost never re-align. */
   @keyframes vitra-scenery-stars-twinkle {
-    0% { opacity: 0.72; }
-    13% { opacity: 0.58; }
-    22% { opacity: 0.8; }
-    41% { opacity: 0.65; }
-    55% { opacity: 0.88; }
-    68% { opacity: 0.6; }
-    83% { opacity: 0.78; }
-    100% { opacity: 0.72; }
+    0% { opacity: 0.58; }
+    13% { opacity: 0.46; }
+    22% { opacity: 0.64; }
+    41% { opacity: 0.52; }
+    55% { opacity: 0.7; }
+    68% { opacity: 0.48; }
+    83% { opacity: 0.62; }
+    100% { opacity: 0.58; }
   }
 
   @keyframes vitra-scenery-shooting-star {
     0% { transform: rotate(-35deg) translate3d(0, 0, 0); opacity: 0; }
-    1% { opacity: 0.9; }
+    1% { opacity: 0.75; }
     5% { transform: rotate(-35deg) translate3d(-340px, 0, 0); opacity: 0; }
     100% { transform: rotate(-35deg) translate3d(-340px, 0, 0); opacity: 0; }
   }
@@ -1824,13 +1836,28 @@
     opacity: 0.8;
   }
 
+  :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"]) .vitra-scenery-sky::before,
+  :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"]) .vitra-scenery-sky::after {
+    visibility: visible;
+  }
+
   html[data-theme="auto"] .vitra-scenery-stars {
     opacity: 0;
+  }
+
+  html[data-theme="auto"] .vitra-scenery-sky::before,
+  html[data-theme="auto"] .vitra-scenery-sky::after {
+    visibility: hidden;
   }
 
   @media (prefers-color-scheme: dark) {
     html[data-theme="auto"] .vitra-scenery-stars {
       opacity: 0.8;
+    }
+
+    html[data-theme="auto"] .vitra-scenery-sky::before,
+    html[data-theme="auto"] .vitra-scenery-sky::after {
+      visibility: visible;
     }
   }
 
@@ -1889,19 +1916,19 @@
       hsl(calc(var(--vitra-scenery-hue) - 15) calc(var(--vitra-scenery-sat) * 0.5) 36% / 62%) 100%
     );
     opacity: var(--vitra-scenery-opacity-far);
-    animation: vitra-scenery-drift-far calc(160s / var(--vitra-scenery-speed)) linear infinite;
+    animation: vitra-scenery-drift-far calc(260s / var(--vitra-scenery-speed)) linear infinite;
   }
 
   .vitra-scenery-ridge-mid {
     height: 40%;
     background: linear-gradient(
       to bottom,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.4) 68% / 50%) 0%,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.55) 36% / 65%) 25%,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 20% / 85%) 100%
+      hsl(calc(var(--vitra-scenery-hue) - 8) calc(var(--vitra-scenery-sat) * 0.35) 74% / 45%) 0%,
+      hsl(calc(var(--vitra-scenery-hue) - 8) calc(var(--vitra-scenery-sat) * 0.5) 42% / 58%) 25%,
+      hsl(calc(var(--vitra-scenery-hue) - 8) calc(var(--vitra-scenery-sat) * 0.55) 26% / 78%) 100%
     );
     opacity: var(--vitra-scenery-opacity-mid);
-    animation: vitra-scenery-drift-mid calc(100s / var(--vitra-scenery-speed)) linear infinite;
+    animation: vitra-scenery-drift-mid calc(150s / var(--vitra-scenery-speed)) linear infinite;
   }
 
   .vitra-scenery-ridge-near {
@@ -1912,7 +1939,7 @@
       hsl(calc(var(--vitra-scenery-hue) + 20) calc(var(--vitra-scenery-sat) * 0.8) 5% / 98%) 100%
     );
     opacity: var(--vitra-scenery-opacity-near);
-    animation: vitra-scenery-drift-near calc(55s / var(--vitra-scenery-speed)) linear infinite;
+    animation: vitra-scenery-drift-near calc(75s / var(--vitra-scenery-speed)) linear infinite;
   }
 
   /* SVG-silhouette ridgelines. The mask defines the SHAPE
@@ -2002,12 +2029,12 @@
       transform: none;
     }
 
-    .vitra-scenery-stars::before {
+    .vitra-scenery-sky::before {
       animation: none;
       transform: none;
     }
 
-    .vitra-scenery-stars::after {
+    .vitra-scenery-sky::after {
       animation: none;
       opacity: 0;
     }
