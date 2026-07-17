@@ -4,6 +4,13 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.3] - 2026-07-17
+
+### Fixed
+
+- **Auto-init**: pages without a `[data-config]` element regained default module initialization (ripple, tooltip, dropdown, spotlight). The v1.10.0 gating change moved `dropdown.init()`/`spotlight.init()` inside `_parseDataConfig`, which returned early when no `[data-config]` existed — turning the documented opt-out (`"dropdown": false`) into an accidental opt-in and silently breaking dropdowns on any page that never declared `data-config`. `_parseDataConfig` now treats a missing/unparseable `data-config` as `{}` and still initializes the `!== false` modules. Regression guard added in `tests/autoinit.test.js`.
+- **Auto-init**: `_parseDataConfig` referenced the outer `Vitra` const, which throws a TDZ `ReferenceError` when the script initializes synchronously (document already parsed, e.g. dynamic import). Module init calls now use the internal module references directly.
+
 ## [1.10.2] - 2026-07-15
 
 ### Performance

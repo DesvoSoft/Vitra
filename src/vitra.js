@@ -1255,55 +1255,60 @@ const Vitra = (() => {
 
   const _parseDataConfig = () => {
     const el = document.querySelector('[data-config]');
-    if (!el) return;
 
-    try {
-      const config = JSON.parse(el.getAttribute('data-config'));
-
-      // 1. Theme Configuration
-      if (config.theme) {
-        const themeOptions = typeof config.theme === 'object'
-          ? config.theme
-          : (typeof config.theme === 'string' ? { default: config.theme } : {});
-        Vitra.theme.init(themeOptions);
+    // data-config is an opt-out/tuning mechanism: default modules below must
+    // initialize even when no [data-config] element exists on the page.
+    let config = {};
+    if (el) {
+      try {
+        config = JSON.parse(el.getAttribute('data-config')) || {};
+      } catch (e) {
+        console.warn('[Vitra] Failed to parse data-config:', e.message);
+        config = {};
       }
+    }
 
-      // 2. Particles Configuration
-      if (config.particles) {
-        if (config.particles === true) {
-          Vitra.particles.init();
-        } else if (typeof config.particles === 'object') {
-          Vitra.particles.spawn(config.particles.count || 10, config.particles);
-        }
-      }
+    // 1. Theme Configuration
+    if (config.theme) {
+      const themeOptions = typeof config.theme === 'object'
+        ? config.theme
+        : (typeof config.theme === 'string' ? { default: config.theme } : {});
+      theme.init(themeOptions);
+    }
 
-      // 3. Reveal Configuration
-      if (config.reveal) {
-        const revealOptions = typeof config.reveal === 'object' ? config.reveal : {};
-        Vitra.reveal.init(revealOptions);
+    // 2. Particles Configuration
+    if (config.particles) {
+      if (config.particles === true) {
+        particles.init();
+      } else if (typeof config.particles === 'object') {
+        particles.spawn(config.particles.count || 10, config.particles);
       }
+    }
 
-      // 4. Ripple Configuration
-      if (config.ripple !== false) {
-        Vitra.ripple.init();
-      }
+    // 3. Reveal Configuration
+    if (config.reveal) {
+      const revealOptions = typeof config.reveal === 'object' ? config.reveal : {};
+      reveal.init(revealOptions);
+    }
 
-      // 5. Tooltip Configuration
-      if (config.tooltip !== false) {
-        Vitra.tooltip.init();
-      }
+    // 4. Ripple Configuration
+    if (config.ripple !== false) {
+      ripple.init();
+    }
 
-      // 6. Dropdown Configuration
-      if (config.dropdown !== false) {
-        Vitra.dropdown.init();
-      }
+    // 5. Tooltip Configuration
+    if (config.tooltip !== false) {
+      tooltip.init();
+    }
 
-      // 7. Spotlight Configuration
-      if (config.spotlight !== false) {
-        Vitra.spotlight.init();
-      }
-    } catch (e) {
-      console.warn('[Vitra] Failed to parse data-config:', e.message);
+    // 6. Dropdown Configuration
+    if (config.dropdown !== false) {
+      dropdown.init();
+    }
+
+    // 7. Spotlight Configuration
+    if (config.spotlight !== false) {
+      spotlight.init();
     }
   };
 
