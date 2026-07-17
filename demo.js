@@ -21,6 +21,7 @@
     initStartingStyleDemo();
     initParticleControls();
     initHeroParticles();
+    initOffscreenPause();
     initMotionDemo();
     initTabs();
     initModalDemo();
@@ -685,6 +686,24 @@
       }
       scenery.insertBefore(p, nearRidge);
     });
+  }
+
+  // Pause every CSS animation inside offscreen zones (scenery layers,
+  // particles, gradients keep compositing forever otherwise). Transitions
+  // are unaffected, so reveal-on-scroll keeps working.
+  function initOffscreenPause() {
+    if (!('IntersectionObserver' in window)) return;
+
+    var zones = document.querySelectorAll('.demo-hero, .demo-section');
+    if (!zones.length) return;
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        entry.target.classList.toggle('demo-anim-paused', !entry.isIntersecting);
+      });
+    }, { rootMargin: '30% 0px 30% 0px' });
+
+    zones.forEach(function (zone) { observer.observe(zone); });
   }
 
   // Falling particles are the hero's default look: fire once on load so
