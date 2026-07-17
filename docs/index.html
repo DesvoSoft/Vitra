@@ -66,10 +66,51 @@
 
       <section id="introduction" class="docs-section">
         <h2>Introduction</h2>
+        <p>Vitra is a lightweight, zero-dependency CSS framework built around glassmorphism, directional particles, ambient scenery, and smooth motion. The core is pure CSS: themes, glass surfaces, layout, components, and utilities all work from a single stylesheet.</p>
+        <p>JavaScript is optional and progressive. A small script (~6&nbsp;kB min) adds interactive behavior — theme persistence, modals, tooltips, toasts, dropdowns, particles — but nothing in the CSS depends on it. If the script never loads, every component still renders and the page stays usable.</p>
+        <p>This page is built with Vitra itself: the glass header and sidebar, the badges, the tabs below, the toast you'll see when you copy a snippet. Switch the theme from the header dropdown and the whole page re-colors. For a full visual tour, see the <a href="../">interactive demo</a>.</p>
       </section>
 
       <section id="installation" class="docs-section">
         <h2>Installation</h2>
+        <div class="vitra-tabs">
+          <div class="vitra-tabs-nav">
+            <button class="vitra-tabs-tab vitra-tabs-tab-active" data-tab="install-cdn">CDN</button>
+            <button class="vitra-tabs-tab" data-tab="install-npm">npm</button>
+          </div>
+          <div class="vitra-tabs-content">
+            <div class="vitra-tabs-panel" id="install-cdn">
+              <p>Add the stylesheet to <code>&lt;head&gt;</code>:</p>
+              <div class="docs-code">
+                <pre data-copy='<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.10.3/dist/vitra.min.css" crossorigin="anonymous">'><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.10.3/dist/vitra.min.css" crossorigin="anonymous"&gt;</code></pre>
+              </div>
+              <p>Optionally add the script before <code>&lt;/body&gt;</code> — it enables modals, tooltips, toasts, dropdowns, particles, and theme persistence:</p>
+              <div class="docs-code">
+                <pre data-copy='<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.10.3/dist/vitra.min.js" crossorigin="anonymous" defer></script>'><code>&lt;script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.10.3/dist/vitra.min.js" crossorigin="anonymous" defer&gt;&lt;/script&gt;</code></pre>
+              </div>
+              <p>Always pin a version tag (<code>@v1.10.3</code>) in production. Subresource-integrity hashes for each release are generated at build time and published in <code>dist/SRI.txt</code>.</p>
+            </div>
+            <div class="vitra-tabs-panel" id="install-npm" style="display: none;">
+              <div class="docs-code">
+                <pre data-copy='npm install vitra-css'><code>npm install vitra-css</code></pre>
+              </div>
+              <p>Then import the stylesheet and, if you need interactivity, the module:</p>
+              <div class="docs-code">
+                <pre data-copy="import 'vitra-css/dist/vitra.css';
+import Vitra from 'vitra-css';"><code>import 'vitra-css/dist/vitra.css';
+import Vitra from 'vitra-css';</code></pre>
+              </div>
+              <p>The package ships <code>dist/vitra.css</code> (expanded), <code>dist/vitra.min.css</code>, a CommonJS/IIFE build (<code>dist/vitra.js</code>), and an ES module build (<code>dist/vitra.esm.js</code>) with TypeScript definitions.</p>
+            </div>
+          </div>
+        </div>
+        <h3>Which file do I need?</h3>
+        <table>
+          <tr><th>File</th><th>Use</th></tr>
+          <tr><td><code>vitra.min.css</code></td><td>Everything visual. Required.</td></tr>
+          <tr><td><code>vitra.min.js</code></td><td>Interactive components and theme persistence. Optional.</td></tr>
+          <tr><td><code>vitra.esm.js</code></td><td>Same as above for bundlers, tree-shakeable imports.</td></tr>
+        </table>
       </section>
 
       <section id="theming" class="docs-section">
