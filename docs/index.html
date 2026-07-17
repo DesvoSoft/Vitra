@@ -115,6 +115,54 @@ import Vitra from 'vitra-css';</code></pre>
 
       <section id="theming" class="docs-section">
         <h2>Theming</h2>
+        <p>Themes are applied with a single attribute on the root element. Every <code>--vitra-*</code> token — accent hue, backgrounds, surfaces, borders, text — updates instantly.</p>
+        <div class="docs-code">
+          <pre data-copy='<html data-theme="dark">'><code>&lt;html data-theme="dark"&gt;</code></pre>
+        </div>
+        <h3>Built-in themes</h3>
+        <p>Seven presets, each with its own accent hue and tinted neutrals so every surface carries a trace of the accent:</p>
+        <div class="docs-example">
+          <span class="vitra-badge">light</span>
+          <span class="vitra-badge">dark</span>
+          <span class="vitra-badge">auto</span>
+          <span class="vitra-badge">pastel</span>
+          <span class="vitra-badge">neon</span>
+          <span class="vitra-badge">ocean</span>
+          <span class="vitra-badge">emerald</span>
+        </div>
+        <p><code>auto</code> follows the operating system's <code>prefers-color-scheme</code> and re-resolves live when it changes.</p>
+        <h3>Persistence</h3>
+        <p>With the optional script, initialize once and the visitor's choice is stored in <code>localStorage</code> and restored on every page that calls <code>init</code>:</p>
+        <div class="docs-code">
+          <pre data-copy="Vitra.theme.init({ defaultTheme: 'auto', persist: true });"><code>Vitra.theme.init({ defaultTheme: 'auto', persist: true });</code></pre>
+        </div>
+        <p>This docs page and the <a href="../">demo</a> share that stored choice — pick a theme here and the demo opens in it.</p>
+        <h3>Creating a custom theme</h3>
+        <p>A theme is a <code>[data-theme]</code> block that overrides tokens. Start from the accent and the base surfaces:</p>
+        <div class="docs-code">
+          <pre data-copy='html[data-theme="sunset"] {
+  --vitra-color-accent-h: 18;
+  --vitra-color-accent-s: 85%;
+  --vitra-color-accent-l: 58%;
+  --vitra-color-bg: hsl(18deg 30% 8%);
+  --vitra-color-surface: hsl(18deg 40% 90% / 6%);
+  --vitra-color-surface-hover: hsl(18deg 40% 90% / 10%);
+  --vitra-color-border: hsl(18deg 40% 90% / 12%);
+  --vitra-color-text-primary: hsl(18deg 20% 95%);
+  --vitra-color-text-secondary: hsl(18deg 15% 72%);
+}'><code>html[data-theme="sunset"] {
+  --vitra-color-accent-h: 18;
+  --vitra-color-accent-s: 85%;
+  --vitra-color-accent-l: 58%;
+  --vitra-color-bg: hsl(18deg 30% 8%);
+  --vitra-color-surface: hsl(18deg 40% 90% / 6%);
+  --vitra-color-surface-hover: hsl(18deg 40% 90% / 10%);
+  --vitra-color-border: hsl(18deg 40% 90% / 12%);
+  --vitra-color-text-primary: hsl(18deg 20% 95%);
+  --vitra-color-text-secondary: hsl(18deg 15% 72%);
+}</code></pre>
+        </div>
+        <p>Set it with <code>data-theme="sunset"</code> directly. Note that <code>Vitra.theme.set()</code> only accepts the built-in names — apply custom themes via the attribute, or keep managing them yourself.</p>
       </section>
 
       <section id="components" class="docs-section">
