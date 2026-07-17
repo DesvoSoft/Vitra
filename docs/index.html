@@ -167,7 +167,177 @@ import Vitra from 'vitra-css';</code></pre>
 
       <section id="components" class="docs-section">
         <h2>Components</h2>
+        <p>Every example below is live — rendered by the same stylesheet you install. Components marked <span class="vitra-badge vitra-badge-sm">CSS-only</span> need no JavaScript; <span class="vitra-badge vitra-badge-sm vitra-badge-info">needs JS</span> means the optional script drives the behavior.</p>
+
+        <h3 id="c-buttons">Buttons <span class="vitra-badge vitra-badge-sm">CSS-only</span></h3>
+        <div class="docs-example">
+          <button class="vitra-btn vitra-btn-solid">Solid</button>
+          <button class="vitra-btn vitra-btn-glass">Glass</button>
+          <button class="vitra-btn vitra-btn-outline">Outline</button>
+          <button class="vitra-btn vitra-btn-ghost">Ghost</button>
+          <button class="vitra-btn vitra-btn-solid vitra-btn-sm">Small</button>
+          <button class="vitra-btn vitra-btn-solid vitra-btn-lg">Large</button>
+        </div>
+        <div class="docs-code">
+          <pre data-copy='<button class="vitra-btn vitra-btn-solid">Solid</button>
+<button class="vitra-btn vitra-btn-glass">Glass</button>
+<button class="vitra-btn vitra-btn-outline">Outline</button>'><code>&lt;button class="vitra-btn vitra-btn-solid"&gt;Solid&lt;/button&gt;
+&lt;button class="vitra-btn vitra-btn-glass"&gt;Glass&lt;/button&gt;
+&lt;button class="vitra-btn vitra-btn-outline"&gt;Outline&lt;/button&gt;</code></pre>
+        </div>
+
+        <h3 id="c-cards">Cards &amp; Glass <span class="vitra-badge vitra-badge-sm">CSS-only</span></h3>
+        <div class="docs-example">
+          <div class="vitra-card vitra-glass" style="max-width: 260px;">
+            <h4 style="margin-top: 0;">Glass card</h4>
+            <p style="margin-bottom: 0;">Backdrop blur with a solid-color fallback when <code>backdrop-filter</code> is unsupported.</p>
+          </div>
+        </div>
+        <div class="docs-code">
+          <pre data-copy='<div class="vitra-card vitra-glass">Hello, Vitra!</div>'><code>&lt;div class="vitra-card vitra-glass"&gt;Hello, Vitra!&lt;/div&gt;</code></pre>
+        </div>
+
+        <h3 id="c-forms">Forms <span class="vitra-badge vitra-badge-sm">CSS-only</span></h3>
+        <div class="docs-example">
+          <input type="text" class="vitra-input" placeholder="Text input" style="max-width: 200px;">
+          <label style="display: inline-flex; align-items: center; gap: 6px;"><input type="checkbox" checked> Checkbox</label>
+        </div>
+        <div class="docs-code">
+          <pre data-copy='<input type="text" class="vitra-input" placeholder="Your name">'><code>&lt;input type="text" class="vitra-input" placeholder="Your name"&gt;</code></pre>
+        </div>
+
+        <h3 id="c-tabs">Tabs</h3>
+        <p>Tab styling is CSS; the few lines that switch panels are yours to write (this page's switcher is ~15 lines — see the install section above working).</p>
+        <div class="docs-code">
+          <pre data-copy='<div class="vitra-tabs">
+  <div class="vitra-tabs-nav">
+    <button class="vitra-tabs-tab vitra-tabs-tab-active" data-tab="tab1">One</button>
+    <button class="vitra-tabs-tab" data-tab="tab2">Two</button>
+  </div>
+  <div class="vitra-tabs-content">
+    <div class="vitra-tabs-panel" id="tab1">First panel</div>
+    <div class="vitra-tabs-panel" id="tab2" style="display: none;">Second panel</div>
+  </div>
+</div>'><code>&lt;div class="vitra-tabs"&gt;
+  &lt;div class="vitra-tabs-nav"&gt;
+    &lt;button class="vitra-tabs-tab vitra-tabs-tab-active" data-tab="tab1"&gt;One&lt;/button&gt;
+    &lt;button class="vitra-tabs-tab" data-tab="tab2"&gt;Two&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class="vitra-tabs-content"&gt;
+    &lt;div class="vitra-tabs-panel" id="tab1"&gt;First panel&lt;/div&gt;
+    &lt;div class="vitra-tabs-panel" id="tab2" style="display: none;"&gt;Second panel&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+
+        <h3 id="c-modals">Modals <span class="vitra-badge vitra-badge-sm vitra-badge-info">needs JS</span></h3>
+        <div class="docs-example">
+          <button class="vitra-btn vitra-btn-solid" data-docs-modal-open="docs-demo-modal">Open modal</button>
+        </div>
+        <div class="docs-code">
+          <pre data-copy="Vitra.modal.open('my-modal');"><code>Vitra.modal.open('my-modal');  // focus trap, Esc + overlay close, scroll lock</code></pre>
+        </div>
+
+        <h3 id="c-tooltips">Tooltips <span class="vitra-badge vitra-badge-sm vitra-badge-info">needs JS</span></h3>
+        <div class="docs-example">
+          <button class="vitra-btn vitra-btn-ghost" data-vitra-tooltip="Hi from Vitra" data-vitra-tooltip-position="top">Hover me</button>
+        </div>
+        <div class="docs-code">
+          <pre data-copy='<button data-vitra-tooltip="Click to save" data-vitra-tooltip-position="top">Save</button>'><code>&lt;button data-vitra-tooltip="Click to save" data-vitra-tooltip-position="top"&gt;Save&lt;/button&gt;</code></pre>
+        </div>
+
+        <h3 id="c-toasts">Toasts <span class="vitra-badge vitra-badge-sm vitra-badge-info">needs JS</span></h3>
+        <div class="docs-example">
+          <button class="vitra-btn vitra-btn-glass" data-docs-toast>Show toast</button>
+        </div>
+        <div class="docs-code">
+          <pre data-copy="Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });"><code>Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });</code></pre>
+        </div>
+
+        <h3 id="c-dropdowns">Dropdowns <span class="vitra-badge vitra-badge-sm vitra-badge-info">needs JS</span></h3>
+        <div class="docs-example">
+          <div class="vitra-dropdown">
+            <button class="vitra-btn vitra-btn-outline" data-vitra-dropdown-toggle aria-haspopup="true" aria-expanded="false">Options</button>
+            <div class="vitra-dropdown-menu">
+              <button class="vitra-dropdown-item">Edit</button>
+              <button class="vitra-dropdown-item">Duplicate</button>
+              <button class="vitra-dropdown-item">Delete</button>
+            </div>
+          </div>
+        </div>
+        <div class="docs-code">
+          <pre data-copy='<div class="vitra-dropdown">
+  <button data-vitra-dropdown-toggle>Options</button>
+  <div class="vitra-dropdown-menu">
+    <button class="vitra-dropdown-item">Edit</button>
+  </div>
+</div>'><code>&lt;div class="vitra-dropdown"&gt;
+  &lt;button data-vitra-dropdown-toggle&gt;Options&lt;/button&gt;
+  &lt;div class="vitra-dropdown-menu"&gt;
+    &lt;button class="vitra-dropdown-item"&gt;Edit&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+
+        <h3 id="c-badges">Badges <span class="vitra-badge vitra-badge-sm">CSS-only</span></h3>
+        <div class="docs-example">
+          <span class="vitra-badge">Default</span>
+          <span class="vitra-badge vitra-badge-primary">Primary</span>
+          <span class="vitra-badge vitra-badge-success">Success</span>
+          <span class="vitra-badge vitra-badge-info">Info</span>
+          <span class="vitra-badge vitra-badge-sm">Small</span>
+        </div>
+        <div class="docs-code">
+          <pre data-copy='<span class="vitra-badge vitra-badge-primary">Primary</span>'><code>&lt;span class="vitra-badge vitra-badge-primary"&gt;Primary&lt;/span&gt;</code></pre>
+        </div>
+
+        <h3 id="c-progress">Progress ring <span class="vitra-badge vitra-badge-sm">CSS-only</span></h3>
+        <div class="docs-example">
+          <div class="vitra-progress-ring" style="--vitra-progress-ring-value: 75;">
+            <div class="vitra-progress-ring-inner">75%</div>
+          </div>
+        </div>
+        <div class="docs-code">
+          <pre data-copy='<div class="vitra-progress-ring" style="--vitra-progress-ring-value: 75;">
+  <div class="vitra-progress-ring-inner">75%</div>
+</div>'><code>&lt;div class="vitra-progress-ring" style="--vitra-progress-ring-value: 75;"&gt;
+  &lt;div class="vitra-progress-ring-inner"&gt;75%&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+
+        <h3 id="c-avatars">Avatars <span class="vitra-badge vitra-badge-sm">CSS-only</span></h3>
+        <div class="docs-example">
+          <div class="vitra-avatar" style="width: 40px; height: 40px; background: var(--vitra-color-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">JD</div>
+          <div class="vitra-avatar" style="width: 48px; height: 48px; background: var(--vitra-color-success); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">AB</div>
+        </div>
+        <div class="docs-code">
+          <pre data-copy='<div class="vitra-avatar">JD</div>'><code>&lt;div class="vitra-avatar"&gt;JD&lt;/div&gt;</code></pre>
+        </div>
+
+        <h3 id="c-particles">Particles <span class="vitra-badge vitra-badge-sm vitra-badge-info">needs JS</span></h3>
+        <div class="docs-example">
+          <button class="vitra-btn vitra-btn-glass" data-docs-particles>Spawn 10 particles</button>
+        </div>
+        <div class="docs-code">
+          <pre data-copy="Vitra.particles.spawn(10, { direction: 'down' });"><code>Vitra.particles.spawn(10, { direction: 'down' });  // capped at 40 desktop / 15 mobile</code></pre>
+        </div>
       </section>
+
+      <!-- Live modal for the components section -->
+      <div id="docs-demo-modal" class="vitra-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="docs-demo-modal-title">
+        <div class="vitra-modal-content" style="max-width: 400px;">
+          <div class="vitra-modal-header">
+            <h3 id="docs-demo-modal-title">A Vitra modal</h3>
+            <button class="vitra-btn vitra-btn-ghost vitra-btn-sm" data-vitra-modal-close>&times;</button>
+          </div>
+          <div class="vitra-modal-body">
+            <p>Focus is trapped, Esc closes, body scroll is locked.</p>
+          </div>
+          <div class="vitra-modal-footer">
+            <button class="vitra-btn vitra-btn-solid" data-vitra-modal-close>Close</button>
+          </div>
+        </div>
+      </div>
 
       <section id="js-api" class="docs-section">
         <h2>JavaScript API</h2>

@@ -13,7 +13,27 @@
     initScrollspy();
     initCopyButtons();
     initTabs();
+    initLiveExamples();
     initMobileNav();
+  }
+
+  // Wire the components section's live triggers (modal / toast / particles).
+  function initLiveExamples() {
+    document.querySelectorAll('[data-docs-modal-open]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (Vitra.modal) Vitra.modal.open(this.getAttribute('data-docs-modal-open'));
+      });
+    });
+    document.querySelectorAll('[data-docs-toast]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (Vitra.toast) Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });
+      });
+    });
+    document.querySelectorAll('[data-docs-particles]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (Vitra.particles) Vitra.particles.spawn(10, { direction: 'down' });
+      });
+    });
   }
 
   function themeLabel(name) {
