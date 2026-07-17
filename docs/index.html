@@ -341,10 +341,113 @@ import Vitra from 'vitra-css';</code></pre>
 
       <section id="js-api" class="docs-section">
         <h2>JavaScript API</h2>
+        <p>The script exposes a single global, <code>Vitra</code>, with one submodule per feature. ES module builds export the same modules for tree-shaking. Every module is optional — use only what you call.</p>
+
+        <h3>Vitra.theme</h3>
+        <table>
+          <tr><th>Method</th><th>Does</th></tr>
+          <tr><td><code>get()</code></td><td>Current theme name (<code>'auto'</code> if unset).</td></tr>
+          <tr><td><code>set(name)</code></td><td>Applies a built-in theme; returns <code>false</code> and warns on unknown names.</td></tr>
+          <tr><td><code>toggle()</code></td><td>Switches light ↔ dark (resolves <code>auto</code> first); returns the new theme.</td></tr>
+          <tr><td><code>init(options)</code></td><td>Restores stored choice; <code>{ defaultTheme: 'auto', persist: true }</code>.</td></tr>
+          <tr><td><code>getEffective()</code></td><td>Resolves <code>auto</code> to <code>'light'</code> or <code>'dark'</code>.</td></tr>
+          <tr><td><code>getValidThemes()</code></td><td>Array of the seven built-in names.</td></tr>
+          <tr><td><code>clear()</code></td><td>Removes the stored preference.</td></tr>
+        </table>
+
+        <h3>Vitra.particles</h3>
+        <div class="docs-code">
+          <pre data-copy="Vitra.particles.spawn(10, {
+  container: 'body',
+  size: 4,
+  direction: 'down'   // 'down' | 'down-left' | 'down-right' | angle in degrees | omit for ambient bob
+});
+Vitra.particles.destroy();   // all, or destroy(n)
+Vitra.particles.limits();    // { active, available, max }"><code>Vitra.particles.spawn(10, {
+  container: 'body',
+  size: 4,
+  direction: 'down'   // 'down' | 'down-left' | 'down-right' | angle in degrees | omit for ambient bob
+});
+Vitra.particles.destroy();   // all, or destroy(n)
+Vitra.particles.limits();    // { active, available, max }</code></pre>
+        </div>
+        <p>Hard caps: 40 particles on desktop, 15 on mobile. <code>spawn</code> beyond the cap is ignored with a console warning.</p>
+
+        <h3>Vitra.reveal</h3>
+        <div class="docs-code">
+          <pre data-copy="Vitra.reveal.init({
+  selector: '.vitra-reveal',
+  threshold: 0.1,
+  rootMargin: '0px 0px 10% 0px',
+  stagger: 100
+});"><code>Vitra.reveal.init({
+  selector: '.vitra-reveal',
+  threshold: 0.1,
+  rootMargin: '0px 0px 10% 0px',
+  stagger: 100
+});</code></pre>
+        </div>
+        <p>Also <code>count()</code> (revealed so far) and <code>reset()</code> (re-arm everything). With <code>prefers-reduced-motion</code>, elements reveal immediately.</p>
+
+        <h3>Vitra.modal</h3>
+        <div class="docs-code">
+          <pre data-copy="Vitra.modal.open('my-modal', { closeOnOverlay: true, closeOnEsc: true });
+Vitra.modal.close();"><code>Vitra.modal.open('my-modal', { closeOnOverlay: true, closeOnEsc: true });
+Vitra.modal.close();</code></pre>
+        </div>
+        <p><code>open</code> accepts an id, a selector, or an element. Any child with <code>data-vitra-modal-close</code> closes it.</p>
+
+        <h3>Vitra.tooltip</h3>
+        <div class="docs-code">
+          <pre data-copy="Vitra.tooltip.show('#save-btn', 'Saves your draft', { position: 'top' });
+Vitra.tooltip.hide();
+Vitra.tooltip.init();   // activates all [data-vitra-tooltip] elements"><code>Vitra.tooltip.show('#save-btn', 'Saves your draft', { position: 'top' });
+Vitra.tooltip.hide();
+Vitra.tooltip.init();   // activates all [data-vitra-tooltip] elements</code></pre>
+        </div>
+
+        <h3>Vitra.toast</h3>
+        <div class="docs-code">
+          <pre data-copy="Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });"><code>Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });</code></pre>
+        </div>
+        <p>Types: <code>success</code>, <code>error</code>, <code>info</code>, <code>default</code>. Markup is created for you; messages are rendered as text, never HTML.</p>
+
+        <h3>Vitra.dropdown / Vitra.ripple / Vitra.spotlight</h3>
+        <p>Behavior modules with <code>init()</code> / <code>destroy()</code>. They initialize automatically (see <a href="#data-config">data-config</a>): dropdowns from <code>[data-vitra-dropdown-toggle]</code>, ripple from <code>.vitra-ripple</code> elements, spotlight cursor-tracking from <code>.vitra-spotlight</code>.</p>
+
+        <h3>Vitra.destroyAll()</h3>
+        <p>Tears down every module — removes all listeners and injected nodes. Useful in SPAs on route teardown.</p>
       </section>
 
       <section id="data-config" class="docs-section">
         <h2>data-config</h2>
+        <p>Declarative initialization without writing a line of JS: put a JSON <code>data-config</code> attribute on any element (conventionally <code>&lt;body&gt;</code>) and Vitra parses it on <code>DOMContentLoaded</code>.</p>
+        <div class="docs-code">
+          <pre data-copy='<body data-config=&apos;{
+  "theme": { "default": "auto", "persist": true },
+  "reveal": { "stagger": 100 },
+  "particles": { "count": 12, "direction": "down" },
+  "dropdown": false
+}&apos;>'><code>&lt;body data-config='{
+  "theme": { "default": "auto", "persist": true },
+  "reveal": { "stagger": 100 },
+  "particles": { "count": 12, "direction": "down" },
+  "dropdown": false
+}'&gt;</code></pre>
+        </div>
+        <h3>Defaults</h3>
+        <p>Since v1.10.3, <strong>ripple, tooltip, dropdown, and spotlight initialize by default</strong> — with or without a <code>data-config</code> element. Setting a module to <code>false</code> opts out. <code>theme</code>, <code>particles</code>, and <code>reveal</code> are opt-in: they only run when their key is present.</p>
+        <table>
+          <tr><th>Key</th><th>Default</th><th>Value</th></tr>
+          <tr><td><code>theme</code></td><td>off</td><td>Theme name, or <code>init()</code> options object.</td></tr>
+          <tr><td><code>particles</code></td><td>off</td><td><code>true</code>, or <code>spawn()</code> options with <code>count</code>.</td></tr>
+          <tr><td><code>reveal</code></td><td>off</td><td><code>true</code>, or <code>init()</code> options object.</td></tr>
+          <tr><td><code>ripple</code></td><td>on</td><td><code>false</code> to disable.</td></tr>
+          <tr><td><code>tooltip</code></td><td>on</td><td><code>false</code> to disable.</td></tr>
+          <tr><td><code>dropdown</code></td><td>on</td><td><code>false</code> to disable.</td></tr>
+          <tr><td><code>spotlight</code></td><td>on</td><td><code>false</code> to disable.</td></tr>
+        </table>
+        <p>Malformed JSON logs a <code>[Vitra]</code> console warning and falls back to the defaults above — it never throws.</p>
       </section>
 
       <section id="compat" class="docs-section">
