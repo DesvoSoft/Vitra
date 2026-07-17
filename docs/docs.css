@@ -1,0 +1,281 @@
+/* ==========================================================================
+   Vitra Docs — layout & prose
+   Chrome is Vitra (glass, badges, buttons); this file only handles the
+   docs shell: header bar, sidebar grid, prose column, code blocks.
+   ========================================================================== */
+
+.docs-body {
+  margin: 0;
+  background: var(--vitra-color-bg);
+  color: var(--vitra-color-text-primary);
+  font-family: var(--vitra-font-family, system-ui, sans-serif);
+  line-height: 1.6;
+}
+
+/* ---- Header ---- */
+
+.docs-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: var(--vitra-space-3);
+  height: 56px;
+  padding: 0 var(--vitra-space-5);
+  border-bottom: 1px solid var(--vitra-color-border);
+  border-radius: 0;
+}
+
+.docs-wordmark {
+  font-weight: var(--vitra-font-weight-bold);
+  font-size: var(--vitra-font-size-lg);
+  color: var(--vitra-color-text-primary);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.docs-wordmark-dot {
+  color: var(--vitra-color-accent);
+}
+
+.docs-header-links {
+  display: flex;
+  align-items: center;
+  gap: var(--vitra-space-4);
+  margin-left: auto;
+}
+
+.docs-header-link {
+  color: var(--vitra-color-text-secondary);
+  text-decoration: none;
+  font-size: var(--vitra-font-size-sm);
+}
+
+.docs-header-link:hover {
+  color: var(--vitra-color-text-primary);
+}
+
+.docs-theme-btn {
+  min-width: 90px;
+}
+
+.docs-burger {
+  display: none;
+}
+
+/* ---- Shell grid ---- */
+
+.docs-shell {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: var(--vitra-space-8);
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--vitra-space-6) var(--vitra-space-5) var(--vitra-space-12);
+}
+
+.docs-sidebar {
+  position: sticky;
+  top: calc(56px + var(--vitra-space-4));
+  align-self: start;
+  max-height: calc(100vh - 56px - var(--vitra-space-8));
+  overflow-y: auto;
+  padding: var(--vitra-space-4);
+  border-radius: var(--vitra-radius-lg);
+}
+
+.docs-nav-link {
+  display: block;
+  padding: 6px 10px;
+  border-radius: var(--vitra-radius-sm);
+  color: var(--vitra-color-text-secondary);
+  text-decoration: none;
+  font-size: var(--vitra-font-size-sm);
+  transition: color var(--vitra-duration-fast) var(--vitra-ease-default),
+              background var(--vitra-duration-fast) var(--vitra-ease-default);
+}
+
+.docs-nav-link:hover {
+  color: var(--vitra-color-text-primary);
+  background: var(--vitra-color-surface-hover);
+}
+
+.docs-nav-link.active {
+  color: var(--vitra-color-accent);
+  background: var(--vitra-color-surface-hover);
+  font-weight: var(--vitra-font-weight-medium);
+}
+
+/* ---- Hero ---- */
+
+.docs-hero {
+  padding: var(--vitra-space-8) var(--vitra-space-6);
+  border-radius: var(--vitra-radius-lg);
+  background-image: linear-gradient(
+    135deg,
+    hsla(var(--vitra-color-accent-h), 80%, 60%, 0.14),
+    transparent 60%
+  );
+}
+
+.docs-hero-title {
+  margin: 0 0 var(--vitra-space-2);
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  letter-spacing: -0.02em;
+}
+
+.docs-hero-tagline {
+  margin: 0 0 var(--vitra-space-4);
+  color: var(--vitra-color-text-secondary);
+  max-width: 55ch;
+}
+
+.docs-hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--vitra-space-2);
+  margin: 0;
+}
+
+/* ---- Prose ---- */
+
+.docs-main {
+  min-width: 0;
+}
+
+.docs-section {
+  padding: var(--vitra-space-8) 0;
+  border-bottom: 1px solid var(--vitra-color-border);
+  max-width: 72ch;
+}
+
+.docs-section h2 {
+  scroll-margin-top: 80px;
+  font-size: var(--vitra-font-size-2xl);
+  letter-spacing: -0.01em;
+  margin-top: 0;
+}
+
+.docs-section h3 {
+  scroll-margin-top: 80px;
+  margin-top: var(--vitra-space-6);
+}
+
+.docs-section p,
+.docs-section li {
+  color: var(--vitra-color-text-secondary);
+}
+
+.docs-section p > code,
+.docs-section li > code,
+.docs-section td > code {
+  background: var(--vitra-color-surface);
+  border: 1px solid var(--vitra-color-border);
+  border-radius: var(--vitra-radius-sm);
+  padding: 1px 5px;
+  font-size: 0.875em;
+  color: var(--vitra-color-text-primary);
+}
+
+.docs-section table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--vitra-font-size-sm);
+}
+
+.docs-section th,
+.docs-section td {
+  text-align: left;
+  padding: var(--vitra-space-2) var(--vitra-space-3);
+  border-bottom: 1px solid var(--vitra-color-border);
+}
+
+/* ---- Code blocks ---- */
+
+.docs-code {
+  position: relative;
+  margin: var(--vitra-space-3) 0;
+}
+
+.docs-code pre {
+  margin: 0;
+  overflow-x: auto;
+  background: var(--vitra-color-surface);
+  border: 1px solid var(--vitra-color-border);
+  border-radius: var(--vitra-radius-md);
+  padding: var(--vitra-space-4);
+  font-size: var(--vitra-font-size-sm);
+  line-height: 1.55;
+}
+
+.docs-copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+/* ---- Live example panels ---- */
+
+.docs-example {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--vitra-space-3);
+  align-items: center;
+  padding: var(--vitra-space-5);
+  margin: var(--vitra-space-3) 0 var(--vitra-space-2);
+  border: 1px solid var(--vitra-color-border);
+  border-radius: var(--vitra-radius-md);
+}
+
+/* ---- Footer ---- */
+
+.docs-footer {
+  padding-top: var(--vitra-space-8);
+  font-size: var(--vitra-font-size-sm);
+  color: var(--vitra-color-text-secondary);
+}
+
+.docs-footer a {
+  color: var(--vitra-color-accent);
+}
+
+/* ---- Mobile ---- */
+
+@media (max-width: 860px) {
+  .docs-header-links .docs-header-link {
+    display: none;
+  }
+
+  .docs-burger {
+    display: inline-flex;
+  }
+
+  .docs-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .docs-sidebar {
+    position: fixed;
+    top: 56px;
+    bottom: 0;
+    left: 0;
+    width: min(280px, 80vw);
+    max-height: none;
+    border-radius: 0;
+    transform: translateX(-100%);
+    transition: transform var(--vitra-duration-normal) var(--vitra-ease-default);
+    z-index: 90;
+  }
+
+  .docs-sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .docs-sidebar {
+    transition: none;
+  }
+}
