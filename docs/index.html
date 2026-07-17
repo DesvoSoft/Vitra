@@ -452,6 +452,23 @@ Vitra.tooltip.init();   // activates all [data-vitra-tooltip] elements</code></p
 
       <section id="compat" class="docs-section">
         <h2>Accessibility &amp; Browser Support</h2>
+        <h3>Reduced motion</h3>
+        <p>Every animation layer — particles, scenery, reveals, cinematic effects — ships inside <code>@media (prefers-reduced-motion: reduce)</code> guards. When the OS setting is on, ambient motion stops and reveal elements appear immediately. No configuration needed.</p>
+        <h3>Graceful degradation</h3>
+        <ul>
+          <li><code>backdrop-filter</code> (glass) is wrapped in <code>@supports</code> — unsupported browsers get a solid translucent surface instead.</li>
+          <li>Modern features (<code>oklch()</code>, Popover API, <code>@starting-style</code>, container queries) all carry fallbacks; nothing breaks below Tier&nbsp;1.</li>
+          <li>Without JavaScript, all styling works; modals, toasts, dropdowns, and theme persistence simply don't activate.</li>
+        </ul>
+        <h3>Keyboard &amp; screen readers</h3>
+        <p>Modals trap focus and restore it on close; dropdowns close on Escape and refocus their toggle; theme changes are announced via an <code>aria-live</code> region; tooltips set <code>aria-describedby</code>.</p>
+        <h3>Browser support</h3>
+        <table>
+          <tr><th>Tier</th><th>Browsers</th><th>What you get</th></tr>
+          <tr><td>Tier 1</td><td>Chrome/Edge 117+, Firefox 129+, Safari 17.4+</td><td>Full feature set, including Popover API and <code>@starting-style</code>.</td></tr>
+          <tr><td>Tier 2</td><td>Chrome/Edge 88+, Firefox 97+, Safari 15.4+</td><td>Everything core; advanced extras fall back (JS dropdown toggle, HSL colors, transition-based entries).</td></tr>
+          <tr><td>Legacy</td><td>IE 11 and older</td><td>Not supported.</td></tr>
+        </table>
       </section>
 
       <footer class="docs-footer">
