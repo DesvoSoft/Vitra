@@ -7,6 +7,15 @@
    Base & Layout
    ============================================ */
 
+html,
+body {
+  /* The off-canvas drawer (.vitra-drawer, fixed at right: -100%) expands
+     the document's scrollable overflow in Chromium, widening the layout
+     viewport on small screens. Standard off-canvas hygiene: clip the
+     horizontal axis at the root. */
+  overflow-x: hidden;
+}
+
 body {
   background-color: var(--vitra-color-bg);
   background-image:
@@ -97,36 +106,39 @@ body {
   pointer-events: none;
 }
 
-/* Hero gradient-text — dark themes use light stops, light themes use dark stops */
+/* Hero type: solid near-white, static. The scene provides the color;
+   the type provides the contrast. */
 .demo-hero h1.demo-hero-title {
-  background: linear-gradient(
-    135deg,
-    hsl(var(--vitra-color-accent-h) 100% 70%),
-    hsl(calc(var(--vitra-color-accent-h) + 20) 90% 65%),
-    hsl(calc(var(--vitra-color-accent-h) - 15) 95% 70%),
-    hsl(var(--vitra-color-accent-h) 100% 70%)
-  );
-  background-size: 300% 300%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  animation: vitra-text-shift 6s ease-in-out infinite;
+  color: hsl(var(--vitra-color-accent-h) 20% 96%);
 }
 
 html[data-theme="light"] .demo-hero h1.demo-hero-title,
 html[data-theme="pastel"] .demo-hero h1.demo-hero-title {
+  color: hsl(var(--vitra-color-accent-h) 30% 14%);
+}
+
+/* Single warm word - the one deliberate color note in the headline */
+.demo-hero-title-accent {
   background: linear-gradient(
-    135deg,
-    hsl(var(--vitra-color-accent-h) 80% 32%),
-    hsl(calc(var(--vitra-color-accent-h) + 20) 70% 28%),
-    hsl(calc(var(--vitra-color-accent-h) - 15) 85% 35%),
-    hsl(var(--vitra-color-accent-h) 80% 32%)
+    100deg,
+    hsl(var(--vitra-scenery-warm-h) 95% 78%),
+    hsl(calc(var(--vitra-scenery-warm-h) - 20) 90% 68%)
   );
-  background-size: 300% 300%;
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  animation: vitra-text-shift 6s ease-in-out infinite;
+}
+
+html[data-theme="light"] .demo-hero-title-accent,
+html[data-theme="pastel"] .demo-hero-title-accent {
+  background: linear-gradient(
+    100deg,
+    hsl(var(--vitra-scenery-warm-h) 85% 42%),
+    hsl(calc(var(--vitra-scenery-warm-h) - 20) 80% 34%)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .demo-hero .demo-hero-sub {
@@ -157,31 +169,79 @@ html[data-theme="pastel"] .demo-hero h1.demo-hero-title {
   letter-spacing: -0.04em;
 }
 
-.demo-hero-badge {
+.demo-hero-overline {
   display: inline-block;
   margin-bottom: var(--vitra-space-4);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.34em;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  color: hsl(var(--vitra-scenery-warm-h) 70% 78% / 0.9);
+}
+
+html[data-theme="light"] .demo-hero-overline,
+html[data-theme="pastel"] .demo-hero-overline {
+  color: hsl(var(--vitra-scenery-warm-h) 75% 38% / 0.95);
 }
 
 .demo-hero-sub {
   font-size: clamp(1rem, 2.5vw, 1.25rem);
-  opacity: 0.7;
+  color: var(--vitra-color-text-secondary);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* Spotlight tracking overlay */
-.demo-hero[data-spotlight] {
-  position: relative;
+/* Warm primary CTA - the single strong warm UI element on the page */
+.demo-btn-warm {
+  background: linear-gradient(
+    120deg,
+    hsl(var(--vitra-scenery-warm-h) 90% 78%),
+    hsl(calc(var(--vitra-scenery-warm-h) - 25) 85% 62%)
+  );
+  border: none;
+  color: hsl(var(--vitra-scenery-warm-h) 60% 12%);
+  font-weight: 600;
+  box-shadow: 0 4px 24px hsl(var(--vitra-scenery-warm-h) 85% 62% / 0.35);
 }
 
-.demo-hero[data-spotlight]::before {
-  content: '';
+.demo-btn-warm:hover {
+  box-shadow: 0 6px 32px hsl(var(--vitra-scenery-warm-h) 85% 62% / 0.5);
+  transform: translateY(-1px);
+}
+
+/* Scroll cue: minimal chevron, fading drop */
+.demo-hero-scroll-cue {
   position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: radial-gradient(600px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%), hsla(var(--vitra-color-accent-h), 100%, 70%, 0.08), transparent 60%);
+  bottom: 26px;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  z-index: 2;
+  border-right: 2px solid hsl(var(--vitra-color-accent-h) 30% 85% / 0.55);
+  border-bottom: 2px solid hsl(var(--vitra-color-accent-h) 30% 85% / 0.55);
+  transform: translateX(-50%) rotate(45deg);
+  animation: demo-hero-scroll-cue 2.4s ease-in-out infinite;
   pointer-events: none;
+}
+
+@keyframes demo-hero-scroll-cue {
+  0%, 100% { opacity: 0.25; transform: translateX(-50%) translateY(0) rotate(45deg); }
+  50% { opacity: 0.8; transform: translateX(-50%) translateY(6px) rotate(45deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-hero-scroll-cue { animation: none; opacity: 0.4; }
+}
+
+/* Mobile: smaller moon, higher in the frame so the composition still
+   breathes on a narrow viewport */
+@media (max-width: 640px) {
+  .demo-hero .vitra-scenery-inline {
+    --vitra-scenery-halo-size: clamp(40px, 11vw, 64px);
+    --vitra-scenery-halo-x: 72%;
+    --vitra-scenery-halo-y: 8%;
+  }
 }
 
 .demo-hero .vitra-glow-orb {
@@ -192,8 +252,8 @@ html[data-theme="pastel"] .demo-hero h1.demo-hero-title {
    so they fall behind the near ridge), so they need enough size/contrast
    to read against the sky gradient instead of the framework's flat default. */
 .demo-hero .vitra-scenery-inline .vitra-particle {
-  --vitra-particle-color: hsl(var(--vitra-color-accent-h) 90% 75%);
-  box-shadow: 0 0 6px hsl(var(--vitra-color-accent-h) 90% 75% / 70%);
+  --vitra-particle-color: hsl(var(--vitra-scenery-warm-h) 85% 75%);
+  box-shadow: 0 0 6px hsl(var(--vitra-scenery-warm-h) 85% 75% / 70%);
 }
 
 /* Classic (non-directional) hero particles: amplify the built-in float
@@ -993,8 +1053,7 @@ pre code {
   .vitra-range::-webkit-slider-thumb,
   .demo-card,
   .cinematic-preview,
-  .theme-preview-card,
-  .demo-hero::before {
+  .theme-preview-card {
     animation: none !important;
   }
 }
@@ -1135,7 +1194,4 @@ pre code {
     display: none;
   }
 
-  .demo-hero::before {
-    display: none;
-  }
 }

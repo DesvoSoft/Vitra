@@ -13,7 +13,6 @@
     }
 
     initThemeSelector();
-    initHeroSpotlight();
     initCinematicToggles();
     initGradientTextEditor();
     initThemeSwatches();
@@ -31,28 +30,6 @@
     initQuickStartCopy();
 
     updateParticleInfo();
-  }
-
-  // ==================== Hero Spotlight ====================
-  function initHeroSpotlight() {
-    var hero = document.querySelector('.demo-hero');
-    if (!hero) return;
-
-    var _rafPending = false;
-    var _pendingX = 0, _pendingY = 0;
-
-    hero.addEventListener('mousemove', function (e) {
-      var rect = hero.getBoundingClientRect();
-      _pendingX = ((e.clientX - rect.left) / rect.width) * 100;
-      _pendingY = ((e.clientY - rect.top) / rect.height) * 100;
-      if (_rafPending) return;
-      _rafPending = true;
-      requestAnimationFrame(function () {
-        hero.style.setProperty('--spotlight-x', _pendingX + '%');
-        hero.style.setProperty('--spotlight-y', _pendingY + '%');
-        _rafPending = false;
-      });
-    });
   }
 
   // ==================== Theme Selector ====================
@@ -721,7 +698,7 @@
     if (!hero) return;
 
     _heroClickCount++;
-    var counts = [8, 18, 35, 60, 90];
+    var counts = [12, 18, 35, 60, 90];
     var count = counts[Math.min(_heroClickCount - 1, counts.length - 1)];
 
     Vitra.particles.destroy();
@@ -749,6 +726,24 @@
     var showcase = document.getElementById('scenery-showcase');
     if (!showcase) return;
     showcase.style.setProperty('--vitra-scenery-speed', speed);
+
+    var group = btn.closest('[role="group"]');
+    if (group) {
+      group.querySelectorAll('.vitra-btn').forEach(function (b) {
+        b.classList.remove('vitra-btn-solid');
+        b.classList.add('vitra-btn-ghost');
+      });
+    }
+    btn.classList.remove('vitra-btn-ghost');
+    btn.classList.add('vitra-btn-solid');
+  };
+
+  // Toggles every halo on the page (hero included) so the modifier is
+  // demonstrated live wherever a scenery instance is visible.
+  window.setMoonPhase = function (btn, crescent) {
+    document.querySelectorAll('.vitra-scenery-halo').forEach(function (halo) {
+      halo.classList.toggle('vitra-scenery-halo-crescent', crescent);
+    });
 
     var group = btn.closest('[role="group"]');
     if (group) {
