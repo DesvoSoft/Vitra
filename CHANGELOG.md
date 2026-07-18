@@ -4,6 +4,24 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.0] - 2026-07-17
+
+### Added
+
+- **Scenery — alpenglow light system**: warm horizon band derived from the theme accent (`--vitra-scenery-warm-h`, `calc(hue - 140)`), warm rim light tracing the ridge crests (masked `::before` sharing the silhouette mask, riding the same parallax transform), valley mist pools anchored to the afterglow, and clouds lit from below. The light now *touches* the landscape instead of coexisting with it.
+- **Scenery — full moon**: the halo is a textured disc (faint maria via radial-gradients) positioned by tokens in the upper third, clear of hero headlines. New `.vitra-scenery-halo-crescent` modifier renders a crescent. On `light`/`pastel` the disc reads as a warm low sun.
+- **Scenery tokens**: `--vitra-scenery-warm-h`, `--vitra-scenery-glow-x`, `--vitra-scenery-halo-x`, `--vitra-scenery-halo-y`, `--vitra-scenery-halo-size`, `--vitra-scenery-opacity-rim`.
+
+### Changed
+
+- **Scenery**: ridge silhouettes paint in `::after` pseudos (divs are now unmasked animation carriers) — user markup contract unchanged, parallax drift untouched, zero new animations.
+- **Scenery**: cloud mask is now thin horizontal wisps (dusk stratus) instead of puffy ellipse blobs; under-lit warm gradient in dark schemes.
+- **Scenery**: uniform mist bands on ridge tops removed — replaced by crest rim light and valley mist.
+
+### Fixed
+
+- **Scenery**: light/pastel token overrides (ridge/cloud opacities) were declared with zero-specificity `:where()` and could never override the `:root` defaults — they now use attribute selectors and actually apply. Light schemes also pin `--vitra-scenery-warm-h: 32` (true amber) since the derived complement lands on lime/cyan for their accents.
+
 ## [1.10.3] - 2026-07-17
 
 ### Fixed
