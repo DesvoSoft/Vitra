@@ -392,6 +392,11 @@
      is pixel-identical to frame 0 - the animation can run
      linear, one direction, infinite, with no visible seam and
      no ease-in-out "breathing" reversal. */
+  /* Each ridge div is now an unmasked ANIMATION CARRIER: the drift
+     transform lives here, while the visible silhouette paints in ::after
+     and the warm crest rim light in ::before. Both pseudos share the
+     parent's transform, so parallax moves silhouette + rim as one body -
+     the rim can never detach from its crest. */
   .vitra-scenery-ridge-far,
   .vitra-scenery-ridge-mid,
   .vitra-scenery-ridge-near {
@@ -402,41 +407,97 @@
     will-change: transform;
   }
 
-  /* Fallback (no mask support): soft gradient bands still give a
-     horizon impression, just without the ridgeline silhouettes */
+  .vitra-scenery-ridge-far::before,
+  .vitra-scenery-ridge-far::after,
+  .vitra-scenery-ridge-mid::before,
+  .vitra-scenery-ridge-mid::after,
+  .vitra-scenery-ridge-near::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
   .vitra-scenery-ridge-far {
     height: 58%;
-    background: linear-gradient(
-      to bottom,
-      hsl(calc(var(--vitra-scenery-hue) - 15) calc(var(--vitra-scenery-sat) * 0.25) 86% / 38%) 0%,
-      hsl(calc(var(--vitra-scenery-hue) - 15) calc(var(--vitra-scenery-sat) * 0.4) 58% / 42%) 22%,
-      hsl(calc(var(--vitra-scenery-hue) - 15) calc(var(--vitra-scenery-sat) * 0.5) 36% / 62%) 100%
-    );
     opacity: var(--vitra-scenery-opacity-far);
     animation: vitra-scenery-drift-far calc(260s / var(--vitra-scenery-speed)) linear infinite;
   }
 
-  .vitra-scenery-ridge-mid {
-    height: 40%;
+  /* Fallback (no mask support): soft gradient band still gives a
+     horizon impression, just without the ridgeline silhouette */
+  .vitra-scenery-ridge-far::after {
     background: linear-gradient(
       to bottom,
-      hsl(calc(var(--vitra-scenery-hue) - 8) calc(var(--vitra-scenery-sat) * 0.35) 74% / 45%) 0%,
-      hsl(calc(var(--vitra-scenery-hue) - 8) calc(var(--vitra-scenery-sat) * 0.5) 42% / 58%) 25%,
-      hsl(calc(var(--vitra-scenery-hue) - 8) calc(var(--vitra-scenery-sat) * 0.55) 26% / 78%) 100%
+      hsl(calc(var(--vitra-scenery-hue) - 12) calc(var(--vitra-scenery-sat) * 0.35) 46% / 48%) 0%,
+      hsl(calc(var(--vitra-scenery-hue) - 12) calc(var(--vitra-scenery-sat) * 0.45) 34% / 62%) 30%,
+      hsl(calc(var(--vitra-scenery-hue) - 12) calc(var(--vitra-scenery-sat) * 0.5) 24% / 80%) 100%
     );
+  }
+
+  /* Warm rim: same mask as the silhouette, nudged up 3px. Only the
+     sliver above the ::after crest shows crisply; the short fade below
+     it reads as the lit face of the summit. Hidden until mask support
+     confirmed (would be a full-width band otherwise). */
+  .vitra-scenery-ridge-far::before {
+    transform: translateY(-3px);
+    visibility: hidden;
+    /* Gradient band aligned to where the silhouette actually lives in
+       this box (peaks start ~15% down): strong at crest altitude, dying
+       toward the valleys. The 3px mask offset draws the crisp sliver;
+       this fill is the soft "lit face" bleeding through ::after. */
+    background: linear-gradient(
+      to bottom,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.95) 74% / calc(0.75 * var(--vitra-scenery-opacity-rim))) 13%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.85) 68% / calc(0.32 * var(--vitra-scenery-opacity-rim))) 30%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.75) 62% / calc(0.1 * var(--vitra-scenery-opacity-rim))) 50%,
+      transparent 68%
+    );
+  }
+
+  .vitra-scenery-ridge-mid {
+    height: 40%;
     opacity: var(--vitra-scenery-opacity-mid);
     animation: vitra-scenery-drift-mid calc(150s / var(--vitra-scenery-speed)) linear infinite;
   }
 
-  .vitra-scenery-ridge-near {
-    height: 24%;
+  .vitra-scenery-ridge-mid::after {
     background: linear-gradient(
       to bottom,
-      hsl(calc(var(--vitra-scenery-hue) + 20) calc(var(--vitra-scenery-sat) * 0.7) 18% / 88%) 0%,
-      hsl(calc(var(--vitra-scenery-hue) + 20) calc(var(--vitra-scenery-sat) * 0.8) 5% / 98%) 100%
+      hsl(calc(var(--vitra-scenery-hue) - 6) calc(var(--vitra-scenery-sat) * 0.45) 26% / 62%) 0%,
+      hsl(calc(var(--vitra-scenery-hue) - 6) calc(var(--vitra-scenery-sat) * 0.5) 18% / 82%) 35%,
+      hsl(calc(var(--vitra-scenery-hue) - 6) calc(var(--vitra-scenery-sat) * 0.55) 12% / 94%) 100%
     );
+  }
+
+  /* Mid rim: weaker - farther from the light than the far crests are
+     from the sky, and half in shadow already */
+  .vitra-scenery-ridge-mid::before {
+    transform: translateY(-2px);
+    visibility: hidden;
+    /* Mid silhouette tops sit ~46% down its box; weaker light - half
+       in shadow already */
+    background: linear-gradient(
+      to bottom,
+      transparent 42%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.85) 68% / calc(0.5 * var(--vitra-scenery-opacity-rim))) 47%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.7) 60% / calc(0.15 * var(--vitra-scenery-opacity-rim))) 62%,
+      transparent 80%
+    );
+  }
+
+  /* Near treeline: fully in shadow - darkest value, no rim */
+  .vitra-scenery-ridge-near {
+    height: 24%;
     opacity: var(--vitra-scenery-opacity-near);
     animation: vitra-scenery-drift-near calc(75s / var(--vitra-scenery-speed)) linear infinite;
+  }
+
+  .vitra-scenery-ridge-near::after {
+    background: linear-gradient(
+      to bottom,
+      hsl(calc(var(--vitra-scenery-hue) + 15) calc(var(--vitra-scenery-sat) * 0.6) 12% / 92%) 0%,
+      hsl(calc(var(--vitra-scenery-hue) + 15) calc(var(--vitra-scenery-sat) * 0.7) 4% / 98%) 100%
+    );
   }
 
   /* SVG-silhouette ridgelines. The mask defines the SHAPE
@@ -449,8 +510,11 @@
     /* Far: mountain panorama built like a painting - flowing
        bezier ridgeline, summit hierarchy (one dominant massif at
        x535, secondary at x1168), asymmetric slopes, eroded round
-       valleys. Sun sits cradled in the saddle between them. */
-    .vitra-scenery-ridge-far {
+       valleys. Sun sits cradled in the saddle between them.
+       Mask applies to BOTH pseudos: silhouette (::after) and its
+       rim light (::before) share the exact same shape. */
+    .vitra-scenery-ridge-far::before,
+    .vitra-scenery-ridge-far::after {
       mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V258C50 252 95 240 135 222C165 208 190 186 220 172C240 163 258 168 275 158C295 146 310 128 330 118L345 110C360 122 372 138 390 148C405 156 418 152 432 144C450 134 462 116 478 104L495 92C505 85 512 78 522 70L535 60C555 80 570 104 592 122C615 141 640 152 668 162C700 173 730 180 760 190C795 202 825 215 858 224C888 232 920 236 950 234C980 232 1008 222 1035 208C1060 195 1080 176 1105 160L1125 146C1135 138 1143 130 1155 124L1168 117C1185 135 1200 155 1222 170C1250 189 1280 200 1310 210C1350 222 1395 227 1440 258V400Z'/></svg>");
       mask-size: 50% 100%;
       mask-repeat: repeat-x;
@@ -459,17 +523,25 @@
     /* Mid: soft rolling foothills, one gentle crest left-of-center,
        long calm undulation elsewhere - lets the far range be the
        drama while providing the depth overlap */
-    .vitra-scenery-ridge-mid {
+    .vitra-scenery-ridge-mid::before,
+    .vitra-scenery-ridge-mid::after {
       mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V292C60 284 110 268 165 258C220 248 260 232 310 220C340 213 365 202 395 196L415 192C450 200 480 214 520 224C570 236 615 244 665 248C720 252 770 246 820 236C860 228 895 216 935 210C975 204 1010 208 1050 216C1100 226 1150 240 1200 248C1280 260 1360 274 1440 292V400Z'/></svg>");
       mask-size: 50% 100%;
       mask-repeat: repeat-x;
     }
 
     /* Near: quiet dark treeline, barely undulating */
-    .vitra-scenery-ridge-near {
+    .vitra-scenery-ridge-near::after {
       mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V348C110 338 210 350 330 344C450 338 550 352 680 346C810 340 920 354 1050 348C1180 342 1310 352 1440 348V400Z'/></svg>");
       mask-size: 50% 100%;
       mask-repeat: repeat-x;
+    }
+
+    /* Rims only exist once masks are confirmed - without a mask they
+       would render as a full-width warm band */
+    .vitra-scenery-ridge-far::before,
+    .vitra-scenery-ridge-mid::before {
+      visibility: visible;
     }
   }
 
