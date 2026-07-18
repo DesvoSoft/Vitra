@@ -323,22 +323,59 @@
 
   /* --- HALO LAYER (sun / moon) --- */
 
-  /* Crisp disc with layered glow, sitting just above the far ridge.
-     A defined disc is what makes the scene read as a landscape
-     with a light source, not an abstract blur. */
+  /* Full moon: crisp disc with faint maria texture, positioned by tokens
+     in the upper third - clear of hero headlines by default. A defined,
+     textured disc is what makes the scene read as a landscape with a
+     light source, not an abstract blur. */
   .vitra-scenery-halo {
     position: absolute;
-    top: 34%;
-    left: 63%;
-    width: clamp(64px, 12vmin, 150px);
+    top: var(--vitra-scenery-halo-y);
+    left: var(--vitra-scenery-halo-x);
+    width: var(--vitra-scenery-halo-size);
     aspect-ratio: 1;
     border-radius: 50%;
-    background: hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.7) 88%);
+    background:
+      /* maria: three faint darker patches */
+      radial-gradient(30% 30% at 62% 38%, hsl(var(--vitra-scenery-hue) 14% 68% / 38%) 0%, transparent 100%),
+      radial-gradient(24% 24% at 36% 60%, hsl(var(--vitra-scenery-hue) 12% 70% / 30%) 0%, transparent 100%),
+      radial-gradient(16% 16% at 56% 74%, hsl(var(--vitra-scenery-hue) 12% 72% / 26%) 0%, transparent 100%),
+      /* disc: cool paper, subtly brighter toward upper-left */
+      radial-gradient(
+        circle at 40% 36%,
+        hsl(var(--vitra-scenery-hue) 22% 96%) 0%,
+        hsl(var(--vitra-scenery-hue) 16% 88%) 70%,
+        hsl(var(--vitra-scenery-hue) 14% 82%) 100%
+      );
     box-shadow:
-      0 0 30px 10px hsl(var(--vitra-scenery-hue) var(--vitra-scenery-sat) 75% / 50%),
-      0 0 110px 55px hsl(var(--vitra-scenery-hue) var(--vitra-scenery-sat) 65% / 22%);
+      0 0 26px 8px hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 82% / 32%),
+      0 0 90px 40px hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 70% / 14%);
     animation: vitra-scenery-halo-drift calc(24s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
     will-change: opacity;
+  }
+
+  /* Crescent variant: hollow disc, lit sliver via inset shadow.
+     Offset scales with the size token so the phase reads the same
+     at any moon size. */
+  .vitra-scenery-halo-crescent {
+    background: none;
+    transform: rotate(-14deg);
+    box-shadow:
+      inset calc(var(--vitra-scenery-halo-size) / -4) calc(var(--vitra-scenery-halo-size) / 9) 0 0
+        hsl(var(--vitra-scenery-hue) 20% 92%),
+      0 0 26px 8px hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 82% / 26%),
+      0 0 90px 40px hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 70% / 12%);
+  }
+
+  /* Light schemes: golden hour - the disc reads as a low sun, no maria */
+  :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-halo {
+    background: radial-gradient(
+      circle at 45% 40%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.9) 92%) 0%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.85) 80%) 100%
+    );
+    box-shadow:
+      0 0 34px 12px hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.9) 75% / 45%),
+      0 0 120px 60px hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.8) 65% / 20%);
   }
 
   @keyframes vitra-scenery-halo-drift {
