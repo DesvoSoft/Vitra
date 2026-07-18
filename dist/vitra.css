@@ -2134,12 +2134,41 @@
 
   /* --- GRAIN LAYER --- */
 
+  /* Grain host: element stays fully opaque so its pseudos can carry
+     different opacities - noise in ::after, valley mist in ::before. */
+  .vitra-scenery-grain {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Valley mist: soft pools of light hanging between the ridges.
+     Sits in front of the mountains (atmosphere), warm on the afterglow
+     side, cool accent on the other. Static - no animation. */
+  .vitra-scenery-grain::before {
+    content: '';
+    position: absolute;
+    inset: auto 0 6% 0;
+    height: 24%;
+    background:
+      radial-gradient(
+        65% 100% at var(--vitra-scenery-glow-x) 100%,
+        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.7) 70% / 12%) 0%,
+        transparent 68%
+      ),
+      radial-gradient(
+        45% 85% at calc(100% - var(--vitra-scenery-glow-x)) 100%,
+        hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 75% / 8%) 0%,
+        transparent 70%
+      );
+  }
+
   /* Subtle noise texture, breaks up gradient banding.
      Data-URI SVG feTurbulence, no external asset. Plain low
      opacity, no blend mode: mix-blend-mode would force the
      compositor to re-blend the full stack on every animation
      frame of the layers underneath. */
-  .vitra-scenery-grain {
+  .vitra-scenery-grain::after {
+    content: '';
     position: absolute;
     inset: 0;
     opacity: 0.04;
