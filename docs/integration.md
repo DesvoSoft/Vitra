@@ -479,9 +479,22 @@ The eight child layers are always the same regardless of which root class is use
 |---|---|---|
 | `--vitra-scenery-hue` | `var(--vitra-color-accent-h)` | Base hue for the whole scene |
 | `--vitra-scenery-sat` | `var(--vitra-color-accent-s)` | Base saturation |
+| `--vitra-scenery-warm-h` | `calc(hue - 140)` (dark) / `32` (light, pastel) | Alpenglow hue: afterglow band, ridge rim light, cloud undersides, valley mist |
+| `--vitra-scenery-glow-x` | `38%` | Horizontal anchor of the afterglow + valley mist ("where the sun set") |
+| `--vitra-scenery-halo-x` / `-y` | `76%` / `13%` | Moon/sun position — compose your hero without custom CSS |
+| `--vitra-scenery-halo-size` | `clamp(56px, 9vmin, 110px)` | Moon/sun diameter |
+| `--vitra-scenery-opacity-rim` | `0.85` (dark) / `0.6` (light, pastel) | Ridge crest rim-light strength |
 | `--vitra-scenery-speed` | `1` | Drift speed multiplier (higher = faster) |
 | `--vitra-scenery-opacity-far` / `-mid` / `-near` | `0.6` / `0.75` / `0.92` | Per-layer opacity (atmospheric perspective) |
 | `--vitra-scenery-opacity-clouds` | `0.35` | Cloud layer opacity |
+
+**Moon phase modifier:** add `vitra-scenery-halo-crescent` to the halo layer for a crescent moon:
+
+```html
+<div class="vitra-scenery-halo vitra-scenery-halo-crescent"></div>
+```
+
+On dark-scheme themes the halo renders as a textured full moon (or crescent with the modifier); on `light`/`pastel` it renders as a warm low sun. Ridge crests catch a warm rim light on their silhouette edges — it rides the same parallax transform as the ridge, so it never detaches in motion.
 
 Ridge and cloud silhouettes come from inline SVG masks (shape) colored by theme tokens (color) — no external assets. Where `mask-image` is unsupported, ridges/clouds gracefully fall back to soft gradient bands. The star field is a small tiled data-URI SVG, static by default. All layers drift the same right-to-left direction at different speeds (clouds slowest, near ridge fastest) for a consistent parallax/wind read. Under `prefers-reduced-motion: reduce`, all layers stop animating and hold position — the scene stays visible, just static.
 

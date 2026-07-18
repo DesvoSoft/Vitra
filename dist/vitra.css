@@ -1596,12 +1596,15 @@
        Warm complement derived from the accent: every theme gets its own
        harmonic "sunset" hue. Override --vitra-scenery-warm-h to art-direct. */
     --vitra-scenery-warm-h: calc(var(--vitra-scenery-hue) - 140);
+
     /* Where the sun went down (afterglow + valley mist anchor) */
     --vitra-scenery-glow-x: 38%;
+
     /* Moon position + size: heroes recompose via tokens, no custom CSS */
     --vitra-scenery-halo-x: 76%;
     --vitra-scenery-halo-y: 13%;
     --vitra-scenery-halo-size: clamp(56px, 9vmin, 110px);
+
     /* Rim-light strength on ridge crests */
     --vitra-scenery-opacity-rim: 0.85;
 
@@ -1621,12 +1624,21 @@
      the same translucent mist bands lose contrast against it,
      so ridges read heavier/more saturated and the sky glow
      band is dialed back to keep the horizon legible. */
-  :where([data-theme="light"], [data-theme="pastel"]) {
+  /* NOTE: plain attribute selectors, not :where() - the token defaults
+     above live on :root (specificity 0,1,0) and a zero-specificity
+     :where() can never override them. */
+  [data-theme="light"],
+  [data-theme="pastel"] {
     --vitra-scenery-opacity-far: 0.78;
     --vitra-scenery-opacity-mid: 0.88;
     --vitra-scenery-opacity-near: 0.97;
     --vitra-scenery-opacity-clouds: 0.42;
     --vitra-scenery-opacity-rim: 0.6;
+
+    /* Light schemes pin the sunset to true amber: the derived
+       complement (accent - 140) lands on lime/cyan for these accents,
+       which never reads as sunlight against a pale sky. */
+    --vitra-scenery-warm-h: 32;
   }
 
   /* --- ROOT CONTAINERS --- */
@@ -1656,6 +1668,7 @@
 
   /* Zenith fades from page bg into an accent-tinted glow band
      at the horizon, where the sun/ridges sit */
+
   /* Alpenglow: warm afterglow pooling at the horizon where the sun set,
      cool accent-tinted zenith above. The warm/cool tension is what makes
      the scene read as painted light instead of a generated gradient. */
@@ -1724,6 +1737,7 @@
     width: 200%;
     height: 45%;
     opacity: var(--vitra-scenery-opacity-clouds);
+
     /* Lit from below: dusk light catches the underside of the wisps */
     background: linear-gradient(
       to top,
@@ -1966,6 +1980,7 @@
      is pixel-identical to frame 0 - the animation can run
      linear, one direction, infinite, with no visible seam and
      no ease-in-out "breathing" reversal. */
+
   /* Each ridge div is now an unmasked ANIMATION CARRIER: the drift
      transform lives here, while the visible silhouette paints in ::after
      and the warm crest rim light in ::before. Both pseudos share the
@@ -2015,6 +2030,7 @@
   .vitra-scenery-ridge-far::before {
     transform: translateY(-3px);
     visibility: hidden;
+
     /* Gradient band aligned to where the silhouette actually lives in
        this box (peaks start ~15% down): strong at crest altitude, dying
        toward the valleys. The 3px mask offset draws the crisp sliver;
@@ -2048,6 +2064,7 @@
   .vitra-scenery-ridge-mid::before {
     transform: translateY(-2px);
     visibility: hidden;
+
     /* Mid silhouette tops sit ~46% down its box; weaker light - half
        in shadow already */
     background: linear-gradient(
@@ -2156,7 +2173,7 @@
   .vitra-scenery-grain::before {
     content: '';
     position: absolute;
-    inset: auto 0 6% 0;
+    inset: auto 0 6%;
     height: 24%;
     background:
       radial-gradient(
