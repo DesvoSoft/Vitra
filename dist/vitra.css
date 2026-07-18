@@ -1592,6 +1592,19 @@
     --vitra-scenery-hue: var(--vitra-color-accent-h);
     --vitra-scenery-sat: var(--vitra-color-accent-s);
 
+    /* --- ALPENGLOW TOKENS ---
+       Warm complement derived from the accent: every theme gets its own
+       harmonic "sunset" hue. Override --vitra-scenery-warm-h to art-direct. */
+    --vitra-scenery-warm-h: calc(var(--vitra-scenery-hue) - 140);
+    /* Where the sun went down (afterglow + valley mist anchor) */
+    --vitra-scenery-glow-x: 38%;
+    /* Moon position + size: heroes recompose via tokens, no custom CSS */
+    --vitra-scenery-halo-x: 76%;
+    --vitra-scenery-halo-y: 13%;
+    --vitra-scenery-halo-size: clamp(56px, 9vmin, 110px);
+    /* Rim-light strength on ridge crests */
+    --vitra-scenery-opacity-rim: 0.85;
+
     /* --- SCENERY MOTION TOKENS --- */
     --vitra-scenery-speed: 1;
 
@@ -1613,6 +1626,7 @@
     --vitra-scenery-opacity-mid: 0.88;
     --vitra-scenery-opacity-near: 0.97;
     --vitra-scenery-opacity-clouds: 0.42;
+    --vitra-scenery-opacity-rim: 0.6;
   }
 
   /* --- ROOT CONTAINERS --- */
@@ -1642,45 +1656,56 @@
 
   /* Zenith fades from page bg into an accent-tinted glow band
      at the horizon, where the sun/ridges sit */
+  /* Alpenglow: warm afterglow pooling at the horizon where the sun set,
+     cool accent-tinted zenith above. The warm/cool tension is what makes
+     the scene read as painted light instead of a generated gradient. */
   .vitra-scenery-sky {
     position: absolute;
     inset: 0;
     background:
+      /* afterglow core: warm light pooling where the sun set - tall
+         enough to stay visible in the sky band above the ridge crests */
       radial-gradient(
-        circle at 63% 34%,
-        hsl(calc(var(--vitra-scenery-hue) - 25) calc(var(--vitra-scenery-sat) * 0.6) 70% / 18%) 0%,
-        transparent 40%
+        70% 46% at var(--vitra-scenery-glow-x) 86%,
+        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.9) 68% / 45%) 0%,
+        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.8) 62% / 20%) 55%,
+        transparent 80%
       ),
-      linear-gradient(
-        to top,
-        hsl(var(--vitra-scenery-hue) var(--vitra-scenery-sat) 62% / 30%) 0%,
-        hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.8) 55% / 14%) 32%,
-        transparent 58%
+      /* afterglow spread: wide warm wash dying upward */
+      radial-gradient(
+        140% 75% at var(--vitra-scenery-glow-x) 84%,
+        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.8) 62% / 28%) 0%,
+        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.6) 55% / 12%) 50%,
+        transparent 76%
       ),
+      /* cool zenith falling into an accent-tinted horizon */
       linear-gradient(
         to bottom,
         var(--vitra-color-bg) 0%,
-        hsl(calc(var(--vitra-scenery-hue) + 8) calc(var(--vitra-scenery-sat) * 0.65) 45% / 30%) 100%
+        hsl(calc(var(--vitra-scenery-hue) + 10) calc(var(--vitra-scenery-sat) * 0.55) 30% / 45%) 55%,
+        hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.55) 42% / 38%) 100%
       );
   }
 
+  /* Light schemes: golden hour - same structure, brighter values,
+     stronger warm presence against the pale sky */
   :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-sky {
     background:
       radial-gradient(
-        circle at 63% 34%,
-        hsl(calc(var(--vitra-scenery-hue) - 25) calc(var(--vitra-scenery-sat) * 0.5) 75% / 14%) 0%,
-        transparent 40%
+        58% 26% at var(--vitra-scenery-glow-x) 97%,
+        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.85) 78% / 42%) 0%,
+        transparent 62%
       ),
-      linear-gradient(
-        to top,
-        hsl(var(--vitra-scenery-hue) var(--vitra-scenery-sat) 55% / 22%) 0%,
-        hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.7) 50% / 10%) 32%,
-        transparent 58%
+      radial-gradient(
+        115% 52% at var(--vitra-scenery-glow-x) 90%,
+        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.7) 74% / 26%) 0%,
+        transparent 68%
       ),
       linear-gradient(
         to bottom,
         var(--vitra-color-bg) 0%,
-        hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 60% / 16%) 100%
+        hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.45) 78% / 35%) 55%,
+        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.5) 80% / 40%) 100%
       );
   }
 
