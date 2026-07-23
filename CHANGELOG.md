@@ -4,6 +4,14 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.12.1] - 2026-07-23
+
+### Fixed
+
+- **Twinkling star glow replaced**: the previous bloom (three flat-opacity concentric circles per twinkling star) read as visible hard-edged rings instead of a soft glow. Replaced with a single circle filled via an SVG `radialGradient` (smooth continuous falloff, no filter — `<circle filter="url(#id)">` inside a `data:` URI background-image silently drops the entire image in Chromium, confirmed via isolated repro) for a genuinely soft, ring-free bloom at twinkle peak.
+- **Primary star field drift slowed**: `.vitra-scenery-stars` background-position drift duration increased 1100s → 2600s to read as a subtle ambient creep rather than perceptible motion; travel distance kept at exactly one tile width per layer so the loop stays seamless.
+- **Star field extended toward the horizon**: `.vitra-scenery-stars` and `.vitra-scenery-sky::before` height 58% → 68%, so more stars populate the band just above the ridge/mountain line.
+
 ## [1.12.0] - 2026-07-23
 
 ### Added
