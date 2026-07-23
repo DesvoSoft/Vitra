@@ -713,6 +713,33 @@ html[data-theme="pastel"] .demo-hero-overline {
   display: inline-block;
 }
 
+.demo-qs-specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--vitra-space-2) var(--vitra-space-5);
+  list-style: none;
+  margin: calc(var(--vitra-space-8) * -1 + var(--vitra-space-2)) 0 var(--vitra-space-8);
+  padding: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--vitra-color-text-secondary);
+}
+
+.demo-qs-specs li {
+  display: flex;
+  align-items: center;
+  gap: var(--vitra-space-2);
+}
+
+.demo-qs-specs li::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--vitra-color-accent);
+  flex-shrink: 0;
+}
+
 .demo-qs-block {
   margin-bottom: var(--vitra-space-8);
 }
