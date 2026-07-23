@@ -585,6 +585,13 @@
     height: 100vh;
     z-index: 999;
 
+    /* border-box required: right:-100% assumes the box's rendered width
+       equals its declared width. Without this, padding/border inflate the
+       actual box past 80%/320px (content-box default), so at narrow
+       viewports the true left edge lands inside the viewport instead of
+       fully offscreen - a real, confirmed bleed, not a rounding artifact. */
+    box-sizing: border-box;
+
     /* Styling */
     background-color: var(--vitra-color-bg);
     border-left: 1px solid var(--vitra-color-border);
