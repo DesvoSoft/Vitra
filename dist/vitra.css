@@ -1793,10 +1793,15 @@
     height: 45%;
     opacity: var(--vitra-scenery-opacity-clouds);
 
-    /* Lit from below: dusk light catches the underside of the wisps */
+    /* Lit from below: dusk light catches the underside of the wisps.
+       Fades to transparent at BOTH ends - the box's bottom edge sits
+       mid-scene (45% down), so a hard-stop color there against the sky
+       gradient beneath reads as a visible seam. Peak brightness moves
+       to the middle of the band instead of the bottom edge. */
     background: linear-gradient(
       to top,
-      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.75) 74% / 55%) 0%,
+      transparent 0%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.75) 74% / 55%) 22%,
       hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.2) 88% / 8%) 100%
     );
     animation: vitra-scenery-drift-clouds calc(400s / var(--vitra-scenery-speed)) linear infinite;
@@ -2068,7 +2073,7 @@
   .vitra-scenery-ridge-far {
     height: 58%;
     opacity: var(--vitra-scenery-opacity-far);
-    animation: vitra-scenery-drift-far calc(260s / var(--vitra-scenery-speed)) linear infinite;
+    animation: vitra-scenery-drift-far calc(340s / var(--vitra-scenery-speed)) linear infinite;
   }
 
   /* Fallback (no mask support): soft gradient band still gives a
@@ -2139,7 +2144,7 @@
   .vitra-scenery-ridge-near {
     height: 24%;
     opacity: var(--vitra-scenery-opacity-near);
-    animation: vitra-scenery-drift-near calc(75s / var(--vitra-scenery-speed)) linear infinite;
+    animation: vitra-scenery-drift-near calc(45s / var(--vitra-scenery-speed)) linear infinite;
   }
 
   .vitra-scenery-ridge-near::after {

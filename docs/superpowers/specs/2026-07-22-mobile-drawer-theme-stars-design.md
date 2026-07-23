@@ -79,6 +79,31 @@ Exclusions (must not be caught by the broad rule):
 
 This desynchronizes brightness across clusters instead of one uniform pulse. True per-individual-star desync would require far more elements than is practical in a data-URI SVG background layer; clustering into 3–4 out-of-phase groups is the approximation, consistent with how drift/shooting-star are already layered.
 
+## 5. Cloud layer horizontal seam (framework)
+
+**Root cause:** `.vitra-scenery-clouds` (`src/09-scenery.css`) is a box `height: 45%` anchored at `top: 0`. Its background gradient (`linear-gradient(to top, warm/55% 0%, faint/8% 100%)`) is solid warm color at `0%` — the bottom of the gradient direction, which is also the box's hard bottom edge. That edge sits at a fixed height mid-scene (roughly where a vertically-centered hero title lands), and composites against the independent sky gradient below it, producing a visible thin horizontal seam where the two layers' colors meet without blending.
+
+**Fix:** fade the clouds gradient to `transparent` at both ends instead of only at the top, moving peak brightness to the middle of the band:
+```css
+background: linear-gradient(
+  to top,
+  transparent 0%,
+  hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.75) 74% / 55%) 22%,
+  hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.2) 88% / 8%) 100%
+);
+```
+
+## 6. Parallax layer speed contrast (framework)
+
+**Root cause:** ridge drift durations (`src/09-scenery.css`) were `far: 260s`, `mid: 150s`, `near: 75s` — a 1.73x and 2x step between adjacent layers. All three layers tile at the same relative scale (`mask-size: 50% 100%` on a `200%`-wide parent), so speed differences are duration-driven only; with cycles this long (75s+), the relative difference read as "barely moving" rather than distinct parallax depth.
+
+**Fix:** widen the spread between layers (`mid` kept as pivot at `150s`):
+- far: `260s → 340s`
+- mid: `150s` (unchanged)
+- near: `75s → 45s`
+
+New ratios: far/mid 2.27x, mid/near 3.33x, far/near ~7.6x (was 3.5x) — three perceptibly distinct speeds instead of a narrow band.
+
 ## Testing
 
 No test framework in this repo (per `CLAUDE.md`) — validate manually:
