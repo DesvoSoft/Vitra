@@ -19,7 +19,6 @@
     initPopoverDemo();
     initStartingStyleDemo();
     initParticleControls();
-    initHeroParticles();
     initOffscreenPause();
     initMotionDemo();
     initTabs();

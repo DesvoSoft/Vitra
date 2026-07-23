@@ -117,12 +117,14 @@ html[data-theme="pastel"] .demo-hero h1.demo-hero-title {
   color: hsl(var(--vitra-color-accent-h) 30% 14%);
 }
 
-/* Single warm word - the one deliberate color note in the headline */
+/* Single accent word - the one deliberate color note in the headline.
+   Keyed to the theme's own accent hue, not a fixed warm tone, so it
+   never reads as a foreign color injected on top of the theme. */
 .demo-hero-title-accent {
   background: linear-gradient(
     100deg,
-    hsl(var(--vitra-scenery-warm-h) 95% 78%),
-    hsl(calc(var(--vitra-scenery-warm-h) - 20) 90% 68%)
+    hsl(var(--vitra-color-accent-h) 95% 78%),
+    hsl(calc(var(--vitra-color-accent-h) + 20) 90% 68%)
   );
   background-clip: text;
   -webkit-background-clip: text;
@@ -133,8 +135,8 @@ html[data-theme="light"] .demo-hero-title-accent,
 html[data-theme="pastel"] .demo-hero-title-accent {
   background: linear-gradient(
     100deg,
-    hsl(var(--vitra-scenery-warm-h) 85% 42%),
-    hsl(calc(var(--vitra-scenery-warm-h) - 20) 80% 34%)
+    hsl(var(--vitra-color-accent-h) 85% 42%),
+    hsl(calc(var(--vitra-color-accent-h) + 20) 80% 34%)
   );
   background-clip: text;
   -webkit-background-clip: text;
@@ -176,12 +178,14 @@ html[data-theme="pastel"] .demo-hero-title-accent {
   font-weight: 400;
   letter-spacing: 0.34em;
   text-transform: uppercase;
-  color: hsl(var(--vitra-scenery-warm-h) 70% 78% / 0.9);
+  color: hsl(var(--vitra-color-accent-h) 70% 78% / 0.9);
+  text-shadow: 0 1px 3px hsl(0deg 0% 0% / 60%), 0 1px 12px hsl(0deg 0% 0% / 35%);
 }
 
 html[data-theme="light"] .demo-hero-overline,
 html[data-theme="pastel"] .demo-hero-overline {
-  color: hsl(var(--vitra-scenery-warm-h) 75% 38% / 0.95);
+  color: hsl(var(--vitra-color-accent-h) 75% 32% / 0.95);
+  text-shadow: 0 1px 2px hsl(0deg 0% 100% / 70%), 0 1px 8px hsl(0deg 0% 100% / 40%);
 }
 
 .demo-hero-sub {
@@ -192,21 +196,22 @@ html[data-theme="pastel"] .demo-hero-overline {
   margin-right: auto;
 }
 
-/* Warm primary CTA - the single strong warm UI element on the page */
+/* Primary CTA - the single strong accent UI element on the page,
+   keyed to the theme's own accent hue instead of a fixed warm tone. */
 .demo-btn-warm {
   background: linear-gradient(
     120deg,
-    hsl(var(--vitra-scenery-warm-h) 90% 78%),
-    hsl(calc(var(--vitra-scenery-warm-h) - 25) 85% 62%)
+    hsl(var(--vitra-color-accent-h) 90% 78%),
+    hsl(calc(var(--vitra-color-accent-h) + 25) 85% 62%)
   );
   border: none;
-  color: hsl(var(--vitra-scenery-warm-h) 60% 12%);
+  color: hsl(var(--vitra-color-accent-h) 60% 12%);
   font-weight: 600;
-  box-shadow: 0 4px 24px hsl(var(--vitra-scenery-warm-h) 85% 62% / 0.35);
+  box-shadow: 0 4px 24px hsl(var(--vitra-color-accent-h) 85% 62% / 0.35);
 }
 
 .demo-btn-warm:hover {
-  box-shadow: 0 6px 32px hsl(var(--vitra-scenery-warm-h) 85% 62% / 0.5);
+  box-shadow: 0 6px 32px hsl(var(--vitra-color-accent-h) 85% 62% / 0.5);
   transform: translateY(-1px);
 }
 
@@ -250,10 +255,13 @@ html[data-theme="pastel"] .demo-hero-overline {
 
 /* Hero particles sit inside .vitra-scenery-inline (moved there by demo.js
    so they fall behind the near ridge), so they need enough size/contrast
-   to read against the sky gradient instead of the framework's flat default. */
+   to read against the sky gradient instead of the framework's flat default.
+   Cool near-white, same hue family as the starfield/halo (see
+   src/09-scenery.css) - reads as drifting starlight/dust, not warm embers
+   fighting the sky. */
 .demo-hero .vitra-scenery-inline .vitra-particle {
-  --vitra-particle-color: hsl(var(--vitra-scenery-warm-h) 85% 75%);
-  box-shadow: 0 0 6px hsl(var(--vitra-scenery-warm-h) 85% 75% / 70%);
+  --vitra-particle-color: hsl(var(--vitra-scenery-hue) 20% 92%);
+  box-shadow: 0 0 6px hsl(var(--vitra-scenery-hue) 20% 92% / 70%);
 }
 
 /* Classic (non-directional) hero particles: amplify the built-in float
@@ -1004,10 +1012,18 @@ pre code {
    Responsive
    ============================================ */
 
+/* Navbar padding scales with viewport instead of jumping at a single
+   breakpoint - framework default is a fixed 1.5rem/2rem, which alone
+   eats 64px of a 360px-wide screen before any content is placed. */
+.vitra-navbar {
+  padding-inline: var(--vitra-fluid-space-3);
+  padding-block: var(--vitra-fluid-space-2);
+}
+
 @media (max-width: 768px) {
   .demo-hero {
     min-height: 60vh;
-    padding: var(--vitra-space-4);
+    padding: var(--vitra-fluid-space-4);
   }
 
   .demo-hero h1.demo-hero-title {
@@ -1033,6 +1049,10 @@ pre code {
     min-height: 200px;
   }
 
+  .vitra-navbar-brand {
+    font-size: clamp(1.125rem, 5vw, var(--vitra-font-size-2xl));
+  }
+
   .vitra-navbar-actions .vitra-btn.vitra-btn-sm {
     padding: var(--vitra-space-1) var(--vitra-space-2);
     font-size: var(--vitra-font-size-xs);
@@ -1042,6 +1062,36 @@ pre code {
   .vitra-navbar-actions .vitra-dropdown-menu {
     right: 0;
     left: auto;
+  }
+
+  .vitra-drawer-header,
+  .vitra-drawer-body {
+    padding-inline: var(--vitra-fluid-space-2);
+  }
+}
+
+/* Small-phone tier (360-400px class devices): the 768px tier above
+   assumes a tablet-ish tap target budget; at this width the theme
+   label + burger + brand start fighting for room in one row. */
+@media (max-width: 400px) {
+  .vitra-navbar {
+    gap: var(--vitra-fluid-space-1);
+  }
+
+  .demo-theme-btn #current-theme-name {
+    display: none;
+  }
+
+  .demo-hero h1.demo-hero-title {
+    font-size: var(--vitra-font-size-2xl);
+  }
+
+  .demo-hero .demo-hero-sub {
+    font-size: var(--vitra-font-size-sm);
+  }
+
+  .vitra-drawer {
+    width: 88%;
   }
 }
 
