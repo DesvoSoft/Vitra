@@ -310,6 +310,29 @@ var require_vitra = __commonJS({
         const _prefersReducedMotion = () => {
           return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         };
+        const FAST_SCROLL_THRESHOLD = 2.5;
+        let _lastScrollY = null;
+        let _lastScrollTime = null;
+        let _isFastScrolling = false;
+        let _scrollListenerAttached = false;
+        const _handleScroll = () => {
+          const now = performance.now();
+          const y = window.scrollY;
+          if (_lastScrollY !== null) {
+            const dt = now - _lastScrollTime;
+            if (dt > 0) {
+              const speed = Math.abs(y - _lastScrollY) / dt;
+              _isFastScrolling = speed > FAST_SCROLL_THRESHOLD;
+            }
+          }
+          _lastScrollY = y;
+          _lastScrollTime = now;
+        };
+        const _ensureScrollTracking = () => {
+          if (_scrollListenerAttached) return;
+          window.addEventListener("scroll", _handleScroll, { passive: true });
+          _scrollListenerAttached = true;
+        };
         const init = (options = {}) => {
           const {
             selector = ".vitra-reveal",
@@ -346,8 +369,10 @@ var require_vitra = __commonJS({
             console.warn("[Vitra Reveal] IntersectionObserver not supported");
             return;
           }
+          _ensureScrollTracking();
           _observer = new IntersectionObserver((entries) => {
             const visible = entries.filter((entry) => entry.isIntersecting);
+            const effectiveStagger = _isFastScrolling ? 0 : stagger;
             visible.forEach((entry, batchIndex) => {
               setTimeout(() => {
                 if (entry.target.classList.contains("vitra-scroll-reveal-observer")) {
@@ -357,7 +382,7 @@ var require_vitra = __commonJS({
                 }
                 entry.target.style.opacity = "1";
                 entry.target.style.transform = "none";
-              }, batchIndex * stagger);
+              }, batchIndex * effectiveStagger);
               _observer.unobserve(entry.target);
               _revealedElements.push(entry.target);
             });
@@ -412,6 +437,13 @@ var require_vitra = __commonJS({
             _observer.disconnect();
             _observer = null;
           }
+          if (_scrollListenerAttached) {
+            window.removeEventListener("scroll", _handleScroll);
+            _scrollListenerAttached = false;
+          }
+          _lastScrollY = null;
+          _lastScrollTime = null;
+          _isFastScrolling = false;
           _revealedElements.forEach((el) => {
             el.style.opacity = "";
             el.style.transform = "";
@@ -899,6 +931,43 @@ var require_vitra = __commonJS({
         };
         return { init, destroy };
       })();
+      const motionGuard = /* @__PURE__ */ (() => {
+        const SELECTOR = ".vitra-glow-orb, .vitra-aurora-bg, .vitra-aurora-layer-1, .vitra-aurora-layer-2, .vitra-scenery, .vitra-scenery-inline";
+        const PAUSED_CLASS = "vitra-motion-paused";
+        let _observer = null;
+        let initialized = false;
+        const _prefersReducedMotion = () => {
+          return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        };
+        const init = () => {
+          if (initialized) return;
+          if (_prefersReducedMotion()) return;
+          if (!("IntersectionObserver" in window)) {
+            console.warn("[Vitra MotionGuard] IntersectionObserver not supported");
+            return;
+          }
+          const elements = [...document.querySelectorAll(SELECTOR)];
+          if (elements.length === 0) return;
+          _observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              entry.target.classList.toggle(PAUSED_CLASS, !entry.isIntersecting);
+            });
+          }, { rootMargin: "50px" });
+          elements.forEach((el) => _observer.observe(el));
+          initialized = true;
+        };
+        const destroy = () => {
+          if (_observer) {
+            _observer.disconnect();
+            _observer = null;
+          }
+          document.querySelectorAll(`.${PAUSED_CLASS}`).forEach((el) => {
+            el.classList.remove(PAUSED_CLASS);
+          });
+          initialized = false;
+        };
+        return { init, destroy };
+      })();
       const _parseDataConfig = () => {
         const el = document.querySelector("[data-config]");
         let config = {};
@@ -937,6 +1006,9 @@ var require_vitra = __commonJS({
         if (config.spotlight !== false) {
           spotlight.init();
         }
+        if (config.motionGuard !== false) {
+          motionGuard.init();
+        }
       };
       (() => {
         try {
@@ -966,6 +1038,7 @@ var require_vitra = __commonJS({
         dropdown.destroy();
         spotlight.destroy();
         particles.destroy();
+        motionGuard.destroy();
       };
       return {
         theme,
@@ -977,6 +1050,7 @@ var require_vitra = __commonJS({
         toast,
         dropdown,
         spotlight,
+        motionGuard,
         destroyAll
       };
     })();

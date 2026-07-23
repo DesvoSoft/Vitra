@@ -695,6 +695,46 @@ npx esbuild vitra.js --bundle --minify --outfile=vitra.min.js
 <script src="https://cdn.example.com/vitra/1.0.0/vitra.min.js"></script>
 ```
 
+### 4. Runtime Rendering Performance
+
+Vitra's motion/glass effects are designed to be compositor-cheap by default,
+but a few patterns can still add up if you stack many instances on one page:
+
+- **Don't stack large-radius blurs.** `--vitra-blur-lg`/`--vitra-blur-xl` are
+  already fairly wide; multiple overlapping `.vitra-glass` panels or glow
+  effects each carrying their own large blur radius forces the compositor to
+  re-rasterize a big region every frame. Prefer one blurred backdrop per
+  screen area, not one per component.
+- **Avoid animating `box-shadow` directly.** `.vitra-transition-shadow`
+  exists for hover/focus state changes, not for continuous/looping
+  animation — `box-shadow` is a paint property, not a compositor one, so
+  animating it in a loop repaints every frame. Use `transform`/`opacity`
+  (or a pseudo-element's `opacity`) for anything that runs continuously.
+- **`.vitra-glass::after`'s specular highlight is a pseudo-element per
+  panel.** Fine at normal counts; if a page renders dozens of glass panels
+  at once (e.g. a long card grid), consider dropping the glass variant on
+  off-screen or lower-priority cards, or pair with `content-visibility:
+  auto` (below) so browsers skip painting instances that are scrolled out
+  of view.
+- **Long pages: use `content-visibility: auto`.** For sections, card grids,
+  or list items that repeat down a long page, apply the `.vitra-cv-auto`
+  utility (`src/07-utilities.css`) to skip layout/paint work for content
+  that's far outside the viewport:
+  ```html
+  <section class="demo-section vitra-cv-auto">…</section>
+  ```
+  It ships with a generic `contain-intrinsic-size: auto 500px` — override
+  this per-component if your actual content is significantly taller or
+  shorter, otherwise the browser's placeholder size estimate will cause a
+  visible scrollbar jump. Don't apply it to content that must stay
+  measurable while hidden (e.g. components already toggled via
+  `display:none`, like tab panels) — there's nothing left to skip.
+- **Cards/modals without `contain`.** If you're composing large repeated
+  structures (card grids, modal stacks) that don't already use
+  `content-visibility`, adding `contain: layout style` scopes layout/style
+  recalculation to that subtree instead of the whole document, which helps
+  when many instances mount/update at once.
+
 ---
 
 ## Troubleshooting

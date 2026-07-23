@@ -298,9 +298,15 @@
     position: absolute;
     border-radius: 50%;
     pointer-events: none;
-    filter: blur(80px);
+    filter: blur(40px);
     opacity: 0.12;
     will-change: transform;
+  }
+
+  /* Paused by Vitra.motionGuard when offscreen — infinite transform+filter
+     loops keep compositing every frame otherwise, even out of view. */
+  .vitra-glow-orb.vitra-motion-paused {
+    animation-play-state: paused;
   }
 
   .vitra-glow-orb-1 {
@@ -527,9 +533,16 @@
     content: '';
     position: absolute;
     border-radius: 50%;
-    filter: blur(100px);
+    filter: blur(50px);
     opacity: 0.15;
     will-change: transform;
+  }
+
+  /* Paused by Vitra.motionGuard when offscreen. Targets the pseudo-elements
+     directly since they (not .vitra-aurora-bg itself) carry the animation. */
+  .vitra-aurora-bg.vitra-motion-paused::before,
+  .vitra-aurora-bg.vitra-motion-paused::after {
+    animation-play-state: paused;
   }
 
   .vitra-aurora-bg::before {
@@ -554,9 +567,13 @@
     position: absolute;
     inset: 0;
     border-radius: 50%;
-    filter: blur(120px);
+    filter: blur(60px);
     opacity: 0.1;
     will-change: transform;
+  }
+
+  .vitra-aurora-layer.vitra-motion-paused {
+    animation-play-state: paused;
   }
 
   .vitra-aurora-layer-1 {

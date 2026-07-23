@@ -657,4 +657,18 @@
   .vitra-color-mix-accent-text {
     color: color-mix(in srgb, var(--vitra-color-accent) 60%, var(--vitra-color-text-primary));
   }
+
+  /* ============================================
+     RENDERING PERFORMANCE
+     Skip layout/paint work for offscreen content.
+     Apply to long, repeating sections (page sections,
+     card grids, list items) — not to content that must
+     stay measurable while hidden (e.g. tab panels
+     already using display:none).
+     ============================================ */
+
+  .vitra-cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 500px;
+  }
 }

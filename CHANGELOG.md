@@ -4,6 +4,24 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.12.0] - 2026-07-23
+
+### Added
+
+- **`Vitra.motionGuard` module**: pauses ambient looping animations (`.vitra-glow-orb`, `.vitra-aurora-bg`, `.vitra-aurora-layer-1/2`, `.vitra-scenery`, `.vitra-scenery-inline`) via a shared `IntersectionObserver` while their container is scrolled offscreen, resuming on re-entry. Auto-initializes like the other always-on modules (opt out with `motionGuard: false` in `data-config`), skips entirely under `prefers-reduced-motion`. Long-running blur/transform loops no longer keep compositing every frame for sections the user has scrolled past.
+- **`.vitra-cv-auto` utility** (`src/07-utilities.css`): opt-in `content-visibility: auto` + `contain-intrinsic-size: auto 500px` for long, repeating page content (sections, card grids, list items) where skipping offscreen layout/paint work pays off. Not meant for content already gated by `display:none` (tab panels, modal bodies) — nothing left to skip there.
+- **Second twinkling star layer**: `.vitra-scenery-stars` (the primary star field) previously had zero shimmer — only the secondary drifting tile (`.vitra-scenery-sky::before`) twinkled, so most visible stars sat static and the sky read like a photo. New `vitra-scenery-stars-twinkle-b` keyframe (17s, different amplitude/phase from the existing 13s cycle) shimmers the primary field independently, so the two layers never pulse in lockstep.
+
+### Changed
+
+- **Scenery ridge parallax contrast widened**: far/mid/near drift periods moved from 340s/150s/45s (≈7.6:3.3:1) to 480s/160s/32s (≈15:5:1) — the previous ratio read as two speed tiers instead of three distinct depth planes. Far ridge now drifts more slowly (distant, majestic), near treeline noticeably faster (foreground rush), for a stronger sense of depth without touching any ridge silhouette shape.
+- **Glow-orb/aurora blur radius trimmed**: `.vitra-glow-orb` 80px→40px, `.vitra-aurora-bg` pseudo-elements 100px→50px, `.vitra-aurora-layer` 120px→60px. Each source is already a `radial-gradient(..., transparent 70%)`, so the blur only needs to soften the remaining edge, not carry all the softness itself — visual result is close to identical at a fraction of the per-frame raster cost.
+- **Scroll-reveal fast-scroll handling**: `Vitra.reveal` now tracks scroll velocity and zeroes its batch stagger delay above a ~2.5px/ms threshold, so flinging/fast-scrolling past a run of reveal-on-scroll sections doesn't queue up a visible cascade of elements fading in behind the user after they've already moved on.
+
+### Docs
+
+- Added a "Runtime Rendering Performance" section to `docs/integration.md`: blur-stacking caution, avoid animating `box-shadow` directly, `.vitra-glass::after` specular-highlight cost at scale, `.vitra-cv-auto` usage, and `contain: layout style` for large repeated structures.
+
 ## [1.11.1] - 2026-07-22
 
 ### Fixed

@@ -102,6 +102,11 @@ declare namespace Vitra {
     destroy(): void;
   }
 
+  interface MotionGuardModule {
+    init(): void;
+    destroy(): void;
+  }
+
   interface VitraInstance {
     theme: ThemeModule;
     particles: ParticlesModule;
@@ -112,6 +117,7 @@ declare namespace Vitra {
     toast: ToastModule;
     dropdown: DropdownModule;
     spotlight: SpotlightModule;
+    motionGuard: MotionGuardModule;
     destroyAll(): void;
   }
 }

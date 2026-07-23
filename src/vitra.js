@@ -425,6 +425,37 @@ const Vitra = (() => {
       return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     };
 
+    // --- FAST-SCROLL DETECTION ---
+    // Tracks scroll speed so a fast flick/fling doesn't queue up a visible
+    // stagger of sections fading in after the user has already scrolled
+    // past them. Threshold picked empirically: a deliberate scroll rarely
+    // exceeds ~2.5px/ms, a fling/trackpad flick comfortably does.
+    const FAST_SCROLL_THRESHOLD = 2.5;
+    let _lastScrollY = null;
+    let _lastScrollTime = null;
+    let _isFastScrolling = false;
+    let _scrollListenerAttached = false;
+
+    const _handleScroll = () => {
+      const now = performance.now();
+      const y = window.scrollY;
+      if (_lastScrollY !== null) {
+        const dt = now - _lastScrollTime;
+        if (dt > 0) {
+          const speed = Math.abs(y - _lastScrollY) / dt;
+          _isFastScrolling = speed > FAST_SCROLL_THRESHOLD;
+        }
+      }
+      _lastScrollY = y;
+      _lastScrollTime = now;
+    };
+
+    const _ensureScrollTracking = () => {
+      if (_scrollListenerAttached) return;
+      window.addEventListener('scroll', _handleScroll, { passive: true });
+      _scrollListenerAttached = true;
+    };
+
     /**
      * Initialize reveal observer
      * @param {Object} options - Observer options
@@ -475,11 +506,17 @@ const Vitra = (() => {
         return;
       }
 
+      _ensureScrollTracking();
+
       _observer = new IntersectionObserver((entries) => {
         // Stagger within the batch that became visible together —
         // staggering by global element index would make late
-        // sections wait (index * stagger) ms after entering view
+        // sections wait (index * stagger) ms after entering view.
+        // Skipped entirely while fast-scrolling: queuing staggered
+        // reveals behind a flick just makes them pop in after the
+        // fact, once the user's already scrolled past.
         const visible = entries.filter((entry) => entry.isIntersecting);
+        const effectiveStagger = _isFastScrolling ? 0 : stagger;
         visible.forEach((entry, batchIndex) => {
           setTimeout(() => {
             if (entry.target.classList.contains('vitra-scroll-reveal-observer')) {
@@ -489,7 +526,7 @@ const Vitra = (() => {
             }
             entry.target.style.opacity = '1';
             entry.target.style.transform = 'none';
-          }, batchIndex * stagger);
+          }, batchIndex * effectiveStagger);
 
           _observer.unobserve(entry.target);
           _revealedElements.push(entry.target);
@@ -560,6 +597,13 @@ const Vitra = (() => {
         _observer.disconnect();
         _observer = null;
       }
+      if (_scrollListenerAttached) {
+        window.removeEventListener('scroll', _handleScroll);
+        _scrollListenerAttached = false;
+      }
+      _lastScrollY = null;
+      _lastScrollTime = null;
+      _isFastScrolling = false;
       _revealedElements.forEach(el => {
         el.style.opacity = '';
         el.style.transform = '';
@@ -1249,6 +1293,62 @@ const Vitra = (() => {
   })();
 
   // =========================================================================
+  // MOTION GUARD MODULE
+  // Pauses infinite ambient animations (glow orbs, aurora, scenery) while
+  // their container is offscreen, so long-running blur/transform loops
+  // don't keep compositing every frame on sections the user has scrolled past.
+  // =========================================================================
+  const motionGuard = (() => {
+    const SELECTOR = '.vitra-glow-orb, .vitra-aurora-bg, .vitra-aurora-layer-1, .vitra-aurora-layer-2, .vitra-scenery, .vitra-scenery-inline';
+    const PAUSED_CLASS = 'vitra-motion-paused';
+
+    let _observer = null;
+    let initialized = false;
+
+    const _prefersReducedMotion = () => {
+      return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    };
+
+    const init = () => {
+      if (initialized) return;
+
+      // Reduced-motion already collapses these animations via CSS;
+      // nothing to pause, so skip setting up the observer entirely.
+      if (_prefersReducedMotion()) return;
+
+      if (!('IntersectionObserver' in window)) {
+        console.warn('[Vitra MotionGuard] IntersectionObserver not supported');
+        return;
+      }
+
+      const elements = [...document.querySelectorAll(SELECTOR)];
+      if (elements.length === 0) return;
+
+      _observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          entry.target.classList.toggle(PAUSED_CLASS, !entry.isIntersecting);
+        });
+      }, { rootMargin: '50px' });
+
+      elements.forEach(el => _observer.observe(el));
+      initialized = true;
+    };
+
+    const destroy = () => {
+      if (_observer) {
+        _observer.disconnect();
+        _observer = null;
+      }
+      document.querySelectorAll(`.${PAUSED_CLASS}`).forEach(el => {
+        el.classList.remove(PAUSED_CLASS);
+      });
+      initialized = false;
+    };
+
+    return { init, destroy };
+  })();
+
+  // =========================================================================
   // DATA-CONFIG PARSER
   // Parse data-config attributes for module configuration
   // =========================================================================
@@ -1310,6 +1410,11 @@ const Vitra = (() => {
     if (config.spotlight !== false) {
       spotlight.init();
     }
+
+    // 8. Motion Guard Configuration
+    if (config.motionGuard !== false) {
+      motionGuard.init();
+    }
   };
 
   // Flash prevention: restore saved theme before paint
@@ -1346,6 +1451,7 @@ const Vitra = (() => {
     dropdown.destroy();
     spotlight.destroy();
     particles.destroy();
+    motionGuard.destroy();
   };
 
   // Public API
@@ -1359,6 +1465,7 @@ const Vitra = (() => {
     toast,
     dropdown,
     spotlight,
+    motionGuard,
     destroyAll
   };
 })();
