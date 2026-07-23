@@ -4,6 +4,13 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.1] - 2026-07-22
+
+### Fixed
+
+- **Dropdown menus almost invisible**: `.vitra-dropdown-menu` reused `--vitra-glass-bg`, a token tuned for large glass panels (navbar, drawer) sitting over the controlled scenery backdrop — 3-5% alpha on dark-family themes, functionally invisible over arbitrary page content behind a small floating menu. New `--vitra-glass-bg-menu` token (stronger, ~88-92% alpha) is now dedicated to dropdown menus; other glass surfaces are untouched.
+- **Light/pastel/auto(light) glass tint never applied**: `--vitra-glass-bg`/`--vitra-glass-bg-menu` per-theme overrides lived in the `tokens` layer (`00-themes.css`), but the `glass` layer's own `:root` default is declared later in the `@layer` order (`tokens, glass, ...`) — layer order always wins over selector specificity, so the glass layer's generic 3% default silently beat every theme override regardless of how specific the selector was. Overrides for all themes now live in `02-glass.css`, in the same layer as the default they're meant to override.
+
 ## [1.11.0] - 2026-07-17
 
 ### Added

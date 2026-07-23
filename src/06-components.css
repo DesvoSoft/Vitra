@@ -1726,7 +1726,7 @@
   @supports (backdrop-filter: blur(1px)) {
     .vitra-dropdown-menu,
     .vitra-dropdown-menu[popover] {
-      background: var(--vitra-glass-bg);
+      background: var(--vitra-glass-bg-menu);
       backdrop-filter: blur(var(--vitra-blur-lg));
     }
   }

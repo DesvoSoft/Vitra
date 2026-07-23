@@ -24,10 +24,57 @@
     --vitra-glass-bg: hsl(0deg 0% 100% / 3%);
     --vitra-glass-bg-fallback: var(--vitra-color-surface);
 
+    /* Floating menus (dropdowns) sit over arbitrary page content, not
+       the controlled scenery/hero backdrop --vitra-glass-bg is tuned
+       for - 3-5% alpha reads as invisible there. Same hue, stronger
+       surface separation. */
+    --vitra-glass-bg-menu: hsl(var(--vitra-color-accent-h) 20% 14% / 88%);
+
     /* --- GLASS BORDER TOKENS --- */
     --vitra-border-width: 1px;
     --vitra-border-style: solid;
     --vitra-border-color: rgb(var(--vitra-color-border-rgb) / 10%);
+  }
+
+  /* Light-scheme themes need an opaque-leaning tint here, not the dark
+     translucent default - a near-white glass at 3-5% alpha over a pale
+     background has almost no surface to read. Defined in THIS layer,
+     not the tokens layer: layer order always wins over specificity, so
+     a theme override placed in an earlier-declared layer (tokens) would
+     be silently beaten by this layer's own :root default. Plain
+     attribute selectors, not :where() - see src/09-scenery.css for the
+     same trap. */
+  [data-theme="light"],
+  [data-theme="pastel"] {
+    --vitra-glass-bg: hsl(222deg 45% 96% / 70%);
+    --vitra-glass-bg-menu: hsl(222deg 40% 99% / 92%);
+  }
+
+  [data-theme="pastel"] {
+    --vitra-glass-bg: hsl(330deg 80% 98% / 65%);
+    --vitra-glass-bg-menu: hsl(330deg 60% 99% / 92%);
+  }
+
+  @media (prefers-color-scheme: light) {
+    [data-theme="auto"] {
+      --vitra-glass-bg: hsl(222deg 45% 96% / 70%);
+      --vitra-glass-bg-menu: hsl(222deg 40% 99% / 92%);
+    }
+  }
+
+  /* Dark-family themes keep their own hue-tinted glass at the same low
+     alpha as the :root default - preserves each theme's tint instead of
+     falling back to a neutral white glass. */
+  [data-theme="neon"] {
+    --vitra-glass-bg: hsl(285deg 100% 60% / 5%);
+  }
+
+  [data-theme="ocean"] {
+    --vitra-glass-bg: hsl(205deg 100% 60% / 5%);
+  }
+
+  [data-theme="emerald"] {
+    --vitra-glass-bg: hsl(145deg 100% 50% / 5%);
   }
 
   /* Base glass class with solid fallback */
