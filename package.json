@@ -51,7 +51,7 @@
     "@size-limit/file": "^12.1.0",
     "esbuild": "^0.28.0",
     "jsdom": "^29.1.1",
-    "lightningcss": "^1.32.0",
+    "lightningcss": "^1.33.0",
     "size-limit": "^12.1.0",
     "stylelint": "^17.11.1",
     "stylelint-config-standard": "^40.0.0",
