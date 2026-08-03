@@ -48,7 +48,7 @@
     }
   ],
   "devDependencies": {
-    "@size-limit/file": "^12.1.0",
+    "@size-limit/file": "^13.0.3",
     "esbuild": "^0.28.0",
     "jsdom": "^29.1.1",
     "lightningcss": "^1.32.0",
