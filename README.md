@@ -1,10 +1,10 @@
 # Vitra CSS Framework
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
-[![Version](https://img.shields.io/badge/version-1.13.1-blue)](https://github.com/DesvoSoft/Vitra)
+[![Version](https://img.shields.io/badge/version-1.13.2-blue)](https://github.com/DesvoSoft/Vitra)
 [![License](https://img.shields.io/badge/license-ISC-blue)](https://github.com/DesvoSoft/Vitra)
 [![Bundle Size](https://img.shields.io/badge/css-19.8%20kB%20brotli-brightgreen)](https://github.com/DesvoSoft/Vitra)
-[![Tests](https://img.shields.io/badge/tests-95%20passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
+[![Tests](https://img.shields.io/badge/tests-97%20passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
 
 Vitra is a high-performance, premium CSS framework engineered for modern web applications. It specializes in Glassmorphism, Motion Design, Interactive Particles, and Cinematic Visual Effects, providing a sophisticated aesthetic out of the box with zero external dependencies.
 
@@ -52,13 +52,13 @@ Use jsDelivr to load the minified files. We strongly recommend using a fixed ver
 
 ```html
 <!-- High-performance CSS (Fixed version with SRI) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.1/dist/vitra.min.css" integrity="sha256-..." crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.2/dist/vitra.min.css" integrity="sha256-..." crossorigin="anonymous">
 
 <!-- Optional: Modular JS Engine (Fixed version with SRI) -->
-<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.1/dist/vitra.min.js" integrity="sha256-..." crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.2/dist/vitra.min.js" integrity="sha256-..." crossorigin="anonymous" defer></script>
 ```
 
-> **Note:** Always use a pinned version (e.g., `@v1.13.1`) for production. The SRI hashes are generated during build and stored in `dist/SRI.txt`.
+> **Note:** Always use a pinned version (e.g., `@v1.13.2`) for production. The SRI hashes are generated during build and stored in `dist/SRI.txt`.
 
 #### Option B: Local Assets
 
@@ -211,7 +211,7 @@ Vitra/
 │   └── vitra.js           # 11 modules: theme, particles, reveal, ripple, modal, tooltip, toast, dropdown, spotlight, scenery, motionGuard
 ├── dist/                  # Production builds + source maps + SRI hashes
 ├── docs/                  # Theming, integration, compatibility, audit
-└── tests/                 # 95 vitest tests
+└── tests/                 # 97 vitest tests
 ```
 
 ---

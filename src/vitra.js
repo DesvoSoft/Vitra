@@ -1362,6 +1362,37 @@ const Vitra = (() => {
     const LAYERS = ['sky', 'stars', 'clouds', 'halo', 'ridge-far', 'ridge-mid', 'ridge-near', 'grain'];
 
     let _mounted = [];
+    let _tuned = [];
+    let _resizeObserver = null;
+
+    // Stepped drift only looks even when each step is exactly one device
+    // pixel (Firefox snaps layers to whole pixels; fractional steps turn
+    // into a periodic stall). The stylesheet cannot derive an integer from
+    // an element's width, so the step counts are measured here: distance
+    // travelled per loop, in device pixels.
+    const _tune = (el) => {
+      const dpr = window.devicePixelRatio || 1;
+      const ridge = el.querySelector('.vitra-scenery-ridge-far');
+      const clouds = el.querySelector('.vitra-scenery-clouds');
+      // Both strips hold two tiles and travel one of them (-50%)
+      const ridgeTravel = ridge ? ridge.offsetWidth / 2 : 0;
+      const cloudTravel = clouds ? clouds.offsetWidth / 2 : 0;
+      if (ridgeTravel > 0) el.style.setProperty('--vitra-scenery-steps', Math.max(1, Math.round(ridgeTravel * dpr)));
+      if (cloudTravel > 0) el.style.setProperty('--vitra-scenery-cloud-steps', Math.max(1, Math.round(cloudTravel * dpr)));
+      el.style.setProperty('--vitra-scenery-star-steps', Math.round(1200 * dpr));
+    };
+
+    const _watch = (el) => {
+      if (_tuned.includes(el)) return;
+      _tuned.push(el);
+      _tune(el);
+      if (typeof ResizeObserver === 'function') {
+        if (!_resizeObserver) {
+          _resizeObserver = new ResizeObserver(entries => entries.forEach(entry => _tune(entry.target)));
+        }
+        _resizeObserver.observe(el);
+      }
+    };
 
     const mount = (target, options = {}) => {
       const el = typeof target === 'string' ? document.querySelector(target) : target;
@@ -1392,6 +1423,7 @@ const Vitra = (() => {
         if (halo) halo.classList.toggle('vitra-scenery-halo-crescent', moon === 'crescent');
       }
 
+      _watch(el);
       return el;
     };
 
@@ -1401,6 +1433,9 @@ const Vitra = (() => {
         if (el.children.length === 0) {
           mount(el);
           count++;
+        } else {
+          // Hand-written scenes keep their markup but still get exact steps
+          _watch(el);
         }
       });
       return count;
@@ -1411,6 +1446,14 @@ const Vitra = (() => {
         el.querySelectorAll(':scope > [class^="vitra-scenery-"]').forEach(layer => layer.remove());
       });
       _mounted = [];
+      if (_resizeObserver) {
+        _resizeObserver.disconnect();
+        _resizeObserver = null;
+      }
+      _tuned.forEach(el => {
+        ['--vitra-scenery-steps', '--vitra-scenery-cloud-steps', '--vitra-scenery-star-steps'].forEach(p => el.style.removeProperty(p));
+      });
+      _tuned = [];
     };
 
     return { init, mount, destroy };
