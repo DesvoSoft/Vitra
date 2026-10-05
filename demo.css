@@ -13,7 +13,10 @@ body {
      the document's scrollable overflow in Chromium, widening the layout
      viewport on small screens. Standard off-canvas hygiene: clip the
      horizontal axis at the root. */
-  overflow-x: hidden;
+  /* clip, not hidden: hidden on both html and body turns body into a
+     (non-scrolling) scroll container, which swallows scroll-driven
+     animation timelines such as the hero scenery's scroll depth. */
+  overflow-x: clip;
 }
 
 body {
@@ -30,10 +33,14 @@ body {
   padding: var(--vitra-space-12) 0;
   border-bottom: 1px solid hsla(var(--vitra-color-accent-h), 100%, 70%, 0.05);
 
-  /* Skip layout/paint for sections scrolled far offscreen — cuts
-     ongoing style/layout cost from the long single-page scroll. */
-  content-visibility: auto;
-  contain-intrinsic-size: auto 800px;
+
+  /* No content-visibility: auto here. A skipped subtree never resolves
+     style, so an animation-play-state change made while the section is
+     skipped (the offscreen pause below, Vitra.motionGuard) stays
+     "pending" forever and Chromium keeps producing main-thread frames
+     for it - ~100 style recalcs/s on an idle page. The animations inside
+     are compositor-only and paused offscreen anyway, so there was
+     little left for content-visibility to save. */
 }
 
 /* Applied by demo.js (initOffscreenPause) to zones outside the viewport.
@@ -92,7 +99,10 @@ body {
 
 .demo-hero {
   position: relative;
-  overflow: hidden;
+
+  /* clip, not hidden: overflow:hidden would make the hero a scroll
+     container and capture the scenery's scroll-depth view timeline. */
+  overflow: clip;
   min-height: 92vh;
   display: flex;
   align-items: center;
