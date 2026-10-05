@@ -1,7 +1,7 @@
 # Vitra CSS Framework
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
-[![Version](https://img.shields.io/badge/version-1.13.2-blue)](https://github.com/DesvoSoft/Vitra)
+[![Version](https://img.shields.io/badge/version-1.13.3-blue)](https://github.com/DesvoSoft/Vitra)
 [![License](https://img.shields.io/badge/license-ISC-blue)](https://github.com/DesvoSoft/Vitra)
 [![Bundle Size](https://img.shields.io/badge/css-19.8%20kB%20brotli-brightgreen)](https://github.com/DesvoSoft/Vitra)
 [![Tests](https://img.shields.io/badge/tests-97%20passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
@@ -20,7 +20,7 @@ Unlike generic utility-first frameworks, Vitra is built with a specific aestheti
 -   **Light on the machine**: ambient effects animate `transform`/`opacity` only, move in small steps on a shared 10 Hz clock so the screen is only redrawn when a pixel changes, and pause offscreen.
 -   **Particle System**: Native CSS/JS hybrid particles with built-in performance limits (15 mobile / 40 desktop).
 -   **Cinematic Effects**: Animated mesh gradients, floating glow orbs, gradient text, spinning border glows, page-enter animation, 3D tilt cards, aurora background, text reveal, stagger system.
--   **Ambient Scenery**: CSS-only mountain landscape — faceted ranges with lit planes over a still foreground, twinkling stars, a moon with a breathing corona. It assembles on load and separates into depth planes as you scroll. One element of markup.
+-   **Ambient Scenery**: CSS-only mountain landscape — faceted ranges with lit planes over a still foreground, twinkling stars, a moon with a breathing corona. It fades up on load and separates into depth planes as you scroll. One element of markup.
 -   **Shader Effects**: Pure-CSS shader effects — noise overlay, shape morphing, progress rings, gradient rotate borders, scroll-driven reveals, material ripple.
 -   **Modern CSS Features**: Container Queries, `@starting-style`, Popover API, scroll-driven animations, View Transitions, `linear()` easing — all with fallbacks.
 -   **Premium Color System**: All surfaces tinted with accent hue — no pure neutral grays. Warm/cool/oklch variants.
@@ -52,13 +52,13 @@ Use jsDelivr to load the minified files. We strongly recommend using a fixed ver
 
 ```html
 <!-- High-performance CSS (Fixed version with SRI) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.2/dist/vitra.min.css" integrity="sha256-..." crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.3/dist/vitra.min.css" integrity="sha256-..." crossorigin="anonymous">
 
 <!-- Optional: Modular JS Engine (Fixed version with SRI) -->
-<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.2/dist/vitra.min.js" integrity="sha256-..." crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.3/dist/vitra.min.js" integrity="sha256-..." crossorigin="anonymous" defer></script>
 ```
 
-> **Note:** Always use a pinned version (e.g., `@v1.13.2`) for production. The SRI hashes are generated during build and stored in `dist/SRI.txt`.
+> **Note:** Always use a pinned version (e.g., `@v1.13.3`) for production. The SRI hashes are generated during build and stored in `dist/SRI.txt`.
 
 #### Option B: Local Assets
 
@@ -159,7 +159,7 @@ Vitra.particles.spawn(15, {
 
 ### Scenery — Ambient Mountain Landscape
 
-An ambient backdrop that turns `.vitra-glass` panels into a window onto a scene instead of a translucent card on a flat color: SVG-silhouette mountain ranges at three depths, a moon (or low sun on light themes) with a breathing corona, a star field that twinkles the way real air makes starlight flicker, drifting wisps and valley mist. Colors derive from the active theme's accent hue.
+An ambient backdrop that turns `.vitra-glass` panels into a window onto a scene instead of a translucent card on a flat color: SVG-silhouette mountain ranges at three depths, a moon (or low sun on light themes) with a breathing corona, a star field that shimmers against a steady far plane, drifting wisps and valley mist. Colors derive from the active theme's accent hue.
 
 It is built to be light: every moving layer animates `transform`/`opacity` only (no repaints, no main-thread work), all loops are stepped on one 10 Hz clock so the compositor redraws the scene about ten times a second instead of on every display frame, the foreground stands still, and `Vitra.motionGuard` pauses the scene while it is offscreen. Respects `prefers-reduced-motion`.
 
@@ -189,7 +189,7 @@ No JavaScript? Write the eight layers yourself — the scene is pure CSS either 
 </div>
 ```
 
-The scene assembles on load (ranges rise back-to-front, the moon climbs, stars fade up) and, for `.vitra-scenery-inline`, separates into depth planes as it scrolls away — CSS scroll-driven, no listeners. Tune with `--vitra-scenery-intro`, `--vitra-scenery-depth`, `--vitra-scenery-speed`; full token list in [docs/integration.md](docs/integration.md).
+The scene fades up on load and, for `.vitra-scenery-inline`, separates into depth planes as it scrolls away — CSS scroll-driven, no listeners. Tune with `--vitra-scenery-intro`, `--vitra-scenery-depth`, `--vitra-scenery-speed`; full token list in [docs/integration.md](docs/integration.md).
 
 ---
 

@@ -997,7 +997,6 @@ var require_vitra = __commonJS({
           const cloudTravel = clouds ? clouds.offsetWidth / 2 : 0;
           if (ridgeTravel > 0) el.style.setProperty("--vitra-scenery-steps", Math.max(1, Math.round(ridgeTravel * dpr)));
           if (cloudTravel > 0) el.style.setProperty("--vitra-scenery-cloud-steps", Math.max(1, Math.round(cloudTravel * dpr)));
-          el.style.setProperty("--vitra-scenery-star-steps", Math.round(1200 * dpr));
         };
         const _watch = (el) => {
           if (_tuned.includes(el)) return;
@@ -1058,7 +1057,7 @@ var require_vitra = __commonJS({
             _resizeObserver = null;
           }
           _tuned.forEach((el) => {
-            ["--vitra-scenery-steps", "--vitra-scenery-cloud-steps", "--vitra-scenery-star-steps"].forEach((p) => el.style.removeProperty(p));
+            ["--vitra-scenery-steps", "--vitra-scenery-cloud-steps"].forEach((p) => el.style.removeProperty(p));
           });
           _tuned = [];
         };

@@ -198,6 +198,9 @@ if (prefersReducedMotion) {
 - **Workaround**: Cascade still works, layers just don't provide isolation
 - Glass effects work fine with `-webkit-backdrop-filter`
 
+### Firefox (all versions) — animate wrappers, not painted elements
+Firefox re-rasterizes an element's SVG background images and masks on the main thread whenever that element itself animates (`transform` or `opacity`), at roughly 100 ms a time in a full-width hero. Chromium caches the layer and pays nothing. Animating a parent that only *contains* the painted element is free in both. The scenery follows that rule everywhere: ridges, star field and the scene root are plain wrappers; the masked/painted layers inside them never animate.
+
 ### Firefox (87-96)
 - `@layer` not supported until 97
 - **Workaround**: Same as Safari, cascade works without layer isolation
