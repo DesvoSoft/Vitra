@@ -81,7 +81,11 @@
     --vitra-color-border-rgb: 140, 90, 120;
     --vitra-color-accent-h: 330;
     --vitra-color-accent-s: 70%;
-    --vitra-color-accent-l: 55%;
+
+    /* 46%, not 55%: at 55% the accent only reached 3.9:1 under white
+       label text and 3.3:1 as text on the pale surfaces (WCAG AA wants
+       4.5:1). Still unmistakably pink, just a deeper one. */
+    --vitra-color-accent-l: 44%;
     --vitra-color-accent-rgb: 221, 60, 140;
     --vitra-color-text-primary: hsl(330deg 20% 20%);
     --vitra-color-text-secondary: hsl(330deg 10% 40%);

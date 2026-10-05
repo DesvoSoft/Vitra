@@ -8,12 +8,12 @@ Vitra includes **6 preset themes** (plus `auto` for system detection) that can b
 
 | Theme | Name | Accent Hue | Description |
 |-------|------|-----------|-------------|
-| `light` | Light | 245 (purple) | Light background with subtle purple tint |
-| `dark` | Dark | 245 (purple) | Dark background with subtle purple tint |
-| `pastel` | Pastel | 320 (pink) | Soft muted colors with pink accents |
-| `neon` | Neon | 180 (cyan) | Bright cyan accents on deep dark background |
-| `ocean` | Ocean | 200 (blue) | Deep blue-toned theme with cyan accents |
-| `emerald` | Emerald | 155 (green) | Rich green-toned theme with soft glows |
+| `light` | Light | 222 (blue) | Pale blue-tinted background, blue accent |
+| `dark` | Dark | 177 (teal) | Near-black background tinted by the teal accent |
+| `pastel` | Pastel | 330 (pink) | Soft blush surfaces with a deep pink accent |
+| `neon` | Neon | 285 (violet) | Vivid violet accent on a deep dark background |
+| `ocean` | Ocean | 205 (blue) | Deep blue-toned theme with a bright blue accent |
+| `emerald` | Emerald | 145 (green) | Rich green-toned theme with soft glows |
 | `auto` | Auto-Detect | 245 (purple) | Uses `prefers-color-scheme` to detect system preference |
 
 ### Premium Color Features
@@ -124,11 +124,11 @@ Soft, muted colors with pink accents.
 
 **Key Tokens:**
 ```css
-[data-theme="pastel"] {
-  --vitra-color-bg: #f9f7f7;
-  --vitra-color-surface: rgba(255, 182, 193, 0.15);
-  --vitra-color-accent: #ffb6c1; /* Light pink */
-  --vitra-color-text-primary: rgba(80, 60, 80, 0.95);
+html[data-theme="pastel"] {
+  --vitra-color-bg: hsl(330deg 30% 98%);
+  --vitra-color-accent-h: 330;
+  --vitra-color-accent-s: 70%;
+  --vitra-color-accent-l: 44%; /* deep enough for 4.5:1 under white labels and as text on the pale surfaces */
 }
 ```
 

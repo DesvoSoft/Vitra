@@ -1045,25 +1045,25 @@
   /* Success badge */
   .vitra-badge-success {
     background-color: var(--vitra-color-success);
-    color: var(--vitra-color-text-inverse);
+    color: var(--vitra-color-on-status);
   }
 
   /* Warning badge */
   .vitra-badge-warning {
     background-color: var(--vitra-color-warning);
-    color: var(--vitra-color-text-inverse);
+    color: var(--vitra-color-on-status);
   }
 
   /* Error badge */
   .vitra-badge-error {
     background-color: var(--vitra-color-error);
-    color: var(--vitra-color-text-inverse);
+    color: var(--vitra-color-on-status);
   }
 
   /* Info badge */
   .vitra-badge-info {
     background-color: var(--vitra-color-info);
-    color: var(--vitra-color-text-inverse);
+    color: var(--vitra-color-on-status);
   }
 
   /* Ghost badge (outline style) */

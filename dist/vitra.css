@@ -33,6 +33,13 @@
     --vitra-color-error: hsl(0deg 84% 60%);
     --vitra-color-info: hsl(217deg 91% 60%);
 
+    /* Ink for text sitting ON a solid status fill. The four fills above
+       are the same mid-bright colours in every theme, so the ink must not
+       follow the theme: white (the light themes' inverse text) only
+       reaches 2.6:1 on success and 3.6:1 on info. This dark ink clears
+       WCAG AA (4.5:1) on all four. */
+    --vitra-color-on-status: hsl(230deg 25% 8%);
+
     /* Semantic State Surfaces */
     --vitra-color-success-surface: hsl(150deg 84% 39% / 10%);
     --vitra-color-success-border:  hsl(150deg 84% 39% / 30%);
@@ -368,7 +375,11 @@
     --vitra-color-border-rgb: 140, 90, 120;
     --vitra-color-accent-h: 330;
     --vitra-color-accent-s: 70%;
-    --vitra-color-accent-l: 55%;
+
+    /* 46%, not 55%: at 55% the accent only reached 3.9:1 under white
+       label text and 3.3:1 as text on the pale surfaces (WCAG AA wants
+       4.5:1). Still unmistakably pink, just a deeper one. */
+    --vitra-color-accent-l: 44%;
     --vitra-color-accent-rgb: 221, 60, 140;
     --vitra-color-text-primary: hsl(330deg 20% 20%);
     --vitra-color-text-secondary: hsl(330deg 10% 40%);
@@ -4138,25 +4149,25 @@
   /* Success badge */
   .vitra-badge-success {
     background-color: var(--vitra-color-success);
-    color: var(--vitra-color-text-inverse);
+    color: var(--vitra-color-on-status);
   }
 
   /* Warning badge */
   .vitra-badge-warning {
     background-color: var(--vitra-color-warning);
-    color: var(--vitra-color-text-inverse);
+    color: var(--vitra-color-on-status);
   }
 
   /* Error badge */
   .vitra-badge-error {
     background-color: var(--vitra-color-error);
-    color: var(--vitra-color-text-inverse);
+    color: var(--vitra-color-on-status);
   }
 
   /* Info badge */
   .vitra-badge-info {
     background-color: var(--vitra-color-info);
-    color: var(--vitra-color-text-inverse);
+    color: var(--vitra-color-on-status);
   }
 
   /* Ghost badge (outline style) */

@@ -146,7 +146,8 @@ Vitra supports declarive configuration via the `data-config` attribute. No JavaS
 {
   "theme": {
     "defaultTheme": "auto",  // Fallback theme
-    "persist": true            // Save to localStorage
+    "persist": true,           // Save to localStorage
+    "transition": false        // Animate later theme changes (View Transition circular reveal)
   },
   "particles": {
     "count": 10,              // Number of particles
@@ -161,7 +162,11 @@ Vitra supports declarive configuration via the `data-config` attribute. No JavaS
     "scrollReveal": false        // Also watch .vitra-scroll-reveal* elements
   },
   "ripple": true,              // Initialize click ripple (true by default)
-  "tooltip": true              // Initialize tooltips (true by default)
+  "tooltip": true,             // Initialize tooltips (true by default)
+  "dropdown": true,            // Dropdown click/keyboard handling (true by default)
+  "spotlight": true,           // Pointer-follow glow on .vitra-spotlight (true by default)
+  "scenery": true,             // Fill empty .vitra-scenery roots with their layers (true by default)
+  "motionGuard": true          // Pause ambient animations while offscreen (true by default)
 }
 ```
 
