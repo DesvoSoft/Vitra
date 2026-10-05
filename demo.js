@@ -122,14 +122,14 @@
     });
   }
 
-  // Rebuild the showcase scene so its entrance choreography plays again
+  // Replay the showcase scene's entrance fade (it lives on the scene root)
   window.replaySceneryEntrance = function (length) {
     var scene = document.querySelector('#scenery-showcase .vitra-scenery-inline');
-    if (!scene || !Vitra.scenery) return;
-    var crescent = !!scene.querySelector('.vitra-scenery-halo-crescent');
+    if (!scene) return;
     scene.style.setProperty('--vitra-scenery-intro', length);
-    scene.innerHTML = '';
-    Vitra.scenery.mount(scene, { moon: crescent ? 'crescent' : 'full' });
+    scene.style.animation = 'none';
+    void scene.offsetWidth;
+    scene.style.animation = '';
   };
 
   window.toggleTheme = function () {
