@@ -241,7 +241,10 @@ html[data-theme="pastel"] .demo-hero-overline {
   border-right: 2px solid hsl(var(--vitra-color-accent-h) 30% 85% / 0.55);
   border-bottom: 2px solid hsl(var(--vitra-color-accent-h) 30% 85% / 0.55);
   transform: translateX(-50%) rotate(45deg);
-  animation: demo-hero-scroll-cue 2.4s ease-in-out infinite;
+  /* Stepped, like the framework's own ambient loops: a continuously
+     interpolated animation - even this 14px chevron - makes the browser
+     compose a new frame of the page on every vsync. */
+  animation: demo-hero-scroll-cue 2.4s steps(12) infinite;
   pointer-events: none;
 }
 
@@ -1317,37 +1320,12 @@ pre code {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.demo-hero-stats {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--vitra-space-6) var(--vitra-space-10, 2.5rem);
-  list-style: none;
-  margin: var(--vitra-space-8) 0 0;
-  padding: 0;
-}
-
-.demo-hero-stats li {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.demo-hero-stats strong {
-  font-size: clamp(1.25rem, 3vw, 1.75rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--vitra-color-text-primary);
-  font-variant-numeric: tabular-nums;
-}
-
-.demo-hero-stats span {
-  font-size: var(--vitra-font-size-xs);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--vitra-color-text-secondary);
-}
+/* The mesh-gradient preview: .vitra-gradient-bg is position: fixed by
+   design (a full-page backdrop). Inside this demo box that resolved
+   against the whole section - a 2000px-tall animated layer hiding
+   behind the page. Pin it to its preview instead. */
+#cinematic-gradient-bg { position: relative; overflow: hidden; }
+#cinematic-gradient-bg .vitra-gradient-bg { position: absolute; }
 
 /* ============================================================
    NEW IN 1.13
@@ -1484,11 +1462,6 @@ pre code {
   border-radius: 3px;
   margin-right: 4px;
   vertical-align: baseline;
-}
-
-@media (width < 520px) {
-  .demo-hero-stats { flex-wrap: nowrap; gap: var(--vitra-space-4); margin-top: var(--vitra-space-6); }
-  .demo-hero-stats span { font-size: 0.62rem; letter-spacing: 0.04em; }
 }
 
 @media (prefers-reduced-motion: reduce) {
