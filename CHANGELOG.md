@@ -4,6 +4,28 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.3] - 2026-10-05
+
+Firefox pass. The scenery was smooth in Chromium and badly janky in Firefox; measured in headless Firefox 157 by frame pacing (`requestAnimationFrame` intervals over 4s, an empty page reads 240fps):
+
+| | 1.13.2 | 1.13.3 |
+|---|---|---|
+| Hero at rest | 20–37 fps, 35–43 frames over 25 ms | **233–237 fps, 2** |
+| Hero during its entrance | 16 fps | **135–230 fps** |
+| Demo page, hero | 12–35 fps (tab sometimes died) | **233 fps** |
+
+The cause was not the stepping (1.13.2 guessed wrong): Firefox re-rasterizes an element's SVG backgrounds and masks whenever *that element* animates, on the main thread, about 100 ms a time. Animating a wrapper that merely contains such an element is free in every engine. Chromium is unchanged: 0 repaints, 0 style recalcs, 15–20 compositor draws/s at rest.
+
+### Changed
+
+- **Star twinkle is an opacity shimmer on the (unmasked) star wrapper**, five steps a second; the star plane itself is static. The per-star noise-mask "scintillation" of 1.13.0–1.13.2 animated the very elements that paint the star tiles. The far star plane is now steady and no longer drifts — it is the constant the near field twinkles against, and point-sized stars creeping a pixel at a time were the most visible stepping artefact.
+- **Entrance is one fade on the scenery root** instead of seven layer-by-layer animations (ranges rising, moon climbing, wisps and mist fading up). `--vitra-scenery-intro` still scales its length; `0` disables it.
+- `--vitra-scenery-star-steps` is gone (nothing uses it).
+
+### Fixed
+
+- A second opacity animation on the star wrapper (entrance + twinkle) put both on the main thread in Chromium — caught before release; the wrapper carries exactly one.
+
 ## [1.13.2] - 2026-10-05
 
 ### Fixed

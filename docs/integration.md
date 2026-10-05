@@ -490,7 +490,7 @@ The eight child layers are always the same regardless of which root class is use
 | `--vitra-scenery-halo-size` | `clamp(56px, 9vmin, 110px)` | Moon/sun diameter |
 | `--vitra-scenery-opacity-rim` | `0.85` (dark) / `0.6` (light, pastel) | Ridge crest rim-light strength |
 | `--vitra-scenery-speed` | `1` | Drift speed multiplier (higher = faster) |
-| `--vitra-scenery-intro` | `1` | Entrance choreography length multiplier (`2` = slower, `0` = no entrance) |
+| `--vitra-scenery-intro` | `1` | Entrance fade length multiplier (`2` = slower, `0` = no entrance) |
 | `--vitra-scenery-depth` | `1` | Scroll-depth strength for `.vitra-scenery-inline` (`0` = layers stay locked) |
 | `--vitra-scenery-opacity-far` / `-mid` / `-near` | `0.6` / `0.75` / `0.92` | Per-layer opacity (atmospheric perspective) |
 | `--vitra-scenery-opacity-clouds` | `0.35` | Cloud layer opacity |
@@ -522,10 +522,10 @@ Opt out of the auto-fill with `"scenery": false` in `data-config`.
 
 **Motion, and what it costs.** Every moving layer animates `transform`/`opacity` only, so the scene runs on the compositor: an idle page performs no repaints and no per-frame style work.
 
-- *Twinkle* — the star tiles are static; a turbulence-noise mask slides across them (the star plane counter-slides so stars stay put), so each star brightens and dims on its own schedule.
-- *Entrance* — on load the ranges rise into place back-to-front, the moon climbs to its mark, then stars, wisps and mist fade up. A scene that starts offscreen plays it when it scrolls into view.
+- *Twinkle* — the near star field shimmers (an opacity flicker on its wrapper, five steps a second) against a far plane that holds steady. Nothing that paints a star tile is ever animated: Firefox re-rasterizes an element's SVG backgrounds and masks every time that element changes.
+- *Entrance* — the whole scene fades up as one piece, a single opacity animation on the root. A scene that starts offscreen fades up when it scrolls into view.
 - *Scroll depth* (`.vitra-scenery-inline`, browsers with CSS scroll-driven animations) — while the host scrolls out of view, the sky and moon lag the most, the far range less, the near treeline barely at all. No scroll listener. **The host must not be `overflow: hidden`** — that makes it the scroll container the timeline attaches to, and the effect silently stays off. Use `overflow: clip`, or nothing: the scenery root clips itself.
-- *Stepped loops* — a compositor animation that interpolates continuously makes the browser draw a new frame of the whole viewport on every display refresh, however slowly the layer moves. Every infinite loop in the scene uses `steps()` on a shared 10 Hz grid instead, so the screen is redrawn about ten times a second, with all layers changing together. Each step is exactly one device pixel: `Vitra.scenery` measures the scene and sets the step counts (`--vitra-scenery-steps`, `-cloud-steps`, `-star-steps`), because a fractional step looks smooth in Chromium but turns into a periodic stall in Firefox, which snaps layers to whole pixels. Without JavaScript the defaults fit a ~1600px-wide scene; set the tokens yourself for other sizes.
+- *Stepped loops* — a compositor animation that interpolates continuously makes the browser draw a new frame of the whole viewport on every display refresh, however slowly the layer moves. Every infinite loop in the scene uses `steps()` on a shared 10 Hz grid instead, so the screen is redrawn about ten times a second, with all layers changing together. Each step is exactly one device pixel: `Vitra.scenery` measures the scene and sets the step counts (`--vitra-scenery-steps`, `--vitra-scenery-cloud-steps`), because a fractional step looks smooth in Chromium but turns into a periodic stall in Firefox, which snaps layers to whole pixels. Without JavaScript the defaults fit a ~1600px-wide scene; set the tokens yourself for other sizes.
 - *Offscreen* — `Vitra.motionGuard` pauses every layer, pseudo-elements included, while the root is outside the viewport.
 
 **Reshaping the mountains.** The ridge masks are generated, not hand-drawn: `node scripts/gen-ridges.cjs --write` rewrites them in `src/09-scenery.css`. Edit the `FAR` / `MID` control points to move summits and valleys, or set `SEED_FAR` / `SEED_MID` / `SEED_NEAR` to re-roll the crag detail and the tree stands.
