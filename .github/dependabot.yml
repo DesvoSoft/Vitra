@@ -1,12 +1,25 @@
 version: 2
 updates:
+  # One pull request per week for routine dev-tooling updates instead of
+  # one per package (nine had piled up, each with its own branch and CI
+  # run). Majors come separately so a breaking bump never blocks the rest.
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 3
+    groups:
+      dev-tooling:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+      dev-tooling-majors:
+        patterns: ["*"]
+        update-types: ["major"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
+    groups:
+      actions:
+        patterns: ["*"]
