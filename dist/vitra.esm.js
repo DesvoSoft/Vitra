@@ -28,13 +28,18 @@ var require_vitra = __commonJS({
          * @param {string} themeName - Theme name to apply
          * @returns {boolean} Success status
          */
-        set(themeName) {
+        set(themeName, options = {}) {
           if (!VALID_THEMES.includes(themeName)) {
             console.warn(`[Vitra Theme] Invalid theme: "${themeName}". Valid themes: ${VALID_THEMES.join(", ")}`);
             return false;
           }
           const html = document.documentElement;
-          html.dataset.theme = themeName;
+          const animate = options.transition !== void 0 ? options.transition : theme._transition;
+          if (animate && html.dataset.theme !== themeName && theme._canTransition()) {
+            theme._reveal(themeName, options.origin);
+          } else {
+            html.dataset.theme = themeName;
+          }
           const announcer = document.getElementById("vitra-theme-announcer") || (() => {
             const el = document.createElement("div");
             el.id = "vitra-theme-announcer";
@@ -61,7 +66,7 @@ var require_vitra = __commonJS({
          * Toggle between light and dark themes
          * @returns {string} The new active theme
          */
-        toggle() {
+        toggle(options) {
           const current = this.get();
           let next;
           if (current === "light") {
@@ -74,8 +79,51 @@ var require_vitra = __commonJS({
           } else {
             next = "light";
           }
-          this.set(next);
+          this.set(next, options);
           return next;
+        },
+        // Animated theme swaps are opt-in: theme.init({ transition: true }),
+        // or per call via set(name, { transition: true }).
+        _transition: false,
+        _canTransition() {
+          return typeof document.startViewTransition === "function" && !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+        },
+        /**
+         * Swap the theme inside a View Transition: the new theme grows as a
+         * circle out of `origin` (a pointer event, an element, or {x, y};
+         * defaults to the viewport centre). The attribute changes inside the
+         * transition callback, i.e. one frame later than a plain set().
+         */
+        _reveal(themeName, origin) {
+          const html = document.documentElement;
+          let x = window.innerWidth / 2;
+          let y = window.innerHeight / 2;
+          if (origin && typeof origin.clientX === "number") {
+            x = origin.clientX;
+            y = origin.clientY;
+          } else if (origin && typeof origin.getBoundingClientRect === "function") {
+            const rect = origin.getBoundingClientRect();
+            x = rect.left + rect.width / 2;
+            y = rect.top + rect.height / 2;
+          } else if (origin && typeof origin.x === "number") {
+            x = origin.x;
+            y = origin.y;
+          }
+          const r = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+          html.style.setProperty("--vitra-theme-x", `${x}px`);
+          html.style.setProperty("--vitra-theme-y", `${y}px`);
+          html.style.setProperty("--vitra-theme-r", `${Math.ceil(r)}px`);
+          html.classList.add("vitra-theme-transition");
+          const done = () => html.classList.remove("vitra-theme-transition");
+          try {
+            const vt = document.startViewTransition(() => {
+              html.dataset.theme = themeName;
+            });
+            Promise.resolve(vt && vt.finished).then(done, done);
+          } catch (e) {
+            html.dataset.theme = themeName;
+            done();
+          }
         },
         /**
          * Initialize theme from localStorage or system preference
@@ -83,9 +131,11 @@ var require_vitra = __commonJS({
          * @param {Object} options - Initialization options
          * @param {string} options.defaultTheme - Fallback theme if nothing stored (default: 'auto')
          * @param {boolean} options.persist - Whether to persist the theme (default: true)
+         * @param {boolean} options.transition - Animate later theme changes with a circular reveal (default: false)
          */
         init(options = {}) {
           const { defaultTheme = "auto", persist = true } = options;
+          theme._transition = options.transition === true;
           let themeToSet = null;
           if (theme._isLocalStorageAvailable()) {
             try {

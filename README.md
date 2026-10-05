@@ -196,7 +196,7 @@ Vitra/
 │   └── vitra.js           # 11 modules: theme, particles, reveal, ripple, modal, tooltip, toast, dropdown, spotlight, scenery, motionGuard
 ├── dist/                  # Production builds + source maps + SRI hashes
 ├── docs/                  # Theming, integration, compatibility, audit
-└── tests/                 # 90 vitest tests
+└── tests/                 # 95 vitest tests
 ```
 
 ---

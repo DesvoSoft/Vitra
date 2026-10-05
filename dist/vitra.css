@@ -131,6 +131,16 @@
     --vitra-ease-in: cubic-bezier(0.4, 0, 1, 1);
     --vitra-ease-out: cubic-bezier(0, 0, 0.2, 1);
     --vitra-ease-luxury: cubic-bezier(0.23, 1, 0.32, 1); /* EaseOutQuint */
+
+    /* Springs: things that arrive (modal, toast, drawer, menu) overshoot
+       a touch and settle, instead of gliding to a dead stop. These two
+       are the back-out approximations every browser understands; where
+       linear() is supported they are replaced below by sampled damped
+       springs, which can ring past the target more than once. Pair with
+       --vitra-duration-spring: a spring needs room to settle. */
+    --vitra-ease-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
+    --vitra-ease-spring-soft: cubic-bezier(0.3, 1.2, 0.5, 1);
+    --vitra-duration-spring: 520ms;
     --vitra-duration-fast: 150ms;
     --vitra-duration-normal: 300ms;
     --vitra-duration-slow: 500ms;
@@ -261,6 +271,14 @@
   .vitra-link:hover::after {
     transform: scaleX(1);
     transform-origin: bottom left;
+  }
+
+  /* Real damped springs (zeta 0.5 and 0.72), sampled into linear() */
+  @supports (transition-timing-function: linear(0, 1)) {
+    :root {
+      --vitra-ease-spring: linear(0, 0.138, 0.43, 0.737, 0.974, 1.112, 1.162, 1.149, 1.104, 1.053, 1.011, 0.985, 0.974, 0.975, 0.981, 0.99, 0.997, 1.002, 1.004, 1.004, 1.003, 1.002, 1.001, 1, 1);
+      --vitra-ease-spring-soft: linear(0, 0.115, 0.348, 0.586, 0.778, 0.911, 0.989, 1.026, 1.038, 1.036, 1.027, 1.018, 1.01, 1.004, 1.001, 0.999, 0.999, 0.999, 0.999, 0.999, 1);
+    }
   }
 }
 
@@ -1387,6 +1405,33 @@
   }
 
   /* ============================================
+     THEME TRANSITION
+     Vitra.theme.set(name, { transition: true, origin })
+     swaps the theme inside a View Transition: the new
+     theme grows out of the control that was pressed as
+     an expanding circle, over a frozen snapshot of the
+     old one. One clip-path animation on a GPU snapshot -
+     nothing in the page itself repaints per frame.
+     The class is only on <html> for the duration of the
+     swap, so other view transitions are left alone.
+     ============================================ */
+
+  .vitra-theme-transition::view-transition-old(root),
+  .vitra-theme-transition::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
+  .vitra-theme-transition::view-transition-new(root) {
+    animation: vitra-theme-reveal 700ms var(--vitra-ease-luxury) both;
+  }
+
+  @keyframes vitra-theme-reveal {
+    from { clip-path: circle(0 at var(--vitra-theme-x, 50%) var(--vitra-theme-y, 50%)); }
+    to { clip-path: circle(var(--vitra-theme-r, 150vmax) at var(--vitra-theme-x, 50%) var(--vitra-theme-y, 50%)); }
+  }
+
+  /* ============================================
      PAGE ENTER ANIMATION
      Fade + scale up on page load — instant premium feel
      Add .vitra-page-enter to <body> or page wrapper
@@ -2232,7 +2277,7 @@
     height: 58%;
     opacity: var(--vitra-scenery-opacity-far);
     animation:
-      vitra-scenery-drift-far calc(480s / var(--vitra-scenery-speed)) linear infinite,
+      vitra-scenery-drift-far calc(480s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) linear infinite,
       vitra-scenery-enter-far calc(2.2s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) backwards;
   }
 
@@ -2272,7 +2317,7 @@
     height: 40%;
     opacity: var(--vitra-scenery-opacity-mid);
     animation:
-      vitra-scenery-drift-mid calc(160s / var(--vitra-scenery-speed)) linear infinite,
+      vitra-scenery-drift-mid calc(160s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) linear infinite,
       vitra-scenery-enter-mid calc(1.9s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) calc(0.1s * var(--vitra-scenery-intro)) backwards;
   }
 
@@ -2307,7 +2352,7 @@
     height: 24%;
     opacity: var(--vitra-scenery-opacity-near);
     animation:
-      vitra-scenery-drift-near calc(32s / var(--vitra-scenery-speed)) linear infinite,
+      vitra-scenery-drift-near calc(32s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) linear infinite,
       vitra-scenery-enter-near calc(1.6s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) calc(0.2s * var(--vitra-scenery-intro)) backwards;
   }
 
@@ -2364,9 +2409,14 @@
        valleys. Sun sits cradled in the saddle between them.
        Mask applies to BOTH pseudos: silhouette (::after) and its
        rim light (::before) share the exact same shape. */
-    .vitra-scenery-ridge-far::before,
+    .vitra-scenery-ridge-far::before {
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M28 265L44 259L57 254L70 250L80 245L87 241L99 237L113 235L127 224L134 219L150 205L157 204L169 201L180 194L190 190L205 178L214 163L225 146L239 132L250 118L260 161L285 203L295 246L324 288L102 273ZM330 172L339 171L350 167L359 163L372 160L383 156L393 152L403 147L414 138L421 133L430 128L440 122L448 118L456 112L472 99L481 93L489 88L500 82L515 75L529 66L544 52L553 44L560 38L586 83L600 129L619 174L630 219L634 264L665 310L670 355L679 400L417 357ZM800 214L813 198L824 187L839 177L850 168L871 218L897 268L906 318L827 300ZM982 242L994 239L1002 236L1010 232L1025 224L1035 216L1046 207L1058 196L1070 190L1076 184L1087 169L1097 159L1106 150L1119 137L1130 128L1141 120L1146 117L1155 109L1169 95L1180 84L1210 129L1228 174L1243 219L1274 265L1280 310L1314 355L1328 400L1069 362Z'/></svg>");
+      mask-size: 50% 100%;
+      mask-repeat: repeat-x;
+    }
+
     .vitra-scenery-ridge-far::after {
-      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V258C50 252 95 240 135 222C165 208 190 186 220 172C240 163 258 168 275 158C295 146 310 128 330 118L345 110C360 122 372 138 390 148C405 156 418 152 432 144C450 134 462 116 478 104L495 92C505 85 512 78 522 70L535 60C555 80 570 104 592 122C615 141 640 152 668 162C700 173 730 180 760 190C795 202 825 215 858 224C888 232 920 236 950 234C980 232 1008 222 1035 208C1060 195 1080 176 1105 160L1125 146C1135 138 1143 130 1155 124L1168 117C1185 135 1200 155 1222 170C1250 189 1280 200 1310 210C1350 222 1395 227 1440 258V400Z'/></svg>");
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V262L15 263L28 265L44 259L57 254L70 250L80 245L87 241L99 237L113 235L127 224L134 219L150 205L157 204L169 201L180 194L190 190L205 178L214 163L225 146L239 132L250 118L262 133L274 142L285 150L296 157L303 161L315 165L330 172L339 171L350 167L359 163L372 160L383 156L393 152L403 147L414 138L421 133L430 128L440 122L448 118L456 112L472 99L481 93L489 88L500 82L515 75L529 66L544 52L553 44L560 38L568 46L577 59L590 74L598 84L613 97L628 106L640 112L655 121L662 126L671 134L681 142L690 150L697 158L709 174L724 186L740 196L754 201L762 202L777 208L792 213L800 214L813 198L824 187L839 177L850 168L864 179L878 189L890 196L902 204L910 208L926 216L937 229L950 240L961 239L971 240L982 242L994 239L1002 236L1010 232L1025 224L1035 216L1046 207L1058 196L1070 190L1076 184L1087 169L1097 159L1106 150L1119 137L1130 128L1141 120L1146 117L1155 109L1169 95L1180 84L1195 99L1204 110L1215 126L1225 129L1232 135L1245 143L1251 146L1262 150L1268 157L1279 172L1290 182L1300 188L1312 194L1318 196L1330 202L1345 214L1360 226L1366 229L1377 236L1383 241L1393 250L1410 253L1419 255L1426 258L1440 262V400Z'/></svg>");
       mask-size: 50% 100%;
       mask-repeat: repeat-x;
     }
@@ -2374,16 +2424,21 @@
     /* Mid: soft rolling foothills, one gentle crest left-of-center,
        long calm undulation elsewhere - lets the far range be the
        drama while providing the depth overlap. */
-    .vitra-scenery-ridge-mid::before,
+    .vitra-scenery-ridge-mid::before {
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 286L16 282L22 281L33 277L52 274L64 270L80 270L95 262L108 255L117 250L129 244L141 238L150 232L164 216L177 198L183 188L196 168L211 214L221 261L260 307L267 354L286 400L72 372ZM700 222L714 215L721 210L733 202L749 192L758 186L770 180L776 175L788 166L802 155L809 146L822 132L839 176L853 220L887 264L896 308L906 352L939 396L760 364ZM1090 272L1103 270L1111 268L1121 266L1136 262L1142 261L1153 259L1166 259L1180 258L1192 253L1206 251L1215 247L1228 240L1239 233L1250 226L1289 276L1311 326L1334 376L1151 358Z'/></svg>");
+      mask-size: 50% 100%;
+      mask-repeat: repeat-x;
+    }
+
     .vitra-scenery-ridge-mid::after {
-      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V292C60 284 110 268 165 258C220 248 260 232 310 220C340 213 365 202 395 196L415 192C450 200 480 214 520 224C570 236 615 244 665 248C720 252 770 246 820 236C860 228 895 216 935 210C975 204 1010 208 1050 216C1100 226 1150 240 1200 248C1280 260 1360 274 1440 292V400Z'/></svg>");
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V286L16 282L22 281L33 277L52 274L64 270L80 270L95 262L108 255L117 250L129 244L141 238L150 232L164 216L177 198L183 188L196 168L203 174L213 185L225 196L236 206L245 210L253 215L261 220L274 224L286 226L300 228L311 230L323 235L329 237L346 242L357 245L372 250L380 252L395 255L406 260L416 261L427 262L448 262L470 264L486 260L493 257L507 252L516 251L532 250L548 248L560 246L569 244L577 242L592 236L609 230L619 226L626 221L640 214L649 215L657 213L665 212L672 214L681 216L689 219L700 222L714 215L721 210L733 202L749 192L758 186L770 180L776 175L788 166L802 155L809 146L822 132L835 146L847 157L854 164L866 176L878 181L886 185L894 186L904 190L917 197L930 204L938 209L954 216L964 223L971 228L985 237L1000 246L1007 248L1019 252L1037 259L1057 264L1070 268L1076 269L1090 272L1103 270L1111 268L1121 266L1136 262L1142 261L1153 259L1166 259L1180 258L1192 253L1206 251L1215 247L1228 240L1239 233L1250 226L1264 226L1272 226L1287 232L1300 236L1311 244L1320 249L1334 257L1347 260L1362 264L1370 267L1378 269L1389 272L1397 274L1414 280L1424 281L1440 286V400Z'/></svg>");
       mask-size: 50% 100%;
       mask-repeat: repeat-x;
     }
 
     /* Near: quiet dark treeline, barely undulating */
     .vitra-scenery-ridge-near::after {
-      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V348C110 338 210 350 330 344C450 338 550 352 680 346C810 340 920 354 1050 348C1180 342 1310 352 1440 348V400Z'/></svg>");
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 400V322L120 325L240 322L360 324L480 330L600 325L720 314L840 311L960 314L1080 312L1200 306L1320 311L1440 322V400ZM-9 330L2 231L15 330ZM3 331L9 301L7 301L12 270L17 301L15 301L19 331ZM14 332L26 253L36 332ZM19 332L29 241L41 332ZM30 333L36 295L33 295L39 271L45 295L42 295L48 333ZM37 333L47 275L55 333ZM49 333L57 281L65 333ZM55 333L59 299L56 299L62 277L68 299L65 299L71 333ZM64 333L73 282L82 333ZM80 334L88 281L95 334ZM88 334L93 321L90 321L95 304L100 321L97 321L102 334ZM100 333L104 315L103 315L106 295L109 315L108 315L112 333ZM112 333L116 310L115 310L118 286L121 310L120 310L125 333ZM118 333L123 303L120 303L126 271L132 303L129 303L135 333ZM125 333L132 309L129 309L134 287L139 309L136 309L142 333ZM139 333L143 311L141 311L145 292L149 311L147 311L152 333ZM145 332L155 262L165 332ZM153 332L160 292L158 292L162 272L166 292L164 292L169 332ZM164 332L169 310L167 310L171 292L175 310L173 310L177 332ZM175 331L180 297L178 297L182 265L186 297L184 297L191 331ZM186 331L192 306L189 306L195 286L201 306L198 306L203 331ZM193 331L200 291L209 331ZM202 330L207 313L205 313L208 302L211 313L209 313L214 330ZM210 330L214 315L212 315L216 304L220 315L218 315L223 330ZM221 330L227 311L225 311L228 295L231 311L229 311L233 330ZM266 329L274 278L282 329ZM274 329L277 312L275 312L279 299L283 312L281 312L286 329ZM282 330L287 304L285 304L290 283L295 304L293 304L297 330ZM315 330L318 313L317 313L320 301L323 313L322 313L326 330ZM366 333L374 282L382 333ZM404 335L408 308L406 308L411 285L416 308L414 308L419 335ZM412 336L418 301L416 301L420 284L424 301L422 301L426 336ZM420 336L427 312L425 312L429 293L433 312L431 312L436 336ZM429 337L437 284L443 337ZM443 337L448 316L446 316L451 295L456 316L454 316L458 337ZM449 337L458 287L465 337ZM457 338L461 318L459 318L463 296L467 318L465 318L470 338ZM470 338L476 306L482 338ZM476 338L482 310L480 310L484 288L488 310L486 310L490 338ZM486 338L490 315L488 315L492 289L496 315L494 315L500 338ZM500 338L508 291L515 338ZM511 338L520 275L529 338ZM523 338L532 276L540 338ZM528 337L534 297L531 297L537 259L543 297L540 297L546 337ZM534 337L542 275L538 275L546 248L554 275L550 275L556 337ZM544 337L553 264L563 337ZM548 336L555 271L551 271L559 236L567 271L563 271L571 336ZM560 336L566 286L563 286L568 258L573 286L570 286L579 336ZM565 335L571 287L568 287L574 256L580 287L577 287L584 335ZM579 334L589 263L597 334ZM592 333L600 273L597 273L603 239L609 273L606 273L611 333ZM606 332L613 292L611 292L616 249L621 292L619 292L626 332ZM612 331L619 297L617 297L622 255L627 297L625 297L631 331ZM627 330L634 286L640 330ZM633 329L640 272L649 329ZM639 329L645 282L653 329ZM651 327L659 281L668 327ZM689 324L697 295L702 324ZM724 321L729 297L736 321ZM728 321L733 298L731 298L735 274L739 298L737 298L743 321ZM739 320L745 273L752 320ZM793 318L796 303L794 303L798 293L802 303L800 303L804 318ZM800 318L809 279L816 318ZM845 319L850 301L848 301L852 280L856 301L854 301L859 319ZM895 321L900 300L898 300L902 285L906 300L904 300L910 321ZM905 321L909 304L906 304L911 294L916 304L913 304L918 321ZM934 322L943 258L952 322ZM947 322L956 260L965 322ZM954 322L961 281L958 281L963 262L968 281L965 281L971 322ZM966 323L977 241L987 323ZM973 323L983 241L992 323ZM983 323L994 232L1005 323ZM992 323L998 287L995 287L1001 251L1007 287L1004 287L1009 323ZM1005 322L1015 247L1025 322ZM1015 322L1024 256L1021 256L1027 214L1033 256L1030 256L1038 322ZM1023 322L1030 265L1026 265L1033 237L1040 265L1036 265L1042 322ZM1033 321L1043 237L1052 321ZM1047 321L1055 260L1062 321ZM1059 320L1067 256L1078 320ZM1065 320L1073 260L1082 320ZM1075 320L1082 282L1080 282L1084 261L1088 282L1086 282L1092 320ZM1084 319L1090 275L1098 319ZM1093 319L1101 288L1108 319ZM1099 318L1105 283L1114 318ZM1109 318L1116 268L1124 318ZM1163 315L1170 266L1177 315ZM1173 315L1178 290L1176 290L1180 272L1184 290L1182 290L1186 315ZM1181 314L1184 294L1182 294L1186 282L1190 294L1188 294L1192 314ZM1223 314L1228 293L1226 293L1230 272L1234 293L1232 293L1236 314ZM1236 314L1243 278L1249 314ZM1283 316L1291 281L1298 316ZM1293 317L1299 291L1304 317ZM1296 317L1300 288L1298 288L1303 268L1308 288L1306 288L1311 317ZM1303 318L1308 295L1305 295L1310 281L1315 295L1312 295L1318 318ZM1338 321L1344 290L1350 321ZM1347 322L1356 278L1364 322ZM1359 323L1366 291L1374 323ZM1366 324L1372 302L1370 302L1374 278L1378 302L1376 302L1381 324ZM1375 325L1379 297L1376 297L1382 270L1388 297L1385 297L1391 325ZM1388 326L1395 288L1392 288L1397 257L1402 288L1399 288L1406 326ZM1396 327L1403 282L1401 282L1405 258L1409 282L1407 282L1413 327ZM1406 328L1414 266L1421 328ZM1417 329L1425 262L1422 262L1428 231L1434 262L1431 262L1439 329ZM1425 330L1433 256L1442 330Z'/></svg>");
       mask-size: 50% 100%;
       mask-repeat: repeat-x;
     }
@@ -2437,17 +2492,21 @@
     content: '';
     position: absolute;
     inset: auto -8% 6%;
-    height: 24%;
+    height: 26%;
+
+    /* Both pools are centred inside the box and fully faded before its
+       edges - anchoring them to the bottom edge left a hard horizontal
+       line across the valley wherever the box ended. */
     background:
       radial-gradient(
-        65% 100% at var(--vitra-scenery-glow-x) 100%,
-        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.7) 70% / 12%) 0%,
-        transparent 68%
+        46% 48% at var(--vitra-scenery-glow-x) 42%,
+        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.7) 70% / 13%) 0%,
+        transparent 100%
       ),
       radial-gradient(
-        45% 85% at calc(100% - var(--vitra-scenery-glow-x)) 100%,
-        hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 75% / 8%) 0%,
-        transparent 70%
+        34% 40% at calc(100% - var(--vitra-scenery-glow-x)) 46%,
+        hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 75% / 9%) 0%,
+        transparent 100%
       );
     animation:
       vitra-scenery-mist-sway calc(46s / var(--vitra-scenery-speed)) ease-in-out infinite alternate,
@@ -2490,6 +2549,29 @@
   .vitra-scenery,
   .vitra-scenery-inline {
     --vitra-scenery-ease-settle: cubic-bezier(0.2, 0.7, 0.1, 1);
+
+    /* How many viewport-widths one ridge tile spans (see PORTRAIT below) */
+    --vitra-scenery-span: 1;
+  }
+
+  /* --- PORTRAIT ---
+     Each ridge tile is stretched to the scene's width, so on a tall
+     narrow screen a range drawn for 16:9 gets squeezed into needles.
+     In portrait the tile spans two viewport-widths instead: the strip
+     doubles (it still holds exactly two tiles, so the -50% loop stays
+     seamless) and the drift takes twice as long, which keeps the
+     on-screen speed where it was. */
+  @media (aspect-ratio <= 4/5) {
+    .vitra-scenery,
+    .vitra-scenery-inline {
+      --vitra-scenery-span: 2;
+    }
+
+    .vitra-scenery-ridge-far,
+    .vitra-scenery-ridge-mid,
+    .vitra-scenery-ridge-near {
+      width: 400%;
+    }
   }
 
   @keyframes vitra-scenery-enter-far {
@@ -2603,7 +2685,7 @@
 
     .vitra-scenery-inline > .vitra-scenery-ridge-far {
       animation:
-        vitra-scenery-drift-far calc(480s / var(--vitra-scenery-speed)) linear infinite,
+        vitra-scenery-drift-far calc(480s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) linear infinite,
         vitra-scenery-enter-far calc(2.2s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) backwards,
         vitra-scenery-depth-far linear both;
       animation-timeline: auto, auto, --vitra-scenery;
@@ -2613,7 +2695,7 @@
 
     .vitra-scenery-inline > .vitra-scenery-ridge-mid {
       animation:
-        vitra-scenery-drift-mid calc(160s / var(--vitra-scenery-speed)) linear infinite,
+        vitra-scenery-drift-mid calc(160s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) linear infinite,
         vitra-scenery-enter-mid calc(1.9s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) calc(0.1s * var(--vitra-scenery-intro)) backwards,
         vitra-scenery-depth-mid linear both;
       animation-timeline: auto, auto, --vitra-scenery;
@@ -2623,7 +2705,7 @@
 
     .vitra-scenery-inline > .vitra-scenery-ridge-near {
       animation:
-        vitra-scenery-drift-near calc(32s / var(--vitra-scenery-speed)) linear infinite,
+        vitra-scenery-drift-near calc(32s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) linear infinite,
         vitra-scenery-enter-near calc(1.6s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) calc(0.2s * var(--vitra-scenery-intro)) backwards,
         vitra-scenery-depth-near linear both;
       animation-timeline: auto, auto, --vitra-scenery;
@@ -3613,8 +3695,13 @@
     flex-direction: column;
     padding: var(--vitra-space-4);
 
-    /* Smooth slide animation */
-    transition: right var(--vitra-duration-normal) var(--vitra-ease-out),
+    /* Slide on transform (compositor) - `right` only parks the closed
+       drawer offscreen. Closing: transform slides it out first, then
+       `right` snaps back after the same duration. (Animating `right`
+       itself re-ran layout for the whole drawer on every frame.) */
+    transform: translateX(100%);
+    transition: transform var(--vitra-duration-normal) var(--vitra-ease-out),
+                right 0s linear var(--vitra-duration-normal),
                 display var(--vitra-duration-normal) var(--vitra-ease-out) allow-discrete,
                 overlay var(--vitra-duration-normal) var(--vitra-ease-out) allow-discrete;
 
@@ -3623,13 +3710,20 @@
   }
 
   /* Drawer open state */
+
+  /* Opening: `right` snaps to 0 at once and the panel springs in */
   .vitra-drawer.open {
     right: 0;
+    transform: translateX(0);
+    transition: transform var(--vitra-duration-spring) var(--vitra-ease-spring-soft),
+                right 0s linear,
+                display var(--vitra-duration-normal) var(--vitra-ease-out) allow-discrete,
+                overlay var(--vitra-duration-normal) var(--vitra-ease-out) allow-discrete;
   }
 
   @starting-style {
     .vitra-drawer.open {
-      right: -100%;
+      transform: translateX(100%);
     }
   }
 
@@ -3827,6 +3921,10 @@
   .vitra-modal[open] .vitra-modal-content,
   .vitra-modal.vitra-modal-open .vitra-modal-content {
     transform: translateY(0) scale(1);
+
+    /* Arrival springs; the base rule's plain ease still governs leaving */
+    transition: transform var(--vitra-duration-spring) var(--vitra-ease-spring-soft),
+                opacity var(--vitra-duration-normal) var(--vitra-ease-luxury);
   }
 
   @media (width < 640px) {
@@ -4642,6 +4740,8 @@
   .vitra-toast.show {
     transform: translateX(0);
     opacity: 1;
+    transition: transform var(--vitra-duration-spring) var(--vitra-ease-spring),
+                opacity var(--vitra-duration-normal) var(--vitra-ease-luxury);
   }
 
   @starting-style {
@@ -4699,6 +4799,11 @@
     opacity: 1;
     transform: translateY(0);
     visibility: visible;
+    transition: opacity var(--vitra-duration-fast) var(--vitra-ease-out),
+                transform 320ms var(--vitra-ease-spring-soft),
+                visibility var(--vitra-duration-fast) var(--vitra-ease-out),
+                display var(--vitra-duration-fast) var(--vitra-ease-out) allow-discrete,
+                overlay var(--vitra-duration-fast) var(--vitra-ease-out) allow-discrete;
   }
 
   @starting-style {
@@ -4811,22 +4916,34 @@
       Glassmorphism skeleton loading placeholders
       ============================================ */
 
-  /* Skeleton base with shimmer */
+  /* Skeleton base with shimmer. The sheen is a pseudo-element swept
+     across with transform, clipped to the skeleton's own shape - a
+     page full of placeholders stays on the compositor. (The gradient
+     used to slide via background-position: a repaint per skeleton per
+     frame, exactly while the page is busiest loading.) */
   .vitra-skeleton {
-    background: linear-gradient(
-      90deg,
-      var(--vitra-color-surface) 25%,
-      hsl(0deg 0% 100% / 8%) 50%,
-      var(--vitra-color-surface) 75%
-    );
-    background-size: 200% 100%;
-    animation: vitra-skeleton-shimmer 2s ease-in-out infinite;
+    position: relative;
+    overflow: hidden;
+    background: var(--vitra-color-surface);
     border-radius: var(--vitra-radius-sm);
   }
 
+  .vitra-skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, hsl(0deg 0% 100% / 8%) 50%, transparent 100%);
+    animation: vitra-skeleton-shimmer 2s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  .vitra-skeleton-pulse::after {
+    content: none;
+  }
+
   @keyframes vitra-skeleton-shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
   }
 
   /* Pulse skeleton variant — gentle opacity breathing */
@@ -5204,9 +5321,8 @@
       ============================================ */
 
   @media (prefers-reduced-motion: reduce) {
-    .vitra-skeleton {
-      animation: none;
-      background: var(--vitra-color-surface);
+    .vitra-skeleton::after {
+      content: none;
     }
 
     .vitra-spinner {

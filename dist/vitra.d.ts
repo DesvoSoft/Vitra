@@ -6,12 +6,18 @@ declare namespace Vitra {
   interface ThemeOptions {
     defaultTheme?: string;
     persist?: boolean;
+    transition?: boolean;
+  }
+
+  interface ThemeSetOptions {
+    transition?: boolean;
+    origin?: MouseEvent | Element | { x: number; y: number };
   }
 
   interface ThemeModule {
     get(): string;
-    set(themeName: string): boolean;
-    toggle(): string;
+    set(themeName: string, options?: ThemeSetOptions): boolean;
+    toggle(options?: ThemeSetOptions): string;
     init(options?: ThemeOptions): string;
     getEffective(): string;
     clear(): void;

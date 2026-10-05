@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [1.13.0] - 2026-10-05
 
-Performance and motion pass on the scenery system. Measured in headless Chromium over CDP on an otherwise idle page (1600x900, dark theme): **paints 210/s → 0**, **style recalcs 81/s → ~1**, **main-thread time 137 ms/s → 3 ms/s**; with 4x CPU throttling the demo hero went from 677 ms/s of main-thread work at rest to compositor-only scenery. `vitra.min.css` 180 KB → 132 KB (20.4 kB → 17.3 kB brotli).
+Performance and motion pass on the scenery system. Measured in headless Chromium over CDP on an otherwise idle page (1600x900, dark theme): **paints 210/s → 0**, **style recalcs 81/s → ~1**, **main-thread time 137 ms/s → 3 ms/s**; with 4x CPU throttling the demo hero went from 677 ms/s of main-thread work at rest to compositor-only scenery. `vitra.min.css` 180 KB → 142 KB (20.4 kB → 19.7 kB brotli) with the new ridge artwork included.
 
 ### Added
 
@@ -14,9 +14,17 @@ Performance and motion pass on the scenery system. Measured in headless Chromium
 - **Entrance choreography**: the scene assembles on load — ranges rise back-to-front on one shared deceleration curve, the moon climbs to its mark, stars/wisps/mist fade up. Runs on `translate`/`opacity`, layered over the `transform` drift loops. New token `--vitra-scenery-intro` (length multiplier; `0` disables).
 - **Scroll depth for `.vitra-scenery-inline`**: CSS scroll-driven parallax (named view timeline + `cqh` offsets) — as the host scrolls away the sky and moon lag most, the near treeline least. No scroll listener, compositor-driven, skipped entirely where scroll-driven animations are unsupported. New token `--vitra-scenery-depth`. Requires a host that is not `overflow: hidden` (use `overflow: clip`).
 - **Living valley mist**: the mist layer now sways slowly against the direction the ridges travel.
+- **Spring easing tokens**: `--vitra-ease-spring`, `--vitra-ease-spring-soft` and `--vitra-duration-spring`. Sampled damped springs via `linear()` where supported, back-out `cubic-bezier` elsewhere. Modal, toast, drawer and dropdown now spring *in* and still ease *out* — the spring lives on the open state only.
+- **Animated theme changes**: `Vitra.theme.set(name, { transition: true, origin })` (or `theme.init({ transition: true })`) swaps the theme inside a View Transition — the new theme grows as a circle out of the pressed control. `origin` takes a pointer event, an element or `{ x, y }`. Opt-in; instant swap where the API is missing or under `prefers-reduced-motion`.
+- **`scripts/gen-ridges.cjs`**: the generator behind the new ridge artwork (art-directed control points + seeded midpoint displacement), so the ranges can be reshaped or re-rolled instead of hand-editing path data.
 
 ### Changed
 
+- **Mountains redrawn**: the three ridge masks were smooth bezier swells that read as hills. They are now faceted ranges — straight-segment crests with real summits, shoulders and cols — with a second mask per range painting the light-facing planes (the warm rim now only catches the lit side of each crest), and the near layer is a conifer line growing in stands with gaps rather than a flat band. Drift speeds and colour tokens are unchanged.
+- **Portrait screens**: a ridge tile now spans two viewport-widths below a 4:5 aspect ratio (drift duration doubled to hold on-screen speed), so ranges drawn for 16:9 are no longer squeezed into needles on phones.
+- **Valley mist no longer ends in a hard line**: its pools are centred inside their box instead of anchored to its bottom edge.
+- **`.vitra-drawer` slides on `transform`** instead of animating `right` (layout on every frame); `right` only parks the closed panel.
+- **`.vitra-skeleton` shimmer is a transform-swept `::after`** instead of an animated `background-position`. The element is now `position: relative; overflow: hidden`.
 - **Star twinkle rebuilt as compositor-only "scintillation"**: the star tiles are now static and a seamless turbulence-noise mask slides across them while the star plane counter-slides, so every star flickers on its own schedule with two `transform` animations and zero repaints. The previous per-star SMIL `<animate>` tags inside the background SVGs re-rasterized all three tiles on every frame. The discrete "flare" bloom is gone; brightness now varies continuously.
 - **Moon glow breathes, the disc does not**: the wide glow moved to a `::after` corona that pulses in scale/opacity; previously the whole moon faded to 75% opacity and back.
 - **Star tiles re-encoded**: dots are batched into one round-capped `<path>` per radius/opacity bucket instead of one `<circle>` each, and the duplicated reduced-motion tile copies are gone (there is no SMIL left to strip) — ~54 KB less CSS.
@@ -24,7 +32,7 @@ Performance and motion pass on the scenery system. Measured in headless Chromium
 - **`Vitra.spotlight` only measures the hovered element**: resolved from the event target instead of `querySelectorAll` + `getBoundingClientRect()` on every `.vitra-spotlight` per frame.
 - **`Vitra.motionGuard` also covers `.vitra-gradient-bg`, `.vitra-gradient-text` and `.vitra-aurora-layer`.** Gradient text has to repaint glyphs to animate, so it is now only animated while visible.
 - **Shooting star is transform-only**: entry point, angle, length and travel live in one transform list. It used to animate `top`/`left`/`width`, which kept a main-thread animation ticking for the whole 34s cycle. The bright head now leads the streak.
-- `size-limit` CSS budget set to 18 kB brotli (was 16 kB, and had been failing at 20.4 kB).
+- `size-limit` budgets: CSS 20 kB brotli (was 16 kB, and had been failing at 20.4 kB), ESM 8.5 kB.
 
 ### Fixed
 

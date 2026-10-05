@@ -36,7 +36,7 @@
   "size-limit": [
     {
       "path": "dist/vitra.min.css",
-      "limit": "18 kB"
+      "limit": "20 kB"
     },
     {
       "path": "dist/vitra.min.js",
@@ -44,7 +44,7 @@
     },
     {
       "path": "dist/vitra.esm.js",
-      "limit": "8 kB"
+      "limit": "8.5 kB"
     }
   ],
   "devDependencies": {
