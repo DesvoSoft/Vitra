@@ -527,6 +527,96 @@ describe('Spotlight Module', () => {
   });
 });
 
+describe('Theme transition', () => {
+  // An earlier suite pins window.matchMedia to a non-writable mock that
+  // always matches, so reduced motion is steered through that mock here
+  // and its previous behaviour is put back afterwards.
+  let previousImpl;
+  const setReducedMotion = (on) => {
+    const impl = (q) => ({ matches: on && String(q).includes('reduced-motion'), addEventListener() {}, addListener() {}, removeEventListener() {} });
+    if (window.matchMedia && typeof window.matchMedia.mockImplementation === 'function') {
+      window.matchMedia.mockImplementation(impl);
+    } else {
+      Object.defineProperty(window, 'matchMedia', { value: vi.fn().mockImplementation(impl), configurable: true });
+    }
+  };
+
+  beforeEach(() => {
+    previousImpl = window.matchMedia && window.matchMedia.getMockImplementation ? window.matchMedia.getMockImplementation() : undefined;
+    setReducedMotion(false);
+  });
+
+  afterEach(() => {
+    if (previousImpl) window.matchMedia.mockImplementation(previousImpl);
+    delete document.startViewTransition;
+    document.documentElement.classList.remove('vitra-theme-transition');
+    Vitra.theme._transition = false;
+  });
+
+  const mockViewTransition = () => {
+    const calls = [];
+    document.startViewTransition = (cb) => {
+      calls.push(cb);
+      cb();
+      return { finished: Promise.resolve() };
+    };
+    return calls;
+  };
+
+  it('should swap the theme inside a view transition when asked to', async () => {
+    const calls = mockViewTransition();
+    Vitra.theme.set('dark');
+
+    expect(Vitra.theme.set('light', { transition: true, origin: { x: 10, y: 20 } })).toBe(true);
+
+    expect(calls.length).toBe(1);
+    expect(document.documentElement.dataset.theme).toBe('light');
+    expect(document.documentElement.style.getPropertyValue('--vitra-theme-x')).toBe('10px');
+    expect(document.documentElement.style.getPropertyValue('--vitra-theme-y')).toBe('20px');
+
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(document.documentElement.classList.contains('vitra-theme-transition')).toBe(false);
+  });
+
+  it('should not use a view transition by default', () => {
+    const calls = mockViewTransition();
+    Vitra.theme.set('dark');
+    Vitra.theme.set('light');
+
+    expect(calls.length).toBe(0);
+    expect(document.documentElement.dataset.theme).toBe('light');
+  });
+
+  it('should honour init({ transition: true }) for later changes, toggle included', () => {
+    const calls = mockViewTransition();
+    Vitra.theme.init({ defaultTheme: 'dark', transition: true });
+
+    Vitra.theme.toggle();
+
+    expect(calls.length).toBe(1);
+    expect(document.documentElement.dataset.theme).toBe('light');
+  });
+
+  it('should fall back to an instant swap when the API is missing', () => {
+    Vitra.theme.set('dark');
+
+    expect(Vitra.theme.set('neon', { transition: true })).toBe(true);
+    expect(document.documentElement.dataset.theme).toBe('neon');
+  });
+
+  it('should skip the animation under prefers-reduced-motion', () => {
+    const calls = mockViewTransition();
+    setReducedMotion(true);
+    Vitra.theme.set('dark');
+
+    Vitra.theme.set('light', { transition: true });
+
+    expect(calls.length).toBe(0);
+    expect(document.documentElement.dataset.theme).toBe('light');
+  });
+});
+
 describe('Scenery Module', () => {
   const LAYERS = ['sky', 'stars', 'clouds', 'halo', 'ridge-far', 'ridge-mid', 'ridge-near', 'grain'];
 

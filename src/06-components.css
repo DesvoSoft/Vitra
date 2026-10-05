@@ -602,8 +602,13 @@
     flex-direction: column;
     padding: var(--vitra-space-4);
 
-    /* Smooth slide animation */
-    transition: right var(--vitra-duration-normal) var(--vitra-ease-out),
+    /* Slide on transform (compositor) - `right` only parks the closed
+       drawer offscreen. Closing: transform slides it out first, then
+       `right` snaps back after the same duration. (Animating `right`
+       itself re-ran layout for the whole drawer on every frame.) */
+    transform: translateX(100%);
+    transition: transform var(--vitra-duration-normal) var(--vitra-ease-out),
+                right 0s linear var(--vitra-duration-normal),
                 display var(--vitra-duration-normal) var(--vitra-ease-out) allow-discrete,
                 overlay var(--vitra-duration-normal) var(--vitra-ease-out) allow-discrete;
 
@@ -612,13 +617,20 @@
   }
 
   /* Drawer open state */
+
+  /* Opening: `right` snaps to 0 at once and the panel springs in */
   .vitra-drawer.open {
     right: 0;
+    transform: translateX(0);
+    transition: transform var(--vitra-duration-spring) var(--vitra-ease-spring-soft),
+                right 0s linear,
+                display var(--vitra-duration-normal) var(--vitra-ease-out) allow-discrete,
+                overlay var(--vitra-duration-normal) var(--vitra-ease-out) allow-discrete;
   }
 
   @starting-style {
     .vitra-drawer.open {
-      right: -100%;
+      transform: translateX(100%);
     }
   }
 
@@ -816,6 +828,10 @@
   .vitra-modal[open] .vitra-modal-content,
   .vitra-modal.vitra-modal-open .vitra-modal-content {
     transform: translateY(0) scale(1);
+
+    /* Arrival springs; the base rule's plain ease still governs leaving */
+    transition: transform var(--vitra-duration-spring) var(--vitra-ease-spring-soft),
+                opacity var(--vitra-duration-normal) var(--vitra-ease-luxury);
   }
 
   @media (width < 640px) {
@@ -1631,6 +1647,8 @@
   .vitra-toast.show {
     transform: translateX(0);
     opacity: 1;
+    transition: transform var(--vitra-duration-spring) var(--vitra-ease-spring),
+                opacity var(--vitra-duration-normal) var(--vitra-ease-luxury);
   }
 
   @starting-style {
@@ -1688,6 +1706,11 @@
     opacity: 1;
     transform: translateY(0);
     visibility: visible;
+    transition: opacity var(--vitra-duration-fast) var(--vitra-ease-out),
+                transform 320ms var(--vitra-ease-spring-soft),
+                visibility var(--vitra-duration-fast) var(--vitra-ease-out),
+                display var(--vitra-duration-fast) var(--vitra-ease-out) allow-discrete,
+                overlay var(--vitra-duration-fast) var(--vitra-ease-out) allow-discrete;
   }
 
   @starting-style {
@@ -1800,22 +1823,34 @@
       Glassmorphism skeleton loading placeholders
       ============================================ */
 
-  /* Skeleton base with shimmer */
+  /* Skeleton base with shimmer. The sheen is a pseudo-element swept
+     across with transform, clipped to the skeleton's own shape - a
+     page full of placeholders stays on the compositor. (The gradient
+     used to slide via background-position: a repaint per skeleton per
+     frame, exactly while the page is busiest loading.) */
   .vitra-skeleton {
-    background: linear-gradient(
-      90deg,
-      var(--vitra-color-surface) 25%,
-      hsl(0deg 0% 100% / 8%) 50%,
-      var(--vitra-color-surface) 75%
-    );
-    background-size: 200% 100%;
-    animation: vitra-skeleton-shimmer 2s ease-in-out infinite;
+    position: relative;
+    overflow: hidden;
+    background: var(--vitra-color-surface);
     border-radius: var(--vitra-radius-sm);
   }
 
+  .vitra-skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, hsl(0deg 0% 100% / 8%) 50%, transparent 100%);
+    animation: vitra-skeleton-shimmer 2s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  .vitra-skeleton-pulse::after {
+    content: none;
+  }
+
   @keyframes vitra-skeleton-shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
   }
 
   /* Pulse skeleton variant — gentle opacity breathing */
@@ -2193,9 +2228,8 @@
       ============================================ */
 
   @media (prefers-reduced-motion: reduce) {
-    .vitra-skeleton {
-      animation: none;
-      background: var(--vitra-color-surface);
+    .vitra-skeleton::after {
+      content: none;
     }
 
     .vitra-spinner {

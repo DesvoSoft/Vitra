@@ -522,6 +522,29 @@ Opt out of the auto-fill with `"scenery": false` in `data-config`.
 - *Scroll depth* (`.vitra-scenery-inline`, browsers with CSS scroll-driven animations) — while the host scrolls out of view, the sky and moon lag the most, the far range less, the near treeline barely at all. No scroll listener. **The host must not be `overflow: hidden`** — that makes it the scroll container the timeline attaches to, and the effect silently stays off. Use `overflow: clip`, or nothing: the scenery root clips itself.
 - *Offscreen* — `Vitra.motionGuard` pauses every layer, pseudo-elements included, while the root is outside the viewport.
 
+**Reshaping the mountains.** The ridge masks are generated, not hand-drawn: `node scripts/gen-ridges.cjs --write` rewrites them in `src/09-scenery.css`. Edit the `FAR` / `MID` control points to move summits and valleys, or set `SEED_FAR` / `SEED_MID` / `SEED_NEAR` to re-roll the crag detail and the tree stands.
+
+### Motion tokens and animated theme changes
+
+```css
+.my-panel.open {
+  transition: transform var(--vitra-duration-spring) var(--vitra-ease-spring-soft);
+}
+```
+
+`--vitra-ease-spring` overshoots and settles (toasts, playful arrivals); `--vitra-ease-spring-soft` barely overshoots (modals, drawers, menus). Put the spring on the *open* state only, so things spring in and ease out.
+
+```javascript
+// Opt in once...
+Vitra.theme.init({ transition: true });
+// ...or per call, growing the new theme out of the button that was pressed
+button.addEventListener('click', (event) => {
+  Vitra.theme.toggle({ transition: true, origin: event });
+});
+```
+
+The swap runs inside a View Transition, so `document.documentElement.dataset.theme` changes one frame after the call. Browsers without the API, and visitors with reduced motion, get the instant swap.
+
 ---
 
 ## Tree-Shaking (Only Import What You Need)

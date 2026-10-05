@@ -130,6 +130,16 @@
     --vitra-ease-in: cubic-bezier(0.4, 0, 1, 1);
     --vitra-ease-out: cubic-bezier(0, 0, 0.2, 1);
     --vitra-ease-luxury: cubic-bezier(0.23, 1, 0.32, 1); /* EaseOutQuint */
+
+    /* Springs: things that arrive (modal, toast, drawer, menu) overshoot
+       a touch and settle, instead of gliding to a dead stop. These two
+       are the back-out approximations every browser understands; where
+       linear() is supported they are replaced below by sampled damped
+       springs, which can ring past the target more than once. Pair with
+       --vitra-duration-spring: a spring needs room to settle. */
+    --vitra-ease-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
+    --vitra-ease-spring-soft: cubic-bezier(0.3, 1.2, 0.5, 1);
+    --vitra-duration-spring: 520ms;
     --vitra-duration-fast: 150ms;
     --vitra-duration-normal: 300ms;
     --vitra-duration-slow: 500ms;
@@ -260,6 +270,14 @@
   .vitra-link:hover::after {
     transform: scaleX(1);
     transform-origin: bottom left;
+  }
+
+  /* Real damped springs (zeta 0.5 and 0.72), sampled into linear() */
+  @supports (transition-timing-function: linear(0, 1)) {
+    :root {
+      --vitra-ease-spring: linear(0, 0.138, 0.43, 0.737, 0.974, 1.112, 1.162, 1.149, 1.104, 1.053, 1.011, 0.985, 0.974, 0.975, 0.981, 0.99, 0.997, 1.002, 1.004, 1.004, 1.003, 1.002, 1.001, 1, 1);
+      --vitra-ease-spring-soft: linear(0, 0.115, 0.348, 0.586, 0.778, 0.911, 0.989, 1.026, 1.038, 1.036, 1.027, 1.018, 1.01, 1.004, 1.001, 0.999, 0.999, 0.999, 0.999, 0.999, 1);
+    }
   }
 }
 

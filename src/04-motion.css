@@ -466,6 +466,33 @@
   }
 
   /* ============================================
+     THEME TRANSITION
+     Vitra.theme.set(name, { transition: true, origin })
+     swaps the theme inside a View Transition: the new
+     theme grows out of the control that was pressed as
+     an expanding circle, over a frozen snapshot of the
+     old one. One clip-path animation on a GPU snapshot -
+     nothing in the page itself repaints per frame.
+     The class is only on <html> for the duration of the
+     swap, so other view transitions are left alone.
+     ============================================ */
+
+  .vitra-theme-transition::view-transition-old(root),
+  .vitra-theme-transition::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
+  .vitra-theme-transition::view-transition-new(root) {
+    animation: vitra-theme-reveal 700ms var(--vitra-ease-luxury) both;
+  }
+
+  @keyframes vitra-theme-reveal {
+    from { clip-path: circle(0 at var(--vitra-theme-x, 50%) var(--vitra-theme-y, 50%)); }
+    to { clip-path: circle(var(--vitra-theme-r, 150vmax) at var(--vitra-theme-x, 50%) var(--vitra-theme-y, 50%)); }
+  }
+
+  /* ============================================
      PAGE ENTER ANIMATION
      Fade + scale up on page load — instant premium feel
      Add .vitra-page-enter to <body> or page wrapper
