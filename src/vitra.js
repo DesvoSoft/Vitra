@@ -1256,21 +1256,25 @@ const Vitra = (() => {
     let initialized = false;
     let _rafId = null;
     let _handleMove = null;
+    let _pending = null;
 
     const init = () => {
       if (initialized) return;
+      // The glow is only visible on :hover, so only the spotlight under the
+      // pointer needs its coordinates - resolved from the event target, not
+      // by re-querying and measuring every .vitra-spotlight on the page.
       _handleMove = (e) => {
+        const el = e.target instanceof Element ? e.target.closest('.vitra-spotlight') : null;
+        if (!el) return;
+        _pending = { el, x: e.clientX, y: e.clientY };
         if (_rafId) return;
         _rafId = requestAnimationFrame(() => {
           _rafId = null;
-          const spotlights = document.querySelectorAll('.vitra-spotlight');
-          spotlights.forEach(el => {
-            const rect = el.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            el.style.setProperty('--mouse-x', `${x}px`);
-            el.style.setProperty('--mouse-y', `${y}px`);
-          });
+          const { el: target, x, y } = _pending;
+          _pending = null;
+          const rect = target.getBoundingClientRect();
+          target.style.setProperty('--mouse-x', `${x - rect.left}px`);
+          target.style.setProperty('--mouse-y', `${y - rect.top}px`);
         });
       };
       document.addEventListener('mousemove', _handleMove, { passive: true });
@@ -1286,6 +1290,7 @@ const Vitra = (() => {
         cancelAnimationFrame(_rafId);
         _rafId = null;
       }
+      _pending = null;
       initialized = false;
     };
 
@@ -1293,13 +1298,79 @@ const Vitra = (() => {
   })();
 
   // =========================================================================
+  // SCENERY MODULE
+  // Fills an empty .vitra-scenery / .vitra-scenery-inline element with its
+  // eight layer divs, so the markup is one line instead of ten. Hand-written
+  // layer markup keeps working untouched (CSS-only usage needs no JS at all).
+  // =========================================================================
+  const scenery = (() => {
+    const SELECTOR = '.vitra-scenery, .vitra-scenery-inline';
+    const LAYERS = ['sky', 'stars', 'clouds', 'halo', 'ridge-far', 'ridge-mid', 'ridge-near', 'grain'];
+
+    let _mounted = [];
+
+    const mount = (target, options = {}) => {
+      const el = typeof target === 'string' ? document.querySelector(target) : target;
+      if (!el) {
+        console.warn('[Vitra Scenery] Target element not found');
+        return null;
+      }
+
+      if (!el.matches(SELECTOR)) {
+        el.classList.add(options.inline ? 'vitra-scenery-inline' : 'vitra-scenery');
+      }
+      // Purely decorative: keep it out of the accessibility tree
+      el.setAttribute('aria-hidden', 'true');
+
+      // Never touch a scene that already has (hand-written) layers
+      if (el.children.length === 0) {
+        LAYERS.forEach(name => {
+          const layer = document.createElement('div');
+          layer.className = `vitra-scenery-${name}`;
+          el.appendChild(layer);
+        });
+        _mounted.push(el);
+      }
+
+      const moon = options.moon || el.dataset.vitraMoon;
+      if (moon) {
+        const halo = el.querySelector('.vitra-scenery-halo');
+        if (halo) halo.classList.toggle('vitra-scenery-halo-crescent', moon === 'crescent');
+      }
+
+      return el;
+    };
+
+    const init = () => {
+      let count = 0;
+      document.querySelectorAll(SELECTOR).forEach(el => {
+        if (el.children.length === 0) {
+          mount(el);
+          count++;
+        }
+      });
+      return count;
+    };
+
+    const destroy = () => {
+      _mounted.forEach(el => {
+        el.querySelectorAll(':scope > [class^="vitra-scenery-"]').forEach(layer => layer.remove());
+      });
+      _mounted = [];
+    };
+
+    return { init, mount, destroy };
+  })();
+
+  // =========================================================================
   // MOTION GUARD MODULE
-  // Pauses infinite ambient animations (glow orbs, aurora, scenery) while
+  // Pauses infinite ambient animations (glow orbs, aurora, mesh gradient,
+  // gradient text, scenery) while
   // their container is offscreen, so long-running blur/transform loops
   // don't keep compositing every frame on sections the user has scrolled past.
   // =========================================================================
   const motionGuard = (() => {
-    const SELECTOR = '.vitra-glow-orb, .vitra-aurora-bg, .vitra-aurora-layer-1, .vitra-aurora-layer-2, .vitra-scenery, .vitra-scenery-inline';
+    const SELECTOR = '.vitra-glow-orb, .vitra-aurora-bg, .vitra-aurora-layer, .vitra-aurora-layer-1, .vitra-aurora-layer-2, .vitra-gradient-bg, .vitra-gradient-text, .vitra-scenery, .vitra-scenery-inline';
     const PAUSED_CLASS = 'vitra-motion-paused';
 
     let _observer = null;
@@ -1411,7 +1482,12 @@ const Vitra = (() => {
       spotlight.init();
     }
 
-    // 8. Motion Guard Configuration
+    // 8. Scenery Configuration (before the guard, which observes the result)
+    if (config.scenery !== false) {
+      scenery.init();
+    }
+
+    // 9. Motion Guard Configuration
     if (config.motionGuard !== false) {
       motionGuard.init();
     }
@@ -1452,6 +1528,7 @@ const Vitra = (() => {
     spotlight.destroy();
     particles.destroy();
     motionGuard.destroy();
+    scenery.destroy();
   };
 
   // Public API
@@ -1465,6 +1542,7 @@ const Vitra = (() => {
     toast,
     dropdown,
     spotlight,
+    scenery,
     motionGuard,
     destroyAll
   };

@@ -665,6 +665,13 @@
      card grids, list items) — not to content that must
      stay measurable while hidden (e.g. tab panels
      already using display:none).
+     Do NOT wrap ambient animated content with it
+     (scenery, glow orbs, aurora, gradient text): a
+     skipped subtree never resolves style, so the
+     offscreen pause from Vitra.motionGuard stays
+     "pending" and Chromium keeps producing main-thread
+     frames for it - measured at ~100 style recalcs/s
+     on an idle page.
      ============================================ */
 
   .vitra-cv-auto {

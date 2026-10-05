@@ -443,7 +443,7 @@ tooltip.init();
 
 ### Scenery Module
 
-Ambient, eight-layer mountain-landscape backdrop. Pure CSS — no JS module, no `import`, no `data-config` entry. Colors derive automatically from the active theme's `--vitra-color-accent-h`/`-s` tokens, so switching themes re-colors the scene automatically.
+Ambient, eight-layer mountain-landscape backdrop. Pure CSS — works with no JS, no `import`, no `data-config` entry. (If `vitra.js` is on the page, `Vitra.scenery` will write the eight layers for you — see *One-element markup* below.) Colors derive automatically from the active theme's `--vitra-color-accent-h`/`-s` tokens, so switching themes re-colors the scene automatically.
 
 ```html
 <!-- Full-page: position:fixed, sits behind all content -->
@@ -485,6 +485,8 @@ The eight child layers are always the same regardless of which root class is use
 | `--vitra-scenery-halo-size` | `clamp(56px, 9vmin, 110px)` | Moon/sun diameter |
 | `--vitra-scenery-opacity-rim` | `0.85` (dark) / `0.6` (light, pastel) | Ridge crest rim-light strength |
 | `--vitra-scenery-speed` | `1` | Drift speed multiplier (higher = faster) |
+| `--vitra-scenery-intro` | `1` | Entrance choreography length multiplier (`2` = slower, `0` = no entrance) |
+| `--vitra-scenery-depth` | `1` | Scroll-depth strength for `.vitra-scenery-inline` (`0` = layers stay locked) |
 | `--vitra-scenery-opacity-far` / `-mid` / `-near` | `0.6` / `0.75` / `0.92` | Per-layer opacity (atmospheric perspective) |
 | `--vitra-scenery-opacity-clouds` | `0.35` | Cloud layer opacity |
 
@@ -496,7 +498,29 @@ The eight child layers are always the same regardless of which root class is use
 
 On dark-scheme themes the halo renders as a textured full moon (or crescent with the modifier); on `light`/`pastel` it renders as a warm low sun. Ridge crests catch a warm rim light on their silhouette edges — it rides the same parallax transform as the ridge, so it never detaches in motion.
 
-Ridge and cloud silhouettes come from inline SVG masks (shape) colored by theme tokens (color) — no external assets. Where `mask-image` is unsupported, ridges/clouds gracefully fall back to soft gradient bands. The star field is a small tiled data-URI SVG, static by default. All layers drift the same right-to-left direction at different speeds (clouds slowest, near ridge fastest) for a consistent parallax/wind read. Under `prefers-reduced-motion: reduce`, all layers stop animating and hold position — the scene stays visible, just static.
+Ridge and cloud silhouettes come from inline SVG masks (shape) colored by theme tokens (color) — no external assets. Where `mask-image` is unsupported, ridges/clouds gracefully fall back to soft gradient bands. All layers drift the same right-to-left direction at different speeds (clouds slowest, near ridge fastest) for a consistent parallax/wind read. Under `prefers-reduced-motion: reduce`, all layers stop animating and hold position — the scene stays visible, just static.
+
+**One-element markup (`Vitra.scenery`).** With `vitra.js` loaded, an *empty* scenery root is filled with the eight layers (and `aria-hidden="true"`) on init — roots that already contain layers are never touched:
+
+```html
+<div class="vitra-scenery"></div>
+<div class="vitra-scenery-inline" data-vitra-moon="crescent"></div>
+```
+
+```javascript
+Vitra.scenery.init();                                   // fill every empty root; returns how many
+Vitra.scenery.mount('#hero-bg', { inline: true, moon: 'crescent' }); // turn any element into a scene
+Vitra.scenery.destroy();                                // remove only the layers it injected
+```
+
+Opt out of the auto-fill with `"scenery": false` in `data-config`.
+
+**Motion, and what it costs.** Every moving layer animates `transform`/`opacity` only, so the scene runs on the compositor: an idle page performs no repaints and no per-frame style work.
+
+- *Twinkle* — the star tiles are static; a turbulence-noise mask slides across them (the star plane counter-slides so stars stay put), so each star brightens and dims on its own schedule.
+- *Entrance* — on load the ranges rise into place back-to-front, the moon climbs to its mark, then stars, wisps and mist fade up. A scene that starts offscreen plays it when it scrolls into view.
+- *Scroll depth* (`.vitra-scenery-inline`, browsers with CSS scroll-driven animations) — while the host scrolls out of view, the sky and moon lag the most, the far range less, the near treeline barely at all. No scroll listener. **The host must not be `overflow: hidden`** — that makes it the scroll container the timeline attaches to, and the effect silently stays off. Use `overflow: clip`, or nothing: the scenery root clips itself.
+- *Offscreen* — `Vitra.motionGuard` pauses every layer, pseudo-elements included, while the root is outside the viewport.
 
 ---
 

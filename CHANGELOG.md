@@ -4,6 +4,36 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.0] - 2026-10-05
+
+Performance and motion pass on the scenery system. Measured in headless Chromium over CDP on an otherwise idle page (1600x900, dark theme): **paints 210/s → 0**, **style recalcs 81/s → ~1**, **main-thread time 137 ms/s → 3 ms/s**; with 4x CPU throttling the demo hero went from 677 ms/s of main-thread work at rest to compositor-only scenery. `vitra.min.css` 180 KB → 132 KB (20.4 kB → 17.3 kB brotli).
+
+### Added
+
+- **`Vitra.scenery` module** (`init()`, `mount()`, `destroy()`): an empty `.vitra-scenery` / `.vitra-scenery-inline` element is filled with the eight layers and `aria-hidden="true"` on init, so the markup is one line. `data-vitra-moon="crescent"` picks the moon phase. Roots that already contain layers are never touched; opt out with `"scenery": false` in `data-config`. Hand-written, JS-free markup works exactly as before.
+- **Entrance choreography**: the scene assembles on load — ranges rise back-to-front on one shared deceleration curve, the moon climbs to its mark, stars/wisps/mist fade up. Runs on `translate`/`opacity`, layered over the `transform` drift loops. New token `--vitra-scenery-intro` (length multiplier; `0` disables).
+- **Scroll depth for `.vitra-scenery-inline`**: CSS scroll-driven parallax (named view timeline + `cqh` offsets) — as the host scrolls away the sky and moon lag most, the near treeline least. No scroll listener, compositor-driven, skipped entirely where scroll-driven animations are unsupported. New token `--vitra-scenery-depth`. Requires a host that is not `overflow: hidden` (use `overflow: clip`).
+- **Living valley mist**: the mist layer now sways slowly against the direction the ridges travel.
+
+### Changed
+
+- **Star twinkle rebuilt as compositor-only "scintillation"**: the star tiles are now static and a seamless turbulence-noise mask slides across them while the star plane counter-slides, so every star flickers on its own schedule with two `transform` animations and zero repaints. The previous per-star SMIL `<animate>` tags inside the background SVGs re-rasterized all three tiles on every frame. The discrete "flare" bloom is gone; brightness now varies continuously.
+- **Moon glow breathes, the disc does not**: the wide glow moved to a `::after` corona that pulses in scale/opacity; previously the whole moon faded to 75% opacity and back.
+- **Star tiles re-encoded**: dots are batched into one round-capped `<path>` per radius/opacity bucket instead of one `<circle>` each, and the duplicated reduced-motion tile copies are gone (there is no SMIL left to strip) — ~54 KB less CSS.
+- **`.vitra-gradient-bg` mesh pans via `transform`** on a `::before` layer instead of animating `background-position` on the element (never compositor-accelerated: a style recalc and full-surface repaint every frame). Same path, same timing.
+- **`Vitra.spotlight` only measures the hovered element**: resolved from the event target instead of `querySelectorAll` + `getBoundingClientRect()` on every `.vitra-spotlight` per frame.
+- **`Vitra.motionGuard` also covers `.vitra-gradient-bg`, `.vitra-gradient-text` and `.vitra-aurora-layer`.** Gradient text has to repaint glyphs to animate, so it is now only animated while visible.
+- **Shooting star is transform-only**: entry point, angle, length and travel live in one transform list. It used to animate `top`/`left`/`width`, which kept a main-thread animation ticking for the whole 34s cycle. The bright head now leads the streak.
+- `size-limit` CSS budget set to 18 kB brotli (was 16 kB, and had been failing at 20.4 kB).
+
+### Fixed
+
+- **Offscreen pause never reached pseudo-elements**: `.vitra-motion-paused *` does not match `::before`/`::after` and `animation-play-state` is not inherited, so the far star tile and the shooting star kept animating offscreen.
+- **Moon cutout in the star mask was off-centre**: it was anchored to the halo's top-left corner in the wrong coordinate space; it now tracks the disc's centre for any `--vitra-scenery-halo-*` values.
+- **README scenery markup was missing the `stars` and `clouds` layers**; version strings and module list brought up to date.
+- `package.json` `repository`/`bugs` URLs pointed at a repository that does not exist.
+- Stylelint errors in `09-scenery.css` (vendor-prefixed mask properties dropped; unprefixed `mask-*` covers Safari 15.4+).
+
 ## [1.12.1] - 2026-07-23
 
 ### Fixed

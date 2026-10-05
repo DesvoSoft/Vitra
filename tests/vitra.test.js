@@ -467,18 +467,48 @@ describe('Spotlight Module', () => {
     expect(() => Vitra.spotlight.init()).not.toThrow();
   });
 
-  it('should update --mouse-x/--mouse-y custom properties on mousemove', async () => {
-    document.body.innerHTML = '<div class="vitra-spotlight"></div>';
+  it('should update --mouse-x/--mouse-y on the spotlight under the pointer', async () => {
+    document.body.innerHTML = '<div class="vitra-spotlight"><span id="inner"></span></div>';
     const el = document.querySelector('.vitra-spotlight');
     el.getBoundingClientRect = () => ({ left: 10, top: 20, right: 110, bottom: 120, width: 100, height: 100 });
 
     Vitra.spotlight.init();
-    document.dispatchEvent(new MouseEvent('mousemove', { clientX: 60, clientY: 70 }));
+    document.getElementById('inner').dispatchEvent(new MouseEvent('mousemove', { clientX: 60, clientY: 70, bubbles: true }));
 
     await new Promise(resolve => requestAnimationFrame(resolve));
 
     expect(el.style.getPropertyValue('--mouse-x')).toBe('50px');
     expect(el.style.getPropertyValue('--mouse-y')).toBe('50px');
+  });
+
+  it('should only measure the hovered spotlight, not every spotlight on the page', async () => {
+    document.body.innerHTML = '<div class="vitra-spotlight" id="a"></div><div class="vitra-spotlight" id="b"></div>';
+    const a = document.getElementById('a');
+    const b = document.getElementById('b');
+    let bMeasured = 0;
+    a.getBoundingClientRect = () => ({ left: 0, top: 0, right: 100, bottom: 100, width: 100, height: 100 });
+    b.getBoundingClientRect = () => { bMeasured++; return { left: 0, top: 0, right: 100, bottom: 100, width: 100, height: 100 }; };
+
+    Vitra.spotlight.init();
+    a.dispatchEvent(new MouseEvent('mousemove', { clientX: 5, clientY: 6, bubbles: true }));
+
+    await new Promise(resolve => requestAnimationFrame(resolve));
+
+    expect(a.style.getPropertyValue('--mouse-x')).toBe('5px');
+    expect(b.style.getPropertyValue('--mouse-x')).toBe('');
+    expect(bMeasured).toBe(0);
+  });
+
+  it('should ignore pointer movement outside any spotlight', async () => {
+    document.body.innerHTML = '<div class="vitra-spotlight"></div><p id="outside"></p>';
+    const el = document.querySelector('.vitra-spotlight');
+
+    Vitra.spotlight.init();
+    document.getElementById('outside').dispatchEvent(new MouseEvent('mousemove', { clientX: 60, clientY: 70, bubbles: true }));
+
+    await new Promise(resolve => requestAnimationFrame(resolve));
+
+    expect(el.style.getPropertyValue('--mouse-x')).toBe('');
   });
 
   it('should not update properties after destroy', async () => {
@@ -488,12 +518,77 @@ describe('Spotlight Module', () => {
 
     Vitra.spotlight.init();
     Vitra.spotlight.destroy();
-    document.dispatchEvent(new MouseEvent('mousemove', { clientX: 60, clientY: 70 }));
+    el.dispatchEvent(new MouseEvent('mousemove', { clientX: 60, clientY: 70, bubbles: true }));
 
     await new Promise(resolve => requestAnimationFrame(resolve));
 
     expect(el.style.getPropertyValue('--mouse-x')).toBe('');
     expect(el.style.getPropertyValue('--mouse-y')).toBe('');
+  });
+});
+
+describe('Scenery Module', () => {
+  const LAYERS = ['sky', 'stars', 'clouds', 'halo', 'ridge-far', 'ridge-mid', 'ridge-near', 'grain'];
+
+  afterEach(() => {
+    Vitra.scenery.destroy();
+    document.body.innerHTML = '';
+  });
+
+  it('should fill an empty scenery element with the eight layers, in paint order', () => {
+    document.body.innerHTML = '<div class="vitra-scenery"></div>';
+
+    expect(Vitra.scenery.init()).toBe(1);
+
+    const el = document.querySelector('.vitra-scenery');
+    expect([...el.children].map(c => c.className)).toEqual(LAYERS.map(n => `vitra-scenery-${n}`));
+    expect(el.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('should leave hand-written layer markup untouched', () => {
+    document.body.innerHTML = '<div class="vitra-scenery-inline"><div class="vitra-scenery-sky" id="mine"></div></div>';
+
+    expect(Vitra.scenery.init()).toBe(0);
+    expect(document.querySelector('.vitra-scenery-inline').children.length).toBe(1);
+
+    Vitra.scenery.destroy();
+    expect(document.getElementById('mine')).not.toBeNull();
+  });
+
+  it('should mount onto any element, adding the container class and moon variant', () => {
+    document.body.innerHTML = '<section id="hero"></section>';
+
+    const el = Vitra.scenery.mount('#hero', { inline: true, moon: 'crescent' });
+
+    expect(el.classList.contains('vitra-scenery-inline')).toBe(true);
+    expect(el.children.length).toBe(8);
+    expect(el.querySelector('.vitra-scenery-halo').classList.contains('vitra-scenery-halo-crescent')).toBe(true);
+  });
+
+  it('should read the moon variant from data-vitra-moon', () => {
+    document.body.innerHTML = '<div class="vitra-scenery" data-vitra-moon="crescent"></div>';
+
+    Vitra.scenery.init();
+
+    expect(document.querySelector('.vitra-scenery-halo-crescent')).not.toBeNull();
+  });
+
+  it('should return null and warn when the target does not exist', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    expect(Vitra.scenery.mount('#nope')).toBeNull();
+    expect(warn).toHaveBeenCalledWith('[Vitra Scenery] Target element not found');
+
+    warn.mockRestore();
+  });
+
+  it('should remove only the layers it injected on destroy', () => {
+    document.body.innerHTML = '<div class="vitra-scenery"></div>';
+    Vitra.scenery.init();
+
+    Vitra.scenery.destroy();
+
+    expect(document.querySelector('.vitra-scenery').children.length).toBe(0);
   });
 });
 
@@ -507,6 +602,8 @@ describe('Module Structure', () => {
     expect(Vitra.toast).toBeDefined();
     expect(Vitra.dropdown).toBeDefined();
     expect(Vitra.spotlight).toBeDefined();
+    expect(Vitra.scenery).toBeDefined();
+    expect(Vitra.motionGuard).toBeDefined();
   });
 
   it('should have expected API methods on theme module', () => {
@@ -716,6 +813,8 @@ describe('vitra.d.ts drift guard', () => {
     ['ripple', 'RippleModule'],
     ['dropdown', 'DropdownModule'],
     ['spotlight', 'SpotlightModule'],
+    ['scenery', 'SceneryModule'],
+    ['motionGuard', 'MotionGuardModule'],
     ['toast', 'ToastModule'],
     ['particles', 'ParticlesModule'],
     ['reveal', 'RevealModule'],
