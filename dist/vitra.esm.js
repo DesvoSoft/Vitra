@@ -1031,7 +1031,7 @@ var require_vitra = __commonJS({
         return { init, mount, destroy };
       })();
       const motionGuard = /* @__PURE__ */ (() => {
-        const SELECTOR = ".vitra-glow-orb, .vitra-aurora-bg, .vitra-aurora-layer, .vitra-aurora-layer-1, .vitra-aurora-layer-2, .vitra-gradient-bg, .vitra-gradient-text, .vitra-scenery, .vitra-scenery-inline";
+        const SELECTOR = ".vitra-glow-orb, .vitra-aurora-bg, .vitra-aurora-layer, .vitra-aurora-layer-1, .vitra-aurora-layer-2, .vitra-gradient-bg, .vitra-gradient-text, .vitra-border-glow, .vitra-shape-morph, .vitra-gradient-rotate, .vitra-scenery, .vitra-scenery-inline";
         const PAUSED_CLASS = "vitra-motion-paused";
         let _observer = null;
         let initialized = false;

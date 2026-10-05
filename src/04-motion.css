@@ -256,6 +256,17 @@
      2026 design trend: living, breathing UI
      ============================================ */
 
+  /* AMBIENT LOOPS ARE STEPPED.
+     Everything in this section that loops forever in the background
+     (mesh gradient, glow orbs, gradient text, aurora) uses steps() sized
+     to land on a shared ~10Hz grid. A continuously interpolated loop
+     makes the compositor draw a fresh frame on every vsync for as long
+     as it is on screen - at 60 to 144 a second - and these are large,
+     blurred, translucent surfaces. Ten updates a second is invisible at
+     the speeds they drift, and it is a sixth of the GPU work.
+     steps() applies per keyframe interval, so each count below is
+     (interval length in seconds) x 10. */
+
   /* --- Mesh Gradient Background --- */
 
   /* The mesh lives on a 200% x 200% pseudo-element that pans with
@@ -291,7 +302,7 @@
       radial-gradient(ellipse at 20% 50%, hsl(var(--vitra-color-accent-h) 80% 60% / 20%) 0%, transparent 50%),
       radial-gradient(ellipse at 80% 20%, hsl(calc(var(--vitra-color-accent-h) + 60) 80% 60% / 15%) 0%, transparent 50%),
       radial-gradient(ellipse at 40% 80%, hsl(calc(var(--vitra-color-accent-h) - 30) 80% 60% / 15%) 0%, transparent 50%);
-    animation: vitra-mesh-shift 16s ease-in-out infinite;
+    animation: vitra-mesh-shift 16s steps(40) infinite;
     will-change: transform;
   }
 
@@ -336,7 +347,7 @@
     background: radial-gradient(circle, hsl(var(--vitra-color-accent-h) 100% 70%) 0%, transparent 70%);
     top: -10%;
     right: -5%;
-    animation: vitra-float 22s ease-in-out infinite;
+    animation: vitra-float 22s steps(55) infinite;
   }
 
   .vitra-glow-orb-2 {
@@ -345,7 +356,7 @@
     background: radial-gradient(circle, hsl(calc(var(--vitra-color-accent-h) + 60) 100% 60%) 0%, transparent 70%);
     bottom: -5%;
     left: -5%;
-    animation: vitra-float-reverse 18s ease-in-out infinite;
+    animation: vitra-float-reverse 18s steps(45) infinite;
   }
 
   .vitra-glow-orb-3 {
@@ -354,7 +365,7 @@
     background: radial-gradient(circle, hsl(calc(var(--vitra-color-accent-h) - 30) 100% 60%) 0%, transparent 70%);
     top: 40%;
     left: 50%;
-    animation: vitra-float 25s ease-in-out infinite;
+    animation: vitra-float 24s steps(60) infinite;
     opacity: 0.08;
   }
 
@@ -376,7 +387,7 @@
     background-size: 300% 300%;
     background-clip: text;
     color: transparent;
-    animation: vitra-text-shift 6s ease-in-out infinite;
+    animation: vitra-text-shift 6s steps(30) infinite;
   }
 
   /* background-clip: text can only be animated by repainting the glyphs,
@@ -443,6 +454,12 @@
     );
     animation: vitra-border-rotate 4s linear infinite;
     will-change: transform;
+  }
+
+  /* Paused by Vitra.motionGuard when offscreen. The spin itself stays
+     continuous - at a quarter turn a second it would visibly tick. */
+  .vitra-border-glow.vitra-motion-paused::before {
+    animation-play-state: paused;
   }
 
   .vitra-border-glow::after {
@@ -606,7 +623,7 @@
     background: radial-gradient(circle, hsl(var(--vitra-color-accent-h) 100% 70%) 0%, transparent 70%);
     top: -20%;
     left: -10%;
-    animation: vitra-aurora-drift 20s ease-in-out infinite;
+    animation: vitra-aurora-drift 20s steps(50) infinite;
   }
 
   .vitra-aurora-bg::after {
@@ -615,7 +632,7 @@
     background: radial-gradient(circle, hsl(calc(var(--vitra-color-accent-h) + 60) 100% 60%) 0%, transparent 70%);
     bottom: -15%;
     right: -10%;
-    animation: vitra-aurora-drift-2 16s ease-in-out infinite;
+    animation: vitra-aurora-drift-2 15s steps(50) infinite;
   }
 
   .vitra-aurora-layer {
@@ -637,7 +654,7 @@
     background: radial-gradient(circle, hsl(calc(var(--vitra-color-accent-h) - 30) 100% 65%) 0%, transparent 70%);
     top: 30%;
     left: 40%;
-    animation: vitra-aurora-drift 24s ease-in-out infinite reverse;
+    animation: vitra-aurora-drift 24s steps(60) infinite reverse;
   }
 
   .vitra-aurora-layer-2 {
@@ -646,7 +663,7 @@
     background: radial-gradient(circle, hsl(calc(var(--vitra-color-accent-h) + 120) 100% 55%) 0%, transparent 70%);
     top: 50%;
     left: 20%;
-    animation: vitra-aurora-drift-2 18s ease-in-out infinite;
+    animation: vitra-aurora-drift-2 18s steps(60) infinite;
     opacity: 0.07;
   }
 

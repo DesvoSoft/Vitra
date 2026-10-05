@@ -1424,7 +1424,7 @@ const Vitra = (() => {
   // don't keep compositing every frame on sections the user has scrolled past.
   // =========================================================================
   const motionGuard = (() => {
-    const SELECTOR = '.vitra-glow-orb, .vitra-aurora-bg, .vitra-aurora-layer, .vitra-aurora-layer-1, .vitra-aurora-layer-2, .vitra-gradient-bg, .vitra-gradient-text, .vitra-scenery, .vitra-scenery-inline';
+    const SELECTOR = '.vitra-glow-orb, .vitra-aurora-bg, .vitra-aurora-layer, .vitra-aurora-layer-1, .vitra-aurora-layer-2, .vitra-gradient-bg, .vitra-gradient-text, .vitra-border-glow, .vitra-shape-morph, .vitra-gradient-rotate, .vitra-scenery, .vitra-scenery-inline';
     const PAUSED_CLASS = 'vitra-motion-paused';
 
     let _observer = null;
