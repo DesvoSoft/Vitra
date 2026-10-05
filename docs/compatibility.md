@@ -24,6 +24,11 @@ Complete browser support matrix and fallback strategies for the Vitra CSS Framew
 | **:has() Selector** | 105+ ✅ | 121+ ✅ | 15.4+ ✅ | 105+ ✅ | 91+ ✅ | ❌ |
 | **oklch() Colors** | 111+ ✅ | 113+ ✅ | 15.4+ ✅ | 111+ ✅ | 97+ ✅ | ❌ |
 | **transition-behavior: allow-discrete** | 117+ ✅ | 129+ ✅ | 17.4+ ✅ | 117+ ✅ | 103+ ✅ | ❌ |
+| **Individual transform properties (`translate`)** | 104+ ✅ | 72+ ✅ | 14.1+ ✅ | 104+ ✅ | 90+ ✅ | ❌ |
+| **`linear()` easing (spring tokens)** | 113+ ✅ | 112+ ✅ | 17.2+ ✅ | 113+ ✅ | 99+ ✅ | ❌ |
+| **Scroll-driven animations (`animation-timeline`)** | 115+ ✅ | ❌ (flag) | 26+ ✅ | 115+ ✅ | 101+ ✅ | ❌ |
+| **View Transitions (same-document)** | 111+ ✅ | 144+ ✅ | 18+ ✅ | 111+ ✅ | 97+ ✅ | ❌ |
+| **`mask-image` unprefixed + `mask-composite`** | 120+ ✅ | 53+ ✅ | 15.4+ ✅ | 120+ ✅ | 106+ ✅ | ❌ |
 
 **Legend:**
 - ✅ Full support
@@ -124,6 +129,9 @@ if ('CSS' in window && 'supports' in window.CSS) {
 | `clamp()` | `@supports (width: clamp(1px, 2px, 3px))` | Use media queries |
 | `css variables` | `@supports (--test: 0)` | Not practical to fallback |
 | `prefers-reduced-motion` | `@media (prefers-reduced-motion: reduce)` | Always animate (no harm) |
+| `linear()` easing | `@supports (transition-timing-function: linear(0, 1))` | `cubic-bezier` back-out for the spring tokens |
+| Scroll-driven animations | `@supports (animation-timeline: view()) and (animation-composition: add)` | Scenery keeps drift + entrance, no scroll depth |
+| `mask-image` | `@supports (mask-image: url(""))` | Scenery ridges render as soft gradient bands; stars do not twinkle |
 
 ### JS Features
 
@@ -133,6 +141,7 @@ if ('CSS' in window && 'supports' in window.CSS) {
 | `matchMedia` | `'matchMedia' in window` | Skip theme auto-detect |
 | `localStorage` | `try/catch` test | Skip persistence |
 | `ES Modules` | `type="module"` | Use bundler for older syntax |
+| View Transitions | `typeof document.startViewTransition === 'function'` | `Vitra.theme.set(…, { transition: true })` swaps instantly |
 
 ## Accessibility: Reduced Motion
 

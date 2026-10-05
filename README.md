@@ -3,8 +3,8 @@
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
 [![Version](https://img.shields.io/badge/version-1.13.0-blue)](https://github.com/DesvoSoft/Vitra)
 [![License](https://img.shields.io/badge/license-ISC-blue)](https://github.com/DesvoSoft/Vitra)
-[![Bundle Size](https://img.shields.io/badge/css-13.7%20KB%20brotlied-brightgreen)](https://github.com/DesvoSoft/Vitra)
-[![Tests](https://img.shields.io/badge/tests-70%20passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
+[![Bundle Size](https://img.shields.io/badge/css-19.8%20kB%20brotli-brightgreen)](https://github.com/DesvoSoft/Vitra)
+[![Tests](https://img.shields.io/badge/tests-95%20passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
 
 Vitra is a high-performance, premium CSS framework engineered for modern web applications. It specializes in Glassmorphism, Motion Design, Interactive Particles, and Cinematic Visual Effects, providing a sophisticated aesthetic out of the box with zero external dependencies.
 
@@ -16,12 +16,13 @@ Unlike generic utility-first frameworks, Vitra is built with a specific aestheti
 
 -   **Glass-First Design**: Optimized backdrop-filter effects with robust `@supports` fallbacks for all browsers.
 -   **Strict @layer Architecture**: Predictable cascade management using modern CSS layers.
--   **Motion Engine**: 25+ choreographed keyframes that automatically respect `prefers-reduced-motion`.
+-   **Motion Engine**: 25+ choreographed keyframes that automatically respect `prefers-reduced-motion`, plus spring easing tokens (`--vitra-ease-spring`) for things that arrive.
+-   **Free at rest**: ambient effects animate `transform`/`opacity` only and pause offscreen — an idle page with the full scenery running does zero repaints.
 -   **Particle System**: Native CSS/JS hybrid particles with built-in performance limits (15 mobile / 40 desktop).
 -   **Cinematic Effects**: Animated mesh gradients, floating glow orbs, gradient text, spinning border glows, page-enter animation, 3D tilt cards, aurora background, text reveal, stagger system.
--   **Ambient Scenery**: CSS-only mountain-landscape backdrop with SVG-silhouette ridgelines, parallax drift, and theme-derived color — turns glass panels into windows onto a scene.
+-   **Ambient Scenery**: CSS-only mountain landscape — faceted ranges with lit planes, a conifer line, twinkling stars, a moon with a breathing corona. It assembles on load and separates into depth planes as you scroll. One element of markup.
 -   **Shader Effects**: Pure-CSS shader effects — noise overlay, shape morphing, progress rings, gradient rotate borders, scroll-driven reveals, material ripple.
--   **Modern CSS Features**: Container Queries, `@starting-style`, Popover API — all with fallbacks.
+-   **Modern CSS Features**: Container Queries, `@starting-style`, Popover API, scroll-driven animations, View Transitions, `linear()` easing — all with fallbacks.
 -   **Premium Color System**: All surfaces tinted with accent hue — no pure neutral grays. Warm/cool/oklch variants.
 -   **Smart Theming**: 7 themes (light, dark, auto, pastel, neon, ocean, emerald) with system-level sync.
 
@@ -113,7 +114,21 @@ The Vitra JS API is modular and declarative. You can configure it via data-confi
 Vitra.theme.set('neon');          // Switch to neon theme
 Vitra.theme.toggle();             // Flip between light/dark
 Vitra.theme.getEffective();       // Resolve 'auto' to actual theme
+
+// Animated: the new theme grows as a circle out of the control that was pressed
+button.addEventListener('click', (event) => {
+  Vitra.theme.toggle({ transition: true, origin: event });
+});
 ```
+
+### Scenery
+```javascript
+Vitra.scenery.init();                                  // fill every empty .vitra-scenery root (automatic on load)
+Vitra.scenery.mount('#hero-bg', { inline: true, moon: 'crescent' });
+```
+
+### Always-on helpers
+`ripple`, `tooltip`, `dropdown`, `spotlight`, `scenery` and `motionGuard` initialize themselves on load. `motionGuard` pauses ambient loops (scenery, glow orbs, aurora, mesh gradient, gradient text) while they are offscreen. Turn any of them off in `data-config`, e.g. `{"motionGuard": false}`.
 
 ### Particle Engine
 ```javascript
@@ -214,15 +229,22 @@ Vitra leverages cutting-edge CSS for progressive enhancement:
 | **`:has()`** | Parent-aware component states | All modern browsers |
 | **`clamp()`** | Fluid spacing and typography | Chrome 79+, FF 75+ |
 | **`oklch()`** | Premium color space alternative | Chrome 111+, FF 113+, Safari 15.4+ |
+| **Scroll-driven animations** | Scenery scroll depth, `.vitra-scroll-reveal*` | Chrome 115+, Safari 26+ (skipped elsewhere) |
+| **`linear()` easing** | Spring tokens | Chrome 113+, FF 112+, Safari 17.2+ (`cubic-bezier` fallback) |
+| **View Transitions** | Animated theme change (opt-in) | Chrome 111+, Safari 18+, FF 144+ (instant swap elsewhere) |
+| **Individual `translate`** | Scenery entrance layered over drift | Chrome 104+, FF 72+, Safari 14.1+ |
 
 ---
 
 ## Accessibility & Performance
 
--   **Reduced Motion**: All transitions and animations auto-disable if `prefers-reduced-motion` is detected. Supported at CSS (`0.01ms !important`) and JS levels.
--   **Resource Safety**: Particle counts capped (15 mobile, 40 desktop) for 60fps on all devices.
--   **Screen Reader Support**: `aria-live` announcer on theme changes, `aria-describedby` on tooltips, `role="dialog"` + `aria-modal` on modals, `.vitra-sr-only` utilities.
--   **Bundle Size**: CSS ~100 KB minified (~10.8 KB brotlied), JS ~14.1 KB minified (~4.2 KB brotlied). Monitored via `size-limit`.
+-   **Reduced Motion**: All transitions and animations auto-disable if `prefers-reduced-motion` is detected. Supported at CSS (`0.01ms !important`) and JS levels; the scenery holds a static frame and animated theme changes fall back to an instant swap.
+-   **Compositor-only ambient motion**: scenery, mesh gradient, drawer and skeleton shimmer animate `transform`/`opacity` only. Measured in headless Chromium, an idle page with the full scenery does 0 repaints and ~3 ms/s of main-thread work.
+-   **Offscreen pause**: `Vitra.motionGuard` stops ambient loops outside the viewport.
+-   **Resource Safety**: Particle counts capped (15 mobile, 40 desktop).
+-   **Contrast**: checked with axe-core against WCAG 2.2 AA across all themes; status badges use a fixed dark ink (`--vitra-color-on-status`) so they stay legible in light themes.
+-   **Screen Reader Support**: `aria-live` announcer on theme changes, `aria-describedby` on tooltips, `role="dialog"` + `aria-modal` on modals, `.vitra-sr-only` utilities. Scenery is `aria-hidden`.
+-   **Bundle Size**: CSS ~142 KB minified (~19.8 kB brotli), JS ~20 KB minified (~5.7 kB brotli). Monitored via `size-limit`.
 
 ---
 
@@ -234,6 +256,7 @@ Vitra leverages cutting-edge CSS for progressive enhancement:
 | [Integration & API](docs/integration.md) | CDN, JS API, data-config, tree-shaking |
 | [Browser Compatibility](docs/compatibility.md) | Support matrix, fallback strategies |
 | [Audit & Roadmap](docs/AUDIT-2026.md) | Full codebase audit, gaps, future plans |
+| [Performance & A11y Audit (1.13)](docs/AUDIT-2026-10-05.md) | Measured before/after, causes, open items |
 
 ---
 

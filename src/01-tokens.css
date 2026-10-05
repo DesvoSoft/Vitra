@@ -32,6 +32,13 @@
     --vitra-color-error: hsl(0deg 84% 60%);
     --vitra-color-info: hsl(217deg 91% 60%);
 
+    /* Ink for text sitting ON a solid status fill. The four fills above
+       are the same mid-bright colours in every theme, so the ink must not
+       follow the theme: white (the light themes' inverse text) only
+       reaches 2.6:1 on success and 3.6:1 on info. This dark ink clears
+       WCAG AA (4.5:1) on all four. */
+    --vitra-color-on-status: hsl(230deg 25% 8%);
+
     /* Semantic State Surfaces */
     --vitra-color-success-surface: hsl(150deg 84% 39% / 10%);
     --vitra-color-success-border:  hsl(150deg 84% 39% / 30%);

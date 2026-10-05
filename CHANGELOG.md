@@ -34,6 +34,13 @@ Performance and motion pass on the scenery system. Measured in headless Chromium
 - **Shooting star is transform-only**: entry point, angle, length and travel live in one transform list. It used to animate `top`/`left`/`width`, which kept a main-thread animation ticking for the whole 34s cycle. The bright head now leads the streak.
 - `size-limit` budgets: CSS 20 kB brotli (was 16 kB, and had been failing at 20.4 kB), ESM 8.5 kB.
 
+### Accessibility
+
+Checked with axe-core 4.10 (WCAG 2.2 AA) across every theme.
+
+- **Status badges legible in light themes**: `.vitra-badge-success/-warning/-error/-info` used the theme's inverse text colour, which is white on light themes — 2.6:1 on success, 3.6:1 on info. They now use a fixed dark ink, new token `--vitra-color-on-status` (≥ 5:1 on all four fills, every theme).
+- **Pastel accent deepened** (`--vitra-color-accent-l` 55% → 44%): primary badges/buttons sat at 3.9:1 and ghost-button text at 3.3:1.
+
 ### Fixed
 
 - **Offscreen pause never reached pseudo-elements**: `.vitra-motion-paused *` does not match `::before`/`::after` and `animation-play-state` is not inherited, so the far star tile and the shooting star kept animating offscreen.
