@@ -7,14 +7,14 @@
   <meta name="theme-color" content="#0a0a14">
   <title>Vitra CSS — Documentation</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.0/dist/vitra.min.css" crossorigin="anonymous">
   <link rel="stylesheet" href="docs.css">
 </head>
 <body class="docs-body">
 
   <header class="docs-header vitra-glass">
     <a class="docs-wordmark" href="../">Vitra <span class="docs-wordmark-dot">·</span> Docs</a>
-    <span class="vitra-badge vitra-badge-sm vitra-badge-primary docs-version-badge">v1.12.1</span>
+    <span class="vitra-badge vitra-badge-sm vitra-badge-primary docs-version-badge">v1.13.0</span>
     <nav class="docs-header-links" aria-label="Site">
       <a href="../" class="docs-header-link">Demo</a>
       <a href="https://github.com/DesvoSoft/Vitra" class="docs-header-link" rel="noopener">GitHub</a>
@@ -47,6 +47,7 @@
         <a class="docs-nav-link" href="#installation">Installation</a>
         <a class="docs-nav-link" href="#theming">Theming</a>
         <a class="docs-nav-link" href="#components">Components</a>
+        <a class="docs-nav-link" href="#scenery">Scenery &amp; Motion</a>
         <a class="docs-nav-link" href="#js-api">JavaScript API</a>
         <a class="docs-nav-link" href="#data-config">data-config</a>
         <a class="docs-nav-link" href="#compat">Accessibility &amp; Support</a>
@@ -58,7 +59,7 @@
         <h1 class="docs-hero-title">Vitra CSS</h1>
         <p class="docs-hero-tagline">Premium glassmorphism, directional particles, ambient scenery and smooth motion — CSS-only core, optional JS, zero dependencies.</p>
         <p class="docs-hero-badges">
-          <span class="vitra-badge vitra-badge-primary">v1.12.1</span>
+          <span class="vitra-badge vitra-badge-primary">v1.13.0</span>
           <span class="vitra-badge">CSS-only core</span>
           <span class="vitra-badge">0 dependencies</span>
         </p>
@@ -82,13 +83,13 @@
             <div class="vitra-tabs-panel" id="install-cdn">
               <p>Add the stylesheet to <code>&lt;head&gt;</code>:</p>
               <div class="docs-code">
-                <pre tabindex="0" data-copy='<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.css" crossorigin="anonymous">'><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.css" crossorigin="anonymous"&gt;</code></pre>
+                <pre tabindex="0" data-copy='<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.0/dist/vitra.min.css" crossorigin="anonymous">'><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.0/dist/vitra.min.css" crossorigin="anonymous"&gt;</code></pre>
               </div>
               <p>Optionally add the script before <code>&lt;/body&gt;</code> — it enables modals, tooltips, toasts, dropdowns, particles, and theme persistence:</p>
               <div class="docs-code">
-                <pre tabindex="0" data-copy='<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.js" crossorigin="anonymous" defer></script>'><code>&lt;script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.js" crossorigin="anonymous" defer&gt;&lt;/script&gt;</code></pre>
+                <pre tabindex="0" data-copy='<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.0/dist/vitra.min.js" crossorigin="anonymous" defer></script>'><code>&lt;script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.0/dist/vitra.min.js" crossorigin="anonymous" defer&gt;&lt;/script&gt;</code></pre>
               </div>
-              <p>Always pin a version tag (<code>@v1.12.1</code>) in production. Subresource-integrity hashes for each release are generated at build time and published in <code>dist/SRI.txt</code>.</p>
+              <p>Always pin a version tag (<code>@v1.13.0</code>) in production. Subresource-integrity hashes for each release are generated at build time and published in <code>dist/SRI.txt</code>.</p>
             </div>
             <div class="vitra-tabs-panel" id="install-npm" style="display: none;">
               <div class="docs-code">
@@ -307,8 +308,8 @@ import Vitra from 'vitra-css';</code></pre>
 
         <h3 id="c-avatars">Avatars <span class="vitra-badge vitra-badge-sm">CSS-only</span></h3>
         <div class="docs-example">
-          <div class="vitra-avatar" style="width: 40px; height: 40px; background: var(--vitra-color-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">JD</div>
-          <div class="vitra-avatar" style="width: 48px; height: 48px; background: var(--vitra-color-success); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">AB</div>
+          <div class="vitra-avatar" style="width: 40px; height: 40px; background: var(--vitra-color-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--vitra-color-text-inverse); font-weight: bold;">JD</div>
+          <div class="vitra-avatar" style="width: 48px; height: 48px; background: var(--vitra-color-success); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: hsl(230deg 25% 8%); font-weight: bold;">AB</div>
         </div>
         <div class="docs-code">
           <pre tabindex="0" data-copy='<div class="vitra-avatar">JD</div>'><code>&lt;div class="vitra-avatar"&gt;JD&lt;/div&gt;</code></pre>
@@ -321,6 +322,84 @@ import Vitra from 'vitra-css';</code></pre>
         <div class="docs-code">
           <pre tabindex="0" data-copy="Vitra.particles.spawn(10, { direction: 'down' });"><code>Vitra.particles.spawn(10, { direction: 'down' });  // capped at 40 desktop / 15 mobile</code></pre>
         </div>
+      </section>
+
+      <section id="scenery" class="docs-section">
+        <h2>Scenery &amp; Motion</h2>
+        <p>An ambient mountain landscape for heroes and full-page backdrops, plus the motion tokens the components use. Everything here animates <code>transform</code> and <code>opacity</code> only, so it runs on the compositor: an idle page with the scene running does no repaints, and it pauses while offscreen.</p>
+
+        <h3>Scenery <span class="vitra-badge vitra-badge-sm">CSS-only</span></h3>
+        <p>With <code>vitra.js</code> on the page, one empty element is enough — the eight layers are written for you:</p>
+        <div class="docs-code">
+          <pre tabindex="0" data-copy='<!-- Full-page backdrop -->
+<div class="vitra-scenery"></div>
+
+<!-- Or inside a hero -->
+<section style="position: relative;">
+  <div class="vitra-scenery-inline" data-vitra-moon="crescent"></div>
+  <div class="vitra-glass" style="position: relative;">Content</div>
+</section>'><code>&lt;!-- Full-page backdrop --&gt;
+&lt;div class="vitra-scenery"&gt;&lt;/div&gt;
+
+&lt;!-- Or inside a hero --&gt;
+&lt;section style="position: relative;"&gt;
+  &lt;div class="vitra-scenery-inline" data-vitra-moon="crescent"&gt;&lt;/div&gt;
+  &lt;div class="vitra-glass" style="position: relative;"&gt;Content&lt;/div&gt;
+&lt;/section&gt;</code></pre>
+        </div>
+        <p>Without JavaScript, write the layers yourself. The scene is pure CSS either way:</p>
+        <div class="docs-code">
+          <pre tabindex="0" data-copy='<div class="vitra-scenery" aria-hidden="true">
+  <div class="vitra-scenery-sky"></div>
+  <div class="vitra-scenery-stars"></div>
+  <div class="vitra-scenery-clouds"></div>
+  <div class="vitra-scenery-halo"></div>
+  <div class="vitra-scenery-ridge-far"></div>
+  <div class="vitra-scenery-ridge-mid"></div>
+  <div class="vitra-scenery-ridge-near"></div>
+  <div class="vitra-scenery-grain"></div>
+</div>'><code>&lt;div class="vitra-scenery" aria-hidden="true"&gt;
+  &lt;div class="vitra-scenery-sky"&gt;&lt;/div&gt;
+  &lt;div class="vitra-scenery-stars"&gt;&lt;/div&gt;
+  &lt;div class="vitra-scenery-clouds"&gt;&lt;/div&gt;
+  &lt;div class="vitra-scenery-halo"&gt;&lt;/div&gt;
+  &lt;div class="vitra-scenery-ridge-far"&gt;&lt;/div&gt;
+  &lt;div class="vitra-scenery-ridge-mid"&gt;&lt;/div&gt;
+  &lt;div class="vitra-scenery-ridge-near"&gt;&lt;/div&gt;
+  &lt;div class="vitra-scenery-grain"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+        <table>
+          <tr><th>Token</th><th>Default</th><th>Does</th></tr>
+          <tr><td><code>--vitra-scenery-intro</code></td><td><code>1</code></td><td>Entrance length multiplier. <code>0</code> = the scene is simply there.</td></tr>
+          <tr><td><code>--vitra-scenery-depth</code></td><td><code>1</code></td><td>Scroll parallax strength for <code>.vitra-scenery-inline</code>. <code>0</code> = locked.</td></tr>
+          <tr><td><code>--vitra-scenery-speed</code></td><td><code>1</code></td><td>Drift speed multiplier.</td></tr>
+          <tr><td><code>--vitra-scenery-halo-x</code> / <code>-y</code> / <code>-size</code></td><td><code>76%</code> / <code>13%</code> / <code>clamp(56px, 9vmin, 110px)</code></td><td>Moon (or sun, on light themes) position and size.</td></tr>
+          <tr><td><code>--vitra-scenery-hue</code> / <code>-sat</code></td><td>theme accent</td><td>Base colour of the whole scene.</td></tr>
+        </table>
+        <p><strong>Scroll depth needs a host that is not <code>overflow: hidden</code>.</strong> That makes the host the scroll container the effect listens to, and it silently stays off. Use <code>overflow: clip</code>, or nothing — the scenery root clips itself. The same goes for <code>overflow-x: hidden</code> on both <code>html</code> and <code>body</code>.</p>
+
+        <h3>Spring easing <span class="vitra-badge vitra-badge-sm">CSS-only</span></h3>
+        <p>Modals, toasts, drawers and dropdown menus spring in and ease out. The same tokens are yours to use — put the spring on the <em>open</em> state only:</p>
+        <div class="docs-code">
+          <pre tabindex="0" data-copy='.my-panel.open {
+  transition: transform var(--vitra-duration-spring) var(--vitra-ease-spring-soft);
+}'><code>.my-panel.open {
+  transition: transform var(--vitra-duration-spring) var(--vitra-ease-spring-soft);
+}</code></pre>
+        </div>
+        <p><code>--vitra-ease-spring</code> overshoots and settles; <code>--vitra-ease-spring-soft</code> barely overshoots. Both are sampled damped springs via <code>linear()</code>, with a <code>cubic-bezier</code> fallback.</p>
+
+        <h3>Animated theme change <span class="vitra-badge vitra-badge-sm vitra-badge-info">needs JS</span></h3>
+        <p>Opt in and the new theme grows as a circle out of the control that was pressed. Try the theme menu at the top of this page.</p>
+        <div class="docs-code">
+          <pre tabindex="0" data-copy="button.addEventListener('click', (event) => {
+  Vitra.theme.toggle({ transition: true, origin: event });
+});"><code>button.addEventListener('click', (event) =&gt; {
+  Vitra.theme.toggle({ transition: true, origin: event });
+});</code></pre>
+        </div>
+        <p>It uses the View Transitions API: browsers without it, and visitors who prefer reduced motion, get the instant swap.</p>
       </section>
 
       <!-- Live modal for the components section -->
@@ -347,9 +426,9 @@ import Vitra from 'vitra-css';</code></pre>
         <table>
           <tr><th>Method</th><th>Does</th></tr>
           <tr><td><code>get()</code></td><td>Current theme name (<code>'auto'</code> if unset).</td></tr>
-          <tr><td><code>set(name)</code></td><td>Applies a built-in theme; returns <code>false</code> and warns on unknown names.</td></tr>
-          <tr><td><code>toggle()</code></td><td>Switches light ↔ dark (resolves <code>auto</code> first); returns the new theme.</td></tr>
-          <tr><td><code>init(options)</code></td><td>Restores stored choice; <code>{ defaultTheme: 'auto', persist: true }</code>.</td></tr>
+          <tr><td><code>set(name, options?)</code></td><td>Applies a built-in theme; returns <code>false</code> and warns on unknown names. <code>{ transition: true, origin }</code> animates the swap — <code>origin</code> is a pointer event, an element or <code>{ x, y }</code>.</td></tr>
+          <tr><td><code>toggle(options?)</code></td><td>Switches light ↔ dark (resolves <code>auto</code> first); returns the new theme. Takes the same options as <code>set()</code>.</td></tr>
+          <tr><td><code>init(options)</code></td><td>Restores stored choice; <code>{ defaultTheme: 'auto', persist: true, transition: false }</code>. <code>transition: true</code> animates every later change.</td></tr>
           <tr><td><code>getEffective()</code></td><td>Resolves <code>auto</code> to <code>'light'</code> or <code>'dark'</code>.</td></tr>
           <tr><td><code>getValidThemes()</code></td><td>Array of the seven built-in names.</td></tr>
           <tr><td><code>clear()</code></td><td>Removes the stored preference.</td></tr>
@@ -415,6 +494,17 @@ Vitra.tooltip.init();   // activates all [data-vitra-tooltip] elements</code></p
         <h3>Vitra.dropdown / Vitra.ripple / Vitra.spotlight</h3>
         <p>Behavior modules with <code>init()</code> / <code>destroy()</code>. They initialize automatically (see <a href="#data-config">data-config</a>): dropdowns from <code>[data-vitra-dropdown-toggle]</code>, ripple from <code>.vitra-ripple</code> elements, spotlight cursor-tracking from <code>.vitra-spotlight</code>.</p>
 
+        <h3>Vitra.scenery</h3>
+        <table>
+          <tr><th>Method</th><th>Does</th></tr>
+          <tr><td><code>init()</code></td><td>Fills every empty <code>.vitra-scenery</code> / <code>.vitra-scenery-inline</code> root with its eight layers; returns how many. Runs automatically.</td></tr>
+          <tr><td><code>mount(target, options?)</code></td><td>Turns any element into a scene. <code>{ inline: true, moon: 'crescent' }</code>. Roots that already have layers are left alone.</td></tr>
+          <tr><td><code>destroy()</code></td><td>Removes only the layers it injected.</td></tr>
+        </table>
+
+        <h3>Vitra.motionGuard</h3>
+        <p><code>init()</code> / <code>destroy()</code>. Pauses ambient loops — scenery, glow orbs, aurora, mesh gradient, gradient text — while they are outside the viewport. Initializes automatically; skipped under reduced motion, where those animations are already off.</p>
+
         <h3>Vitra.destroyAll()</h3>
         <p>Tears down every module — removes all listeners and injected nodes. Useful in SPAs on route teardown.</p>
       </section>
@@ -436,7 +526,7 @@ Vitra.tooltip.init();   // activates all [data-vitra-tooltip] elements</code></p
 }'&gt;</code></pre>
         </div>
         <h3>Defaults</h3>
-        <p>Since v1.10.3, <strong>ripple, tooltip, dropdown, and spotlight initialize by default</strong> — with or without a <code>data-config</code> element. Setting a module to <code>false</code> opts out. <code>theme</code>, <code>particles</code>, and <code>reveal</code> are opt-in: they only run when their key is present.</p>
+        <p>Since v1.10.3, <strong>ripple, tooltip, dropdown, spotlight, scenery and motionGuard initialize by default</strong> — with or without a <code>data-config</code> element. Setting a module to <code>false</code> opts out. <code>theme</code>, <code>particles</code>, and <code>reveal</code> are opt-in: they only run when their key is present.</p>
         <table>
           <tr><th>Key</th><th>Default</th><th>Value</th></tr>
           <tr><td><code>theme</code></td><td>off</td><td>Theme name, or <code>init()</code> options object.</td></tr>
@@ -446,6 +536,8 @@ Vitra.tooltip.init();   // activates all [data-vitra-tooltip] elements</code></p
           <tr><td><code>tooltip</code></td><td>on</td><td><code>false</code> to disable.</td></tr>
           <tr><td><code>dropdown</code></td><td>on</td><td><code>false</code> to disable.</td></tr>
           <tr><td><code>spotlight</code></td><td>on</td><td><code>false</code> to disable.</td></tr>
+          <tr><td><code>scenery</code></td><td>on</td><td><code>false</code> to stop empty scenery roots being filled.</td></tr>
+          <tr><td><code>motionGuard</code></td><td>on</td><td><code>false</code> to keep ambient animations running offscreen.</td></tr>
         </table>
         <p>Malformed JSON logs a <code>[Vitra]</code> console warning and falls back to the defaults above — it never throws.</p>
       </section>
@@ -477,7 +569,7 @@ Vitra.tooltip.init();   // activates all [data-vitra-tooltip] elements</code></p
     </main>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.0/dist/vitra.min.js" crossorigin="anonymous"></script>
   <script src="docs.js"></script>
 </body>
 </html>

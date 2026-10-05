@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#0a0a14">
   <title>Vitra CSS — Interactive Demo</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.0/dist/vitra.min.css" crossorigin="anonymous">
   <link rel="stylesheet" href="demo.css">
 
   <style>
@@ -36,8 +36,9 @@
             <svg class="demo-nav-chevron" aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </button>
           <div class="vitra-dropdown-menu demo-nav-dropdown-menu">
+            <a href="#whats-new" class="vitra-dropdown-item">New in 1.13 <span class="vitra-badge vitra-badge-sm vitra-badge-primary">NEW</span></a>
             <a href="#cinematic" class="vitra-dropdown-item">Cinematic</a>
-            <a href="#scenery" class="vitra-dropdown-item">Scenery <span class="vitra-badge vitra-badge-sm vitra-badge-primary">NEW</span></a>
+            <a href="#scenery" class="vitra-dropdown-item">Scenery</a>
             <a href="#themes" class="vitra-dropdown-item">Themes</a>
             <a href="#modern-css" class="vitra-dropdown-item">Modern CSS</a>
             <a href="#shaders" class="vitra-dropdown-item">Shaders</a>
@@ -99,17 +100,18 @@
   </nav>
 
   <!-- Mobile Drawer -->
-  <aside class="vitra-drawer vitra-drawer-glass" role="dialog" aria-label="Mobile navigation menu">
+  <div class="vitra-drawer vitra-drawer-glass" role="dialog" aria-label="Mobile navigation menu">
     <div class="vitra-drawer-header">
       <h3 class="vitra-drawer-title">Vitra CSS</h3>
       <button class="vitra-drawer-close">&times;</button>
     </div>
     <div class="vitra-drawer-body">
-      <nav class="vitra-flex vitra-flex-col vitra-gap-2">
+      <nav class="vitra-flex vitra-flex-col vitra-gap-2" aria-label="Mobile">
         <a href="#quick-start" class="vitra-navbar-link">Get Started</a>
         <a href="docs/" class="vitra-navbar-link">Docs</a>
         <span class="demo-drawer-group-label">Features</span>
         <div class="demo-drawer-subnav">
+          <a href="#whats-new" class="vitra-navbar-link demo-drawer-sublink">↳ New in 1.13</a>
           <a href="#cinematic" class="vitra-navbar-link demo-drawer-sublink">↳ Cinematic</a>
           <a href="#scenery" class="vitra-navbar-link demo-drawer-sublink">↳ Scenery</a>
           <a href="#themes" class="vitra-navbar-link demo-drawer-sublink">↳ Themes</a>
@@ -137,7 +139,7 @@
         </div>
       </nav>
     </div>
-  </aside>
+  </div>
 
   <!-- Drawer Overlay -->
   <div class="vitra-drawer-overlay" id="drawer-overlay"></div>
@@ -158,15 +160,20 @@
       <div class="vitra-scenery-grain"></div>
     </div>
     <div class="vitra-container vitra-text-center">
-      <p class="demo-hero-overline">v1.12.1</p>
+      <p class="demo-hero-overline">v1.13.0</p>
       <h1 class="demo-hero-title">Vitra <span class="demo-hero-title-accent">CSS</span></h1>
       <p class="vitra-text-xl demo-hero-sub">
-        Cinematic glassmorphism. Zero dependencies, pure CSS.
+        Cinematic glassmorphism with a living landscape behind it.<br>Zero dependencies, pure CSS, and free at rest.
       </p>
       <div class="vitra-flex vitra-justify-center vitra-gap-4 vitra-flex-wrap vitra-mt-6">
         <a href="#quick-start" class="vitra-btn vitra-btn-lg demo-btn-warm">Get Started</a>
         <a href="https://github.com/DesvoSoft/Vitra" class="vitra-btn vitra-btn-ghost vitra-btn-lg" target="_blank" rel="noopener">GitHub</a>
       </div>
+      <ul class="demo-hero-stats" aria-label="At a glance">
+        <li><strong>0</strong><span>repaints at rest</span></li>
+        <li><strong>20 kB</strong><span>of CSS, brotli</span></li>
+        <li><strong>0</strong><span>dependencies</span></li>
+      </ul>
     </div>
     <div class="demo-hero-scroll-cue" aria-hidden="true"></div>
   </section>
@@ -179,10 +186,10 @@
       <span class="vitra-badge vitra-badge-primary demo-qs-eyebrow">Quick Start</span>
       <h2 class="demo-section-title vitra-mt-4">Beautiful by default. Instant to ship.</h2>
       <p class="demo-section-desc vitra-text-secondary">
-        Glassmorphism, cinematic animations, and a full design system — all in a single 19KB stylesheet. No build step, no config, no npm install. Drop one line into any HTML page and start building.
+        Glassmorphism, cinematic animations, and a full design system — all in a single 20 kB stylesheet. No build step, no config, no npm install. Drop one line into any HTML page and start building.
       </p>
       <ul class="demo-qs-specs" aria-label="Key specs">
-        <li>19KB gzipped</li>
+        <li>20 kB brotli</li>
         <li>Zero dependencies</li>
         <li>No build step</li>
       </ul>
@@ -190,7 +197,7 @@
       <div class="demo-qs-block">
         <div class="demo-qs-label">1. Add the stylesheet</div>
         <div class="demo-qs-code-wrap">
-          <pre class="demo-qs-code" data-copy='<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.css">'><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.css"&gt;</code></pre>
+          <pre class="demo-qs-code" data-copy='<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.0/dist/vitra.min.css">'><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.0/dist/vitra.min.css"&gt;</code></pre>
           <button class="demo-qs-copy vitra-btn vitra-btn-ghost vitra-btn-sm">Copy</button>
         </div>
       </div>
@@ -198,7 +205,7 @@
       <div class="demo-qs-block">
         <div class="demo-qs-label">2. Add the script (optional — for modals, tooltips, particles, toasts, dropdowns &amp; more)</div>
         <div class="demo-qs-code-wrap">
-          <pre class="demo-qs-code" data-copy='<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.js"></script>'><code>&lt;script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.js"&gt;&lt;/script&gt;</code></pre>
+          <pre class="demo-qs-code" data-copy='<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.0/dist/vitra.min.js"></script>'><code>&lt;script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.0/dist/vitra.min.js"&gt;&lt;/script&gt;</code></pre>
           <button class="demo-qs-copy vitra-btn vitra-btn-ghost vitra-btn-sm">Copy</button>
         </div>
       </div>
@@ -218,21 +225,21 @@
 <html data-theme="auto">
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.0/dist/vitra.min.css">
 </head>
 <body>
   <div class="vitra-card vitra-glass">Hello, Vitra!</div>
-  <script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.0/dist/vitra.min.js"></script>
 </body>
 </html>'><code>&lt;!DOCTYPE html&gt;
 &lt;html data-theme="auto"&gt;
 &lt;head&gt;
   &lt;meta charset="UTF-8"&gt;
-  &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.css"&gt;
+  &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.0/dist/vitra.min.css"&gt;
 &lt;/head&gt;
 &lt;body&gt;
   &lt;div class="vitra-card vitra-glass"&gt;Hello, Vitra!&lt;/div&gt;
-  &lt;script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.js"&gt;&lt;/script&gt;
+  &lt;script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.0/dist/vitra.min.js"&gt;&lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
           <button class="demo-qs-copy vitra-btn vitra-btn-ghost vitra-btn-sm">Copy</button>
@@ -248,6 +255,70 @@
   <!-- ============================================================
        CINEMATIC EFFECTS
        ============================================================ -->
+  <section id="whats-new" class="demo-section vitra-reveal">
+    <div class="vitra-container">
+      <h2 class="demo-section-title"><span class="vitra-badge vitra-badge-sm vitra-badge-primary">1.13</span> Motion that costs nothing</h2>
+      <p class="vitra-text-secondary demo-section-desc">
+        Everything that moves in the background now runs on the compositor: no repaints, no per-frame style work, paused the moment it leaves the screen. What that buys is headroom to make the things you touch feel alive.
+      </p>
+
+      <div class="demo-new-grid">
+        <!-- Springs -->
+        <div class="demo-card demo-new-card">
+          <div class="demo-card-header"><h3>Things arrive with a spring</h3></div>
+          <p class="vitra-text-secondary">Three easing tokens, same distance, same duration. Modals, toasts, drawers and menus spring <em>in</em> and ease <em>out</em>.</p>
+          <div class="demo-race" id="spring-race">
+            <div class="demo-race-row"><code>--vitra-ease-luxury</code><div class="demo-race-track"><div class="demo-race-runner" style="--demo-ease: var(--vitra-ease-luxury)"></div></div></div>
+            <div class="demo-race-row"><code>--vitra-ease-spring-soft</code><div class="demo-race-track"><div class="demo-race-runner" style="--demo-ease: var(--vitra-ease-spring-soft)"></div></div></div>
+            <div class="demo-race-row"><code>--vitra-ease-spring</code><div class="demo-race-track"><div class="demo-race-runner" style="--demo-ease: var(--vitra-ease-spring)"></div></div></div>
+          </div>
+          <div class="vitra-flex vitra-gap-3 vitra-flex-wrap">
+            <button class="vitra-btn vitra-btn-sm vitra-btn-solid" id="spring-race-replay">Replay</button>
+            <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" id="spring-toast">Spring a toast</button>
+            <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" id="spring-modal">Spring a modal</button>
+          </div>
+        </div>
+
+        <!-- Theme reveal -->
+        <div class="demo-card demo-new-card">
+          <div class="demo-card-header"><h3>Themes that bloom</h3></div>
+          <p class="vitra-text-secondary">Pick one. The new theme grows out of the button you pressed, over a frozen snapshot of the old one — one View Transition, nothing in the page repaints per frame.</p>
+          <div class="demo-bloom" id="theme-bloom" role="group" aria-label="Switch theme with a reveal">
+            <button class="demo-bloom-chip" data-theme-value="dark" style="--chip: hsl(177deg 80% 60%)">Dark</button>
+            <button class="demo-bloom-chip" data-theme-value="light" style="--chip: hsl(222deg 72% 52%)">Light</button>
+            <button class="demo-bloom-chip" data-theme-value="neon" style="--chip: hsl(285deg 100% 58%)">Neon</button>
+            <button class="demo-bloom-chip" data-theme-value="ocean" style="--chip: hsl(205deg 90% 55%)">Ocean</button>
+            <button class="demo-bloom-chip" data-theme-value="emerald" style="--chip: hsl(145deg 80% 45%)">Emerald</button>
+            <button class="demo-bloom-chip" data-theme-value="pastel" style="--chip: hsl(330deg 70% 44%)">Pastel</button>
+          </div>
+          <pre class="demo-new-code" tabindex="0"><code>button.onclick = (event) =&gt;
+  Vitra.theme.set('neon', { transition: true, origin: event });</code></pre>
+        </div>
+
+        <!-- Free at rest -->
+        <div class="demo-card demo-new-card">
+          <div class="demo-card-header"><h3>Free at rest</h3></div>
+          <p class="vitra-text-secondary">The hero above — stars twinkling, ranges drifting, moon breathing — measured on an idle page.</p>
+          <dl class="demo-meter">
+            <div class="demo-meter-row">
+              <dt>Repaints / second</dt>
+              <dd><span class="demo-meter-bar demo-meter-before" style="--w: 100%">210</span><span class="demo-meter-bar demo-meter-after" style="--w: 1%">0</span></dd>
+            </div>
+            <div class="demo-meter-row">
+              <dt>Main thread busy</dt>
+              <dd><span class="demo-meter-bar demo-meter-before" style="--w: 100%">137 ms/s</span><span class="demo-meter-bar demo-meter-after" style="--w: 3%">3 ms/s</span></dd>
+            </div>
+            <div class="demo-meter-row">
+              <dt>Style recalcs / second</dt>
+              <dd><span class="demo-meter-bar demo-meter-before" style="--w: 100%">81</span><span class="demo-meter-bar demo-meter-after" style="--w: 2%">~1</span></dd>
+            </div>
+          </dl>
+          <p class="demo-meter-note vitra-text-secondary"><span class="demo-meter-key demo-meter-before"></span> v1.12 <span class="demo-meter-key demo-meter-after"></span> v1.13 · headless Chromium, 1600×900, dark theme</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="cinematic" class="demo-section vitra-reveal">
     <div class="vitra-container">
       <h2 class="demo-section-title">Cinematic Effects</h2>
@@ -332,25 +403,17 @@
        ============================================================ -->
   <section id="scenery" class="demo-section vitra-reveal">
     <div class="vitra-container">
-      <h2 class="demo-section-title"><span class="vitra-badge vitra-badge-sm vitra-badge-primary">NEW</span> Scenery</h2>
+      <h2 class="demo-section-title">Scenery</h2>
       <p class="vitra-text-secondary demo-section-desc">
-        A CSS-only ambient mountain landscape, now eight layers deep. SVG-silhouette ridgelines at three depths, drifting clouds, a dark-theme star field, a sun that catches the peaks, atmospheric haze, and differential-speed parallax — glass panels become windows onto a scene. Zero JS, zero images, colors derived from the active theme.
+        A CSS-only mountain landscape. Faceted ranges with light-facing planes, a conifer line growing in stands, stars that flicker one by one, a moon whose corona breathes. It assembles when it enters the screen, separates into depth planes as it scrolls away, and re-colours itself from the theme's accent.
       </p>
 
       <div class="demo-scenery-showcase" id="scenery-showcase">
-        <div class="vitra-scenery-inline" aria-hidden="true">
-          <div class="vitra-scenery-sky"></div>
-          <div class="vitra-scenery-clouds"></div>
-          <div class="vitra-scenery-stars"></div>
-          <div class="vitra-scenery-halo"></div>
-          <div class="vitra-scenery-ridge-far"></div>
-          <div class="vitra-scenery-ridge-mid"></div>
-          <div class="vitra-scenery-ridge-near"></div>
-          <div class="vitra-scenery-grain"></div>
-        </div>
+        <!-- One element: Vitra.scenery writes the eight layers -->
+        <div class="vitra-scenery-inline"></div>
         <div class="vitra-glass demo-scenery-panel">
           <strong>A window, not a card</strong>
-          <span>The mountains, clouds, and stars all drift behind this glass at different speeds — same direction, so it reads as one consistent wind. Switch themes — the whole scene re-colors itself.</span>
+          <span>This scene is one empty <code>div</code>. The mountains, clouds, and stars all drift behind this glass at different speeds — same direction, so it reads as one consistent wind. Switch themes — the whole scene re-colors itself.</span>
         </div>
       </div>
 
@@ -358,6 +421,11 @@
         <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" onclick="setScenerySpeed(this, 0.5)">0.5× drift</button>
         <button class="vitra-btn vitra-btn-sm vitra-btn-solid" onclick="setScenerySpeed(this, 1)">1× drift</button>
         <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" onclick="setScenerySpeed(this, 4)">4× drift</button>
+      </div>
+
+      <div class="vitra-flex vitra-gap-3 vitra-flex-wrap vitra-mt-3" role="group" aria-label="Entrance">
+        <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" onclick="replaySceneryEntrance(1)">Replay entrance</button>
+        <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" onclick="replaySceneryEntrance(2.5)">Replay, slow</button>
       </div>
 
       <div class="vitra-flex vitra-gap-3 vitra-flex-wrap vitra-mt-3" role="group" aria-label="Moon phase">
@@ -369,26 +437,20 @@
         <div class="demo-card-header">
           <h3>Markup</h3>
         </div>
-        <p>Eight fixed child layers; use <code>.vitra-scenery</code> for a full-page backdrop or <code>.vitra-scenery-inline</code> inside any <code>position: relative; overflow: hidden</code> container. <code>.vitra-scenery-stars</code> is safe to always include — it's opacity-gated to <code>0</code> on light-scheme themes. Tune with <code>--vitra-scenery-speed</code>, <code>--vitra-scenery-hue</code>, and per-layer blur/opacity tokens.</p>
-        <pre class="demo-qs-code" data-copy='<div class="vitra-scenery" aria-hidden="true">
-  <div class="vitra-scenery-sky"></div>
-  <div class="vitra-scenery-clouds"></div>
-  <div class="vitra-scenery-stars"></div>
-  <div class="vitra-scenery-halo"></div>
-  <div class="vitra-scenery-ridge-far"></div>
-  <div class="vitra-scenery-ridge-mid"></div>
-  <div class="vitra-scenery-ridge-near"></div>
-  <div class="vitra-scenery-grain"></div>
-</div>'><code>&lt;div class="vitra-scenery" aria-hidden="true"&gt;
-  &lt;div class="vitra-scenery-sky"&gt;&lt;/div&gt;
-  &lt;div class="vitra-scenery-clouds"&gt;&lt;/div&gt;
-  &lt;div class="vitra-scenery-stars"&gt;&lt;/div&gt;
-  &lt;div class="vitra-scenery-halo"&gt;&lt;/div&gt;
-  &lt;div class="vitra-scenery-ridge-far"&gt;&lt;/div&gt;
-  &lt;div class="vitra-scenery-ridge-mid"&gt;&lt;/div&gt;
-  &lt;div class="vitra-scenery-ridge-near"&gt;&lt;/div&gt;
-  &lt;div class="vitra-scenery-grain"&gt;&lt;/div&gt;
-&lt;/div&gt;</code></pre>
+        <p>One element. With <code>vitra.js</code> on the page the eight layers are written for you; use <code>.vitra-scenery</code> for a full-page backdrop or <code>.vitra-scenery-inline</code> inside any <code>position: relative</code> container. No JavaScript? The <a class="vitra-link" href="docs/">docs</a> have the eight-layer markup — the scene itself is pure CSS.</p>
+        <pre class="demo-qs-code" data-copy='<div class="vitra-scenery"></div>'><code>&lt;div class="vitra-scenery"&gt;&lt;/div&gt;</code></pre>
+        <p class="vitra-mt-4">Direct it with tokens:</p>
+        <pre class="demo-qs-code" data-copy='.hero {
+  --vitra-scenery-intro: 1.5;   /* entrance length, 0 = none */
+  --vitra-scenery-depth: 1;     /* scroll parallax strength */
+  --vitra-scenery-speed: 1;     /* drift speed */
+  --vitra-scenery-halo-x: 76%;  /* moon position */
+}'><code>.hero {
+  --vitra-scenery-intro: 1.5;   /* entrance length, 0 = none */
+  --vitra-scenery-depth: 1;     /* scroll parallax strength */
+  --vitra-scenery-speed: 1;     /* drift speed */
+  --vitra-scenery-halo-x: 76%;  /* moon position */
+}</code></pre>
       </div>
     </div>
   </section>
@@ -409,7 +471,7 @@
         <div class="theme-preview-bg">
           <div class="theme-preview-surface">
             <div class="theme-preview-accent-bar"></div>
-            <h4 style="margin: 0 0 var(--vitra-space-2)">Surface Card</h4>
+            <h3 style="margin: 0 0 var(--vitra-space-2); font-size: var(--vitra-font-size-base)">Surface Card</h3>
             <p style="opacity: 0.7; font-size: 0.9rem; margin: 0 0 var(--vitra-space-3)">This card uses <code>--vitra-color-surface</code> — notice the subtle tint.</p>
             <div class="vitra-flex vitra-gap-2">
               <span class="vitra-badge vitra-badge-primary">Accent</span>
@@ -1233,13 +1295,13 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <span>© 2026 DesvoSoft — Vitra CSS v1.12.1</span>
+        <span>© 2026 DesvoSoft — Vitra CSS v1.13.0</span>
       </div>
     </div>
   </footer>
 
   <!-- Framework JS -->
-  <script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.js" crossorigin="anonymous" defer></script>
+  <script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.0/dist/vitra.min.js" crossorigin="anonymous" defer></script>
   <script src="demo.js" defer></script>
 </body>
 </html>

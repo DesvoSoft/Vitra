@@ -279,3 +279,11 @@
     transition: none;
   }
 }
+
+/* Links inside running text are underlined: colour alone (1.4:1 against
+   the surrounding text) is not enough to tell them apart. */
+.docs-section p a,
+.docs-section li a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

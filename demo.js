@@ -1,11 +1,11 @@
 (function () {
   'use strict';
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initDemo);
-  } else {
-    initDemo();
-  }
+  // initDemo() is kicked off at the very bottom of this file. The script
+  // is loaded with `defer`, so the document is already "interactive" when
+  // it runs: calling initDemo() up here executed it before the window.*
+  // helpers below had been assigned, the first one it touched threw a
+  // ReferenceError, and every inline onclick on the page was left dead.
 
   function initDemo() {
     if (window.Vitra && Vitra.theme) {
@@ -13,6 +13,7 @@
     }
 
     initThemeSelector();
+    initWhatsNew();
     initCinematicToggles();
     initGradientTextEditor();
     initThemeSwatches();
@@ -45,7 +46,7 @@
       item.addEventListener('click', function (e) {
         e.preventDefault();
         var selectedTheme = this.getAttribute('data-theme-value');
-        var success = Vitra.theme.set(selectedTheme);
+        var success = Vitra.theme.set(selectedTheme, { transition: true, origin: e });
 
         if (success) {
           updateThemeDisplay(selectedTheme);
@@ -72,9 +73,68 @@
     }
   }
 
+  // ==================== New in 1.13 ====================
+  function initWhatsNew() {
+    // Spring race: reset without a transition, then let the three runners go
+    var race = document.getElementById('spring-race');
+    var replay = document.getElementById('spring-race-replay');
+    function runRace() {
+      if (!race) return;
+      race.classList.add('is-reset');
+      race.classList.remove('is-run');
+      void race.offsetWidth;
+      race.classList.remove('is-reset');
+      race.classList.add('is-run');
+    }
+    if (replay) replay.addEventListener('click', runRace);
+    if (race && 'IntersectionObserver' in window) {
+      var seen = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) {
+          runRace();
+          seen.disconnect();
+        }
+      }, { threshold: 0.6 });
+      seen.observe(race);
+    }
+
+    var toastBtn = document.getElementById('spring-toast');
+    if (toastBtn) {
+      toastBtn.addEventListener('click', function () {
+        Vitra.toast.show('Sprung in on --vitra-ease-spring', { type: 'success' });
+      });
+    }
+    var modalBtn = document.getElementById('spring-modal');
+    if (modalBtn) {
+      modalBtn.addEventListener('click', function () {
+        Vitra.modal.open('#demo-modal');
+      });
+    }
+
+    // Theme bloom: the new theme grows out of the chip that was pressed
+    document.querySelectorAll('#theme-bloom .demo-bloom-chip').forEach(function (chip) {
+      chip.addEventListener('click', function (e) {
+        var theme = this.getAttribute('data-theme-value');
+        if (Vitra.theme.set(theme, { transition: true, origin: e })) {
+          updateThemeDisplay(theme);
+          updateActiveSwatch(theme);
+        }
+      });
+    });
+  }
+
+  // Rebuild the showcase scene so its entrance choreography plays again
+  window.replaySceneryEntrance = function (length) {
+    var scene = document.querySelector('#scenery-showcase .vitra-scenery-inline');
+    if (!scene || !Vitra.scenery) return;
+    var crescent = !!scene.querySelector('.vitra-scenery-halo-crescent');
+    scene.style.setProperty('--vitra-scenery-intro', length);
+    scene.innerHTML = '';
+    Vitra.scenery.mount(scene, { moon: crescent ? 'crescent' : 'full' });
+  };
+
   window.toggleTheme = function () {
     if (window.Vitra && Vitra.theme) {
-      var nextTheme = Vitra.theme.toggle();
+      var nextTheme = Vitra.theme.toggle({ transition: true });
       updateThemeDisplay(nextTheme);
       updateActiveSwatch(nextTheme);
       if (Vitra.toast) {
@@ -100,9 +160,9 @@
     var swatches = document.querySelectorAll('#theme-swatches .theme-swatch');
 
     swatches.forEach(function (swatch) {
-      swatch.addEventListener('click', function () {
+      swatch.addEventListener('click', function (e) {
         var theme = this.getAttribute('data-theme-value');
-        Vitra.theme.set(theme);
+        Vitra.theme.set(theme, { transition: true, origin: e });
         updateThemeDisplay(theme);
         updateActiveSwatch(theme);
       });
@@ -754,4 +814,10 @@
     btn.classList.remove('vitra-btn-ghost');
     btn.classList.add('vitra-btn-solid');
   };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDemo);
+  } else {
+    initDemo();
+  }
 })();
