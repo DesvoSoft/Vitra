@@ -1,7 +1,7 @@
 # Vitra CSS Framework
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
-[![Version](https://img.shields.io/badge/version-1.12.0-blue)](https://github.com/DesvoSoft/Vitra)
+[![Version](https://img.shields.io/badge/version-1.13.0-blue)](https://github.com/DesvoSoft/Vitra)
 [![License](https://img.shields.io/badge/license-ISC-blue)](https://github.com/DesvoSoft/Vitra)
 [![Bundle Size](https://img.shields.io/badge/css-13.7%20KB%20brotlied-brightgreen)](https://github.com/DesvoSoft/Vitra)
 [![Tests](https://img.shields.io/badge/tests-70%20passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
@@ -51,13 +51,13 @@ Use jsDelivr to load the minified files. We strongly recommend using a fixed ver
 
 ```html
 <!-- High-performance CSS (Fixed version with SRI) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.0/dist/vitra.min.css" integrity="sha256-..." crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.0/dist/vitra.min.css" integrity="sha256-..." crossorigin="anonymous">
 
 <!-- Optional: Modular JS Engine (Fixed version with SRI) -->
-<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.0/dist/vitra.min.js" integrity="sha256-..." crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.0/dist/vitra.min.js" integrity="sha256-..." crossorigin="anonymous" defer></script>
 ```
 
-> **Note:** Always use a pinned version (e.g., `@v1.12.0`) for production. The SRI hashes are generated during build and stored in `dist/SRI.txt`.
+> **Note:** Always use a pinned version (e.g., `@v1.13.0`) for production. The SRI hashes are generated during build and stored in `dist/SRI.txt`.
 
 #### Option B: Local Assets
 
@@ -142,34 +142,39 @@ Vitra.particles.spawn(15, {
 </div>
 ```
 
-### Scenery — Ambient Mountain Landscape (CSS-only, no JS needed)
+### Scenery — Ambient Mountain Landscape
 
-Six-layer ambient backdrop that turns `.vitra-glass` panels into an actual window onto a scene, instead of a translucent card floating on a flat color. SVG-silhouette mountain ranges at three depths with differential-speed parallax drift, a crisp sun/moon disc with layered glow, and atmospheric-perspective haze. Colors derive automatically from the active theme's accent hue; respects `prefers-reduced-motion`.
+An ambient backdrop that turns `.vitra-glass` panels into a window onto a scene instead of a translucent card on a flat color: SVG-silhouette mountain ranges at three depths, a moon (or low sun on light themes) with a breathing corona, a star field that twinkles the way real air makes starlight flicker, drifting wisps and valley mist. Colors derive from the active theme's accent hue.
+
+It is built to be free at rest: every moving layer animates `transform`/`opacity` only, so an idle page does **zero** repaints and no main-thread work, and `Vitra.motionGuard` pauses the scene while it is offscreen. Respects `prefers-reduced-motion`.
 
 ```html
-<!-- Full-page fixed backdrop, sits behind all content -->
+<!-- Full-page fixed backdrop. With vitra.js loaded, one element is all you write -->
+<div class="vitra-scenery"></div>
+
+<!-- Or scope it to one container (hero, large card) -->
+<section style="position: relative;">
+  <div class="vitra-scenery-inline" data-vitra-moon="crescent"></div>
+  <div class="vitra-glass" style="position: relative;">Content over the scene</div>
+</section>
+```
+
+No JavaScript? Write the eight layers yourself — the scene is pure CSS either way:
+
+```html
 <div class="vitra-scenery" aria-hidden="true">
   <div class="vitra-scenery-sky"></div>
+  <div class="vitra-scenery-stars"></div>
+  <div class="vitra-scenery-clouds"></div>
   <div class="vitra-scenery-halo"></div>
   <div class="vitra-scenery-ridge-far"></div>
   <div class="vitra-scenery-ridge-mid"></div>
   <div class="vitra-scenery-ridge-near"></div>
   <div class="vitra-scenery-grain"></div>
 </div>
-
-<!-- Or scope it to one container (hero, large card) -->
-<section style="position: relative; overflow: hidden;">
-  <div class="vitra-scenery-inline" aria-hidden="true">
-    <div class="vitra-scenery-sky"></div>
-    <div class="vitra-scenery-halo"></div>
-    <div class="vitra-scenery-ridge-far"></div>
-    <div class="vitra-scenery-ridge-mid"></div>
-    <div class="vitra-scenery-ridge-near"></div>
-    <div class="vitra-scenery-grain"></div>
-  </div>
-  <div class="vitra-glass" style="position: relative;">Content over the scene</div>
-</section>
 ```
+
+The scene assembles on load (ranges rise back-to-front, the moon climbs, stars fade up) and, for `.vitra-scenery-inline`, separates into depth planes as it scrolls away — CSS scroll-driven, no listeners. Tune with `--vitra-scenery-intro`, `--vitra-scenery-depth`, `--vitra-scenery-speed`; full token list in [docs/integration.md](docs/integration.md).
 
 ---
 
@@ -186,11 +191,12 @@ Vitra/
 │   ├── 05-layout.css      # Grid, container, hero, flex, responsive utilities
 │   ├── 06-components.css  # 17 component systems (buttons, cards, modals, tables, etc.)
 │   ├── 07-utilities.css   # Spacing, display, width/height, z-index, responsive variants
+│   ├── 08-shaders.css     # Noise, grain and shader-style surface effects
 │   ├── 09-scenery.css     # Ambient mountain-landscape backdrop (SVG-silhouette parallax)
-│   └── vitra.js           # 9 modules: theme, particles, reveal, ripple, modal, tooltip, toast, dropdown, spotlight
+│   └── vitra.js           # 11 modules: theme, particles, reveal, ripple, modal, tooltip, toast, dropdown, spotlight, scenery, motionGuard
 ├── dist/                  # Production builds + source maps + SRI hashes
 ├── docs/                  # Theming, integration, compatibility, audit
-└── tests/                 # 60 vitest tests
+└── tests/                 # 90 vitest tests
 ```
 
 ---

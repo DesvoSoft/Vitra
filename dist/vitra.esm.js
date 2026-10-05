@@ -899,20 +899,21 @@ var require_vitra = __commonJS({
         let initialized = false;
         let _rafId = null;
         let _handleMove = null;
+        let _pending = null;
         const init = () => {
           if (initialized) return;
           _handleMove = (e) => {
+            const el = e.target instanceof Element ? e.target.closest(".vitra-spotlight") : null;
+            if (!el) return;
+            _pending = { el, x: e.clientX, y: e.clientY };
             if (_rafId) return;
             _rafId = requestAnimationFrame(() => {
               _rafId = null;
-              const spotlights = document.querySelectorAll(".vitra-spotlight");
-              spotlights.forEach((el) => {
-                const rect = el.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                el.style.setProperty("--mouse-x", `${x}px`);
-                el.style.setProperty("--mouse-y", `${y}px`);
-              });
+              const { el: target, x, y } = _pending;
+              _pending = null;
+              const rect = target.getBoundingClientRect();
+              target.style.setProperty("--mouse-x", `${x - rect.left}px`);
+              target.style.setProperty("--mouse-y", `${y - rect.top}px`);
             });
           };
           document.addEventListener("mousemove", _handleMove, { passive: true });
@@ -927,12 +928,60 @@ var require_vitra = __commonJS({
             cancelAnimationFrame(_rafId);
             _rafId = null;
           }
+          _pending = null;
           initialized = false;
         };
         return { init, destroy };
       })();
+      const scenery = /* @__PURE__ */ (() => {
+        const SELECTOR = ".vitra-scenery, .vitra-scenery-inline";
+        const LAYERS = ["sky", "stars", "clouds", "halo", "ridge-far", "ridge-mid", "ridge-near", "grain"];
+        let _mounted = [];
+        const mount = (target, options = {}) => {
+          const el = typeof target === "string" ? document.querySelector(target) : target;
+          if (!el) {
+            console.warn("[Vitra Scenery] Target element not found");
+            return null;
+          }
+          if (!el.matches(SELECTOR)) {
+            el.classList.add(options.inline ? "vitra-scenery-inline" : "vitra-scenery");
+          }
+          el.setAttribute("aria-hidden", "true");
+          if (el.children.length === 0) {
+            LAYERS.forEach((name) => {
+              const layer = document.createElement("div");
+              layer.className = `vitra-scenery-${name}`;
+              el.appendChild(layer);
+            });
+            _mounted.push(el);
+          }
+          const moon = options.moon || el.dataset.vitraMoon;
+          if (moon) {
+            const halo = el.querySelector(".vitra-scenery-halo");
+            if (halo) halo.classList.toggle("vitra-scenery-halo-crescent", moon === "crescent");
+          }
+          return el;
+        };
+        const init = () => {
+          let count = 0;
+          document.querySelectorAll(SELECTOR).forEach((el) => {
+            if (el.children.length === 0) {
+              mount(el);
+              count++;
+            }
+          });
+          return count;
+        };
+        const destroy = () => {
+          _mounted.forEach((el) => {
+            el.querySelectorAll(':scope > [class^="vitra-scenery-"]').forEach((layer) => layer.remove());
+          });
+          _mounted = [];
+        };
+        return { init, mount, destroy };
+      })();
       const motionGuard = /* @__PURE__ */ (() => {
-        const SELECTOR = ".vitra-glow-orb, .vitra-aurora-bg, .vitra-aurora-layer-1, .vitra-aurora-layer-2, .vitra-scenery, .vitra-scenery-inline";
+        const SELECTOR = ".vitra-glow-orb, .vitra-aurora-bg, .vitra-aurora-layer, .vitra-aurora-layer-1, .vitra-aurora-layer-2, .vitra-gradient-bg, .vitra-gradient-text, .vitra-scenery, .vitra-scenery-inline";
         const PAUSED_CLASS = "vitra-motion-paused";
         let _observer = null;
         let initialized = false;
@@ -1006,6 +1055,9 @@ var require_vitra = __commonJS({
         if (config.spotlight !== false) {
           spotlight.init();
         }
+        if (config.scenery !== false) {
+          scenery.init();
+        }
         if (config.motionGuard !== false) {
           motionGuard.init();
         }
@@ -1039,6 +1091,7 @@ var require_vitra = __commonJS({
         spotlight.destroy();
         particles.destroy();
         motionGuard.destroy();
+        scenery.destroy();
       };
       return {
         theme,
@@ -1050,6 +1103,7 @@ var require_vitra = __commonJS({
         toast,
         dropdown,
         spotlight,
+        scenery,
         motionGuard,
         destroyAll
       };

@@ -1,6 +1,6 @@
 {
   "name": "vitra-css",
-  "version": "1.12.1",
+  "version": "1.13.0",
   "description": "A lightweight, zero-dependency CSS framework focused on glassmorphism, directional particles, ambient scenery, and smooth motion",
   "main": "dist/vitra.js",
   "module": "dist/vitra.esm.js",
@@ -36,7 +36,7 @@
   "size-limit": [
     {
       "path": "dist/vitra.min.css",
-      "limit": "16 kB"
+      "limit": "18 kB"
     },
     {
       "path": "dist/vitra.min.js",
@@ -73,10 +73,10 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/desvosoft/vitra-css.git"
+    "url": "git+https://github.com/DesvoSoft/Vitra.git"
   },
   "bugs": {
-    "url": "https://github.com/desvosoft/vitra-css/issues"
+    "url": "https://github.com/DesvoSoft/Vitra/issues"
   },
   "homepage": "https://vitra-css.dev"
 }

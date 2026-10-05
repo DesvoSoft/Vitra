@@ -257,26 +257,47 @@
      ============================================ */
 
   /* --- Mesh Gradient Background --- */
+
+  /* The mesh lives on a 200% x 200% pseudo-element that pans with
+     transform, so the loop runs on the compositor. (It used to animate
+     background-position on the element itself, which is never
+     compositor-accelerated: a style recalc plus a full-surface repaint
+     on every frame, for as long as the page was open.) The four stops
+     visit the same corners the old background-position path did. */
   @keyframes vitra-mesh-shift {
-    0% { background-position: 0% 50%; }
-    25% { background-position: 100% 0%; }
-    50% { background-position: 100% 100%; }
-    75% { background-position: 0% 100%; }
-    100% { background-position: 0% 50%; }
+    0% { transform: translate3d(0, -25%, 0); }
+    25% { transform: translate3d(-50%, 0, 0); }
+    50% { transform: translate3d(-50%, -50%, 0); }
+    75% { transform: translate3d(0, -50%, 0); }
+    100% { transform: translate3d(0, -25%, 0); }
   }
 
   .vitra-gradient-bg {
     position: fixed;
     inset: 0;
     z-index: -1;
+    overflow: hidden;
+    background: var(--vitra-color-bg);
+  }
+
+  .vitra-gradient-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 200%;
     background:
       radial-gradient(ellipse at 20% 50%, hsl(var(--vitra-color-accent-h) 80% 60% / 20%) 0%, transparent 50%),
       radial-gradient(ellipse at 80% 20%, hsl(calc(var(--vitra-color-accent-h) + 60) 80% 60% / 15%) 0%, transparent 50%),
-      radial-gradient(ellipse at 40% 80%, hsl(calc(var(--vitra-color-accent-h) - 30) 80% 60% / 15%) 0%, transparent 50%),
-      var(--vitra-color-bg);
-    background-size: 200% 200%;
+      radial-gradient(ellipse at 40% 80%, hsl(calc(var(--vitra-color-accent-h) - 30) 80% 60% / 15%) 0%, transparent 50%);
     animation: vitra-mesh-shift 16s ease-in-out infinite;
-    will-change: background-position;
+    will-change: transform;
+  }
+
+  /* Paused by Vitra.motionGuard when offscreen */
+  .vitra-gradient-bg.vitra-motion-paused::before {
+    animation-play-state: paused;
   }
 
   /* --- Floating Glow Orb --- */
@@ -356,7 +377,14 @@
     background-clip: text;
     color: transparent;
     animation: vitra-text-shift 6s ease-in-out infinite;
-    will-change: background-position;
+  }
+
+  /* background-clip: text can only be animated by repainting the glyphs,
+     so this one cannot move to the compositor - Vitra.motionGuard pauses
+     it while the heading is offscreen so the cost is only paid when the
+     shimmer is actually visible. */
+  .vitra-gradient-text.vitra-motion-paused {
+    animation-play-state: paused;
   }
 
   /* Light theme: darken gradient text for contrast on light bg */
@@ -644,7 +672,10 @@
 
     .vitra-gradient-bg {
       background: var(--vitra-color-bg) !important;
-      animation: none !important;
+    }
+
+    .vitra-gradient-bg::before {
+      display: none !important;
     }
 
     .vitra-glow-orb {

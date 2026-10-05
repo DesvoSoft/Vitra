@@ -102,6 +102,17 @@ declare namespace Vitra {
     destroy(): void;
   }
 
+  interface SceneryOptions {
+    inline?: boolean;
+    moon?: 'full' | 'crescent';
+  }
+
+  interface SceneryModule {
+    init(): number;
+    mount(target: string | HTMLElement, options?: SceneryOptions): HTMLElement | null;
+    destroy(): void;
+  }
+
   interface MotionGuardModule {
     init(): void;
     destroy(): void;
@@ -117,6 +128,7 @@ declare namespace Vitra {
     toast: ToastModule;
     dropdown: DropdownModule;
     spotlight: SpotlightModule;
+    scenery: SceneryModule;
     motionGuard: MotionGuardModule;
     destroyAll(): void;
   }

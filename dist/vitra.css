@@ -1178,26 +1178,47 @@
      ============================================ */
 
   /* --- Mesh Gradient Background --- */
+
+  /* The mesh lives on a 200% x 200% pseudo-element that pans with
+     transform, so the loop runs on the compositor. (It used to animate
+     background-position on the element itself, which is never
+     compositor-accelerated: a style recalc plus a full-surface repaint
+     on every frame, for as long as the page was open.) The four stops
+     visit the same corners the old background-position path did. */
   @keyframes vitra-mesh-shift {
-    0% { background-position: 0% 50%; }
-    25% { background-position: 100% 0%; }
-    50% { background-position: 100% 100%; }
-    75% { background-position: 0% 100%; }
-    100% { background-position: 0% 50%; }
+    0% { transform: translate3d(0, -25%, 0); }
+    25% { transform: translate3d(-50%, 0, 0); }
+    50% { transform: translate3d(-50%, -50%, 0); }
+    75% { transform: translate3d(0, -50%, 0); }
+    100% { transform: translate3d(0, -25%, 0); }
   }
 
   .vitra-gradient-bg {
     position: fixed;
     inset: 0;
     z-index: -1;
+    overflow: hidden;
+    background: var(--vitra-color-bg);
+  }
+
+  .vitra-gradient-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 200%;
     background:
       radial-gradient(ellipse at 20% 50%, hsl(var(--vitra-color-accent-h) 80% 60% / 20%) 0%, transparent 50%),
       radial-gradient(ellipse at 80% 20%, hsl(calc(var(--vitra-color-accent-h) + 60) 80% 60% / 15%) 0%, transparent 50%),
-      radial-gradient(ellipse at 40% 80%, hsl(calc(var(--vitra-color-accent-h) - 30) 80% 60% / 15%) 0%, transparent 50%),
-      var(--vitra-color-bg);
-    background-size: 200% 200%;
+      radial-gradient(ellipse at 40% 80%, hsl(calc(var(--vitra-color-accent-h) - 30) 80% 60% / 15%) 0%, transparent 50%);
     animation: vitra-mesh-shift 16s ease-in-out infinite;
-    will-change: background-position;
+    will-change: transform;
+  }
+
+  /* Paused by Vitra.motionGuard when offscreen */
+  .vitra-gradient-bg.vitra-motion-paused::before {
+    animation-play-state: paused;
   }
 
   /* --- Floating Glow Orb --- */
@@ -1277,7 +1298,14 @@
     background-clip: text;
     color: transparent;
     animation: vitra-text-shift 6s ease-in-out infinite;
-    will-change: background-position;
+  }
+
+  /* background-clip: text can only be animated by repainting the glyphs,
+     so this one cannot move to the compositor - Vitra.motionGuard pauses
+     it while the heading is offscreen so the cost is only paid when the
+     shimmer is actually visible. */
+  .vitra-gradient-text.vitra-motion-paused {
+    animation-play-state: paused;
   }
 
   /* Light theme: darken gradient text for contrast on light bg */
@@ -1565,7 +1593,10 @@
 
     .vitra-gradient-bg {
       background: var(--vitra-color-bg) !important;
-      animation: none !important;
+    }
+
+    .vitra-gradient-bg::before {
+      display: none !important;
     }
 
     .vitra-glow-orb {
@@ -1691,6 +1722,14 @@
     /* --- SCENERY MOTION TOKENS --- */
     --vitra-scenery-speed: 1;
 
+    /* Entrance choreography length multiplier: 1 = default (~2.4s),
+       2 = slower and more ceremonial, 0 = scene is simply there. */
+    --vitra-scenery-intro: 1;
+
+    /* Scroll-depth strength for .vitra-scenery-inline (see SCROLL DEPTH):
+       1 = default, 0 = layers stay locked to their container. */
+    --vitra-scenery-depth: 1;
+
     /* --- SCENERY OPACITY TOKENS (atmospheric perspective) ---
        Dark-scheme defaults: ridges sit on a dark sky, so a
        lighter mist band read as haze without washing out. */
@@ -1734,8 +1773,10 @@
     contain: strict;
   }
 
-  /* Container-scoped variant: drop into any position:relative;
-     overflow:hidden host (hero section, large card) */
+  /* Container-scoped variant: drop into any position:relative host
+     (hero section, large card). It clips itself (contain: strict), so
+     the host needs no overflow rule; if it has one, prefer
+     overflow:clip over overflow:hidden - see SCROLL DEPTH below. */
   .vitra-scenery-inline {
     position: absolute;
     inset: 0;
@@ -1743,6 +1784,12 @@
     pointer-events: none;
     z-index: 0;
     contain: strict;
+
+    /* contain: strict already applies size containment, so making this a
+       size query container is free - it only unlocks cqh units, which the
+       scroll-depth offsets below are expressed in. */
+    container-type: size;
+    view-timeline: --vitra-scenery block;
   }
 
   /* --- SKY LAYER --- */
@@ -1830,8 +1877,10 @@
       hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.75) 74% / 55%) 22%,
       hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.2) 88% / 8%) 100%
     );
-    animation: vitra-scenery-drift-clouds calc(400s / var(--vitra-scenery-speed)) linear infinite;
-    will-change: transform;
+    animation:
+      vitra-scenery-drift-clouds calc(400s / var(--vitra-scenery-speed)) linear infinite,
+      vitra-scenery-enter-clouds calc(2.6s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) calc(0.4s * var(--vitra-scenery-intro)) backwards;
+    will-change: transform, opacity;
   }
 
   @supports (mask-image: url("")) or (-webkit-mask-image: url("")) {
@@ -1863,88 +1912,98 @@
 
   /* --- STAR FIELD (dark-appropriate themes only) --- */
 
-  /* Three overlapping data-URI star tiles with different, mutually
-     coprime-ish periods (1600x900 + 2200x700 here; 1200x520 on the
-     drift layer hosted on .vitra-scenery-sky::before). Tiles are
-     large enough that no repeat boundary falls inside a realistic
-     viewport, so the same cluster of stars never appears twice on
-     screen at once - a small tile (previous revisions used
-     420x280/660x440/540x360) makes the repeat trivially visible as
-     an identical pattern tiling across the width.
-     The field only occupies the upper 58% of the scene and
-     fades out via mask before the ridge peaks begin - stars
-     belong to the sky and must never show through the
-     semi-transparent mountains in front of them.
-     Per-star SMIL <animate> tags on this element are safe despite
-     the group mask: masks re-rasterize on mask-layer change, not on
-     animated children, and the drift layer below carries an
-     independent third tile so the two star groups never fall in
-     phase with each other either. */
+  /* Three star tiles with different, mutually coprime-ish periods
+     (2200x700 + 1600x900 here; 1200x520 on the drift layer hosted on
+     .vitra-scenery-sky::before). Tiles are large enough that no repeat
+     boundary falls inside a realistic viewport, so the same cluster
+     never appears twice on screen at once.
+     The field only occupies the upper 68% of the scene and fades out
+     via mask before the ridge peaks begin - stars belong to the sky
+     and must never show through the semi-transparent mountains.
+
+     TWINKLE = atmospheric scintillation, compositor-only.
+     The tiles themselves are static (rasterized once, no SMIL). This
+     element is a "shutter": it carries a seamless turbulence-noise
+     mask and slides one noise-tile width, while its ::before - the
+     layer that actually paints the stars - slides the exact opposite
+     way. The stars therefore stay put on screen while the noise field
+     travels across them, so every star brightens and dims on its own
+     schedule, the way real air makes starlight flicker. Two transform
+     animations, zero repaints: earlier revisions animated per-star
+     SMIL inside the background SVGs, which re-rasterized every tile
+     on every frame (~220 paints/s for an idle page).
+     steps() moves both layers in whole 4px jumps (an integer number of
+     device pixels at 1x/1.25x/1.5x/2x/3x), so the two offsets always
+     cancel on the pixel grid and the stars are never resampled soft. */
   .vitra-scenery-stars {
     position: absolute;
     z-index: 0;
-    inset: 0 0 auto;
+    top: 0;
+    left: 0;
+    width: calc(100% + 512px);
     height: 68%;
     opacity: 0;
+    mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512'><filter id='t' x='0' y='0' width='100%' height='100%'><feTurbulence type='fractalNoise' baseFrequency='0.02' numOctaves='2' seed='11' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1.8 0 0 0 -0.1'/></filter><rect width='100%' height='100%' filter='url(%23t)'/></svg>");
+    mask-size: 512px 512px;
+    mask-repeat: repeat;
+    will-change: transform;
+    animation: vitra-scenery-scintillate 14s steps(128) infinite;
+  }
 
-    /* Two mask layers, composited with "intersect" (the min of both):
-       the first is the existing vertical fade; the second is solid
-       everywhere except a soft transparent disc at the moon's position,
-       so stars never paint over the moon regardless of where the
-       halo token positions it. -webkit-mask-composite uses the legacy
-       "source-in" keyword (not "intersect") for the same min-of-both
-       behavior - older Safari ignores unprefixed mask-composite
-       entirely, so without this the moon cutout silently no-ops there
-       and only DOM paint order (halo markup comes after stars) keeps
-       the moon clear. */
-    -webkit-mask-image:
-      linear-gradient(to bottom, white 0%, white 18%, hsl(0deg 0% 100% / 85%) 32%, hsl(0deg 0% 100% / 45%) 52%, transparent 74%),
-      radial-gradient(
-        circle at var(--vitra-scenery-halo-x) var(--vitra-scenery-halo-y),
-        transparent 0%,
-        transparent calc(var(--vitra-scenery-halo-size) * 1.35),
-        white calc(var(--vitra-scenery-halo-size) * 2)
-      );
-    -webkit-mask-composite: source-in;
+  /* Star plane. Its own mask stays screen-static (it travels with this
+     layer, which is itself static on screen): two layers composited
+     with "intersect" - the vertical fade, and a soft transparent disc
+     at the moon so stars never paint over the disc or its glow,
+     wherever the halo tokens position it. The halo tokens address the
+     moon's top-left corner in the full scene box, so the disc centre
+     is offset by half its size and the Y token is rescaled from the
+     scene's height to this 68%-tall band. */
+  .vitra-scenery-stars::before {
+    content: '';
+    position: absolute;
+    inset: 0 512px 0 0;
+    background-image:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='2200' height='700'><g fill='none' stroke='white' stroke-linecap='round'><path stroke-width='1.5' opacity='.6' d='M2016 80h.01M178 213h.01M1520 387h.01M1788 458h.01M1716 526h.01'/><path stroke-width='1.5' opacity='.75' d='M474 8h.01M494 181h.01M1518 146h.01M1772 145h.01M303 256h.01M977 238h.01M1720 219h.01M739 385h.01M2188 366h.01M315 418h.01M1379 472h.01M1713 454h.01'/><path stroke-width='1.5' opacity='.9' d='M87 127h.01M2005 259h.01M932 381h.01M1153 378h.01M1924 364h.01M521 470h.01M1458 458h.01M1367 581h.01M98 679h.01'/><path stroke-width='1' opacity='.6' d='M1155 466h.01'/><path stroke-width='1' opacity='.75' d='M1139 245h.01M1233 449h.01'/><path stroke-width='2.5' opacity='.6' d='M377 70h.01M749 89h.01M1501 17h.01M321 139h.01M2034 139h.01M779 254h.01M1635 278h.01M1843 216h.01M1015 350h.01M1627 569h.01'/><path stroke-width='2.5' opacity='.75' d='M154 52h.01M612 32h.01M829 52h.01M1392 39h.01M921 188h.01M1343 177h.01M1626 126h.01M723 237h.01M2142 217h.01M127 316h.01M2079 317h.01M37 466h.01M2054 447h.01M923 544h.01M1041 590h.01M1782 555h.01M1944 546h.01M2043 558h.01'/><path stroke-width='2.5' opacity='.9' d='M584 152h.01M1056 273h.01M1297 217h.01M253 316h.01M377 553h.01M1453 537h.01'/><path stroke-width='2' opacity='.6' d='M1163 49h.01M1693 15h.01M1833 63h.01M1671 112h.01M2136 192h.01M381 249h.01M102 375h.01M1330 384h.01M1737 325h.01M2131 588h.01'/><path stroke-width='2' opacity='.75' d='M290 24h.01M1278 84h.01M183 160h.01M357 146h.01M1292 167h.01M76 265h.01M528 219h.01M576 237h.01M456 320h.01M592 343h.01M1615 326h.01M1815 379h.01M196 431h.01M639 473h.01M1048 472h.01M301 555h.01M542 571h.01'/><path stroke-width='2' opacity='.9' d='M855 128h.01M1153 154h.01M1493 209h.01M1965 265h.01M408 487h.01M200 522h.01M600 547h.01M163 685h.01'/><path stroke-width='3' opacity='.6' d='M1586 44h.01M1908 10h.01M1036 149h.01M1418 262h.01M1549 439h.01M1924 430h.01'/><path stroke-width='3' opacity='.75' d='M25 24h.01M968 19h.01M2158 37h.01M702 175h.01M1292 315h.01M753 480h.01M844 433h.01M954 488h.01M2143 492h.01M690 583h.01M836 521h.01M1145 534h.01M1260 542h.01'/><path stroke-width='3' opacity='.9' d='M1035 74h.01M1912 180h.01M352 374h.01M829 361h.01M20 590h.01'/></g></svg>"),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1600' height='900'><g fill='none' stroke='white' stroke-linecap='round'><path stroke-width='1.5' opacity='.6' d='M1144 106h.01M1230 246h.01M344 462h.01M1482 462h.01M1052 603h.01'/><path stroke-width='1.5' opacity='.75' d='M291 47h.01M493 86h.01M716 166h.01M1129 159h.01M1479 247h.01M1102 289h.01M1504 367h.01M549 416h.01M707 405h.01M848 473h.01M1169 462h.01'/><path stroke-width='1.5' opacity='.9' d='M173 194h.01M320 204h.01M862 354h.01'/><path stroke-width='1' opacity='.6' d='M248 862h.01'/><path stroke-width='1' opacity='.75' d='M688 731h.01'/><path stroke-width='1' opacity='.9' d='M894 667h.01'/><path stroke-width='2.5' opacity='.6' d='M872 57h.01M1513 27h.01M956 352h.01M442 459h.01M591 536h.01M720 582h.01'/><path stroke-width='2.5' opacity='.75' d='M108 56h.01M717 70h.01M1215 40h.01M1384 86h.01M904 195h.01M1028 217h.01M389 312h.01M452 375h.01M682 298h.01'/><path stroke-width='2.5' opacity='.9' d='M626 66h.01M108 325h.01M105 404h.01M872 584h.01M54 730h.01'/><path stroke-width='2' opacity='.6' d='M33 244h.01M1382 569h.01M198 717h.01'/><path stroke-width='2' opacity='.75' d='M159 97h.01M549 314h.01M233 496h.01M336 560h.01M1162 572h.01M1428 704h.01'/><path stroke-width='2' opacity='.9' d='M1447 371h.01M337 679h.01M579 712h.01M1161 700h.01M78 835h.01'/><path stroke-width='3' opacity='.75' d='M996 21h.01M627 183h.01M1382 208h.01M207 287h.01M956 496h.01M1255 432h.01M64 621h.01M460 617h.01M1314 622h.01M1500 591h.01M1318 762h.01'/><path stroke-width='3' opacity='.9' d='M434 245h.01M1292 313h.01M1350 472h.01M192 569h.01M420 664h.01M954 692h.01M1577 654h.01'/></g></svg>");
+    background-repeat: repeat;
     mask-image:
       linear-gradient(to bottom, white 0%, white 18%, hsl(0deg 0% 100% / 85%) 32%, hsl(0deg 0% 100% / 45%) 52%, transparent 74%),
       radial-gradient(
-        circle at var(--vitra-scenery-halo-x) var(--vitra-scenery-halo-y),
+        circle at calc(var(--vitra-scenery-halo-x) + var(--vitra-scenery-halo-size) / 2) calc(var(--vitra-scenery-halo-y) / 0.68 + var(--vitra-scenery-halo-size) / 2),
         transparent 0%,
-        transparent calc(var(--vitra-scenery-halo-size) * 1.35),
-        white calc(var(--vitra-scenery-halo-size) * 2)
+        transparent calc(var(--vitra-scenery-halo-size) * 1.1),
+        white calc(var(--vitra-scenery-halo-size) * 1.9)
       );
     mask-composite: intersect;
-    background-repeat: repeat;
-    will-change: background-position;
-    animation: vitra-scenery-stars-near-drift calc(2600s / var(--vitra-scenery-speed)) linear infinite;
+    will-change: transform, opacity;
+    animation:
+      vitra-scenery-scintillate-hold 14s steps(128) infinite,
+      vitra-scenery-enter-stars calc(2.8s * var(--vitra-scenery-intro)) ease-out calc(0.5s * var(--vitra-scenery-intro)) backwards;
   }
 
-  /* True per-star twinkle: each circle in these two tiles carries its
-     own SMIL animation (independent period + delay), baked into the
-     SVG itself. This is what actually reads as "stars twinkling"
-     rather than the whole sky breathing in and out together - and
-     since it's SVG-internal animation on an already-rasterized
-     background-image, it costs nothing extra on the CSS compositor
-     beyond the element's own static paint. */
-  .vitra-scenery-stars {
-    background-image:
-      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='2200' height='700'><defs><radialGradient id='vsg-a'><stop offset='0%' stop-color='white' stop-opacity='0.95'/><stop offset='35%' stop-color='white' stop-opacity='0.45'/><stop offset='100%' stop-color='white' stop-opacity='0'/></radialGradient></defs><circle cx='25' cy='24' r='1.41' fill='white' opacity='0.79'/><circle cx='154' cy='52' r='1.15' fill='white' opacity='0.76'/><circle cx='290' cy='24' r='8.19' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.62;0.62;0;0' keyTimes='0;0.338;0.362;0.376;0.41;1' dur='19.2s' begin='10.85s' repeatCount='indefinite'/></circle><circle cx='290' cy='24' r='1.06' fill='white' opacity='0.72'><animate attributeName='opacity' values='0.72;0.72;1;1;0.72;0.72' keyTimes='0;0.338;0.362;0.376;0.41;1' dur='19.2s' begin='10.85s' repeatCount='indefinite'/><animate attributeName='r' values='1.06;1.06;1.82;1.82;1.06;1.06' keyTimes='0;0.338;0.362;0.376;0.41;1' dur='19.2s' begin='10.85s' repeatCount='indefinite'/></circle><circle cx='377' cy='70' r='9' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.65;0.65;0;0' keyTimes='0;0.661;0.682;0.703;0.736;1' dur='17.4s' begin='3.17s' repeatCount='indefinite'/></circle><circle cx='377' cy='70' r='1.33' fill='white' opacity='0.66'><animate attributeName='opacity' values='0.66;0.66;0.91;0.91;0.66;0.66' keyTimes='0;0.661;0.682;0.703;0.736;1' dur='17.4s' begin='3.17s' repeatCount='indefinite'/><animate attributeName='r' values='1.33;1.33;2;2;1.33;1.33' keyTimes='0;0.661;0.682;0.703;0.736;1' dur='17.4s' begin='3.17s' repeatCount='indefinite'/></circle><circle cx='474' cy='8' r='0.74' fill='white' opacity='0.68'/><circle cx='612' cy='32' r='1.17' fill='white' opacity='0.73'/><circle cx='749' cy='89' r='8.87' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.73;0.73;0;0' keyTimes='0;0.448;0.473;0.486;0.511;1' dur='11.6s' begin='1.47s' repeatCount='indefinite'/></circle><circle cx='749' cy='89' r='1.29' fill='white' opacity='0.61'><animate attributeName='opacity' values='0.61;0.61;0.75;0.75;0.61;0.61' keyTimes='0;0.448;0.473;0.486;0.511;1' dur='11.6s' begin='1.47s' repeatCount='indefinite'/><animate attributeName='r' values='1.29;1.29;1.97;1.97;1.29;1.29' keyTimes='0;0.448;0.473;0.486;0.511;1' dur='11.6s' begin='1.47s' repeatCount='indefinite'/></circle><circle cx='829' cy='52' r='8.14' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.74;0.74;0;0' keyTimes='0;0.427;0.458;0.48;0.518;1' dur='10.5s' begin='2.78s' repeatCount='indefinite'/></circle><circle cx='829' cy='52' r='1.2' fill='white' opacity='0.77'><animate attributeName='opacity' values='0.77;0.77;1;1;0.77;0.77' keyTimes='0;0.427;0.458;0.48;0.518;1' dur='10.5s' begin='2.78s' repeatCount='indefinite'/><animate attributeName='r' values='1.2;1.2;1.81;1.81;1.2;1.2' keyTimes='0;0.427;0.458;0.48;0.518;1' dur='10.5s' begin='2.78s' repeatCount='indefinite'/></circle><circle cx='968' cy='19' r='1.47' fill='white' opacity='0.79'/><circle cx='1035' cy='74' r='1.44' fill='white' opacity='0.89'/><circle cx='1163' cy='49' r='0.95' fill='white' opacity='0.6'/><circle cx='1278' cy='84' r='7.88' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.69;0.69;0;0' keyTimes='0;0.327;0.348;0.368;0.408;1' dur='10.6s' begin='5.21s' repeatCount='indefinite'/></circle><circle cx='1278' cy='84' r='0.94' fill='white' opacity='0.78'><animate attributeName='opacity' values='0.78;0.78;1;1;0.78;0.78' keyTimes='0;0.327;0.348;0.368;0.408;1' dur='10.6s' begin='5.21s' repeatCount='indefinite'/><animate attributeName='r' values='0.94;0.94;1.75;1.75;0.94;0.94' keyTimes='0;0.327;0.348;0.368;0.408;1' dur='10.6s' begin='5.21s' repeatCount='indefinite'/></circle><circle cx='1392' cy='39' r='1.3' fill='white' opacity='0.74'/><circle cx='1501' cy='17' r='10.13' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.61;0.61;0;0' keyTimes='0;0.373;0.407;0.426;0.469;1' dur='13.8s' begin='9.5s' repeatCount='indefinite'/></circle><circle cx='1501' cy='17' r='1.33' fill='white' opacity='0.62'><animate attributeName='opacity' values='0.62;0.62;0.85;0.85;0.62;0.62' keyTimes='0;0.373;0.407;0.426;0.469;1' dur='13.8s' begin='9.5s' repeatCount='indefinite'/><animate attributeName='r' values='1.33;1.33;2.25;2.25;1.33;1.33' keyTimes='0;0.373;0.407;0.426;0.469;1' dur='13.8s' begin='9.5s' repeatCount='indefinite'/></circle><circle cx='1586' cy='44' r='10.62' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.75;0.75;0;0' keyTimes='0;0.682;0.709;0.727;0.774;1' dur='14.2s' begin='9.89s' repeatCount='indefinite'/></circle><circle cx='1586' cy='44' r='1.48' fill='white' opacity='0.63'><animate attributeName='opacity' values='0.63;0.63;0.91;0.91;0.63;0.63' keyTimes='0;0.682;0.709;0.727;0.774;1' dur='14.2s' begin='9.89s' repeatCount='indefinite'/><animate attributeName='r' values='1.48;1.48;2.36;2.36;1.48;1.48' keyTimes='0;0.682;0.709;0.727;0.774;1' dur='14.2s' begin='9.89s' repeatCount='indefinite'/></circle><circle cx='1693' cy='15' r='1.11' fill='white' opacity='0.63'/><circle cx='1833' cy='63' r='1.09' fill='white' opacity='0.63'/><circle cx='1908' cy='10' r='1.41' fill='white' opacity='0.62'/><circle cx='2016' cy='80' r='0.7' fill='white' opacity='0.67'/><circle cx='2158' cy='37' r='1.43' fill='white' opacity='0.69'/><circle cx='87' cy='127' r='0.73' fill='white' opacity='0.83'/><circle cx='183' cy='160' r='7.7' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.66;0.66;0;0' keyTimes='0;0.308;0.338;0.349;0.388;1' dur='20.1s' begin='18.49s' repeatCount='indefinite'/></circle><circle cx='183' cy='160' r='1.1' fill='white' opacity='0.8'><animate attributeName='opacity' values='0.8;0.8;0.95;0.95;0.8;0.8' keyTimes='0;0.308;0.338;0.349;0.388;1' dur='20.1s' begin='18.49s' repeatCount='indefinite'/><animate attributeName='r' values='1.1;1.1;1.71;1.71;1.1;1.1' keyTimes='0;0.308;0.338;0.349;0.388;1' dur='20.1s' begin='18.49s' repeatCount='indefinite'/></circle><circle cx='321' cy='139' r='1.15' fill='white' opacity='0.61'/><circle cx='357' cy='146' r='7.47' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.76;0.76;0;0' keyTimes='0;0.729;0.758;0.773;0.803;1' dur='11.9s' begin='2.31s' repeatCount='indefinite'/></circle><circle cx='357' cy='146' r='0.96' fill='white' opacity='0.8'><animate attributeName='opacity' values='0.8;0.8;0.98;0.98;0.8;0.8' keyTimes='0;0.729;0.758;0.773;0.803;1' dur='11.9s' begin='2.31s' repeatCount='indefinite'/><animate attributeName='r' values='0.96;0.96;1.66;1.66;0.96;0.96' keyTimes='0;0.729;0.758;0.773;0.803;1' dur='11.9s' begin='2.31s' repeatCount='indefinite'/></circle><circle cx='494' cy='181' r='0.82' fill='white' opacity='0.72'/><circle cx='584' cy='152' r='1.14' fill='white' opacity='0.85'/><circle cx='702' cy='175' r='1.58' fill='white' opacity='0.8'/><circle cx='855' cy='128' r='0.93' fill='white' opacity='0.85'/><circle cx='921' cy='188' r='8.64' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.71;0.71;0;0' keyTimes='0;0.464;0.503;0.517;0.559;1' dur='16.4s' begin='10.66s' repeatCount='indefinite'/></circle><circle cx='921' cy='188' r='1.2' fill='white' opacity='0.81'><animate attributeName='opacity' values='0.81;0.81;1;1;0.81;0.81' keyTimes='0;0.464;0.503;0.517;0.559;1' dur='16.4s' begin='10.66s' repeatCount='indefinite'/><animate attributeName='r' values='1.2;1.2;1.92;1.92;1.2;1.2' keyTimes='0;0.464;0.503;0.517;0.559;1' dur='16.4s' begin='10.66s' repeatCount='indefinite'/></circle><circle cx='1036' cy='149' r='11.92' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.58;0.58;0;0' keyTimes='0;0.486;0.526;0.539;0.569;1' dur='20.4s' begin='20.23s' repeatCount='indefinite'/></circle><circle cx='1036' cy='149' r='1.42' fill='white' opacity='0.62'><animate attributeName='opacity' values='0.62;0.62;0.85;0.85;0.62;0.62' keyTimes='0;0.486;0.526;0.539;0.569;1' dur='20.4s' begin='20.23s' repeatCount='indefinite'/><animate attributeName='r' values='1.42;1.42;2.65;2.65;1.42;1.42' keyTimes='0;0.486;0.526;0.539;0.569;1' dur='20.4s' begin='20.23s' repeatCount='indefinite'/></circle><circle cx='1153' cy='154' r='1.03' fill='white' opacity='0.89'/><circle cx='1292' cy='167' r='6.75' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.71;0.71;0;0' keyTimes='0;0.494;0.52;0.536;0.564;1' dur='9.5s' begin='0.19s' repeatCount='indefinite'/></circle><circle cx='1292' cy='167' r='0.88' fill='white' opacity='0.71'><animate attributeName='opacity' values='0.71;0.71;0.93;0.93;0.71;0.71' keyTimes='0;0.494;0.52;0.536;0.564;1' dur='9.5s' begin='0.19s' repeatCount='indefinite'/><animate attributeName='r' values='0.88;0.88;1.5;1.5;0.88;0.88' keyTimes='0;0.494;0.52;0.536;0.564;1' dur='9.5s' begin='0.19s' repeatCount='indefinite'/></circle><circle cx='1343' cy='177' r='8.73' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.68;0.68;0;0' keyTimes='0;0.748;0.777;0.797;0.821;1' dur='14.2s' begin='8.67s' repeatCount='indefinite'/></circle><circle cx='1343' cy='177' r='1.25' fill='white' opacity='0.75'><animate attributeName='opacity' values='0.75;0.75;1;1;0.75;0.75' keyTimes='0;0.748;0.777;0.797;0.821;1' dur='14.2s' begin='8.67s' repeatCount='indefinite'/><animate attributeName='r' values='1.25;1.25;1.94;1.94;1.25;1.25' keyTimes='0;0.748;0.777;0.797;0.821;1' dur='14.2s' begin='8.67s' repeatCount='indefinite'/></circle><circle cx='1518' cy='146' r='0.84' fill='white' opacity='0.78'/><circle cx='1626' cy='126' r='10.44' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.65;0.65;0;0' keyTimes='0;0.62;0.642;0.665;0.709;1' dur='15.4s' begin='12.38s' repeatCount='indefinite'/></circle><circle cx='1626' cy='126' r='1.22' fill='white' opacity='0.7'><animate attributeName='opacity' values='0.7;0.7;0.86;0.86;0.7;0.7' keyTimes='0;0.62;0.642;0.665;0.709;1' dur='15.4s' begin='12.38s' repeatCount='indefinite'/><animate attributeName='r' values='1.22;1.22;2.32;2.32;1.22;1.22' keyTimes='0;0.62;0.642;0.665;0.709;1' dur='15.4s' begin='12.38s' repeatCount='indefinite'/></circle><circle cx='1671' cy='112' r='1.07' fill='white' opacity='0.67'/><circle cx='1772' cy='145' r='0.65' fill='white' opacity='0.73'/><circle cx='1912' cy='180' r='1.5' fill='white' opacity='0.83'/><circle cx='2034' cy='139' r='9.22' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.56;0.56;0;0' keyTimes='0;0.435;0.462;0.472;0.501;1' dur='19.7s' begin='8.11s' repeatCount='indefinite'/></circle><circle cx='2034' cy='139' r='1.13' fill='white' opacity='0.66'><animate attributeName='opacity' values='0.66;0.66;0.85;0.85;0.66;0.66' keyTimes='0;0.435;0.462;0.472;0.501;1' dur='19.7s' begin='8.11s' repeatCount='indefinite'/><animate attributeName='r' values='1.13;1.13;2.05;2.05;1.13;1.13' keyTimes='0;0.435;0.462;0.472;0.501;1' dur='19.7s' begin='8.11s' repeatCount='indefinite'/></circle><circle cx='2136' cy='192' r='1' fill='white' opacity='0.64'/><circle cx='76' cy='265' r='1.01' fill='white' opacity='0.68'/><circle cx='178' cy='213' r='0.78' fill='white' opacity='0.62'/><circle cx='303' cy='256' r='0.84' fill='white' opacity='0.82'/><circle cx='381' cy='249' r='0.96' fill='white' opacity='0.65'/><circle cx='528' cy='219' r='8.01' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.61;0.61;0;0' keyTimes='0;0.719;0.745;0.763;0.797;1' dur='13s' begin='0.87s' repeatCount='indefinite'/></circle><circle cx='528' cy='219' r='0.95' fill='white' opacity='0.78'><animate attributeName='opacity' values='0.78;0.78;0.94;0.94;0.78;0.78' keyTimes='0;0.719;0.745;0.763;0.797;1' dur='13s' begin='0.87s' repeatCount='indefinite'/><animate attributeName='r' values='0.95;0.95;1.78;1.78;0.95;0.95' keyTimes='0;0.719;0.745;0.763;0.797;1' dur='13s' begin='0.87s' repeatCount='indefinite'/></circle><circle cx='576' cy='237' r='0.91' fill='white' opacity='0.81'/><circle cx='723' cy='237' r='1.21' fill='white' opacity='0.73'/><circle cx='779' cy='254' r='1.27' fill='white' opacity='0.63'/><circle cx='977' cy='238' r='0.69' fill='white' opacity='0.77'/><circle cx='1056' cy='273' r='1.25' fill='white' opacity='0.85'/><circle cx='1139' cy='245' r='0.62' fill='white' opacity='0.81'/><circle cx='1297' cy='217' r='10.13' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.66;0.66;0;0' keyTimes='0;0.435;0.46;0.485;0.529;1' dur='16.4s' begin='6.36s' repeatCount='indefinite'/></circle><circle cx='1297' cy='217' r='1.25' fill='white' opacity='0.89'><animate attributeName='opacity' values='0.89;0.89;1;1;0.89;0.89' keyTimes='0;0.435;0.46;0.485;0.529;1' dur='16.4s' begin='6.36s' repeatCount='indefinite'/><animate attributeName='r' values='1.25;1.25;2.25;2.25;1.25;1.25' keyTimes='0;0.435;0.46;0.485;0.529;1' dur='16.4s' begin='6.36s' repeatCount='indefinite'/></circle><circle cx='1418' cy='262' r='1.53' fill='white' opacity='0.61'/><circle cx='1493' cy='209' r='1.06' fill='white' opacity='0.89'/><circle cx='1635' cy='278' r='1.34' fill='white' opacity='0.64'/><circle cx='1720' cy='219' r='5.76' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.56;0.56;0;0' keyTimes='0;0.382;0.419;0.429;0.457;1' dur='11.3s' begin='0.48s' repeatCount='indefinite'/></circle><circle cx='1720' cy='219' r='0.8' fill='white' opacity='0.81'><animate attributeName='opacity' values='0.81;0.81;1;1;0.81;0.81' keyTimes='0;0.382;0.419;0.429;0.457;1' dur='11.3s' begin='0.48s' repeatCount='indefinite'/><animate attributeName='r' values='0.8;0.8;1.28;1.28;0.8;0.8' keyTimes='0;0.382;0.419;0.429;0.457;1' dur='11.3s' begin='0.48s' repeatCount='indefinite'/></circle><circle cx='1843' cy='216' r='9.58' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.79;0.79;0;0' keyTimes='0;0.323;0.356;0.374;0.406;1' dur='19.3s' begin='11.9s' repeatCount='indefinite'/></circle><circle cx='1843' cy='216' r='1.17' fill='white' opacity='0.65'><animate attributeName='opacity' values='0.65;0.65;0.8;0.8;0.65;0.65' keyTimes='0;0.323;0.356;0.374;0.406;1' dur='19.3s' begin='11.9s' repeatCount='indefinite'/><animate attributeName='r' values='1.17;1.17;2.13;2.13;1.17;1.17' keyTimes='0;0.323;0.356;0.374;0.406;1' dur='19.3s' begin='11.9s' repeatCount='indefinite'/></circle><circle cx='1965' cy='265' r='0.93' fill='white' opacity='0.88'/><circle cx='2005' cy='259' r='0.74' fill='white' opacity='0.89'/><circle cx='2142' cy='217' r='10.89' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.7;0.7;0;0' keyTimes='0;0.436;0.462;0.489;0.532;1' dur='8.7s' begin='4.88s' repeatCount='indefinite'/></circle><circle cx='2142' cy='217' r='1.3' fill='white' opacity='0.72'><animate attributeName='opacity' values='0.72;0.72;0.88;0.88;0.72;0.72' keyTimes='0;0.436;0.462;0.489;0.532;1' dur='8.7s' begin='4.88s' repeatCount='indefinite'/><animate attributeName='r' values='1.3;1.3;2.42;2.42;1.3;1.3' keyTimes='0;0.436;0.462;0.489;0.532;1' dur='8.7s' begin='4.88s' repeatCount='indefinite'/></circle><circle cx='102' cy='375' r='1.11' fill='white' opacity='0.64'/><circle cx='127' cy='316' r='1.23' fill='white' opacity='0.68'/><circle cx='253' cy='316' r='8.42' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.62;0.62;0;0' keyTimes='0;0.597;0.624;0.643;0.684;1' dur='16.2s' begin='11.01s' repeatCount='indefinite'/></circle><circle cx='253' cy='316' r='1.29' fill='white' opacity='0.88'><animate attributeName='opacity' values='0.88;0.88;1;1;0.88;0.88' keyTimes='0;0.597;0.624;0.643;0.684;1' dur='16.2s' begin='11.01s' repeatCount='indefinite'/><animate attributeName='r' values='1.29;1.29;1.87;1.87;1.29;1.29' keyTimes='0;0.597;0.624;0.643;0.684;1' dur='16.2s' begin='11.01s' repeatCount='indefinite'/></circle><circle cx='352' cy='374' r='1.47' fill='white' opacity='0.88'/><circle cx='456' cy='320' r='1.02' fill='white' opacity='0.74'/><circle cx='592' cy='343' r='1.02' fill='white' opacity='0.78'/><circle cx='739' cy='385' r='0.66' fill='white' opacity='0.8'/><circle cx='829' cy='361' r='1.54' fill='white' opacity='0.85'/><circle cx='932' cy='381' r='0.75' fill='white' opacity='0.86'/><circle cx='1015' cy='350' r='1.18' fill='white' opacity='0.65'/><circle cx='1153' cy='378' r='5.71' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.62;0.62;0;0' keyTimes='0;0.717;0.743;0.754;0.799;1' dur='15.4s' begin='8.17s' repeatCount='indefinite'/></circle><circle cx='1153' cy='378' r='0.7' fill='white' opacity='0.88'><animate attributeName='opacity' values='0.88;0.88;1;1;0.88;0.88' keyTimes='0;0.717;0.743;0.754;0.799;1' dur='15.4s' begin='8.17s' repeatCount='indefinite'/><animate attributeName='r' values='0.7;0.7;1.27;1.27;0.7;0.7' keyTimes='0;0.717;0.743;0.754;0.799;1' dur='15.4s' begin='8.17s' repeatCount='indefinite'/></circle><circle cx='1292' cy='315' r='1.57' fill='white' opacity='0.73'/><circle cx='1330' cy='384' r='0.91' fill='white' opacity='0.67'/><circle cx='1520' cy='387' r='0.78' fill='white' opacity='0.64'/><circle cx='1615' cy='326' r='6.57' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.77;0.77;0;0' keyTimes='0;0.363;0.39;0.409;0.437;1' dur='17.3s' begin='5.69s' repeatCount='indefinite'/></circle><circle cx='1615' cy='326' r='0.88' fill='white' opacity='0.68'><animate attributeName='opacity' values='0.68;0.68;0.8;0.8;0.68;0.68' keyTimes='0;0.363;0.39;0.409;0.437;1' dur='17.3s' begin='5.69s' repeatCount='indefinite'/><animate attributeName='r' values='0.88;0.88;1.46;1.46;0.88;0.88' keyTimes='0;0.363;0.39;0.409;0.437;1' dur='17.3s' begin='5.69s' repeatCount='indefinite'/></circle><circle cx='1737' cy='325' r='0.88' fill='white' opacity='0.62'/><circle cx='1815' cy='379' r='0.9' fill='white' opacity='0.76'/><circle cx='1924' cy='364' r='5.85' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.57;0.57;0;0' keyTimes='0;0.718;0.74;0.76;0.803;1' dur='12.1s' begin='6.09s' repeatCount='indefinite'/></circle><circle cx='1924' cy='364' r='0.7' fill='white' opacity='0.87'><animate attributeName='opacity' values='0.87;0.87;1;1;0.87;0.87' keyTimes='0;0.718;0.74;0.76;0.803;1' dur='12.1s' begin='6.09s' repeatCount='indefinite'/><animate attributeName='r' values='0.7;0.7;1.3;1.3;0.7;0.7' keyTimes='0;0.718;0.74;0.76;0.803;1' dur='12.1s' begin='6.09s' repeatCount='indefinite'/></circle><circle cx='2079' cy='317' r='1.19' fill='white' opacity='0.76'/><circle cx='2188' cy='366' r='5.35' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.72;0.72;0;0' keyTimes='0;0.461;0.491;0.513;0.539;1' dur='10.6s' begin='0.82s' repeatCount='indefinite'/></circle><circle cx='2188' cy='366' r='0.76' fill='white' opacity='0.8'><animate attributeName='opacity' values='0.8;0.8;0.96;0.96;0.8;0.8' keyTimes='0;0.461;0.491;0.513;0.539;1' dur='10.6s' begin='0.82s' repeatCount='indefinite'/><animate attributeName='r' values='0.76;0.76;1.19;1.19;0.76;0.76' keyTimes='0;0.461;0.491;0.513;0.539;1' dur='10.6s' begin='0.82s' repeatCount='indefinite'/></circle><circle cx='37' cy='466' r='7.29' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.73;0.73;0;0' keyTimes='0;0.434;0.467;0.479;0.5;1' dur='18s' begin='3.7s' repeatCount='indefinite'/></circle><circle cx='37' cy='466' r='1.13' fill='white' opacity='0.8'><animate attributeName='opacity' values='0.8;0.8;0.92;0.92;0.8;0.8' keyTimes='0;0.434;0.467;0.479;0.5;1' dur='18s' begin='3.7s' repeatCount='indefinite'/><animate attributeName='r' values='1.13;1.13;1.62;1.62;1.13;1.13' keyTimes='0;0.434;0.467;0.479;0.5;1' dur='18s' begin='3.7s' repeatCount='indefinite'/></circle><circle cx='196' cy='431' r='1.03' fill='white' opacity='0.79'/><circle cx='315' cy='418' r='0.65' fill='white' opacity='0.79'/><circle cx='408' cy='487' r='0.98' fill='white' opacity='0.86'/><circle cx='521' cy='470' r='0.76' fill='white' opacity='0.84'/><circle cx='639' cy='473' r='0.95' fill='white' opacity='0.79'/><circle cx='753' cy='480' r='1.52' fill='white' opacity='0.75'/><circle cx='844' cy='433' r='1.47' fill='white' opacity='0.8'/><circle cx='954' cy='488' r='1.41' fill='white' opacity='0.7'/><circle cx='1048' cy='472' r='1.07' fill='white' opacity='0.76'/><circle cx='1155' cy='466' r='0.61' fill='white' opacity='0.67'/><circle cx='1233' cy='449' r='0.62' fill='white' opacity='0.82'/><circle cx='1379' cy='472' r='0.77' fill='white' opacity='0.68'/><circle cx='1458' cy='458' r='0.64' fill='white' opacity='0.86'/><circle cx='1549' cy='439' r='1.45' fill='white' opacity='0.61'/><circle cx='1713' cy='454' r='0.78' fill='white' opacity='0.76'/><circle cx='1788' cy='458' r='0.83' fill='white' opacity='0.64'/><circle cx='1924' cy='430' r='1.39' fill='white' opacity='0.66'/><circle cx='2054' cy='447' r='1.29' fill='white' opacity='0.78'/><circle cx='2143' cy='492' r='11.16' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.77;0.77;0;0' keyTimes='0;0.546;0.577;0.605;0.629;1' dur='14.9s' begin='13.3s' repeatCount='indefinite'/></circle><circle cx='2143' cy='492' r='1.45' fill='white' opacity='0.68'><animate attributeName='opacity' values='0.68;0.68;0.95;0.95;0.68;0.68' keyTimes='0;0.546;0.577;0.605;0.629;1' dur='14.9s' begin='13.3s' repeatCount='indefinite'/><animate attributeName='r' values='1.45;1.45;2.48;2.48;1.45;1.45' keyTimes='0;0.546;0.577;0.605;0.629;1' dur='14.9s' begin='13.3s' repeatCount='indefinite'/></circle><circle cx='20' cy='590' r='1.4' fill='white' opacity='0.89'/><circle cx='200' cy='522' r='1' fill='white' opacity='0.83'/><circle cx='301' cy='555' r='0.88' fill='white' opacity='0.7'/><circle cx='377' cy='553' r='1.31' fill='white' opacity='0.87'/><circle cx='542' cy='571' r='1.02' fill='white' opacity='0.71'/><circle cx='600' cy='547' r='5.71' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.57;0.57;0;0' keyTimes='0;0.319;0.35;0.364;0.389;1' dur='19.5s' begin='1.65s' repeatCount='indefinite'/></circle><circle cx='600' cy='547' r='0.89' fill='white' opacity='0.83'><animate attributeName='opacity' values='0.83;0.83;1;1;0.83;0.83' keyTimes='0;0.319;0.35;0.364;0.389;1' dur='19.5s' begin='1.65s' repeatCount='indefinite'/><animate attributeName='r' values='0.89;0.89;1.27;1.27;0.89;0.89' keyTimes='0;0.319;0.35;0.364;0.389;1' dur='19.5s' begin='1.65s' repeatCount='indefinite'/></circle><circle cx='690' cy='583' r='10.08' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.69;0.69;0;0' keyTimes='0;0.507;0.537;0.561;0.582;1' dur='19.1s' begin='3.43s' repeatCount='indefinite'/></circle><circle cx='690' cy='583' r='1.56' fill='white' opacity='0.72'><animate attributeName='opacity' values='0.72;0.72;0.93;0.93;0.72;0.72' keyTimes='0;0.507;0.537;0.561;0.582;1' dur='19.1s' begin='3.43s' repeatCount='indefinite'/><animate attributeName='r' values='1.56;1.56;2.24;2.24;1.56;1.56' keyTimes='0;0.507;0.537;0.561;0.582;1' dur='19.1s' begin='3.43s' repeatCount='indefinite'/></circle><circle cx='836' cy='521' r='1.52' fill='white' opacity='0.69'/><circle cx='923' cy='544' r='1.14' fill='white' opacity='0.75'/><circle cx='1041' cy='590' r='1.27' fill='white' opacity='0.69'/><circle cx='1145' cy='534' r='1.52' fill='white' opacity='0.78'/><circle cx='1260' cy='542' r='1.42' fill='white' opacity='0.75'/><circle cx='1367' cy='581' r='0.76' fill='white' opacity='0.88'/><circle cx='1453' cy='537' r='1.35' fill='white' opacity='0.88'/><circle cx='1627' cy='569' r='1.25' fill='white' opacity='0.67'/><circle cx='1716' cy='526' r='0.67' fill='white' opacity='0.6'/><circle cx='1782' cy='555' r='1.16' fill='white' opacity='0.75'/><circle cx='1944' cy='546' r='1.24' fill='white' opacity='0.77'/><circle cx='2043' cy='558' r='1.22' fill='white' opacity='0.73'/><circle cx='2131' cy='588' r='9.04' fill='url(%23vsg-a)' opacity='0'><animate attributeName='opacity' values='0;0;0.63;0.63;0;0' keyTimes='0;0.613;0.649;0.665;0.691;1' dur='16s' begin='13.35s' repeatCount='indefinite'/></circle><circle cx='2131' cy='588' r='1.09' fill='white' opacity='0.64'><animate attributeName='opacity' values='0.64;0.64;0.81;0.81;0.64;0.64' keyTimes='0;0.613;0.649;0.665;0.691;1' dur='16s' begin='13.35s' repeatCount='indefinite'/><animate attributeName='r' values='1.09;1.09;2.01;2.01;1.09;1.09' keyTimes='0;0.613;0.649;0.665;0.691;1' dur='16s' begin='13.35s' repeatCount='indefinite'/></circle><circle cx='98' cy='679' r='0.85' fill='white' opacity='0.89'/><circle cx='163' cy='685' r='1' fill='white' opacity='0.83'/></svg>"),
-      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1600' height='900'><defs><radialGradient id='vsg-b'><stop offset='0%' stop-color='white' stop-opacity='0.95'/><stop offset='35%' stop-color='white' stop-opacity='0.45'/><stop offset='100%' stop-color='white' stop-opacity='0'/></radialGradient></defs><circle cx='108' cy='56' r='8.37' fill='url(%23vsg-b)' opacity='0'><animate attributeName='opacity' values='0;0;0.59;0.59;0;0' keyTimes='0;0.7;0.726;0.751;0.789;1' dur='13.3s' begin='5.19s' repeatCount='indefinite'/></circle><circle cx='108' cy='56' r='1.13' fill='white' opacity='0.72'><animate attributeName='opacity' values='0.72;0.72;0.87;0.87;0.72;0.72' keyTimes='0;0.7;0.726;0.751;0.789;1' dur='13.3s' begin='5.19s' repeatCount='indefinite'/><animate attributeName='r' values='1.13;1.13;1.86;1.86;1.13;1.13' keyTimes='0;0.7;0.726;0.751;0.789;1' dur='13.3s' begin='5.19s' repeatCount='indefinite'/></circle><circle cx='159' cy='97' r='0.96' fill='white' opacity='0.82'/><circle cx='291' cy='47' r='0.75' fill='white' opacity='0.72'/><circle cx='493' cy='86' r='0.83' fill='white' opacity='0.77'/><circle cx='626' cy='66' r='1.37' fill='white' opacity='0.84'/><circle cx='717' cy='70' r='1.26' fill='white' opacity='0.81'/><circle cx='872' cy='57' r='1.23' fill='white' opacity='0.61'/><circle cx='996' cy='21' r='1.44' fill='white' opacity='0.76'/><circle cx='1144' cy='106' r='0.75' fill='white' opacity='0.62'/><circle cx='1215' cy='40' r='10.85' fill='url(%23vsg-b)' opacity='0'><animate attributeName='opacity' values='0;0;0.56;0.56;0;0' keyTimes='0;0.732;0.758;0.77;0.797;1' dur='9.6s' begin='3.02s' repeatCount='indefinite'/></circle><circle cx='1215' cy='40' r='1.32' fill='white' opacity='0.72'><animate attributeName='opacity' values='0.72;0.72;1;1;0.72;0.72' keyTimes='0;0.732;0.758;0.77;0.797;1' dur='9.6s' begin='3.02s' repeatCount='indefinite'/><animate attributeName='r' values='1.32;1.32;2.41;2.41;1.32;1.32' keyTimes='0;0.732;0.758;0.77;0.797;1' dur='9.6s' begin='3.02s' repeatCount='indefinite'/></circle><circle cx='1384' cy='86' r='1.22' fill='white' opacity='0.79'/><circle cx='1513' cy='27' r='9.67' fill='url(%23vsg-b)' opacity='0'><animate attributeName='opacity' values='0;0;0.69;0.69;0;0' keyTimes='0;0.573;0.599;0.616;0.65;1' dur='9s' begin='6.73s' repeatCount='indefinite'/></circle><circle cx='1513' cy='27' r='1.32' fill='white' opacity='0.67'><animate attributeName='opacity' values='0.67;0.67;0.89;0.89;0.67;0.67' keyTimes='0;0.573;0.599;0.616;0.65;1' dur='9s' begin='6.73s' repeatCount='indefinite'/><animate attributeName='r' values='1.32;1.32;2.15;2.15;1.32;1.32' keyTimes='0;0.573;0.599;0.616;0.65;1' dur='9s' begin='6.73s' repeatCount='indefinite'/></circle><circle cx='33' cy='244' r='1.03' fill='white' opacity='0.61'/><circle cx='173' cy='194' r='6.3' fill='url(%23vsg-b)' opacity='0'><animate attributeName='opacity' values='0;0;0.57;0.57;0;0' keyTimes='0;0.426;0.46;0.488;0.532;1' dur='13.9s' begin='13.62s' repeatCount='indefinite'/></circle><circle cx='173' cy='194' r='0.77' fill='white' opacity='0.86'><animate attributeName='opacity' values='0.86;0.86;1;1;0.86;0.86' keyTimes='0;0.426;0.46;0.488;0.532;1' dur='13.9s' begin='13.62s' repeatCount='indefinite'/><animate attributeName='r' values='0.77;0.77;1.4;1.4;0.77;0.77' keyTimes='0;0.426;0.46;0.488;0.532;1' dur='13.9s' begin='13.62s' repeatCount='indefinite'/></circle><circle cx='320' cy='204' r='0.74' fill='white' opacity='0.83'/><circle cx='434' cy='245' r='9.63' fill='url(%23vsg-b)' opacity='0'><animate attributeName='opacity' values='0;0;0.64;0.64;0;0' keyTimes='0;0.449;0.48;0.505;0.542;1' dur='15.1s' begin='6.69s' repeatCount='indefinite'/></circle><circle cx='434' cy='245' r='1.39' fill='white' opacity='0.83'><animate attributeName='opacity' values='0.83;0.83;1;1;0.83;0.83' keyTimes='0;0.449;0.48;0.505;0.542;1' dur='15.1s' begin='6.69s' repeatCount='indefinite'/><animate attributeName='r' values='1.39;1.39;2.14;2.14;1.39;1.39' keyTimes='0;0.449;0.48;0.505;0.542;1' dur='15.1s' begin='6.69s' repeatCount='indefinite'/></circle><circle cx='627' cy='183' r='1.52' fill='white' opacity='0.71'/><circle cx='716' cy='166' r='0.75' fill='white' opacity='0.78'/><circle cx='904' cy='195' r='1.33' fill='white' opacity='0.75'/><circle cx='1028' cy='217' r='9.86' fill='url(%23vsg-b)' opacity='0'><animate attributeName='opacity' values='0;0;0.7;0.7;0;0' keyTimes='0;0.316;0.341;0.353;0.397;1' dur='15.6s' begin='3.33s' repeatCount='indefinite'/></circle><circle cx='1028' cy='217' r='1.3' fill='white' opacity='0.72'><animate attributeName='opacity' values='0.72;0.72;1;1;0.72;0.72' keyTimes='0;0.316;0.341;0.353;0.397;1' dur='15.6s' begin='3.33s' repeatCount='indefinite'/><animate attributeName='r' values='1.3;1.3;2.19;2.19;1.3;1.3' keyTimes='0;0.316;0.341;0.353;0.397;1' dur='15.6s' begin='3.33s' repeatCount='indefinite'/></circle><circle cx='1129' cy='159' r='0.85' fill='white' opacity='0.81'/><circle cx='1230' cy='246' r='0.69' fill='white' opacity='0.61'/><circle cx='1382' cy='208' r='11.29' fill='url(%23vsg-b)' opacity='0'><animate attributeName='opacity' values='0;0;0.58;0.58;0;0' keyTimes='0;0.501;0.541;0.551;0.584;1' dur='21.8s' begin='7.32s' repeatCount='indefinite'/></circle><circle cx='1382' cy='208' r='1.55' fill='white' opacity='0.82'><animate attributeName='opacity' values='0.82;0.82;0.95;0.95;0.82;0.82' keyTimes='0;0.501;0.541;0.551;0.584;1' dur='21.8s' begin='7.32s' repeatCount='indefinite'/><animate attributeName='r' values='1.55;1.55;2.51;2.51;1.55;1.55' keyTimes='0;0.501;0.541;0.551;0.584;1' dur='21.8s' begin='7.32s' repeatCount='indefinite'/></circle><circle cx='1479' cy='247' r='5.04' fill='url(%23vsg-b)' opacity='0'><animate attributeName='opacity' values='0;0;0.71;0.71;0;0' keyTimes='0;0.706;0.728;0.755;0.786;1' dur='13.9s' begin='1.77s' repeatCount='indefinite'/></circle><circle cx='1479' cy='247' r='0.77' fill='white' opacity='0.79'><animate attributeName='opacity' values='0.79;0.79;1;1;0.79;0.79' keyTimes='0;0.706;0.728;0.755;0.786;1' dur='13.9s' begin='1.77s' repeatCount='indefinite'/><animate attributeName='r' values='0.77;0.77;1.12;1.12;0.77;0.77' keyTimes='0;0.706;0.728;0.755;0.786;1' dur='13.9s' begin='1.77s' repeatCount='indefinite'/></circle><circle cx='108' cy='325' r='1.16' fill='white' opacity='0.85'/><circle cx='207' cy='287' r='10.85' fill='url(%23vsg-b)' opacity='0'><animate attributeName='opacity' values='0;0;0.77;0.77;0;0' keyTimes='0;0.381;0.411;0.428;0.466;1' dur='13.3s' begin='1.66s' repeatCount='indefinite'/></circle><circle cx='207' cy='287' r='1.53' fill='white' opacity='0.75'><animate attributeName='opacity' values='0.75;0.75;0.97;0.97;0.75;0.75' keyTimes='0;0.381;0.411;0.428;0.466;1' dur='13.3s' begin='1.66s' repeatCount='indefinite'/><animate attributeName='r' values='1.53;1.53;2.41;2.41;1.53;1.53' keyTimes='0;0.381;0.411;0.428;0.466;1' dur='13.3s' begin='1.66s' repeatCount='indefinite'/></circle><circle cx='389' cy='312' r='1.23' fill='white' opacity='0.75'/><circle cx='452' cy='375' r='1.19' fill='white' opacity='0.71'/><circle cx='549' cy='314' r='0.94' fill='white' opacity='0.75'/><circle cx='682' cy='298' r='1.3' fill='white' opacity='0.7'/><circle cx='862' cy='354' r='5.13' fill='url(%23vsg-b)' opacity='0'><animate attributeName='opacity' values='0;0;0.6;0.6;0;0' keyTimes='0;0.416;0.452;0.465;0.495;1' dur='8s' begin='2.63s' repeatCount='indefinite'/></circle><circle cx='862' cy='354' r='0.72' fill='white' opacity='0.86'><animate attributeName='opacity' values='0.86;0.86;1;1;0.86;0.86' keyTimes='0;0.416;0.452;0.465;0.495;1' dur='8s' begin='2.63s' repeatCount='indefinite'/><animate attributeName='r' values='0.72;0.72;1.14;1.14;0.72;0.72' keyTimes='0;0.416;0.452;0.465;0.495;1' dur='8s' begin='2.63s' repeatCount='indefinite'/></circle><circle cx='956' cy='352' r='1.24' fill='white' opacity='0.61'/><circle cx='1102' cy='289' r='0.77' fill='white' opacity='0.74'/><circle cx='1292' cy='313' r='1.47' fill='white' opacity='0.83'/><circle cx='1447' cy='371' r='6.88' fill='url(%23vsg-b)' opacity='0'><animate attributeName='opacity' values='0;0;0.72;0.72;0;0' keyTimes='0;0.305;0.327;0.349;0.397;1' dur='15.6s' begin='9.57s' repeatCount='indefinite'/></circle><circle cx='1447' cy='371' r='0.93' fill='white' opacity='0.89'><animate attributeName='opacity' values='0.89;0.89;1;1;0.89;0.89' keyTimes='0;0.305;0.327;0.349;0.397;1' dur='15.6s' begin='9.57s' repeatCount='indefinite'/><animate attributeName='r' values='0.93;0.93;1.53;1.53;0.93;0.93' keyTimes='0;0.305;0.327;0.349;0.397;1' dur='15.6s' begin='9.57s' repeatCount='indefinite'/></circle><circle cx='1504' cy='367' r='0.71' fill='white' opacity='0.69'/><circle cx='105' cy='404' r='1.23' fill='white' opacity='0.88'/><circle cx='233' cy='496' r='0.94' fill='white' opacity='0.72'/><circle cx='344' cy='462' r='0.69' fill='white' opacity='0.65'/><circle cx='442' cy='459' r='1.37' fill='white' opacity='0.62'/><circle cx='549' cy='416' r='0.8' fill='white' opacity='0.76'/><circle cx='707' cy='405' r='0.7' fill='white' opacity='0.81'/><circle cx='848' cy='473' r='0.66' fill='white' opacity='0.76'/><circle cx='956' cy='496' r='1.43' fill='white' opacity='0.79'/><circle cx='1169' cy='462' r='0.81' fill='white' opacity='0.8'/><circle cx='1255' cy='432' r='1.43' fill='white' opacity='0.8'/><circle cx='1350' cy='472' r='10.8' fill='url(%23vsg-b)' opacity='0'><animate attributeName='opacity' values='0;0;0.66;0.66;0;0' keyTimes='0;0.453;0.482;0.503;0.528;1' dur='10.3s' begin='9.84s' repeatCount='indefinite'/></circle><circle cx='1350' cy='472' r='1.49' fill='white' opacity='0.84'><animate attributeName='opacity' values='0.84;0.84;1;1;0.84;0.84' keyTimes='0;0.453;0.482;0.503;0.528;1' dur='10.3s' begin='9.84s' repeatCount='indefinite'/><animate attributeName='r' values='1.49;1.49;2.4;2.4;1.49;1.49' keyTimes='0;0.453;0.482;0.503;0.528;1' dur='10.3s' begin='9.84s' repeatCount='indefinite'/></circle><circle cx='1482' cy='462' r='0.67' fill='white' opacity='0.64'/><circle cx='64' cy='621' r='1.38' fill='white' opacity='0.79'/><circle cx='192' cy='569' r='1.51' fill='white' opacity='0.9'/><circle cx='336' cy='560' r='6.71' fill='url(%23vsg-b)' opacity='0'><animate attributeName='opacity' values='0;0;0.55;0.55;0;0' keyTimes='0;0.464;0.498;0.523;0.562;1' dur='19.4s' begin='7.98s' repeatCount='indefinite'/></circle><circle cx='336' cy='560' r='0.88' fill='white' opacity='0.7'><animate attributeName='opacity' values='0.7;0.7;0.99;0.99;0.7;0.7' keyTimes='0;0.464;0.498;0.523;0.562;1' dur='19.4s' begin='7.98s' repeatCount='indefinite'/><animate attributeName='r' values='0.88;0.88;1.49;1.49;0.88;0.88' keyTimes='0;0.464;0.498;0.523;0.562;1' dur='19.4s' begin='7.98s' repeatCount='indefinite'/></circle><circle cx='460' cy='617' r='11.29' fill='url(%23vsg-b)' opacity='0'><animate attributeName='opacity' values='0;0;0.61;0.61;0;0' keyTimes='0;0.624;0.663;0.68;0.719;1' dur='16.2s' begin='8.28s' repeatCount='indefinite'/></circle><circle cx='460' cy='617' r='1.58' fill='white' opacity='0.68'><animate attributeName='opacity' values='0.68;0.68;0.81;0.81;0.68;0.68' keyTimes='0;0.624;0.663;0.68;0.719;1' dur='16.2s' begin='8.28s' repeatCount='indefinite'/><animate attributeName='r' values='1.58;1.58;2.51;2.51;1.58;1.58' keyTimes='0;0.624;0.663;0.68;0.719;1' dur='16.2s' begin='8.28s' repeatCount='indefinite'/></circle><circle cx='591' cy='536' r='1.15' fill='white' opacity='0.67'/><circle cx='720' cy='582' r='8.55' fill='url(%23vsg-b)' opacity='0'><animate attributeName='opacity' values='0;0;0.74;0.74;0;0' keyTimes='0;0.309;0.347;0.366;0.402;1' dur='20.8s' begin='19.79s' repeatCount='indefinite'/></circle><circle cx='720' cy='582' r='1.19' fill='white' opacity='0.65'><animate attributeName='opacity' values='0.65;0.65;0.93;0.93;0.65;0.65' keyTimes='0;0.309;0.347;0.366;0.402;1' dur='20.8s' begin='19.79s' repeatCount='indefinite'/><animate attributeName='r' values='1.19;1.19;1.9;1.9;1.19;1.19' keyTimes='0;0.309;0.347;0.366;0.402;1' dur='20.8s' begin='19.79s' repeatCount='indefinite'/></circle><circle cx='872' cy='584' r='1.32' fill='white' opacity='0.84'/><circle cx='1052' cy='603' r='0.73' fill='white' opacity='0.62'/><circle cx='1162' cy='572' r='1.12' fill='white' opacity='0.72'/><circle cx='1314' cy='622' r='1.4' fill='white' opacity='0.82'/><circle cx='1382' cy='569' r='6.66' fill='url(%23vsg-b)' opacity='0'><animate attributeName='opacity' values='0;0;0.66;0.66;0;0' keyTimes='0;0.383;0.41;0.425;0.454;1' dur='14s' begin='13.81s' repeatCount='indefinite'/></circle><circle cx='1382' cy='569' r='0.94' fill='white' opacity='0.61'><animate attributeName='opacity' values='0.61;0.61;0.88;0.88;0.61;0.61' keyTimes='0;0.383;0.41;0.425;0.454;1' dur='14s' begin='13.81s' repeatCount='indefinite'/><animate attributeName='r' values='0.94;0.94;1.48;1.48;0.94;0.94' keyTimes='0;0.383;0.41;0.425;0.454;1' dur='14s' begin='13.81s' repeatCount='indefinite'/></circle><circle cx='1500' cy='591' r='1.49' fill='white' opacity='0.81'/><circle cx='54' cy='730' r='1.35' fill='white' opacity='0.85'/><circle cx='198' cy='717' r='1.01' fill='white' opacity='0.6'/><circle cx='337' cy='679' r='7.96' fill='url(%23vsg-b)' opacity='0'><animate attributeName='opacity' values='0;0;0.61;0.61;0;0' keyTimes='0;0.65;0.675;0.697;0.744;1' dur='12.3s' begin='0.76s' repeatCount='indefinite'/></circle><circle cx='337' cy='679' r='1.08' fill='white' opacity='0.89'><animate attributeName='opacity' values='0.89;0.89;1;1;0.89;0.89' keyTimes='0;0.65;0.675;0.697;0.744;1' dur='12.3s' begin='0.76s' repeatCount='indefinite'/><animate attributeName='r' values='1.08;1.08;1.77;1.77;1.08;1.08' keyTimes='0;0.65;0.675;0.697;0.744;1' dur='12.3s' begin='0.76s' repeatCount='indefinite'/></circle><circle cx='420' cy='664' r='1.44' fill='white' opacity='0.88'/><circle cx='579' cy='712' r='1.07' fill='white' opacity='0.83'/><circle cx='688' cy='731' r='0.61' fill='white' opacity='0.76'/><circle cx='894' cy='667' r='0.61' fill='white' opacity='0.87'/><circle cx='954' cy='692' r='1.4' fill='white' opacity='0.88'/><circle cx='1161' cy='700' r='0.93' fill='white' opacity='0.83'/><circle cx='1318' cy='762' r='1.42' fill='white' opacity='0.82'/><circle cx='1428' cy='704' r='0.95' fill='white' opacity='0.8'/><circle cx='1577' cy='654' r='10.17' fill='url(%23vsg-b)' opacity='0'><animate attributeName='opacity' values='0;0;0.79;0.79;0;0' keyTimes='0;0.579;0.613;0.625;0.649;1' dur='18.3s' begin='8.62s' repeatCount='indefinite'/></circle><circle cx='1577' cy='654' r='1.59' fill='white' opacity='0.84'><animate attributeName='opacity' values='0.84;0.84;1;1;0.84;0.84' keyTimes='0;0.579;0.613;0.625;0.649;1' dur='18.3s' begin='8.62s' repeatCount='indefinite'/><animate attributeName='r' values='1.59;1.59;2.26;2.26;1.59;1.59' keyTimes='0;0.579;0.613;0.625;0.649;1' dur='18.3s' begin='8.62s' repeatCount='indefinite'/></circle><circle cx='78' cy='835' r='1.08' fill='white' opacity='0.85'/><circle cx='248' cy='862' r='0.62' fill='white' opacity='0.62'/></svg>");
+  /* Both endpoints are spelled out on purpose: a keyframe rule with an
+     implicit start ("to" only) is not handed to the compositor, and the
+     animation silently falls back to a main-thread style recalc on
+     every frame. */
+  @keyframes vitra-scenery-scintillate {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-512px, 0, 0); }
   }
 
-  /* Drifting + twinkling third tile, hosted on the UNMASKED sky
-     element so it composites on its own layer (see note above).
-     Seamless drift loop: the layer is one tile-width (1200px)
-     wider than the viewport strip and translates exactly one
-     tile width, landing on a pixel-identical frame. It carries
-     its own copy of the vertical fade mask - the drift is
-     horizontal-only, so a mask traveling with the layer is
-     visually identical to a static one. Sky pseudos don't
-     inherit the stars element's theme-gated opacity, so they
-     are visibility-gated to the same dark themes below;
-     brightness is pre-multiplied by the 0.8 the stars element
-     would have contributed. */
+  @keyframes vitra-scenery-scintillate-hold {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(512px, 0, 0); }
+  }
+
+  /* Far star plane: a third, slowly drifting tile hosted on the sky
+     element so it composites on its own layer. Seamless drift loop:
+     the layer is one tile-width (1200px) wider than the viewport
+     strip and translates exactly one tile width, landing on a
+     pixel-identical frame. It carries its own copy of the vertical
+     fade mask - the drift is horizontal-only, so a mask traveling
+     with the layer is visually identical to a static one. Sky pseudos
+     don't inherit the stars element's theme-gated opacity, so they
+     are visibility-gated to the same dark themes below. */
   .vitra-scenery-sky::before {
     content: '';
     position: absolute;
@@ -1953,34 +2012,35 @@
     height: 68%;
     width: calc(100% + 1200px);
     visibility: hidden;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='520'><defs><radialGradient id='vsg-c'><stop offset='0%' stop-color='white' stop-opacity='0.95'/><stop offset='35%' stop-color='white' stop-opacity='0.45'/><stop offset='100%' stop-color='white' stop-opacity='0'/></radialGradient></defs><circle cx='54' cy='32' r='1.53' fill='white' opacity='0.75'/><circle cx='132' cy='31' r='1' fill='white' opacity='0.7'/><circle cx='270' cy='74' r='1.21' fill='white' opacity='0.9'/><circle cx='371' cy='84' r='5.4' fill='url(%23vsg-c)' opacity='0'><animate attributeName='opacity' values='0;0;0.69;0.69;0;0' keyTimes='0;0.356;0.38;0.399;0.432;1' dur='10.6s' begin='2.37s' repeatCount='indefinite'/></circle><circle cx='371' cy='84' r='0.8' fill='white' opacity='0.79'><animate attributeName='opacity' values='0.79;0.79;0.93;0.93;0.79;0.79' keyTimes='0;0.356;0.38;0.399;0.432;1' dur='10.6s' begin='2.37s' repeatCount='indefinite'/><animate attributeName='r' values='0.8;0.8;1.2;1.2;0.8;0.8' keyTimes='0;0.356;0.38;0.399;0.432;1' dur='10.6s' begin='2.37s' repeatCount='indefinite'/></circle><circle cx='449' cy='89' r='0.96' fill='white' opacity='0.64'/><circle cx='514' cy='66' r='1.28' fill='white' opacity='0.69'/><circle cx='610' cy='96' r='0.7' fill='white' opacity='0.75'/><circle cx='773' cy='50' r='1.32' fill='white' opacity='0.78'/><circle cx='827' cy='90' r='1.59' fill='white' opacity='0.63'/><circle cx='973' cy='24' r='1.53' fill='white' opacity='0.81'/><circle cx='1025' cy='79' r='1.46' fill='white' opacity='0.83'/><circle cx='1117' cy='76' r='1.44' fill='white' opacity='0.73'/><circle cx='91' cy='127' r='1.39' fill='white' opacity='0.88'/><circle cx='172' cy='165' r='6.79' fill='url(%23vsg-c)' opacity='0'><animate attributeName='opacity' values='0;0;0.72;0.72;0;0' keyTimes='0;0.49;0.523;0.541;0.566;1' dur='12.7s' begin='8.62s' repeatCount='indefinite'/></circle><circle cx='172' cy='165' r='1.02' fill='white' opacity='0.84'><animate attributeName='opacity' values='0.84;0.84;1;1;0.84;0.84' keyTimes='0;0.49;0.523;0.541;0.566;1' dur='12.7s' begin='8.62s' repeatCount='indefinite'/><animate attributeName='r' values='1.02;1.02;1.51;1.51;1.02;1.02' keyTimes='0;0.49;0.523;0.541;0.566;1' dur='12.7s' begin='8.62s' repeatCount='indefinite'/></circle><circle cx='256' cy='116' r='1.23' fill='white' opacity='0.9'/><circle cx='354' cy='190' r='1.24' fill='white' opacity='0.6'/><circle cx='435' cy='178' r='0.61' fill='white' opacity='0.81'/><circle cx='581' cy='173' r='1.13' fill='white' opacity='0.61'/><circle cx='644' cy='179' r='1.43' fill='white' opacity='0.86'/><circle cx='728' cy='115' r='1.09' fill='white' opacity='0.74'/><circle cx='870' cy='149' r='0.94' fill='white' opacity='0.65'/><circle cx='990' cy='120' r='0.99' fill='white' opacity='0.76'/><circle cx='1063' cy='121' r='0.78' fill='white' opacity='0.65'/><circle cx='1118' cy='130' r='5.49' fill='url(%23vsg-c)' opacity='0'><animate attributeName='opacity' values='0;0;0.61;0.61;0;0' keyTimes='0;0.464;0.487;0.506;0.533;1' dur='9s' begin='6.89s' repeatCount='indefinite'/></circle><circle cx='1118' cy='130' r='0.66' fill='white' opacity='0.76'><animate attributeName='opacity' values='0.76;0.76;0.89;0.89;0.76;0.76' keyTimes='0;0.464;0.487;0.506;0.533;1' dur='9s' begin='6.89s' repeatCount='indefinite'/><animate attributeName='r' values='0.66;0.66;1.22;1.22;0.66;0.66' keyTimes='0;0.464;0.487;0.506;0.533;1' dur='9s' begin='6.89s' repeatCount='indefinite'/></circle><circle cx='25' cy='253' r='8.87' fill='url(%23vsg-c)' opacity='0'><animate attributeName='opacity' values='0;0;0.67;0.67;0;0' keyTimes='0;0.548;0.582;0.599;0.622;1' dur='8.8s' begin='7.1s' repeatCount='indefinite'/></circle><circle cx='25' cy='253' r='1.21' fill='white' opacity='0.66'><animate attributeName='opacity' values='0.66;0.66;0.87;0.87;0.66;0.66' keyTimes='0;0.548;0.582;0.599;0.622;1' dur='8.8s' begin='7.1s' repeatCount='indefinite'/><animate attributeName='r' values='1.21;1.21;1.97;1.97;1.21;1.21' keyTimes='0;0.548;0.582;0.599;0.622;1' dur='8.8s' begin='7.1s' repeatCount='indefinite'/></circle><circle cx='131' cy='264' r='0.65' fill='white' opacity='0.89'/><circle cx='218' cy='278' r='1.3' fill='white' opacity='0.67'/><circle cx='330' cy='231' r='1.14' fill='white' opacity='0.65'/><circle cx='491' cy='217' r='8.64' fill='url(%23vsg-c)' opacity='0'><animate attributeName='opacity' values='0;0;0.76;0.76;0;0' keyTimes='0;0.711;0.733;0.746;0.778;1' dur='13.4s' begin='4.8s' repeatCount='indefinite'/></circle><circle cx='491' cy='217' r='1.32' fill='white' opacity='0.66'><animate attributeName='opacity' values='0.66;0.66;0.92;0.92;0.66;0.66' keyTimes='0;0.711;0.733;0.746;0.778;1' dur='13.4s' begin='4.8s' repeatCount='indefinite'/><animate attributeName='r' values='1.32;1.32;1.92;1.92;1.32;1.32' keyTimes='0;0.711;0.733;0.746;0.778;1' dur='13.4s' begin='4.8s' repeatCount='indefinite'/></circle><circle cx='588' cy='249' r='1.05' fill='white' opacity='0.68'/><circle cx='634' cy='292' r='1.28' fill='white' opacity='0.89'/><circle cx='774' cy='245' r='1.18' fill='white' opacity='0.79'/><circle cx='812' cy='283' r='1.22' fill='white' opacity='0.75'/><circle cx='926' cy='264' r='1.4' fill='white' opacity='0.83'/><circle cx='1076' cy='260' r='0.83' fill='white' opacity='0.84'/><circle cx='1135' cy='234' r='8.55' fill='url(%23vsg-c)' opacity='0'><animate attributeName='opacity' values='0;0;0.75;0.75;0;0' keyTimes='0;0.367;0.392;0.411;0.449;1' dur='12.1s' begin='4.43s' repeatCount='indefinite'/></circle><circle cx='1135' cy='234' r='1.18' fill='white' opacity='0.64'><animate attributeName='opacity' values='0.64;0.64;0.9;0.9;0.64;0.64' keyTimes='0;0.367;0.392;0.411;0.449;1' dur='12.1s' begin='4.43s' repeatCount='indefinite'/><animate attributeName='r' values='1.18;1.18;1.9;1.9;1.18;1.18' keyTimes='0;0.367;0.392;0.411;0.449;1' dur='12.1s' begin='4.43s' repeatCount='indefinite'/></circle><circle cx='66' cy='362' r='0.63' fill='white' opacity='0.83'/><circle cx='136' cy='337' r='1.26' fill='white' opacity='0.88'/><circle cx='236' cy='354' r='1.13' fill='white' opacity='0.69'/><circle cx='371' cy='364' r='0.82' fill='white' opacity='0.72'/><circle cx='478' cy='362' r='1.37' fill='white' opacity='0.86'/><circle cx='592' cy='399' r='0.83' fill='white' opacity='0.75'/><circle cx='622' cy='359' r='0.98' fill='white' opacity='0.76'/><circle cx='779' cy='375' r='0.88' fill='white' opacity='0.65'/><circle cx='867' cy='387' r='0.64' fill='white' opacity='0.76'/><circle cx='987' cy='369' r='0.98' fill='white' opacity='0.72'/><circle cx='1062' cy='369' r='0.93' fill='white' opacity='0.79'/><circle cx='1154' cy='341' r='7.83' fill='url(%23vsg-c)' opacity='0'><animate attributeName='opacity' values='0;0;0.67;0.67;0;0' keyTimes='0;0.366;0.396;0.411;0.447;1' dur='19.7s' begin='11.47s' repeatCount='indefinite'/></circle><circle cx='1154' cy='341' r='1.05' fill='white' opacity='0.78'><animate attributeName='opacity' values='0.78;0.78;0.96;0.96;0.78;0.78' keyTimes='0;0.366;0.396;0.411;0.447;1' dur='19.7s' begin='11.47s' repeatCount='indefinite'/><animate attributeName='r' values='1.05;1.05;1.74;1.74;1.05;1.05' keyTimes='0;0.366;0.396;0.411;0.447;1' dur='19.7s' begin='11.47s' repeatCount='indefinite'/></circle><circle cx='8' cy='467' r='0.82' fill='white' opacity='0.69'/><circle cx='144' cy='459' r='0.76' fill='white' opacity='0.67'/><circle cx='265' cy='457' r='0.76' fill='white' opacity='0.77'/><circle cx='325' cy='434' r='0.9' fill='white' opacity='0.61'/><circle cx='441' cy='428' r='0.88' fill='white' opacity='0.61'/><circle cx='588' cy='474' r='1.21' fill='white' opacity='0.63'/></svg>");
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='520'><g fill='none' stroke='white' stroke-linecap='round'><path stroke-width='1.5' opacity='.6' d='M1063 121h.01M144 459h.01'/><path stroke-width='1.5' opacity='.75' d='M371 84h.01M610 96h.01M1118 130h.01M371 364h.01M592 399h.01M867 387h.01M8 467h.01M265 457h.01'/><path stroke-width='1.5' opacity='.9' d='M131 264h.01M1076 260h.01M66 362h.01'/><path stroke-width='1' opacity='.75' d='M435 178h.01'/><path stroke-width='2.5' opacity='.6' d='M354 190h.01M581 173h.01M25 253h.01M218 278h.01M330 231h.01M491 217h.01M1135 234h.01M588 474h.01'/><path stroke-width='2.5' opacity='.75' d='M514 66h.01M773 50h.01M774 245h.01M812 283h.01M236 354h.01'/><path stroke-width='2.5' opacity='.9' d='M270 74h.01M256 116h.01M634 292h.01M136 337h.01M478 362h.01'/><path stroke-width='2' opacity='.6' d='M449 89h.01M870 149h.01M779 375h.01M325 434h.01M441 428h.01'/><path stroke-width='2' opacity='.75' d='M132 31h.01M728 115h.01M990 120h.01M588 249h.01M622 359h.01M987 369h.01M1062 369h.01M1154 341h.01'/><path stroke-width='2' opacity='.9' d='M172 165h.01'/><path stroke-width='3' opacity='.6' d='M827 90h.01'/><path stroke-width='3' opacity='.75' d='M54 32h.01M973 24h.01M1117 76h.01'/><path stroke-width='3' opacity='.9' d='M1025 79h.01M91 127h.01M644 179h.01M926 264h.01'/></g></svg>");
     background-repeat: repeat;
     opacity: 0.56;
     mask-image: linear-gradient(to bottom, white 0%, white 18%, hsl(0deg 0% 100% / 85%) 32%, hsl(0deg 0% 100% / 45%) 52%, transparent 74%);
     will-change: transform, opacity;
-    animation: vitra-scenery-stars-drift calc(220s / var(--vitra-scenery-speed)) linear infinite;
+    animation:
+      vitra-scenery-stars-drift calc(220s / var(--vitra-scenery-speed)) linear infinite,
+      vitra-scenery-enter-far-stars calc(2.8s * var(--vitra-scenery-intro)) ease-out calc(0.8s * var(--vitra-scenery-intro)) backwards;
   }
 
-  /* Shooting star: thin streak, two brief flashes per 34s cycle
-     (same average rate as the old single-flash-per-17s), each at
-     a different position/angle so it doesn't always streak across
-     the same spot. top/left only change during the invisible gap
-     between flashes - a one-off layout nudge, not a continuous
-     animation, so it stays cheap despite not being a pure
-     transform/opacity change. */
+  /* Shooting star: thin streak, two brief flashes per 34s cycle, each
+     at a different position/angle so it doesn't always streak across
+     the same spot. The pseudo is a scene-sized box whose only paint is
+     the streak in its top-left corner: that makes translate()
+     percentages resolve against the scene, so the entry point, angle,
+     length and travel are all expressed in ONE transform list and the
+     whole thing runs on the compositor. (Earlier revisions animated
+     top/left/width, which kept a main-thread animation ticking - a
+     style recalc per frame - for the entire 34s cycle.) */
   .vitra-scenery-sky::after {
     content: '';
     position: absolute;
-    top: 14%;
-    left: 66%;
-    width: 90px;
-    height: 2px;
-    border-radius: 1px;
+    inset: 0;
     visibility: hidden;
-    background: linear-gradient(to left, white 0%, hsl(0deg 0% 100% / 40%) 35%, transparent 100%);
+    background: linear-gradient(to right, white 0%, hsl(0deg 0% 100% / 40%) 35%, transparent 100%) 0 0 / 90px 2px no-repeat;
     opacity: 0;
-    transform: rotate(-35deg) translate3d(0, 0, 0);
-    will-change: transform, opacity, top, left;
+    transform-origin: 0 0;
+    transform: translate(66%, 14%) rotate(-35deg) translateX(0) scaleX(1);
+    will-change: transform, opacity;
     animation: vitra-scenery-shooting-star 34s linear 4s infinite;
   }
 
@@ -1989,36 +2049,24 @@
     100% { transform: translate3d(-1200px, 0, 0); }
   }
 
-  /* Near star plane's own drift, independent from the far tile's
-     stars-drift above: background-position (not transform) since
-     this element carries the mask-composite moon cutout - two
-     comma-separated values move Tile A and Tile B at slightly
-     different rates for a subtle depth split between the two
-     "near" tiles, each looping exactly on its own tile width so
-     the seam stays invisible. */
-  @keyframes vitra-scenery-stars-near-drift {
-    0% { background-position: 0 0, 0 0; }
-    100% { background-position: -2200px 0, -1600px 0; }
-  }
-
   @keyframes vitra-scenery-shooting-star {
-    /* Flash A: steep streak from the upper-right (base top/left). */
-    0% { top: 14%; left: 66%; width: 90px; transform: rotate(-35deg) translate3d(0, 0, 0); opacity: 0; }
+    /* Flash A: steep streak from the upper-right. */
+    0% { transform: translate(66%, 14%) rotate(-35deg) translateX(0) scaleX(1); opacity: 0; }
     1% { opacity: 0.75; }
-    2.5% { transform: rotate(-35deg) translate3d(-340px, 0, 0); opacity: 0; }
-    49% { top: 14%; left: 66%; width: 90px; transform: rotate(-35deg) translate3d(-340px, 0, 0); opacity: 0; }
+    2.5% { transform: translate(66%, 14%) rotate(-35deg) translateX(-340px) scaleX(1); opacity: 0; }
+    49.9% { transform: translate(66%, 14%) rotate(-35deg) translateX(-340px) scaleX(1); opacity: 0; }
 
     /* Flash B: shallower, longer streak from further left - a
        different entry point and angle so it doesn't read as the
        same star every time. */
-    50% { top: 8%; left: 40%; width: 130px; transform: rotate(-18deg) translate3d(0, 0, 0); opacity: 0; }
+    50% { transform: translate(40%, 8%) rotate(-18deg) translateX(0) scaleX(1.44); opacity: 0; }
     51% { opacity: 0.7; }
-    53% { transform: rotate(-18deg) translate3d(-420px, 0, 0); opacity: 0; }
-    100% { top: 8%; left: 40%; width: 130px; transform: rotate(-18deg) translate3d(-420px, 0, 0); opacity: 0; }
+    53% { transform: translate(40%, 8%) rotate(-18deg) translateX(-420px) scaleX(1.44); opacity: 0; }
+    100% { transform: translate(40%, 8%) rotate(-18deg) translateX(-420px) scaleX(1.44); opacity: 0; }
   }
 
   :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"]) .vitra-scenery-stars {
-    opacity: 0.8;
+    opacity: 1;
   }
 
   :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"]) .vitra-scenery-sky::before,
@@ -2037,7 +2085,7 @@
 
   @media (prefers-color-scheme: dark) {
     html[data-theme="auto"] .vitra-scenery-stars {
-      opacity: 0.8;
+      opacity: 1;
     }
 
     html[data-theme="auto"] .vitra-scenery-sky::before,
@@ -2051,15 +2099,13 @@
   /* Full moon: crisp disc with faint maria texture, positioned by tokens
      in the upper third - clear of hero headlines by default. A defined,
      textured disc is what makes the scene read as a landscape with a
-     light source, not an abstract blur. */
+     light source, not an abstract blur.
+     Explicit stacking, not just DOM order: the mask cutout on the star
+     plane already keeps stars off the disc, and z-index pins the moon
+     above the star layer regardless of markup order. Ridges paint above
+     the halo, matching the near-to-far order down the layer list. */
   .vitra-scenery-halo {
     position: absolute;
-    /* Explicit stacking, not just DOM order: the mask-composite cutout
-       on .vitra-scenery-stars already prevents stars painting over the
-       moon's disc, but that's a belt to this suspenders - z-index pins
-       the moon above the star layer regardless of future markup
-       reordering. Ridges (2) sit above the halo (1), matching the
-       existing near-to-far paint order down the layer list. */
     z-index: 1;
     top: var(--vitra-scenery-halo-y);
     left: var(--vitra-scenery-halo-x);
@@ -2078,11 +2124,33 @@
         hsl(var(--vitra-scenery-hue) 16% 88%) 70%,
         hsl(var(--vitra-scenery-hue) 14% 82%) 100%
       );
-    box-shadow:
-      0 0 26px 8px hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 82% / 32%),
-      0 0 90px 40px hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 70% / 14%);
-    animation: vitra-scenery-halo-drift calc(24s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
-    will-change: opacity;
+
+    /* Tight rim glow only - the wide atmospheric glow is the corona below */
+    box-shadow: 0 0 26px 8px hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 82% / 32%);
+    animation: vitra-scenery-enter-halo calc(2.4s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) calc(0.25s * var(--vitra-scenery-intro)) backwards;
+    will-change: translate, opacity;
+  }
+
+  /* Corona: the wide glow around the disc, on its own layer so the light
+     can breathe while the disc itself stays rock solid. (The whole moon
+     used to fade to 75% and back, which read as the moon going
+     translucent rather than its light pulsing.) The gradient is hollow
+     out to the disc's radius - 1 / 4.2 of this box - so nothing of it
+     lands on the disc or inside a crescent. */
+  .vitra-scenery-halo::after {
+    content: '';
+    position: absolute;
+    inset: -160%;
+    border-radius: 50%;
+    background: radial-gradient(
+      closest-side,
+      transparent 23.5%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 74% / 24%) 24.5%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 70% / 9%) 52%,
+      transparent 100%
+    );
+    animation: vitra-scenery-halo-breathe calc(9s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
+    will-change: transform, opacity;
   }
 
   /* Crescent variant: hollow disc, lit sliver via inset shadow.
@@ -2094,29 +2162,35 @@
     box-shadow:
       inset calc(var(--vitra-scenery-halo-size) / -4) calc(var(--vitra-scenery-halo-size) / 9) 0 0
         hsl(var(--vitra-scenery-hue) 20% 92%),
-      0 0 26px 8px hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 82% / 26%),
-      0 0 90px 40px hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 70% / 12%);
+      0 0 26px 8px hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 82% / 26%);
   }
 
   /* Light schemes: golden hour - the disc reads as a low sun, no maria.
      Lightness dropped well below the pale sky (97%) instead of sitting
-     a few points above it - the prior 92%/80% values were nearly
-     invisible against a bright bg; a sun needs to read as a saturated
-     disc, not a paler patch of the same sky. */
+     a few points above it - a sun needs to read as a saturated disc,
+     not a paler patch of the same sky. */
   :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-halo {
     background: radial-gradient(
       circle at 45% 40%,
       hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 1.1) 72% / 100%) 0%,
       hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 1.05) 56% / 100%) 100%
     );
-    box-shadow:
-      0 0 34px 12px hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.9) 60% / 55%),
-      0 0 120px 60px hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.8) 55% / 28%);
+    box-shadow: 0 0 34px 12px hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.9) 60% / 55%);
   }
 
-  @keyframes vitra-scenery-halo-drift {
-    0% { opacity: 0.75; }
-    100% { opacity: 1; }
+  :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-halo::after {
+    background: radial-gradient(
+      closest-side,
+      transparent 23.5%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.8) 58% / 42%) 24.5%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.8) 55% / 14%) 55%,
+      transparent 100%
+    );
+  }
+
+  @keyframes vitra-scenery-halo-breathe {
+    from { transform: scale(0.94); opacity: 0.6; }
+    to { transform: scale(1.05); opacity: 1; }
   }
 
   /* --- RIDGE LAYERS (landscape silhouettes, back to front) --- */
@@ -2141,7 +2215,7 @@
     bottom: 0;
     left: 0;
     width: 200%;
-    will-change: transform;
+    will-change: transform, translate;
   }
 
   .vitra-scenery-ridge-far::before,
@@ -2157,7 +2231,9 @@
   .vitra-scenery-ridge-far {
     height: 58%;
     opacity: var(--vitra-scenery-opacity-far);
-    animation: vitra-scenery-drift-far calc(480s / var(--vitra-scenery-speed)) linear infinite;
+    animation:
+      vitra-scenery-drift-far calc(480s / var(--vitra-scenery-speed)) linear infinite,
+      vitra-scenery-enter-far calc(2.2s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) backwards;
   }
 
   /* Fallback (no mask support): soft gradient band still gives a
@@ -2195,7 +2271,9 @@
   .vitra-scenery-ridge-mid {
     height: 40%;
     opacity: var(--vitra-scenery-opacity-mid);
-    animation: vitra-scenery-drift-mid calc(160s / var(--vitra-scenery-speed)) linear infinite;
+    animation:
+      vitra-scenery-drift-mid calc(160s / var(--vitra-scenery-speed)) linear infinite,
+      vitra-scenery-enter-mid calc(1.9s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) calc(0.1s * var(--vitra-scenery-intro)) backwards;
   }
 
   .vitra-scenery-ridge-mid::after {
@@ -2228,7 +2306,9 @@
   .vitra-scenery-ridge-near {
     height: 24%;
     opacity: var(--vitra-scenery-opacity-near);
-    animation: vitra-scenery-drift-near calc(32s / var(--vitra-scenery-speed)) linear infinite;
+    animation:
+      vitra-scenery-drift-near calc(32s / var(--vitra-scenery-speed)) linear infinite,
+      vitra-scenery-enter-near calc(1.6s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) calc(0.2s * var(--vitra-scenery-intro)) backwards;
   }
 
   .vitra-scenery-ridge-near::after {
@@ -2349,11 +2429,14 @@
 
   /* Valley mist: soft pools of light hanging between the ridges.
      Sits in front of the mountains (atmosphere), warm on the afterglow
-     side, cool accent on the other. Static - no animation. */
+     side, cool accent on the other. It sways very slowly against the
+     direction the ridges travel - air moving on its own, so the valley
+     never looks frozen while the mountains pan. The box overhangs both
+     sides by more than the sway so its edges never enter the scene. */
   .vitra-scenery-grain::before {
     content: '';
     position: absolute;
-    inset: auto 0 6%;
+    inset: auto -8% 6%;
     height: 24%;
     background:
       radial-gradient(
@@ -2366,6 +2449,15 @@
         hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 75% / 8%) 0%,
         transparent 70%
       );
+    animation:
+      vitra-scenery-mist-sway calc(46s / var(--vitra-scenery-speed)) ease-in-out infinite alternate,
+      vitra-scenery-enter-mist calc(3s * var(--vitra-scenery-intro)) ease-out calc(0.6s * var(--vitra-scenery-intro)) backwards;
+    will-change: transform, opacity;
+  }
+
+  @keyframes vitra-scenery-mist-sway {
+    from { transform: translate3d(-4%, 0, 0) scaleY(0.92); }
+    to { transform: translate3d(4%, 0, 0) scaleY(1.08); }
   }
 
   /* Subtle noise texture, breaks up gradient banding.
@@ -2382,39 +2474,202 @@
     background-repeat: repeat;
   }
 
+  /* --- ENTRANCE CHOREOGRAPHY ---
+     The scene assembles instead of popping in: the ranges rise into
+     place back-to-front (far first and slowest, near last and
+     quickest - the nearer the mass, the further it travels), the moon
+     climbs to its mark, then stars, wisps and mist fade up once the
+     landscape has settled. Everything decelerates on one shared curve
+     so it reads as a single camera move coming to rest.
+     Runs on `translate` / opacity only, so it layers on top of the
+     `transform` drift loops without either animation knowing about the
+     other. A scene that starts offscreen is held by Vitra.motionGuard
+     and plays this the moment it scrolls into view.
+     Both endpoints are explicit in every rule (see the scintillation
+     note above: implicit keyframes are not compositor-eligible). */
+  .vitra-scenery,
+  .vitra-scenery-inline {
+    --vitra-scenery-ease-settle: cubic-bezier(0.2, 0.7, 0.1, 1);
+  }
+
+  @keyframes vitra-scenery-enter-far {
+    from { translate: 0 22%; }
+    to { translate: 0 0; }
+  }
+
+  @keyframes vitra-scenery-enter-mid {
+    from { translate: 0 38%; }
+    to { translate: 0 0; }
+  }
+
+  @keyframes vitra-scenery-enter-near {
+    from { translate: 0 70%; }
+    to { translate: 0 0; }
+  }
+
+  @keyframes vitra-scenery-enter-halo {
+    from { translate: 0 90%; opacity: 0; }
+    to { translate: 0 0; opacity: 1; }
+  }
+
+  @keyframes vitra-scenery-enter-stars {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes vitra-scenery-enter-far-stars {
+    from { opacity: 0; }
+    to { opacity: 0.56; }
+  }
+
+  @keyframes vitra-scenery-enter-clouds {
+    from { opacity: 0; }
+    to { opacity: var(--vitra-scenery-opacity-clouds); }
+  }
+
+  @keyframes vitra-scenery-enter-mist {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* --- SCROLL DEPTH (.vitra-scenery-inline) ---
+     Real parallax for a scene that scrolls away with its container:
+     while the hero leaves the viewport, each layer lags behind the
+     scroll by an amount proportional to its distance - the sky and
+     moon hang back the most, the far range less, the near treeline
+     barely at all - so the landscape separates into planes exactly
+     when the visitor starts moving.
+     Pure CSS scroll-driven animation (view timeline named on the
+     container, cqh offsets from its size containment): no scroll
+     listener, no JS, and it runs on the compositor. It composes with
+     the entrance via animation-composition: add - both write
+     `translate`. Browsers without scroll-driven animations skip the
+     whole block and keep the drift + entrance.
+     HOST REQUIREMENT: a view timeline attaches to the nearest scroll
+     container, and `overflow: hidden` makes the host one - the timeline
+     then never advances and the layers simply stay put (harmless, same
+     as before). Give the host `overflow: clip` instead, or no overflow
+     at all: this element already clips itself via paint containment.
+     The fixed full-page .vitra-scenery is deliberately left out: a
+     backdrop that shifts under body text costs readability. */
+  @supports (animation-timeline: view()) and (animation-composition: add) {
+    @keyframes vitra-scenery-depth-sky {
+      from { translate: 0 0; }
+      to { translate: 0 calc(30cqh * var(--vitra-scenery-depth)); }
+    }
+
+    @keyframes vitra-scenery-depth-far {
+      from { translate: 0 0; }
+      to { translate: 0 calc(17cqh * var(--vitra-scenery-depth)); }
+    }
+
+    @keyframes vitra-scenery-depth-mid {
+      from { translate: 0 0; }
+      to { translate: 0 calc(9cqh * var(--vitra-scenery-depth)); }
+    }
+
+    @keyframes vitra-scenery-depth-near {
+      from { translate: 0 0; }
+      to { translate: 0 calc(3cqh * var(--vitra-scenery-depth)); }
+    }
+
+    .vitra-scenery-inline > .vitra-scenery-stars {
+      animation:
+        vitra-scenery-scintillate 14s steps(128) infinite,
+        vitra-scenery-depth-sky linear both;
+      animation-timeline: auto, --vitra-scenery;
+      animation-range: normal, exit;
+      will-change: transform, translate;
+    }
+
+    .vitra-scenery-inline > .vitra-scenery-clouds {
+      animation:
+        vitra-scenery-drift-clouds calc(400s / var(--vitra-scenery-speed)) linear infinite,
+        vitra-scenery-enter-clouds calc(2.6s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) calc(0.4s * var(--vitra-scenery-intro)) backwards,
+        vitra-scenery-depth-sky linear both;
+      animation-timeline: auto, auto, --vitra-scenery;
+      animation-range: normal, normal, exit;
+      will-change: transform, translate, opacity;
+    }
+
+    .vitra-scenery-inline > .vitra-scenery-halo {
+      animation:
+        vitra-scenery-enter-halo calc(2.4s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) calc(0.25s * var(--vitra-scenery-intro)) backwards,
+        vitra-scenery-depth-sky linear both;
+      animation-timeline: auto, --vitra-scenery;
+      animation-range: normal, exit;
+      animation-composition: replace, add;
+    }
+
+    .vitra-scenery-inline > .vitra-scenery-ridge-far {
+      animation:
+        vitra-scenery-drift-far calc(480s / var(--vitra-scenery-speed)) linear infinite,
+        vitra-scenery-enter-far calc(2.2s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) backwards,
+        vitra-scenery-depth-far linear both;
+      animation-timeline: auto, auto, --vitra-scenery;
+      animation-range: normal, normal, exit;
+      animation-composition: replace, replace, add;
+    }
+
+    .vitra-scenery-inline > .vitra-scenery-ridge-mid {
+      animation:
+        vitra-scenery-drift-mid calc(160s / var(--vitra-scenery-speed)) linear infinite,
+        vitra-scenery-enter-mid calc(1.9s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) calc(0.1s * var(--vitra-scenery-intro)) backwards,
+        vitra-scenery-depth-mid linear both;
+      animation-timeline: auto, auto, --vitra-scenery;
+      animation-range: normal, normal, exit;
+      animation-composition: replace, replace, add;
+    }
+
+    .vitra-scenery-inline > .vitra-scenery-ridge-near {
+      animation:
+        vitra-scenery-drift-near calc(32s / var(--vitra-scenery-speed)) linear infinite,
+        vitra-scenery-enter-near calc(1.6s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) calc(0.2s * var(--vitra-scenery-intro)) backwards,
+        vitra-scenery-depth-near linear both;
+      animation-timeline: auto, auto, --vitra-scenery;
+      animation-range: normal, normal, exit;
+      animation-composition: replace, replace, add;
+    }
+  }
+
   /* --- PAUSE WHEN OFFSCREEN ---
      Vitra.motionGuard toggles this class on .vitra-scenery /
      .vitra-scenery-inline when the IntersectionObserver reports the
      backdrop left the viewport. Animations live on the child layers,
-     not the wrapper, so the pause has to cascade to descendants. */
+     not the wrapper, so the pause has to cascade to descendants -
+     pseudo-elements included: `*` never matches them and
+     animation-play-state is not inherited, so without the explicit
+     ::before/::after selectors the star and shooting-star layers
+     kept running offscreen. */
   .vitra-scenery.vitra-motion-paused *,
-  .vitra-scenery-inline.vitra-motion-paused * {
+  .vitra-scenery.vitra-motion-paused *::before,
+  .vitra-scenery.vitra-motion-paused *::after,
+  .vitra-scenery-inline.vitra-motion-paused *,
+  .vitra-scenery-inline.vitra-motion-paused *::before,
+  .vitra-scenery-inline.vitra-motion-paused *::after {
     animation-play-state: paused;
   }
 
   /* --- ACCESSIBILITY: Reduced Motion --- */
 
   @media (prefers-reduced-motion: reduce) {
-    .vitra-scenery-halo {
+    /* Selectors carry the container class so they also outrank the
+       scroll-depth rules above (same layer, higher specificity). */
+    :is(.vitra-scenery, .vitra-scenery-inline) > .vitra-scenery-halo,
+    .vitra-scenery-halo::after,
+    .vitra-scenery-grain::before {
       animation: none;
-      opacity: 0.9;
     }
 
-    .vitra-scenery-stars {
-      /* SMIL <animate> inside the background SVGs isn't governed by
-         this media query on its own - swap in the same tiles with the
-         per-star <animate> tags stripped so reduced-motion truly gets
-         a static sky. */
+    /* Shutter and star plane stop together (both offsets at zero), so
+       the sky keeps its static brightness variation but nothing moves. */
+    :is(.vitra-scenery, .vitra-scenery-inline) > .vitra-scenery-stars,
+    .vitra-scenery-stars::before {
       animation: none;
-      background-image:
-        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='2200' height='700'><defs><radialGradient id='vsg-a'><stop offset='0%' stop-color='white' stop-opacity='0.95'/><stop offset='35%' stop-color='white' stop-opacity='0.45'/><stop offset='100%' stop-color='white' stop-opacity='0'/></radialGradient></defs><circle cx='25' cy='24' r='1.41' fill='white' opacity='0.79'/><circle cx='154' cy='52' r='1.15' fill='white' opacity='0.76'/><circle cx='290' cy='24' r='1.06' fill='white' opacity='0.72'/><circle cx='377' cy='70' r='1.33' fill='white' opacity='0.66'/><circle cx='474' cy='8' r='0.74' fill='white' opacity='0.68'/><circle cx='612' cy='32' r='1.17' fill='white' opacity='0.73'/><circle cx='749' cy='89' r='1.29' fill='white' opacity='0.61'/><circle cx='829' cy='52' r='1.2' fill='white' opacity='0.77'/><circle cx='968' cy='19' r='1.47' fill='white' opacity='0.79'/><circle cx='1035' cy='74' r='1.44' fill='white' opacity='0.89'/><circle cx='1163' cy='49' r='0.95' fill='white' opacity='0.6'/><circle cx='1278' cy='84' r='0.94' fill='white' opacity='0.78'/><circle cx='1392' cy='39' r='1.3' fill='white' opacity='0.74'/><circle cx='1501' cy='17' r='1.33' fill='white' opacity='0.62'/><circle cx='1586' cy='44' r='1.48' fill='white' opacity='0.63'/><circle cx='1693' cy='15' r='1.11' fill='white' opacity='0.63'/><circle cx='1833' cy='63' r='1.09' fill='white' opacity='0.63'/><circle cx='1908' cy='10' r='1.41' fill='white' opacity='0.62'/><circle cx='2016' cy='80' r='0.7' fill='white' opacity='0.67'/><circle cx='2158' cy='37' r='1.43' fill='white' opacity='0.69'/><circle cx='87' cy='127' r='0.73' fill='white' opacity='0.83'/><circle cx='183' cy='160' r='1.1' fill='white' opacity='0.8'/><circle cx='321' cy='139' r='1.15' fill='white' opacity='0.61'/><circle cx='357' cy='146' r='0.96' fill='white' opacity='0.8'/><circle cx='494' cy='181' r='0.82' fill='white' opacity='0.72'/><circle cx='584' cy='152' r='1.14' fill='white' opacity='0.85'/><circle cx='702' cy='175' r='1.58' fill='white' opacity='0.8'/><circle cx='855' cy='128' r='0.93' fill='white' opacity='0.85'/><circle cx='921' cy='188' r='1.2' fill='white' opacity='0.81'/><circle cx='1036' cy='149' r='1.42' fill='white' opacity='0.62'/><circle cx='1153' cy='154' r='1.03' fill='white' opacity='0.89'/><circle cx='1292' cy='167' r='0.88' fill='white' opacity='0.71'/><circle cx='1343' cy='177' r='1.25' fill='white' opacity='0.75'/><circle cx='1518' cy='146' r='0.84' fill='white' opacity='0.78'/><circle cx='1626' cy='126' r='1.22' fill='white' opacity='0.7'/><circle cx='1671' cy='112' r='1.07' fill='white' opacity='0.67'/><circle cx='1772' cy='145' r='0.65' fill='white' opacity='0.73'/><circle cx='1912' cy='180' r='1.5' fill='white' opacity='0.83'/><circle cx='2034' cy='139' r='1.13' fill='white' opacity='0.66'/><circle cx='2136' cy='192' r='1' fill='white' opacity='0.64'/><circle cx='76' cy='265' r='1.01' fill='white' opacity='0.68'/><circle cx='178' cy='213' r='0.78' fill='white' opacity='0.62'/><circle cx='303' cy='256' r='0.84' fill='white' opacity='0.82'/><circle cx='381' cy='249' r='0.96' fill='white' opacity='0.65'/><circle cx='528' cy='219' r='0.95' fill='white' opacity='0.78'/><circle cx='576' cy='237' r='0.91' fill='white' opacity='0.81'/><circle cx='723' cy='237' r='1.21' fill='white' opacity='0.73'/><circle cx='779' cy='254' r='1.27' fill='white' opacity='0.63'/><circle cx='977' cy='238' r='0.69' fill='white' opacity='0.77'/><circle cx='1056' cy='273' r='1.25' fill='white' opacity='0.85'/><circle cx='1139' cy='245' r='0.62' fill='white' opacity='0.81'/><circle cx='1297' cy='217' r='1.25' fill='white' opacity='0.89'/><circle cx='1418' cy='262' r='1.53' fill='white' opacity='0.61'/><circle cx='1493' cy='209' r='1.06' fill='white' opacity='0.89'/><circle cx='1635' cy='278' r='1.34' fill='white' opacity='0.64'/><circle cx='1720' cy='219' r='0.8' fill='white' opacity='0.81'/><circle cx='1843' cy='216' r='1.17' fill='white' opacity='0.65'/><circle cx='1965' cy='265' r='0.93' fill='white' opacity='0.88'/><circle cx='2005' cy='259' r='0.74' fill='white' opacity='0.89'/><circle cx='2142' cy='217' r='1.3' fill='white' opacity='0.72'/><circle cx='102' cy='375' r='1.11' fill='white' opacity='0.64'/><circle cx='127' cy='316' r='1.23' fill='white' opacity='0.68'/><circle cx='253' cy='316' r='1.29' fill='white' opacity='0.88'/><circle cx='352' cy='374' r='1.47' fill='white' opacity='0.88'/><circle cx='456' cy='320' r='1.02' fill='white' opacity='0.74'/><circle cx='592' cy='343' r='1.02' fill='white' opacity='0.78'/><circle cx='739' cy='385' r='0.66' fill='white' opacity='0.8'/><circle cx='829' cy='361' r='1.54' fill='white' opacity='0.85'/><circle cx='932' cy='381' r='0.75' fill='white' opacity='0.86'/><circle cx='1015' cy='350' r='1.18' fill='white' opacity='0.65'/><circle cx='1153' cy='378' r='0.7' fill='white' opacity='0.88'/><circle cx='1292' cy='315' r='1.57' fill='white' opacity='0.73'/><circle cx='1330' cy='384' r='0.91' fill='white' opacity='0.67'/><circle cx='1520' cy='387' r='0.78' fill='white' opacity='0.64'/><circle cx='1615' cy='326' r='0.88' fill='white' opacity='0.68'/><circle cx='1737' cy='325' r='0.88' fill='white' opacity='0.62'/><circle cx='1815' cy='379' r='0.9' fill='white' opacity='0.76'/><circle cx='1924' cy='364' r='0.7' fill='white' opacity='0.87'/><circle cx='2079' cy='317' r='1.19' fill='white' opacity='0.76'/><circle cx='2188' cy='366' r='0.76' fill='white' opacity='0.8'/><circle cx='37' cy='466' r='1.13' fill='white' opacity='0.8'/><circle cx='196' cy='431' r='1.03' fill='white' opacity='0.79'/><circle cx='315' cy='418' r='0.65' fill='white' opacity='0.79'/><circle cx='408' cy='487' r='0.98' fill='white' opacity='0.86'/><circle cx='521' cy='470' r='0.76' fill='white' opacity='0.84'/><circle cx='639' cy='473' r='0.95' fill='white' opacity='0.79'/><circle cx='753' cy='480' r='1.52' fill='white' opacity='0.75'/><circle cx='844' cy='433' r='1.47' fill='white' opacity='0.8'/><circle cx='954' cy='488' r='1.41' fill='white' opacity='0.7'/><circle cx='1048' cy='472' r='1.07' fill='white' opacity='0.76'/><circle cx='1155' cy='466' r='0.61' fill='white' opacity='0.67'/><circle cx='1233' cy='449' r='0.62' fill='white' opacity='0.82'/><circle cx='1379' cy='472' r='0.77' fill='white' opacity='0.68'/><circle cx='1458' cy='458' r='0.64' fill='white' opacity='0.86'/><circle cx='1549' cy='439' r='1.45' fill='white' opacity='0.61'/><circle cx='1713' cy='454' r='0.78' fill='white' opacity='0.76'/><circle cx='1788' cy='458' r='0.83' fill='white' opacity='0.64'/><circle cx='1924' cy='430' r='1.39' fill='white' opacity='0.66'/><circle cx='2054' cy='447' r='1.29' fill='white' opacity='0.78'/><circle cx='2143' cy='492' r='1.45' fill='white' opacity='0.68'/><circle cx='20' cy='590' r='1.4' fill='white' opacity='0.89'/><circle cx='200' cy='522' r='1' fill='white' opacity='0.83'/><circle cx='301' cy='555' r='0.88' fill='white' opacity='0.7'/><circle cx='377' cy='553' r='1.31' fill='white' opacity='0.87'/><circle cx='542' cy='571' r='1.02' fill='white' opacity='0.71'/><circle cx='600' cy='547' r='0.89' fill='white' opacity='0.83'/><circle cx='690' cy='583' r='1.56' fill='white' opacity='0.72'/><circle cx='836' cy='521' r='1.52' fill='white' opacity='0.69'/><circle cx='923' cy='544' r='1.14' fill='white' opacity='0.75'/><circle cx='1041' cy='590' r='1.27' fill='white' opacity='0.69'/><circle cx='1145' cy='534' r='1.52' fill='white' opacity='0.78'/><circle cx='1260' cy='542' r='1.42' fill='white' opacity='0.75'/><circle cx='1367' cy='581' r='0.76' fill='white' opacity='0.88'/><circle cx='1453' cy='537' r='1.35' fill='white' opacity='0.88'/><circle cx='1627' cy='569' r='1.25' fill='white' opacity='0.67'/><circle cx='1716' cy='526' r='0.67' fill='white' opacity='0.6'/><circle cx='1782' cy='555' r='1.16' fill='white' opacity='0.75'/><circle cx='1944' cy='546' r='1.24' fill='white' opacity='0.77'/><circle cx='2043' cy='558' r='1.22' fill='white' opacity='0.73'/><circle cx='2131' cy='588' r='1.09' fill='white' opacity='0.64'/><circle cx='98' cy='679' r='0.85' fill='white' opacity='0.89'/><circle cx='163' cy='685' r='1' fill='white' opacity='0.83'/></svg>"),
-        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1600' height='900'><defs><radialGradient id='vsg-b'><stop offset='0%' stop-color='white' stop-opacity='0.95'/><stop offset='35%' stop-color='white' stop-opacity='0.45'/><stop offset='100%' stop-color='white' stop-opacity='0'/></radialGradient></defs><circle cx='108' cy='56' r='1.13' fill='white' opacity='0.72'/><circle cx='159' cy='97' r='0.96' fill='white' opacity='0.82'/><circle cx='291' cy='47' r='0.75' fill='white' opacity='0.72'/><circle cx='493' cy='86' r='0.83' fill='white' opacity='0.77'/><circle cx='626' cy='66' r='1.37' fill='white' opacity='0.84'/><circle cx='717' cy='70' r='1.26' fill='white' opacity='0.81'/><circle cx='872' cy='57' r='1.23' fill='white' opacity='0.61'/><circle cx='996' cy='21' r='1.44' fill='white' opacity='0.76'/><circle cx='1144' cy='106' r='0.75' fill='white' opacity='0.62'/><circle cx='1215' cy='40' r='1.32' fill='white' opacity='0.72'/><circle cx='1384' cy='86' r='1.22' fill='white' opacity='0.79'/><circle cx='1513' cy='27' r='1.32' fill='white' opacity='0.67'/><circle cx='33' cy='244' r='1.03' fill='white' opacity='0.61'/><circle cx='173' cy='194' r='0.77' fill='white' opacity='0.86'/><circle cx='320' cy='204' r='0.74' fill='white' opacity='0.83'/><circle cx='434' cy='245' r='1.39' fill='white' opacity='0.83'/><circle cx='627' cy='183' r='1.52' fill='white' opacity='0.71'/><circle cx='716' cy='166' r='0.75' fill='white' opacity='0.78'/><circle cx='904' cy='195' r='1.33' fill='white' opacity='0.75'/><circle cx='1028' cy='217' r='1.3' fill='white' opacity='0.72'/><circle cx='1129' cy='159' r='0.85' fill='white' opacity='0.81'/><circle cx='1230' cy='246' r='0.69' fill='white' opacity='0.61'/><circle cx='1382' cy='208' r='1.55' fill='white' opacity='0.82'/><circle cx='1479' cy='247' r='0.77' fill='white' opacity='0.79'/><circle cx='108' cy='325' r='1.16' fill='white' opacity='0.85'/><circle cx='207' cy='287' r='1.53' fill='white' opacity='0.75'/><circle cx='389' cy='312' r='1.23' fill='white' opacity='0.75'/><circle cx='452' cy='375' r='1.19' fill='white' opacity='0.71'/><circle cx='549' cy='314' r='0.94' fill='white' opacity='0.75'/><circle cx='682' cy='298' r='1.3' fill='white' opacity='0.7'/><circle cx='862' cy='354' r='0.72' fill='white' opacity='0.86'/><circle cx='956' cy='352' r='1.24' fill='white' opacity='0.61'/><circle cx='1102' cy='289' r='0.77' fill='white' opacity='0.74'/><circle cx='1292' cy='313' r='1.47' fill='white' opacity='0.83'/><circle cx='1447' cy='371' r='0.93' fill='white' opacity='0.89'/><circle cx='1504' cy='367' r='0.71' fill='white' opacity='0.69'/><circle cx='105' cy='404' r='1.23' fill='white' opacity='0.88'/><circle cx='233' cy='496' r='0.94' fill='white' opacity='0.72'/><circle cx='344' cy='462' r='0.69' fill='white' opacity='0.65'/><circle cx='442' cy='459' r='1.37' fill='white' opacity='0.62'/><circle cx='549' cy='416' r='0.8' fill='white' opacity='0.76'/><circle cx='707' cy='405' r='0.7' fill='white' opacity='0.81'/><circle cx='848' cy='473' r='0.66' fill='white' opacity='0.76'/><circle cx='956' cy='496' r='1.43' fill='white' opacity='0.79'/><circle cx='1169' cy='462' r='0.81' fill='white' opacity='0.8'/><circle cx='1255' cy='432' r='1.43' fill='white' opacity='0.8'/><circle cx='1350' cy='472' r='1.49' fill='white' opacity='0.84'/><circle cx='1482' cy='462' r='0.67' fill='white' opacity='0.64'/><circle cx='64' cy='621' r='1.38' fill='white' opacity='0.79'/><circle cx='192' cy='569' r='1.51' fill='white' opacity='0.9'/><circle cx='336' cy='560' r='0.88' fill='white' opacity='0.7'/><circle cx='460' cy='617' r='1.58' fill='white' opacity='0.68'/><circle cx='591' cy='536' r='1.15' fill='white' opacity='0.67'/><circle cx='720' cy='582' r='1.19' fill='white' opacity='0.65'/><circle cx='872' cy='584' r='1.32' fill='white' opacity='0.84'/><circle cx='1052' cy='603' r='0.73' fill='white' opacity='0.62'/><circle cx='1162' cy='572' r='1.12' fill='white' opacity='0.72'/><circle cx='1314' cy='622' r='1.4' fill='white' opacity='0.82'/><circle cx='1382' cy='569' r='0.94' fill='white' opacity='0.61'/><circle cx='1500' cy='591' r='1.49' fill='white' opacity='0.81'/><circle cx='54' cy='730' r='1.35' fill='white' opacity='0.85'/><circle cx='198' cy='717' r='1.01' fill='white' opacity='0.6'/><circle cx='337' cy='679' r='1.08' fill='white' opacity='0.89'/><circle cx='420' cy='664' r='1.44' fill='white' opacity='0.88'/><circle cx='579' cy='712' r='1.07' fill='white' opacity='0.83'/><circle cx='688' cy='731' r='0.61' fill='white' opacity='0.76'/><circle cx='894' cy='667' r='0.61' fill='white' opacity='0.87'/><circle cx='954' cy='692' r='1.4' fill='white' opacity='0.88'/><circle cx='1161' cy='700' r='0.93' fill='white' opacity='0.83'/><circle cx='1318' cy='762' r='1.42' fill='white' opacity='0.82'/><circle cx='1428' cy='704' r='0.95' fill='white' opacity='0.8'/><circle cx='1577' cy='654' r='1.59' fill='white' opacity='0.84'/><circle cx='78' cy='835' r='1.08' fill='white' opacity='0.85'/><circle cx='248' cy='862' r='0.62' fill='white' opacity='0.62'/></svg>");
+      transform: none;
     }
 
-    .vitra-scenery-ridge-far,
-    .vitra-scenery-ridge-mid,
-    .vitra-scenery-ridge-near,
-    .vitra-scenery-clouds {
+    :is(.vitra-scenery, .vitra-scenery-inline) > :is(.vitra-scenery-ridge-far, .vitra-scenery-ridge-mid, .vitra-scenery-ridge-near, .vitra-scenery-clouds) {
       animation: none;
       transform: none;
     }
@@ -5668,6 +5923,13 @@
      card grids, list items) — not to content that must
      stay measurable while hidden (e.g. tab panels
      already using display:none).
+     Do NOT wrap ambient animated content with it
+     (scenery, glow orbs, aurora, gradient text): a
+     skipped subtree never resolves style, so the
+     offscreen pause from Vitra.motionGuard stays
+     "pending" and Chromium keeps producing main-thread
+     frames for it - measured at ~100 style recalcs/s
+     on an idle page.
      ============================================ */
 
   .vitra-cv-auto {
