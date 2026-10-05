@@ -4,6 +4,12 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.2] - 2026-10-05
+
+### Fixed
+
+- **Uneven scenery drift in Firefox**: the stepped drift moved a fixed number of steps per loop (1600), so one step was `width / 1600` pixels — 0.8px on a 1280px-wide scene. Chromium draws layers at fractional offsets and it read as smooth; in Firefox the ridge advanced a pixel every ~100ms and then stalled for ~200ms every fourth or fifth step (measured on a ridge edge in headless Firefox 157). Step counts are now the distance travelled in device pixels, so every step is exactly one pixel: `Vitra.scenery` measures each scene (ridge travel, cloud travel, star tile, times `devicePixelRatio`), sets `--vitra-scenery-steps`, `--vitra-scenery-cloud-steps` and `--vitra-scenery-star-steps` on it, and keeps them current with a `ResizeObserver`. Hand-written scenes are tuned too. Without JavaScript the stylesheet defaults fit a ~1600px-wide scene (800px in portrait).
+
 ## [1.13.1] - 2026-10-05
 
 GPU pass. 1.13.0 took the scenery off the main thread but left the compositor redrawing the whole viewport on every display frame: any continuously interpolated animation does that, however slowly the layer moves (measured ~96 draws/s for a ridge creeping at 3 px/s; the mist sway alone, 191). Counted from compositor `DrawFrame` trace events in headless Chromium: **screen redraws at rest ~96/s → 10/s** for both scenery variants, and ≤ 10/s on every section of the demo page (was 120–240).

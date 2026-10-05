@@ -1962,7 +1962,7 @@
       hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.2) 88% / 8%) 100%
     );
     animation:
-      vitra-scenery-drift-clouds calc(400s / var(--vitra-scenery-speed)) steps(1000) infinite,
+      vitra-scenery-drift-clouds calc(400s / var(--vitra-scenery-speed)) steps(var(--vitra-scenery-cloud-steps)) infinite,
       vitra-scenery-enter-clouds calc(2.6s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) calc(0.4s * var(--vitra-scenery-intro)) backwards;
     will-change: transform, opacity;
   }
@@ -2102,7 +2102,7 @@
     mask-image: linear-gradient(to bottom, white 0%, white 18%, hsl(0deg 0% 100% / 85%) 32%, hsl(0deg 0% 100% / 45%) 52%, transparent 74%);
     will-change: transform, opacity;
     animation:
-      vitra-scenery-stars-drift calc(220s / var(--vitra-scenery-speed)) steps(1100) infinite,
+      vitra-scenery-stars-drift calc(220s / var(--vitra-scenery-speed)) steps(var(--vitra-scenery-star-steps)) infinite,
       vitra-scenery-enter-far-stars calc(2.8s * var(--vitra-scenery-intro)) ease-out calc(0.8s * var(--vitra-scenery-intro)) backwards;
   }
 
@@ -2316,7 +2316,7 @@
     height: 58%;
     opacity: var(--vitra-scenery-opacity-far);
     animation:
-      vitra-scenery-drift-far calc(480s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) steps(1600) infinite,
+      vitra-scenery-drift-far calc(480s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) steps(var(--vitra-scenery-steps)) infinite,
       vitra-scenery-enter-far calc(2.2s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) backwards;
   }
 
@@ -2356,7 +2356,7 @@
     height: 40%;
     opacity: var(--vitra-scenery-opacity-mid);
     animation:
-      vitra-scenery-drift-mid calc(160s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) steps(1600) infinite,
+      vitra-scenery-drift-mid calc(160s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) steps(var(--vitra-scenery-steps)) infinite,
       vitra-scenery-enter-mid calc(1.9s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) calc(0.1s * var(--vitra-scenery-intro)) backwards;
   }
 
@@ -2583,6 +2583,21 @@
 
     /* How many viewport-widths one ridge tile spans (see PORTRAIT below) */
     --vitra-scenery-span: 1;
+
+    /* STEP COUNTS = distance travelled, in device pixels.
+       A stepped drift only looks even if every step is exactly one
+       device pixel. Chromium draws layers at fractional offsets, so a
+       0.8px step still reads as smooth there; Firefox snaps layers to
+       whole pixels, so 0.8px steps become "move, move, move, move,
+       hold" - a hitch twice a second (measured: a 200ms stall every
+       fourth or fifth 100ms step). CSS cannot derive an integer from an
+       element's width, so these are defaults that fit a ~1600px-wide
+       scene at 1x; Vitra.scenery measures each scene and sets the exact
+       values (ridge travel, cloud travel, 1200px star tile, all times
+       devicePixelRatio) and keeps them current on resize. */
+    --vitra-scenery-steps: 1600;
+    --vitra-scenery-cloud-steps: 1600;
+    --vitra-scenery-star-steps: 1200;
   }
 
   /* --- PORTRAIT ---
@@ -2596,6 +2611,11 @@
     .vitra-scenery,
     .vitra-scenery-inline {
       --vitra-scenery-span: 2;
+
+      /* CSS-only defaults for a phone-sized scene: ridges travel two
+         widths, clouds one */
+      --vitra-scenery-steps: 800;
+      --vitra-scenery-cloud-steps: 400;
     }
 
     .vitra-scenery-ridge-far,
@@ -2696,7 +2716,7 @@
 
     .vitra-scenery-inline > .vitra-scenery-clouds {
       animation:
-        vitra-scenery-drift-clouds calc(400s / var(--vitra-scenery-speed)) steps(1000) infinite,
+        vitra-scenery-drift-clouds calc(400s / var(--vitra-scenery-speed)) steps(var(--vitra-scenery-cloud-steps)) infinite,
         vitra-scenery-enter-clouds calc(2.6s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) calc(0.4s * var(--vitra-scenery-intro)) backwards,
         vitra-scenery-depth-sky linear both;
       animation-timeline: auto, auto, --vitra-scenery;
@@ -2715,7 +2735,7 @@
 
     .vitra-scenery-inline > .vitra-scenery-ridge-far {
       animation:
-        vitra-scenery-drift-far calc(480s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) steps(1600) infinite,
+        vitra-scenery-drift-far calc(480s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) steps(var(--vitra-scenery-steps)) infinite,
         vitra-scenery-enter-far calc(2.2s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) backwards,
         vitra-scenery-depth-far linear both;
       animation-timeline: auto, auto, --vitra-scenery;
@@ -2725,7 +2745,7 @@
 
     .vitra-scenery-inline > .vitra-scenery-ridge-mid {
       animation:
-        vitra-scenery-drift-mid calc(160s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) steps(1600) infinite,
+        vitra-scenery-drift-mid calc(160s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) steps(var(--vitra-scenery-steps)) infinite,
         vitra-scenery-enter-mid calc(1.9s * var(--vitra-scenery-intro)) var(--vitra-scenery-ease-settle) calc(0.1s * var(--vitra-scenery-intro)) backwards,
         vitra-scenery-depth-mid linear both;
       animation-timeline: auto, auto, --vitra-scenery;
