@@ -82,21 +82,21 @@
             <div class="vitra-tabs-panel" id="install-cdn">
               <p>Add the stylesheet to <code>&lt;head&gt;</code>:</p>
               <div class="docs-code">
-                <pre data-copy='<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.css" crossorigin="anonymous">'><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.css" crossorigin="anonymous"&gt;</code></pre>
+                <pre tabindex="0" data-copy='<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.css" crossorigin="anonymous">'><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.css" crossorigin="anonymous"&gt;</code></pre>
               </div>
               <p>Optionally add the script before <code>&lt;/body&gt;</code> — it enables modals, tooltips, toasts, dropdowns, particles, and theme persistence:</p>
               <div class="docs-code">
-                <pre data-copy='<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.js" crossorigin="anonymous" defer></script>'><code>&lt;script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.js" crossorigin="anonymous" defer&gt;&lt;/script&gt;</code></pre>
+                <pre tabindex="0" data-copy='<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.js" crossorigin="anonymous" defer></script>'><code>&lt;script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.12.1/dist/vitra.min.js" crossorigin="anonymous" defer&gt;&lt;/script&gt;</code></pre>
               </div>
               <p>Always pin a version tag (<code>@v1.12.1</code>) in production. Subresource-integrity hashes for each release are generated at build time and published in <code>dist/SRI.txt</code>.</p>
             </div>
             <div class="vitra-tabs-panel" id="install-npm" style="display: none;">
               <div class="docs-code">
-                <pre data-copy='npm install vitra-css'><code>npm install vitra-css</code></pre>
+                <pre tabindex="0" data-copy='npm install vitra-css'><code>npm install vitra-css</code></pre>
               </div>
               <p>Then import the stylesheet and, if you need interactivity, the module:</p>
               <div class="docs-code">
-                <pre data-copy="import 'vitra-css/dist/vitra.css';
+                <pre tabindex="0" data-copy="import 'vitra-css/dist/vitra.css';
 import Vitra from 'vitra-css';"><code>import 'vitra-css/dist/vitra.css';
 import Vitra from 'vitra-css';</code></pre>
               </div>
@@ -117,7 +117,7 @@ import Vitra from 'vitra-css';</code></pre>
         <h2>Theming</h2>
         <p>Themes are applied with a single attribute on the root element. Every <code>--vitra-*</code> token — accent hue, backgrounds, surfaces, borders, text — updates instantly.</p>
         <div class="docs-code">
-          <pre data-copy='<html data-theme="dark">'><code>&lt;html data-theme="dark"&gt;</code></pre>
+          <pre tabindex="0" data-copy='<html data-theme="dark">'><code>&lt;html data-theme="dark"&gt;</code></pre>
         </div>
         <h3>Built-in themes</h3>
         <p>Seven presets, each with its own accent hue and tinted neutrals so every surface carries a trace of the accent:</p>
@@ -134,13 +134,13 @@ import Vitra from 'vitra-css';</code></pre>
         <h3>Persistence</h3>
         <p>With the optional script, initialize once and the visitor's choice is stored in <code>localStorage</code> and restored on every page that calls <code>init</code>:</p>
         <div class="docs-code">
-          <pre data-copy="Vitra.theme.init({ defaultTheme: 'auto', persist: true });"><code>Vitra.theme.init({ defaultTheme: 'auto', persist: true });</code></pre>
+          <pre tabindex="0" data-copy="Vitra.theme.init({ defaultTheme: 'auto', persist: true });"><code>Vitra.theme.init({ defaultTheme: 'auto', persist: true });</code></pre>
         </div>
         <p>This docs page and the <a href="../">demo</a> share that stored choice — pick a theme here and the demo opens in it.</p>
         <h3>Creating a custom theme</h3>
         <p>A theme is a <code>[data-theme]</code> block that overrides tokens. Start from the accent and the base surfaces:</p>
         <div class="docs-code">
-          <pre data-copy='html[data-theme="sunset"] {
+          <pre tabindex="0" data-copy='html[data-theme="sunset"] {
   --vitra-color-accent-h: 18;
   --vitra-color-accent-s: 85%;
   --vitra-color-accent-l: 58%;
@@ -179,7 +179,7 @@ import Vitra from 'vitra-css';</code></pre>
           <button class="vitra-btn vitra-btn-solid vitra-btn-lg">Large</button>
         </div>
         <div class="docs-code">
-          <pre data-copy='<button class="vitra-btn vitra-btn-solid">Solid</button>
+          <pre tabindex="0" data-copy='<button class="vitra-btn vitra-btn-solid">Solid</button>
 <button class="vitra-btn vitra-btn-glass">Glass</button>
 <button class="vitra-btn vitra-btn-outline">Outline</button>'><code>&lt;button class="vitra-btn vitra-btn-solid"&gt;Solid&lt;/button&gt;
 &lt;button class="vitra-btn vitra-btn-glass"&gt;Glass&lt;/button&gt;
@@ -194,7 +194,7 @@ import Vitra from 'vitra-css';</code></pre>
           </div>
         </div>
         <div class="docs-code">
-          <pre data-copy='<div class="vitra-card vitra-glass">Hello, Vitra!</div>'><code>&lt;div class="vitra-card vitra-glass"&gt;Hello, Vitra!&lt;/div&gt;</code></pre>
+          <pre tabindex="0" data-copy='<div class="vitra-card vitra-glass">Hello, Vitra!</div>'><code>&lt;div class="vitra-card vitra-glass"&gt;Hello, Vitra!&lt;/div&gt;</code></pre>
         </div>
 
         <h3 id="c-forms">Forms <span class="vitra-badge vitra-badge-sm">CSS-only</span></h3>
@@ -203,13 +203,13 @@ import Vitra from 'vitra-css';</code></pre>
           <label style="display: inline-flex; align-items: center; gap: 6px;"><input type="checkbox" checked> Checkbox</label>
         </div>
         <div class="docs-code">
-          <pre data-copy='<input type="text" class="vitra-input" placeholder="Your name">'><code>&lt;input type="text" class="vitra-input" placeholder="Your name"&gt;</code></pre>
+          <pre tabindex="0" data-copy='<input type="text" class="vitra-input" placeholder="Your name">'><code>&lt;input type="text" class="vitra-input" placeholder="Your name"&gt;</code></pre>
         </div>
 
         <h3 id="c-tabs">Tabs</h3>
         <p>Tab styling is CSS; the few lines that switch panels are yours to write (this page's switcher is ~15 lines — see the install section above working).</p>
         <div class="docs-code">
-          <pre data-copy='<div class="vitra-tabs">
+          <pre tabindex="0" data-copy='<div class="vitra-tabs">
   <div class="vitra-tabs-nav">
     <button class="vitra-tabs-tab vitra-tabs-tab-active" data-tab="tab1">One</button>
     <button class="vitra-tabs-tab" data-tab="tab2">Two</button>
@@ -235,7 +235,7 @@ import Vitra from 'vitra-css';</code></pre>
           <button class="vitra-btn vitra-btn-solid" data-docs-modal-open="docs-demo-modal">Open modal</button>
         </div>
         <div class="docs-code">
-          <pre data-copy="Vitra.modal.open('my-modal');"><code>Vitra.modal.open('my-modal');  // focus trap, Esc + overlay close, scroll lock</code></pre>
+          <pre tabindex="0" data-copy="Vitra.modal.open('my-modal');"><code>Vitra.modal.open('my-modal');  // focus trap, Esc + overlay close, scroll lock</code></pre>
         </div>
 
         <h3 id="c-tooltips">Tooltips <span class="vitra-badge vitra-badge-sm vitra-badge-info">needs JS</span></h3>
@@ -243,7 +243,7 @@ import Vitra from 'vitra-css';</code></pre>
           <button class="vitra-btn vitra-btn-ghost" data-vitra-tooltip="Hi from Vitra" data-vitra-tooltip-position="top">Hover me</button>
         </div>
         <div class="docs-code">
-          <pre data-copy='<button data-vitra-tooltip="Click to save" data-vitra-tooltip-position="top">Save</button>'><code>&lt;button data-vitra-tooltip="Click to save" data-vitra-tooltip-position="top"&gt;Save&lt;/button&gt;</code></pre>
+          <pre tabindex="0" data-copy='<button data-vitra-tooltip="Click to save" data-vitra-tooltip-position="top">Save</button>'><code>&lt;button data-vitra-tooltip="Click to save" data-vitra-tooltip-position="top"&gt;Save&lt;/button&gt;</code></pre>
         </div>
 
         <h3 id="c-toasts">Toasts <span class="vitra-badge vitra-badge-sm vitra-badge-info">needs JS</span></h3>
@@ -251,7 +251,7 @@ import Vitra from 'vitra-css';</code></pre>
           <button class="vitra-btn vitra-btn-glass" data-docs-toast>Show toast</button>
         </div>
         <div class="docs-code">
-          <pre data-copy="Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });"><code>Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });</code></pre>
+          <pre tabindex="0" data-copy="Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });"><code>Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });</code></pre>
         </div>
 
         <h3 id="c-dropdowns">Dropdowns <span class="vitra-badge vitra-badge-sm vitra-badge-info">needs JS</span></h3>
@@ -266,7 +266,7 @@ import Vitra from 'vitra-css';</code></pre>
           </div>
         </div>
         <div class="docs-code">
-          <pre data-copy='<div class="vitra-dropdown">
+          <pre tabindex="0" data-copy='<div class="vitra-dropdown">
   <button data-vitra-dropdown-toggle>Options</button>
   <div class="vitra-dropdown-menu">
     <button class="vitra-dropdown-item">Edit</button>
@@ -288,7 +288,7 @@ import Vitra from 'vitra-css';</code></pre>
           <span class="vitra-badge vitra-badge-sm">Small</span>
         </div>
         <div class="docs-code">
-          <pre data-copy='<span class="vitra-badge vitra-badge-primary">Primary</span>'><code>&lt;span class="vitra-badge vitra-badge-primary"&gt;Primary&lt;/span&gt;</code></pre>
+          <pre tabindex="0" data-copy='<span class="vitra-badge vitra-badge-primary">Primary</span>'><code>&lt;span class="vitra-badge vitra-badge-primary"&gt;Primary&lt;/span&gt;</code></pre>
         </div>
 
         <h3 id="c-progress">Progress ring <span class="vitra-badge vitra-badge-sm">CSS-only</span></h3>
@@ -298,7 +298,7 @@ import Vitra from 'vitra-css';</code></pre>
           </div>
         </div>
         <div class="docs-code">
-          <pre data-copy='<div class="vitra-progress-ring" style="--vitra-progress-ring-value: 75;">
+          <pre tabindex="0" data-copy='<div class="vitra-progress-ring" style="--vitra-progress-ring-value: 75;">
   <div class="vitra-progress-ring-inner">75%</div>
 </div>'><code>&lt;div class="vitra-progress-ring" style="--vitra-progress-ring-value: 75;"&gt;
   &lt;div class="vitra-progress-ring-inner"&gt;75%&lt;/div&gt;
@@ -311,7 +311,7 @@ import Vitra from 'vitra-css';</code></pre>
           <div class="vitra-avatar" style="width: 48px; height: 48px; background: var(--vitra-color-success); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">AB</div>
         </div>
         <div class="docs-code">
-          <pre data-copy='<div class="vitra-avatar">JD</div>'><code>&lt;div class="vitra-avatar"&gt;JD&lt;/div&gt;</code></pre>
+          <pre tabindex="0" data-copy='<div class="vitra-avatar">JD</div>'><code>&lt;div class="vitra-avatar"&gt;JD&lt;/div&gt;</code></pre>
         </div>
 
         <h3 id="c-particles">Particles <span class="vitra-badge vitra-badge-sm vitra-badge-info">needs JS</span></h3>
@@ -319,7 +319,7 @@ import Vitra from 'vitra-css';</code></pre>
           <button class="vitra-btn vitra-btn-glass" data-docs-particles>Spawn 10 particles</button>
         </div>
         <div class="docs-code">
-          <pre data-copy="Vitra.particles.spawn(10, { direction: 'down' });"><code>Vitra.particles.spawn(10, { direction: 'down' });  // capped at 40 desktop / 15 mobile</code></pre>
+          <pre tabindex="0" data-copy="Vitra.particles.spawn(10, { direction: 'down' });"><code>Vitra.particles.spawn(10, { direction: 'down' });  // capped at 40 desktop / 15 mobile</code></pre>
         </div>
       </section>
 
@@ -357,7 +357,7 @@ import Vitra from 'vitra-css';</code></pre>
 
         <h3>Vitra.particles</h3>
         <div class="docs-code">
-          <pre data-copy="Vitra.particles.spawn(10, {
+          <pre tabindex="0" data-copy="Vitra.particles.spawn(10, {
   container: 'body',
   size: 4,
   direction: 'down'   // 'down' | 'down-left' | 'down-right' | angle in degrees | omit for ambient bob
@@ -375,7 +375,7 @@ Vitra.particles.limits();    // { active, available, max }</code></pre>
 
         <h3>Vitra.reveal</h3>
         <div class="docs-code">
-          <pre data-copy="Vitra.reveal.init({
+          <pre tabindex="0" data-copy="Vitra.reveal.init({
   selector: '.vitra-reveal',
   threshold: 0.1,
   rootMargin: '0px 0px 10% 0px',
@@ -391,7 +391,7 @@ Vitra.particles.limits();    // { active, available, max }</code></pre>
 
         <h3>Vitra.modal</h3>
         <div class="docs-code">
-          <pre data-copy="Vitra.modal.open('my-modal', { closeOnOverlay: true, closeOnEsc: true });
+          <pre tabindex="0" data-copy="Vitra.modal.open('my-modal', { closeOnOverlay: true, closeOnEsc: true });
 Vitra.modal.close();"><code>Vitra.modal.open('my-modal', { closeOnOverlay: true, closeOnEsc: true });
 Vitra.modal.close();</code></pre>
         </div>
@@ -399,7 +399,7 @@ Vitra.modal.close();</code></pre>
 
         <h3>Vitra.tooltip</h3>
         <div class="docs-code">
-          <pre data-copy="Vitra.tooltip.show('#save-btn', 'Saves your draft', { position: 'top' });
+          <pre tabindex="0" data-copy="Vitra.tooltip.show('#save-btn', 'Saves your draft', { position: 'top' });
 Vitra.tooltip.hide();
 Vitra.tooltip.init();   // activates all [data-vitra-tooltip] elements"><code>Vitra.tooltip.show('#save-btn', 'Saves your draft', { position: 'top' });
 Vitra.tooltip.hide();
@@ -408,7 +408,7 @@ Vitra.tooltip.init();   // activates all [data-vitra-tooltip] elements</code></p
 
         <h3>Vitra.toast</h3>
         <div class="docs-code">
-          <pre data-copy="Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });"><code>Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });</code></pre>
+          <pre tabindex="0" data-copy="Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });"><code>Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });</code></pre>
         </div>
         <p>Types: <code>success</code>, <code>error</code>, <code>info</code>, <code>default</code>. Markup is created for you; messages are rendered as text, never HTML.</p>
 
@@ -423,7 +423,7 @@ Vitra.tooltip.init();   // activates all [data-vitra-tooltip] elements</code></p
         <h2>data-config</h2>
         <p>Declarative initialization without writing a line of JS: put a JSON <code>data-config</code> attribute on any element (conventionally <code>&lt;body&gt;</code>) and Vitra parses it on <code>DOMContentLoaded</code>.</p>
         <div class="docs-code">
-          <pre data-copy='<body data-config=&apos;{
+          <pre tabindex="0" data-copy='<body data-config=&apos;{
   "theme": { "default": "auto", "persist": true },
   "reveal": { "stagger": 100 },
   "particles": { "count": 12, "direction": "down" },

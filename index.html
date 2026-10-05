@@ -145,6 +145,7 @@
   <!-- ============================================================
        HERO CINEMATOGRÁFICO
        ============================================================ -->
+  <main id="main">
   <section class="demo-hero" aria-label="Hero">
     <div class="vitra-scenery-inline" aria-hidden="true">
       <div class="vitra-scenery-sky"></div>
@@ -299,7 +300,7 @@
         </div>
         <p>Text with animated gradient via <code>background-clip: text</code> and <code>vitra-text-shift</code> keyframes.</p>
         <div style="margin: var(--vitra-space-4) 0;">
-          <input type="text" class="vitra-input" id="gradient-text-input" value="Edit this text — it uses gradient!" style="width: 100%;">
+          <input type="text" class="vitra-input" id="gradient-text-input" aria-label="Gradient text content" value="Edit this text — it uses gradient!" style="width: 100%;">
         </div>
         <h2 class="vitra-gradient-text" id="gradient-text-display" style="font-size: var(--vitra-font-size-2xl); text-align: center; padding: var(--vitra-space-4) 0;">
           Edit this text — it uses gradient!
@@ -794,7 +795,7 @@
           <label class="demo-label" for="particle-color">Particle Color</label>
           <div style="display: flex; gap: var(--vitra-space-2); align-items: center;">
             <input type="color" id="particle-color" style="width: 50px; height: 40px; border: none; background: none; cursor: pointer; padding: 0;">
-            <input type="text" id="particle-color-text" class="vitra-input" value="#6c63ff" style="width: 100px;">
+            <input type="text" id="particle-color-text" aria-label="Particle color (hex)" class="vitra-input" value="#6c63ff" style="width: 100px;">
             <button class="vitra-btn vitra-btn-sm vitra-btn-ghost" onclick="setParticleColor('var(--vitra-color-accent)')">Use Accent</button>
           </div>
         </div>
@@ -1196,6 +1197,8 @@
   <!-- ============================================================
        FOOTER
        ============================================================ -->
+  </main>
+
   <footer class="demo-footer">
     <div class="vitra-container">
       <div class="footer-grid">
