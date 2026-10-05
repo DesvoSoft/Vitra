@@ -144,7 +144,13 @@
       var(--vitra-color-accent),
       hsl(calc(var(--vitra-color-accent-h) + 60) 100% 60%)
     );
-    animation: vitra-shape-morph var(--vitra-shape-morph-duration, 12s) ease-in-out infinite;
+
+    /* clip-path and the @property angle below can only animate by
+       repainting on the main thread. Stepping them caps that at a fixed
+       number of repaints a second instead of one per display frame
+       (144 a second on a fast monitor), and Vitra.motionGuard stops
+       them entirely while offscreen. */
+    animation: vitra-shape-morph var(--vitra-shape-morph-duration, 12s) steps(48) infinite;
     will-change: clip-path;
   }
 
@@ -187,7 +193,7 @@
       hsl(calc(var(--vitra-color-accent-h) - 30) 100% 65%),
       var(--vitra-color-accent)
     );
-    animation: vitra-gradient-rotate-spin 4s linear infinite;
+    animation: vitra-gradient-rotate-spin 4s steps(120) infinite;
     will-change: transform;
   }
 
@@ -198,6 +204,13 @@
     border-radius: inherit;
     background: var(--vitra-color-bg);
     z-index: -1;
+  }
+
+  /* Paused by Vitra.motionGuard when offscreen */
+  .vitra-shape-morph.vitra-motion-paused,
+  .vitra-gradient-rotate.vitra-motion-paused::before,
+  .vitra-gradient-rotate.vitra-motion-paused::after {
+    animation-play-state: paused;
   }
 
   @keyframes vitra-gradient-rotate-spin {
@@ -258,7 +271,7 @@
      ============================================ */
 
   .vitra-gradient-rotate-double::before {
-    animation: vitra-gradient-rotate-spin 4s linear infinite;
+    animation: vitra-gradient-rotate-spin 4s steps(120) infinite;
   }
 
   .vitra-gradient-rotate-double::after {
@@ -283,7 +296,7 @@
       hsl(calc(var(--vitra-color-accent-h) + 120) 100% 55% / 30%) 60deg,
       transparent 120deg
     );
-    animation: vitra-gradient-rotate-spin 6s linear infinite reverse;
+    animation: vitra-gradient-rotate-spin 6s steps(180) infinite reverse;
     will-change: transform;
   }
 

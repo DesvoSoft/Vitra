@@ -26,7 +26,7 @@ function fractal(ctrl, levels, rough, seed) {
 }
 
 const d = pts => pts.map((p, i) => (i ? 'L' : 'M') + p.x + ' ' + p.y).join('');
-const closed = pts => `M0 ${H}V${pts[0].y}` + pts.slice(1).map(p => `L${p.x} ${p.y}`).join('') + `V${H}Z`;
+const closed = pts => `M0 ${pts[0].y}` + pts.slice(1).map(p => `L${p.x} ${p.y}`).join('') + `V${H}H0Z`;
 
 // Lit faces: light comes from the left. For every prominent summit, the face
 // runs from the summit down its left ridgeline to the valley, and is cut on the
@@ -70,37 +70,13 @@ const MID = [[0, 286], [80, 270], [150, 232], [196, 168], [236, 206], [300, 228]
 const far = fractal(FAR, 3, 0.13, Number(process.env.SEED_FAR || 7));
 const mid = fractal(MID, 3, 0.1, Number(process.env.SEED_MID || 23));
 
-// Near: rolling ground with a conifer line. Trees are narrow triangles of
-// varied height in loose clusters; the ground closes the shape.
-function treeline(seed) {
-  const r = rng(seed);
-  const ground = x => 318 + Math.sin((x / W) * Math.PI * 2) * 9 + Math.sin((x / W) * Math.PI * 6 + 1) * 5;
-  let path = `M0 ${H}V${Math.round(ground(0))}`;
-  for (let x = 120; x <= W; x += 120) path += `L${x} ${Math.round(ground(x))}`;
-  path += `V${H}Z`;
-  let x = 3;
-  while (x < W - 3) {
-    // stands: tall in the middle of a cluster, thinning to saplings and gaps at its edges
-    const stand = Math.max(0, Math.sin((x / W) * Math.PI * 6 + 0.9) * 0.6 + Math.sin((x / W) * Math.PI * 14 + 2.1) * 0.4);
-    const h = 22 + r() * 30 + stand * (40 + r() * 46);
-    const w = 7 + h * 0.13 + r() * 4;
-    const gx = Math.round(ground(x)) + 8;
-    const tip = Math.round(gx - h);
-    const cx = Math.round(x + (r() - 0.5) * 2);
-    const l = Math.round(x - w / 2), rt = Math.round(x + w / 2);
-    if (r() < 0.55) {
-      // layered crown: one shoulder, placed irregularly
-      const ny = Math.round(tip + h * (0.3 + r() * 0.25)), nw = w * (0.24 + r() * 0.12);
-      path += `M${l} ${gx}L${Math.round(cx - nw * 0.5)} ${ny}L${Math.round(cx - nw)} ${ny}L${cx} ${tip}L${Math.round(cx + nw)} ${ny}L${Math.round(cx + nw * 0.5)} ${ny}L${rt} ${gx}Z`;
-    } else {
-      path += `M${l} ${gx}L${cx} ${tip}L${rt} ${gx}Z`;
-    }
-    x += 5 + r() * 10 + (stand < 0.08 && r() < 0.5 ? 14 + r() * 30 : 0);
-  }
-  return path;
-}
+// Near: a still, dark foreground rise that grounds the scene. It does not
+// drift: a foreground racing past a hero is the layer that makes people
+// queasy, and a layer that never moves costs the compositor nothing.
+const NEAR = [[0, 326], [150, 312], [330, 330], [520, 318], [700, 300], [900, 322], [1080, 334], [1260, 314], [1440, 326]];
+const near = fractal(NEAR, 2, 0.05, Number(process.env.SEED_NEAR || 41));
 
-const rel = dstr => dstr.replace(/M(-?d+) (-?d+)((?:L-?d+ -?d+)+)/g, (m, x0, y0, rest) => {
+const rel = dstr => dstr.replace(/M(-?\d+) (-?\d+)((?:L-?\d+ -?\d+)+)/g, (m, x0, y0, rest) => {
   let x = +x0, y = +y0, out = 'M' + x0 + ' ' + y0;
   for (const s of rest.slice(1).split('L')) {
     const [nx, ny] = s.split(' ').map(Number);
@@ -116,7 +92,7 @@ const out = {
   farLit: svg(facets(far, 26, 5, 0.42)),
   mid: svg(closed(mid)),
   midLit: svg(facets(mid, 18, 9, 0.5)),
-  near: svg(treeline(Number(process.env.SEED_NEAR || 41))),
+  near: svg(closed(near)),
 };
 for (const [k, v] of Object.entries(out)) console.log(k, v.length);
 if (far[0].y !== far[far.length - 1].y || mid[0].y !== mid[mid.length - 1].y) throw new Error('tile seam');

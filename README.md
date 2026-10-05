@@ -1,7 +1,7 @@
 # Vitra CSS Framework
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
-[![Version](https://img.shields.io/badge/version-1.13.0-blue)](https://github.com/DesvoSoft/Vitra)
+[![Version](https://img.shields.io/badge/version-1.13.1-blue)](https://github.com/DesvoSoft/Vitra)
 [![License](https://img.shields.io/badge/license-ISC-blue)](https://github.com/DesvoSoft/Vitra)
 [![Bundle Size](https://img.shields.io/badge/css-19.8%20kB%20brotli-brightgreen)](https://github.com/DesvoSoft/Vitra)
 [![Tests](https://img.shields.io/badge/tests-95%20passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
@@ -17,10 +17,10 @@ Unlike generic utility-first frameworks, Vitra is built with a specific aestheti
 -   **Glass-First Design**: Optimized backdrop-filter effects with robust `@supports` fallbacks for all browsers.
 -   **Strict @layer Architecture**: Predictable cascade management using modern CSS layers.
 -   **Motion Engine**: 25+ choreographed keyframes that automatically respect `prefers-reduced-motion`, plus spring easing tokens (`--vitra-ease-spring`) for things that arrive.
--   **Free at rest**: ambient effects animate `transform`/`opacity` only and pause offscreen — an idle page with the full scenery running does zero repaints.
+-   **Light on the machine**: ambient effects animate `transform`/`opacity` only, move in small steps on a shared 10 Hz clock so the screen is only redrawn when a pixel changes, and pause offscreen.
 -   **Particle System**: Native CSS/JS hybrid particles with built-in performance limits (15 mobile / 40 desktop).
 -   **Cinematic Effects**: Animated mesh gradients, floating glow orbs, gradient text, spinning border glows, page-enter animation, 3D tilt cards, aurora background, text reveal, stagger system.
--   **Ambient Scenery**: CSS-only mountain landscape — faceted ranges with lit planes, a conifer line, twinkling stars, a moon with a breathing corona. It assembles on load and separates into depth planes as you scroll. One element of markup.
+-   **Ambient Scenery**: CSS-only mountain landscape — faceted ranges with lit planes over a still foreground, twinkling stars, a moon with a breathing corona. It assembles on load and separates into depth planes as you scroll. One element of markup.
 -   **Shader Effects**: Pure-CSS shader effects — noise overlay, shape morphing, progress rings, gradient rotate borders, scroll-driven reveals, material ripple.
 -   **Modern CSS Features**: Container Queries, `@starting-style`, Popover API, scroll-driven animations, View Transitions, `linear()` easing — all with fallbacks.
 -   **Premium Color System**: All surfaces tinted with accent hue — no pure neutral grays. Warm/cool/oklch variants.
@@ -52,13 +52,13 @@ Use jsDelivr to load the minified files. We strongly recommend using a fixed ver
 
 ```html
 <!-- High-performance CSS (Fixed version with SRI) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.0/dist/vitra.min.css" integrity="sha256-..." crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.1/dist/vitra.min.css" integrity="sha256-..." crossorigin="anonymous">
 
 <!-- Optional: Modular JS Engine (Fixed version with SRI) -->
-<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.0/dist/vitra.min.js" integrity="sha256-..." crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.1/dist/vitra.min.js" integrity="sha256-..." crossorigin="anonymous" defer></script>
 ```
 
-> **Note:** Always use a pinned version (e.g., `@v1.13.0`) for production. The SRI hashes are generated during build and stored in `dist/SRI.txt`.
+> **Note:** Always use a pinned version (e.g., `@v1.13.1`) for production. The SRI hashes are generated during build and stored in `dist/SRI.txt`.
 
 #### Option B: Local Assets
 
@@ -161,7 +161,7 @@ Vitra.particles.spawn(15, {
 
 An ambient backdrop that turns `.vitra-glass` panels into a window onto a scene instead of a translucent card on a flat color: SVG-silhouette mountain ranges at three depths, a moon (or low sun on light themes) with a breathing corona, a star field that twinkles the way real air makes starlight flicker, drifting wisps and valley mist. Colors derive from the active theme's accent hue.
 
-It is built to be free at rest: every moving layer animates `transform`/`opacity` only, so an idle page does **zero** repaints and no main-thread work, and `Vitra.motionGuard` pauses the scene while it is offscreen. Respects `prefers-reduced-motion`.
+It is built to be light: every moving layer animates `transform`/`opacity` only (no repaints, no main-thread work), all loops are stepped on one 10 Hz clock so the compositor redraws the scene about ten times a second instead of on every display frame, the foreground stands still, and `Vitra.motionGuard` pauses the scene while it is offscreen. Respects `prefers-reduced-motion`.
 
 ```html
 <!-- Full-page fixed backdrop. With vitra.js loaded, one element is all you write -->
@@ -239,7 +239,7 @@ Vitra leverages cutting-edge CSS for progressive enhancement:
 ## Accessibility & Performance
 
 -   **Reduced Motion**: All transitions and animations auto-disable if `prefers-reduced-motion` is detected. Supported at CSS (`0.01ms !important`) and JS levels; the scenery holds a static frame and animated theme changes fall back to an instant swap.
--   **Compositor-only ambient motion**: scenery, mesh gradient, drawer and skeleton shimmer animate `transform`/`opacity` only. Measured in headless Chromium, an idle page with the full scenery does 0 repaints and ~3 ms/s of main-thread work.
+-   **Compositor-only, stepped ambient motion**: scenery, mesh gradient, glow orbs, aurora, drawer and skeleton shimmer animate `transform`/`opacity` only, and the infinite loops advance in steps on a shared 10 Hz clock. Measured in headless Chromium on an idle page with the full scenery: 0 repaints, ~3 ms/s of main-thread work, and 10 screen redraws a second (a continuously interpolated loop forces one per display frame).
 -   **Offscreen pause**: `Vitra.motionGuard` stops ambient loops outside the viewport.
 -   **Resource Safety**: Particle counts capped (15 mobile, 40 desktop).
 -   **Contrast**: checked with axe-core against WCAG 2.2 AA across all themes; status badges use a fixed dark ink (`--vitra-color-on-status`) so they stay legible in light themes.

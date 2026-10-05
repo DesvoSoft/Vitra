@@ -503,7 +503,7 @@ The eight child layers are always the same regardless of which root class is use
 
 On dark-scheme themes the halo renders as a textured full moon (or crescent with the modifier); on `light`/`pastel` it renders as a warm low sun. Ridge crests catch a warm rim light on their silhouette edges — it rides the same parallax transform as the ridge, so it never detaches in motion.
 
-Ridge and cloud silhouettes come from inline SVG masks (shape) colored by theme tokens (color) — no external assets. Where `mask-image` is unsupported, ridges/clouds gracefully fall back to soft gradient bands. All layers drift the same right-to-left direction at different speeds (clouds slowest, near ridge fastest) for a consistent parallax/wind read. Under `prefers-reduced-motion: reduce`, all layers stop animating and hold position — the scene stays visible, just static.
+Ridge and cloud silhouettes come from inline SVG masks (shape) colored by theme tokens (color) — no external assets. Where `mask-image` is unsupported, ridges/clouds gracefully fall back to soft gradient bands. The far and mid ranges and the clouds drift the same right-to-left direction at different speeds for a consistent parallax/wind read; the near foreground rise stands still. Under `prefers-reduced-motion: reduce`, all layers stop animating and hold position — the scene stays visible, just static.
 
 **One-element markup (`Vitra.scenery`).** With `vitra.js` loaded, an *empty* scenery root is filled with the eight layers (and `aria-hidden="true"`) on init — roots that already contain layers are never touched:
 
@@ -525,6 +525,7 @@ Opt out of the auto-fill with `"scenery": false` in `data-config`.
 - *Twinkle* — the star tiles are static; a turbulence-noise mask slides across them (the star plane counter-slides so stars stay put), so each star brightens and dims on its own schedule.
 - *Entrance* — on load the ranges rise into place back-to-front, the moon climbs to its mark, then stars, wisps and mist fade up. A scene that starts offscreen plays it when it scrolls into view.
 - *Scroll depth* (`.vitra-scenery-inline`, browsers with CSS scroll-driven animations) — while the host scrolls out of view, the sky and moon lag the most, the far range less, the near treeline barely at all. No scroll listener. **The host must not be `overflow: hidden`** — that makes it the scroll container the timeline attaches to, and the effect silently stays off. Use `overflow: clip`, or nothing: the scenery root clips itself.
+- *Stepped loops* — a compositor animation that interpolates continuously makes the browser draw a new frame of the whole viewport on every display refresh, however slowly the layer moves. Every infinite loop in the scene uses `steps()` on a shared 10 Hz grid instead, so the screen is redrawn about ten times a second, with all layers changing together. At these speeds a step is a pixel or less.
 - *Offscreen* — `Vitra.motionGuard` pauses every layer, pseudo-elements included, while the root is outside the viewport.
 
 **Reshaping the mountains.** The ridge masks are generated, not hand-drawn: `node scripts/gen-ridges.cjs --write` rewrites them in `src/09-scenery.css`. Edit the `FAR` / `MID` control points to move summits and valleys, or set `SEED_FAR` / `SEED_MID` / `SEED_NEAR` to re-roll the crag detail and the tree stands.

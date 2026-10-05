@@ -1,6 +1,6 @@
 # Vitra CSS Framework — Roadmap
 
-**Current version:** v1.13.0  
+**Current version:** v1.13.1  
 **Last updated:** 2026-07-14
 
 ---

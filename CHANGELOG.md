@@ -4,6 +4,23 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.1] - 2026-10-05
+
+GPU pass. 1.13.0 took the scenery off the main thread but left the compositor redrawing the whole viewport on every display frame: any continuously interpolated animation does that, however slowly the layer moves (measured ~96 draws/s for a ridge creeping at 3 px/s; the mist sway alone, 191). Counted from compositor `DrawFrame` trace events in headless Chromium: **screen redraws at rest ~96/s → 10/s** for both scenery variants, and ≤ 10/s on every section of the demo page (was 120–240).
+
+### Changed
+
+- **All ambient loops are stepped on a shared 10 Hz clock**: scenery drift (far/mid ridges, clouds, far stars), star scintillation (14s → 12.8s so it lands on the grid), corona breathing, and in the motion layer the mesh gradient, glow orbs, aurora and gradient text. Layers change together about ten times a second; at these speeds a step is a pixel or less.
+- **Near scenery layer stands still and the conifer line is gone**: a foreground racing past at one viewport-width every 32s was the fastest-changing layer on screen and the one that reads as "the room is moving". It is now a dark, still foreground rise that grounds the scene; it still takes part in the entrance and in scroll depth. `.vitra-scenery-ridge-near` markup is unchanged.
+- **Valley mist is static again**: its sway put a scene-wide translucent layer in continuous motion for a movement nobody could see.
+- **Shooting star is a streak-sized layer** placed with container units (both scenery roots are now size containers) instead of a scene-sized transparent box.
+- **`.vitra-shape-morph` and `.vitra-gradient-rotate` are stepped** (20 and 30 updates/s): they can only animate by repainting, and were doing so once per display frame.
+- **`Vitra.motionGuard` also covers `.vitra-border-glow`, `.vitra-shape-morph` and `.vitra-gradient-rotate`.**
+
+### Fixed
+
+- `scripts/gen-ridges.cjs`: the path-compacting regex had lost its escapes and never matched; ridge masks are now emitted as relative segments (~6 KB less CSS together with the removed treeline).
+
 ## [1.13.0] - 2026-10-05
 
 Performance and motion pass on the scenery system. Measured in headless Chromium over CDP on an otherwise idle page (1600x900, dark theme): **paints 210/s → 0**, **style recalcs 81/s → ~1**, **main-thread time 137 ms/s → 3 ms/s**; with 4x CPU throttling the demo hero went from 677 ms/s of main-thread work at rest to compositor-only scenery. `vitra.min.css` 180 KB → 142 KB (20.4 kB → 19.7 kB brotli) with the new ridge artwork included.
