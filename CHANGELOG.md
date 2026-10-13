@@ -4,6 +4,25 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.4] - 2026-10-13
+
+The mountains glide. Since 1.13.1 the scenery's drift was stepped one device pixel at a time to spare the compositor a draw per display frame; on screen that was a range ticking 3 times a second (far) and 10 times a second (mid), plainly visible on a crisp silhouette. Measured by capturing a real window on a 240 Hz display and comparing consecutive frames of the far range:
+
+| | 1.13.3 | 1.13.4 |
+|---|---|---|
+| Chromium (Brave 155): frames showing a new position | 3 a second, 1px each | **every captured frame**, even advance (8% variation) |
+| Firefox 158: updates a second | 3, each a 1px jump (edge pixels change by 62/255) | **~40**, each a fraction of a pixel (5-9/255) |
+| Frame pacing, full scene, both engines | 239 fps | 239 fps |
+
+### Fixed
+
+- **Scenery drift is continuous again** (`linear` instead of `steps()`) for both ranges and the clouds. Every drifting element is an unmasked carrier since 1.13.3, so the per-frame draw is a plain composite of cached layers. Cost, measured in headless Chromium (software rendering, the worst case): GPU-process time for the scene goes up three to four times (0.23-0.33s to 0.72-1.3s per 6s of animation at 240 fps, over two runs); frame pacing is unchanged in both engines.
+- **Firefox no longer moves the ranges a whole pixel at a time.** WebRender snaps a layer whose transform is a pure translation to whole device pixels, so a continuous drift alone still ticked there. The drift keyframes now end in `skewX(0.3deg)` (anchored bottom-left): a transform that is not axis-aligned is drawn at its sub-pixel position. The lean is 2-3px over the height of a range and not visible; travel stays exactly horizontal and the loop stays seamless.
+
+### Removed
+
+- `--vitra-scenery-steps` and `--vitra-scenery-cloud-steps` (added in 1.13.2), and the measuring `Vitra.scenery` did to set them (a `ResizeObserver` per scene). Nothing to tune any more; setting them is harmless and does nothing.
+
 ## [1.13.3] - 2026-10-05
 
 Firefox pass. The scenery was smooth in Chromium and badly janky in Firefox; measured in headless Firefox 157 by frame pacing (`requestAnimationFrame` intervals over 4s, an empty page reads 240fps):

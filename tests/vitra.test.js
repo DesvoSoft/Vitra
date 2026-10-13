@@ -672,40 +672,6 @@ describe('Scenery Module', () => {
     warn.mockRestore();
   });
 
-  it('should set step counts to the distance travelled in device pixels', () => {
-    document.body.innerHTML = '<div class="vitra-scenery"></div>';
-    const widths = { 'vitra-scenery-ridge-far': 3200, 'vitra-scenery-clouds': 2560 };
-    const original = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetWidth');
-    Object.defineProperty(HTMLElement.prototype, 'offsetWidth', { configurable: true, get() { return widths[this.className] || 0; } });
-    const dpr = window.devicePixelRatio;
-    window.devicePixelRatio = 1.5;
-
-    Vitra.scenery.init();
-
-    const el = document.querySelector('.vitra-scenery');
-    expect(el.style.getPropertyValue('--vitra-scenery-steps')).toBe('2400');       // 3200 / 2 * 1.5
-    expect(el.style.getPropertyValue('--vitra-scenery-cloud-steps')).toBe('1920'); // 2560 / 2 * 1.5
-
-    Vitra.scenery.destroy();
-    expect(el.style.getPropertyValue('--vitra-scenery-steps')).toBe('');
-
-    window.devicePixelRatio = dpr;
-    if (original) Object.defineProperty(HTMLElement.prototype, 'offsetWidth', original);
-  });
-
-  it('should tune hand-written scenes without touching their markup', () => {
-    document.body.innerHTML = '<div class="vitra-scenery-inline"><div class="vitra-scenery-ridge-far" id="mine"></div></div>';
-    const original = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetWidth');
-    Object.defineProperty(HTMLElement.prototype, 'offsetWidth', { configurable: true, get() { return this.id === 'mine' ? 2000 : 0; } });
-
-    expect(Vitra.scenery.init()).toBe(0);
-
-    const el = document.querySelector('.vitra-scenery-inline');
-    expect(el.children.length).toBe(1);
-    expect(el.style.getPropertyValue('--vitra-scenery-steps')).not.toBe('');
-    if (original) Object.defineProperty(HTMLElement.prototype, 'offsetWidth', original);
-  });
-
   it('should remove only the layers it injected on destroy', () => {
     document.body.innerHTML = '<div class="vitra-scenery"></div>';
     Vitra.scenery.init();

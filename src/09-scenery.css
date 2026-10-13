@@ -14,16 +14,16 @@
    Compositor-only animation: every moving layer
    animates transform exclusively - no filters,
    no blend modes, no per-frame repaints.
-   STEPPED on purpose: a compositor animation that
-   interpolates continuously makes the GPU draw a
-   new frame of the whole viewport on every vsync,
-   however slowly the layer moves (measured: ~96
-   draws/s for a ridge creeping at 3px/s). Every
-   loop here uses steps() on a shared 10Hz grid, so
-   the layers only change - and the screen is only
-   redrawn - about ten times a second, in step
-   with each other. At these speeds a step is one
-   pixel or less of travel.
+   The drift loops interpolate CONTINUOUSLY (linear):
+   a landscape creeping at 3-10px/s only reads as
+   gliding if it lands on sub-pixel positions every
+   frame. 1.13.1-1.13.3 stepped them one device pixel
+   at a time to spare the compositor a draw per vsync;
+   on screen that was a range ticking 3-10 times a
+   second. The draw is cheap now that every drifting
+   element is an unmasked carrier (see RIDGE LAYERS).
+   Twinkle and the moon's glow stay stepped: they are
+   flickers and slow fades, not travel.
    Each ridge is a seamless horizontal tile (its SVG
    silhouette repeated once inside a 200%-wide layer)
    drifting one direction only, 0% -> -50%, linear
@@ -212,7 +212,8 @@
       hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.75) 74% / 55%) 22%,
       hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.2) 88% / 8%) 100%
     );
-    animation: vitra-scenery-drift-clouds calc(400s / var(--vitra-scenery-speed)) steps(var(--vitra-scenery-cloud-steps)) infinite;
+    animation: vitra-scenery-drift-clouds calc(400s / var(--vitra-scenery-speed)) linear infinite;
+    transform-origin: 0 100%;
     will-change: transform;
   }
 
@@ -239,8 +240,8 @@
   }
 
   @keyframes vitra-scenery-drift-clouds {
-    0% { transform: translate3d(0%, 0, 0); }
-    100% { transform: translate3d(-50%, 0, 0); }
+    0% { transform: translate3d(0%, 0, 0) skewX(0.3deg); }
+    100% { transform: translate3d(-50%, 0, 0) skewX(0.3deg); }
   }
 
   /* --- STAR FIELD (dark-appropriate themes only) --- */
@@ -535,6 +536,7 @@
     bottom: 0;
     left: 0;
     width: 200%;
+    transform-origin: 0 100%;
     will-change: transform, translate;
   }
 
@@ -551,7 +553,7 @@
   .vitra-scenery-ridge-far {
     height: 58%;
     opacity: var(--vitra-scenery-opacity-far);
-    animation: vitra-scenery-drift-far calc(480s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) steps(var(--vitra-scenery-steps)) infinite;
+    animation: vitra-scenery-drift-far calc(480s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) linear infinite;
   }
 
   /* Fallback (no mask support): soft gradient band still gives a
@@ -589,7 +591,7 @@
   .vitra-scenery-ridge-mid {
     height: 40%;
     opacity: var(--vitra-scenery-opacity-mid);
-    animation: vitra-scenery-drift-mid calc(160s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) steps(var(--vitra-scenery-steps)) infinite;
+    animation: vitra-scenery-drift-mid calc(160s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) linear infinite;
   }
 
   .vitra-scenery-ridge-mid::after {
@@ -732,15 +734,31 @@
      reads as true camera-pan parallax rather than layers
      oscillating independently. translate3d keeps each ridge on
      its own compositor layer; the -50% endpoint is exactly one
-     tile-width, so looping back to 0% is seamless. */
+     tile-width, so looping back to 0% is seamless.
+     skewX(0.3deg) is not a look, it is what makes the drift glide in
+     Firefox. WebRender snaps a layer whose transform is a pure
+     translation to whole device pixels, so even a linear drift
+     advanced one pixel at a time, 3-10 times a second (measured on
+     screen, Firefox 158). A transform that is not axis-aligned cannot
+     be snapped and is drawn at its sub-pixel position - which Firefox
+     in turn resolves to about a quarter pixel per row. Hence 0.3deg
+     rather than the 0.02deg that would be enough to defeat snapping:
+     it offsets the rows against each other by a few pixels top to
+     bottom, so they cross those quarter-pixel marks one after another
+     instead of all at once, and the range advances in ~40 partial
+     updates a second instead of ~10 whole ones. The lean is 2-3px over
+     the height of a range. The skew sits after the translation and is
+     anchored bottom-left (see transform-origin on the carriers), so
+     travel stays exactly horizontal, the loop stays seamless and no
+     edge of a strip is ever pulled into view. */
   @keyframes vitra-scenery-drift-far {
-    0% { transform: translate3d(0%, 0, 0); }
-    100% { transform: translate3d(-50%, 0, 0); }
+    0% { transform: translate3d(0%, 0, 0) skewX(0.3deg); }
+    100% { transform: translate3d(-50%, 0, 0) skewX(0.3deg); }
   }
 
   @keyframes vitra-scenery-drift-mid {
-    0% { transform: translate3d(0%, 0, 0); }
-    100% { transform: translate3d(-50%, 0, 0); }
+    0% { transform: translate3d(0%, 0, 0) skewX(0.3deg); }
+    100% { transform: translate3d(-50%, 0, 0) skewX(0.3deg); }
   }
 
   /* --- GRAIN LAYER --- */
@@ -813,19 +831,6 @@
 
     /* How many viewport-widths one ridge tile spans (see PORTRAIT below) */
     --vitra-scenery-span: 1;
-
-    /* STEP COUNTS = distance travelled, in device pixels.
-       A stepped drift only looks even if every step is exactly one
-       device pixel. Chromium draws layers at fractional offsets, so a
-       0.8px step still reads as smooth there; Firefox snaps layers to
-       whole pixels, so 0.8px steps become "move, move, move, move,
-       hold" - a hitch twice a second (measured: a 200ms stall every
-       fourth or fifth 100ms step). CSS cannot derive an integer from an
-       element's width, so these are defaults that fit a ~1600px-wide
-       scene at 1x; Vitra.scenery measures each scene and sets the exact
-       values (ridge travel and cloud travel, times devicePixelRatio) and keeps them current on resize. */
-    --vitra-scenery-steps: 1600;
-    --vitra-scenery-cloud-steps: 1600;
   }
 
   /* --- PORTRAIT ---
@@ -839,11 +844,6 @@
     .vitra-scenery,
     .vitra-scenery-inline {
       --vitra-scenery-span: 2;
-
-      /* CSS-only defaults for a phone-sized scene: ridges travel two
-         widths, clouds one */
-      --vitra-scenery-steps: 800;
-      --vitra-scenery-cloud-steps: 400;
     }
 
     .vitra-scenery-ridge-far,
@@ -909,7 +909,7 @@
 
     .vitra-scenery-inline > .vitra-scenery-clouds {
       animation:
-        vitra-scenery-drift-clouds calc(400s / var(--vitra-scenery-speed)) steps(var(--vitra-scenery-cloud-steps)) infinite,
+        vitra-scenery-drift-clouds calc(400s / var(--vitra-scenery-speed)) linear infinite,
         vitra-scenery-depth-sky linear both;
       animation-timeline: auto, --vitra-scenery;
       animation-range: normal, exit;
@@ -924,7 +924,7 @@
 
     .vitra-scenery-inline > .vitra-scenery-ridge-far {
       animation:
-        vitra-scenery-drift-far calc(480s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) steps(var(--vitra-scenery-steps)) infinite,
+        vitra-scenery-drift-far calc(480s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) linear infinite,
         vitra-scenery-depth-far linear both;
       animation-timeline: auto, --vitra-scenery;
       animation-range: normal, exit;
@@ -932,7 +932,7 @@
 
     .vitra-scenery-inline > .vitra-scenery-ridge-mid {
       animation:
-        vitra-scenery-drift-mid calc(160s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) steps(var(--vitra-scenery-steps)) infinite,
+        vitra-scenery-drift-mid calc(160s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) linear infinite,
         vitra-scenery-depth-mid linear both;
       animation-timeline: auto, --vitra-scenery;
       animation-range: normal, exit;
