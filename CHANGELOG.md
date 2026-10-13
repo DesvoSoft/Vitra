@@ -4,6 +4,31 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.5] - 2026-10-13
+
+The rest of the stepped loops, judged the same way as the mountains in 1.13.4: each effect on its own in a real Brave 155 and Firefox 158 window (240 Hz display), comparing consecutive screen captures. "Jump" is the largest change of any pixel between two pictures, out of 255.
+
+| Effect | Stepped (1.13.4) | Now |
+|---|---|---|
+| Moon glow | 5 updates/s, jump 3 (Chromium) / 15-18 (Firefox) | continuous, typical jump 1-2 (Firefox shows an occasional larger one) |
+| Conic borders (`.vitra-gradient-rotate`, `-double`) | 30 pictures/s (15 for `-slow`), jump 5-10 | continuous, typical jump 2-3 |
+| Gradient text | 10 updates/s, jump 8 | continuous, typical jump 1-2 |
+| Mesh gradient | 10 updates/s, jump 3-5 across the whole surface | continuous, jump 2 in Firefox; 3-4 in Chromium, where it is now fine per-frame grain from resampling the gradient instead of the whole surface shifting at once |
+| Glow orbs, aurora | 10-20 updates/s, jump 1-2 | unchanged: still stepped |
+
+### Fixed
+
+- **Moon glow, conic borders, gradient text and the mesh gradient interpolate continuously again**, with the easings they had before 1.13.1 (`ease-in-out`; `linear` for the borders). Their steps were visible: a ring with a hard edge jumping five times a second, a sweep of light at 30 pictures a second, a surface-wide flicker at 10 Hz.
+- Glow orbs and aurora stay stepped: no pixel changes by more than 2/255 a step, so there is nothing to see and the saving is real.
+
+### Cost
+
+Headless Chromium, software rendering at 240 fps (the worst case), each effect alone on a page: GPU-process time goes from 28-50 ms/s to 120-205 ms/s, main-thread time by about 10 ms/s. Frame pacing is unchanged in headless Chromium and in Firefox. In a real Brave window any continuously animated page, a bare 40px moving square included, runs at 220-232 fps with an occasional 12-35 ms frame against 239.9 for a still page; these effects add nothing beyond that.
+
+### Not fixed
+
+- `.vitra-shape-morph` does not morph, stepped or not: its keyframes are polygons with different numbers of points (and a circle), which cannot be interpolated, so the shape flips every 2.4s.
+
 ## [1.13.4] - 2026-10-13
 
 The mountains glide. Since 1.13.1 the scenery's drift was stepped one device pixel at a time to spare the compositor a draw per display frame; on screen that was a range ticking 3 times a second (far) and 10 times a second (mid), plainly visible on a crisp silhouette. Measured by capturing a real window on a 240 Hz display and comparing consecutive frames of the far range:

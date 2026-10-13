@@ -22,8 +22,10 @@
    on screen that was a range ticking 3-10 times a
    second. The draw is cheap now that every drifting
    element is an unmasked carrier (see RIDGE LAYERS).
-   Twinkle and the moon's glow stay stepped: they are
-   flickers and slow fades, not travel.
+   The moon's glow breathes continuously as well: its
+   ring has a hard inner edge, and stepped five times
+   a second that edge visibly jumped in Firefox. Only
+   the twinkle is stepped: a flicker, not travel.
    Each ridge is a seamless horizontal tile (its SVG
    silhouette repeated once inside a 200%-wide layer)
    drifting one direction only, 0% -> -50%, linear
@@ -470,7 +472,7 @@
       hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 70% / 9%) 52%,
       transparent 100%
     );
-    animation: vitra-scenery-halo-breathe calc(9s / var(--vitra-scenery-speed)) steps(45) infinite alternate;
+    animation: vitra-scenery-halo-breathe calc(9s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
     will-change: transform, opacity;
   }
 

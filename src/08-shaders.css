@@ -145,11 +145,13 @@
       hsl(calc(var(--vitra-color-accent-h) + 60) 100% 60%)
     );
 
-    /* clip-path and the @property angle below can only animate by
-       repainting on the main thread. Stepping them caps that at a fixed
-       number of repaints a second instead of one per display frame
-       (144 a second on a fast monitor), and Vitra.motionGuard stops
-       them entirely while offscreen. */
+    /* clip-path can only animate by repainting on the main thread.
+       Stepping caps that at a fixed number of repaints a second
+       instead of one per display frame, and Vitra.motionGuard stops it
+       entirely while offscreen. (The conic borders below repaint too,
+       but a sweep of light shown at 15-60 pictures a second - which is
+       what stepping it gave, depending on the speed variant - reads as
+       a low frame rate, so they spin continuously.) */
     animation: vitra-shape-morph var(--vitra-shape-morph-duration, 12s) steps(48) infinite;
     will-change: clip-path;
   }
@@ -193,7 +195,7 @@
       hsl(calc(var(--vitra-color-accent-h) - 30) 100% 65%),
       var(--vitra-color-accent)
     );
-    animation: vitra-gradient-rotate-spin 4s steps(120) infinite;
+    animation: vitra-gradient-rotate-spin 4s linear infinite;
     will-change: transform;
   }
 
@@ -271,7 +273,7 @@
      ============================================ */
 
   .vitra-gradient-rotate-double::before {
-    animation: vitra-gradient-rotate-spin 4s steps(120) infinite;
+    animation: vitra-gradient-rotate-spin 4s linear infinite;
   }
 
   .vitra-gradient-rotate-double::after {
@@ -296,7 +298,7 @@
       hsl(calc(var(--vitra-color-accent-h) + 120) 100% 55% / 30%) 60deg,
       transparent 120deg
     );
-    animation: vitra-gradient-rotate-spin 6s steps(180) infinite reverse;
+    animation: vitra-gradient-rotate-spin 6s linear infinite reverse;
     will-change: transform;
   }
 
