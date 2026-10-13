@@ -1206,16 +1206,20 @@
      2026 design trend: living, breathing UI
      ============================================ */
 
-  /* AMBIENT LOOPS ARE STEPPED.
-     Everything in this section that loops forever in the background
-     (mesh gradient, glow orbs, gradient text, aurora) uses steps() sized
-     to land on a shared ~10Hz grid. A continuously interpolated loop
-     makes the compositor draw a fresh frame on every vsync for as long
-     as it is on screen - at 60 to 144 a second - and these are large,
-     blurred, translucent surfaces. Ten updates a second is invisible at
-     the speeds they drift, and it is a sixth of the GPU work.
-     steps() applies per keyframe interval, so each count below is
-     (interval length in seconds) x 10. */
+  /* WHICH AMBIENT LOOPS ARE STEPPED, AND WHY NOT ALL.
+     A continuously interpolated loop makes the compositor draw a fresh
+     frame on every vsync for as long as it is on screen. steps() on a
+     ~10Hz grid cuts that to ten draws a second - but each step is then
+     a visible jump unless it is too small to see. Measured on screen
+     (real Chromium and Firefox windows, largest change of any pixel
+     between two consecutive pictures, out of 255):
+       glow orbs, aurora  1-2 a step  -> stepped; nobody can see it
+       mesh gradient      3-5 a step, across the whole surface at once
+       gradient text      8 a step
+     The last two flicker at ten a second, right where the eye is most
+     sensitive to it, so they interpolate continuously (under 4 a
+     picture). steps() applies per keyframe interval, so each count
+     below is (interval length in seconds) x 10. */
 
   /* --- Mesh Gradient Background --- */
 
@@ -1252,7 +1256,7 @@
       radial-gradient(ellipse at 20% 50%, hsl(var(--vitra-color-accent-h) 80% 60% / 20%) 0%, transparent 50%),
       radial-gradient(ellipse at 80% 20%, hsl(calc(var(--vitra-color-accent-h) + 60) 80% 60% / 15%) 0%, transparent 50%),
       radial-gradient(ellipse at 40% 80%, hsl(calc(var(--vitra-color-accent-h) - 30) 80% 60% / 15%) 0%, transparent 50%);
-    animation: vitra-mesh-shift 16s steps(40) infinite;
+    animation: vitra-mesh-shift 16s ease-in-out infinite;
     will-change: transform;
   }
 
@@ -1337,7 +1341,7 @@
     background-size: 300% 300%;
     background-clip: text;
     color: transparent;
-    animation: vitra-text-shift 6s steps(30) infinite;
+    animation: vitra-text-shift 6s ease-in-out infinite;
   }
 
   /* background-clip: text can only be animated by repainting the glyphs,
@@ -1771,8 +1775,10 @@
    on screen that was a range ticking 3-10 times a
    second. The draw is cheap now that every drifting
    element is an unmasked carrier (see RIDGE LAYERS).
-   Twinkle and the moon's glow stay stepped: they are
-   flickers and slow fades, not travel.
+   The moon's glow breathes continuously as well: its
+   ring has a hard inner edge, and stepped five times
+   a second that edge visibly jumped in Firefox. Only
+   the twinkle is stepped: a flicker, not travel.
    Each ridge is a seamless horizontal tile (its SVG
    silhouette repeated once inside a 200%-wide layer)
    drifting one direction only, 0% -> -50%, linear
@@ -2219,7 +2225,7 @@
       hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 70% / 9%) 52%,
       transparent 100%
     );
-    animation: vitra-scenery-halo-breathe calc(9s / var(--vitra-scenery-speed)) steps(45) infinite alternate;
+    animation: vitra-scenery-halo-breathe calc(9s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
     will-change: transform, opacity;
   }
 
@@ -6182,11 +6188,13 @@
       hsl(calc(var(--vitra-color-accent-h) + 60) 100% 60%)
     );
 
-    /* clip-path and the @property angle below can only animate by
-       repainting on the main thread. Stepping them caps that at a fixed
-       number of repaints a second instead of one per display frame
-       (144 a second on a fast monitor), and Vitra.motionGuard stops
-       them entirely while offscreen. */
+    /* clip-path can only animate by repainting on the main thread.
+       Stepping caps that at a fixed number of repaints a second
+       instead of one per display frame, and Vitra.motionGuard stops it
+       entirely while offscreen. (The conic borders below repaint too,
+       but a sweep of light shown at 15-60 pictures a second - which is
+       what stepping it gave, depending on the speed variant - reads as
+       a low frame rate, so they spin continuously.) */
     animation: vitra-shape-morph var(--vitra-shape-morph-duration, 12s) steps(48) infinite;
     will-change: clip-path;
   }
@@ -6230,7 +6238,7 @@
       hsl(calc(var(--vitra-color-accent-h) - 30) 100% 65%),
       var(--vitra-color-accent)
     );
-    animation: vitra-gradient-rotate-spin 4s steps(120) infinite;
+    animation: vitra-gradient-rotate-spin 4s linear infinite;
     will-change: transform;
   }
 
@@ -6308,7 +6316,7 @@
      ============================================ */
 
   .vitra-gradient-rotate-double::before {
-    animation: vitra-gradient-rotate-spin 4s steps(120) infinite;
+    animation: vitra-gradient-rotate-spin 4s linear infinite;
   }
 
   .vitra-gradient-rotate-double::after {
@@ -6333,7 +6341,7 @@
       hsl(calc(var(--vitra-color-accent-h) + 120) 100% 55% / 30%) 60deg,
       transparent 120deg
     );
-    animation: vitra-gradient-rotate-spin 6s steps(180) infinite reverse;
+    animation: vitra-gradient-rotate-spin 6s linear infinite reverse;
     will-change: transform;
   }
 

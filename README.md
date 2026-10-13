@@ -1,7 +1,7 @@
 # Vitra CSS Framework
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
-[![Version](https://img.shields.io/badge/version-1.13.4-blue)](https://github.com/DesvoSoft/Vitra)
+[![Version](https://img.shields.io/badge/version-1.13.5-blue)](https://github.com/DesvoSoft/Vitra)
 [![License](https://img.shields.io/badge/license-ISC-blue)](https://github.com/DesvoSoft/Vitra)
 [![Bundle Size](https://img.shields.io/badge/css-19.8%20kB%20brotli-brightgreen)](https://github.com/DesvoSoft/Vitra)
 [![Tests](https://img.shields.io/badge/tests-97%20passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
@@ -17,7 +17,7 @@ Unlike generic utility-first frameworks, Vitra is built with a specific aestheti
 -   **Glass-First Design**: Optimized backdrop-filter effects with robust `@supports` fallbacks for all browsers.
 -   **Strict @layer Architecture**: Predictable cascade management using modern CSS layers.
 -   **Motion Engine**: 25+ choreographed keyframes that automatically respect `prefers-reduced-motion`, plus spring easing tokens (`--vitra-ease-spring`) for things that arrive.
--   **Light on the machine**: ambient effects animate `transform`/`opacity` only, never repaint, and pause offscreen. The scenery glides at sub-pixel precision; soft glows and gradients tick on a shared 10 Hz clock so they cost a redraw only when they change.
+-   **Light on the machine**: ambient effects animate `transform`/`opacity` only, never repaint, and pause offscreen. Everything whose steps you could see glides: the scenery at sub-pixel precision, the mesh gradient, gradient text and conic borders. Only the softest glows (orbs, aurora) tick on a shared 10 Hz clock, where a step is too small to see.
 -   **Particle System**: Native CSS/JS hybrid particles with built-in performance limits (15 mobile / 40 desktop).
 -   **Cinematic Effects**: Animated mesh gradients, floating glow orbs, gradient text, spinning border glows, page-enter animation, 3D tilt cards, aurora background, text reveal, stagger system.
 -   **Ambient Scenery**: CSS-only mountain landscape — faceted ranges with lit planes over a still foreground, twinkling stars, a moon with a breathing corona. It fades up on load and separates into depth planes as you scroll. One element of markup.
@@ -52,13 +52,13 @@ Use jsDelivr to load the minified files. We strongly recommend using a fixed ver
 
 ```html
 <!-- High-performance CSS (Fixed version with SRI) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.4/dist/vitra.min.css" integrity="sha256-..." crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.5/dist/vitra.min.css" integrity="sha256-..." crossorigin="anonymous">
 
 <!-- Optional: Modular JS Engine (Fixed version with SRI) -->
-<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.4/dist/vitra.min.js" integrity="sha256-..." crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.5/dist/vitra.min.js" integrity="sha256-..." crossorigin="anonymous" defer></script>
 ```
 
-> **Note:** Always use a pinned version (e.g., `@v1.13.4`) for production. The SRI hashes are generated during build and stored in `dist/SRI.txt`.
+> **Note:** Always use a pinned version (e.g., `@v1.13.5`) for production. The SRI hashes are generated during build and stored in `dist/SRI.txt`.
 
 #### Option B: Local Assets
 
@@ -239,7 +239,7 @@ Vitra leverages cutting-edge CSS for progressive enhancement:
 ## Accessibility & Performance
 
 -   **Reduced Motion**: All transitions and animations auto-disable if `prefers-reduced-motion` is detected. Supported at CSS (`0.01ms !important`) and JS levels; the scenery holds a static frame and animated theme changes fall back to an instant swap.
--   **Compositor-only ambient motion**: scenery, mesh gradient, glow orbs, aurora, drawer and skeleton shimmer animate `transform`/`opacity` only: 0 repaints and no main-thread work on an idle page. Soft loops (mesh gradient, orbs, aurora, star twinkle, moon glow) advance in steps on a shared 10 Hz clock; the scenery's ranges and clouds, whose crisp edges show every step, interpolate continuously.
+-   **Compositor-only ambient motion**: scenery, mesh gradient, glow orbs, aurora, drawer and skeleton shimmer animate `transform`/`opacity` only: 0 repaints and no main-thread work on an idle page. Glow orbs, aurora and the star twinkle advance in steps on a shared 10 Hz clock, where a step changes no pixel by more than 2/255; everything whose steps were visible on screen (the scenery's ranges, clouds and moon glow, the mesh gradient) interpolates continuously.
 -   **Offscreen pause**: `Vitra.motionGuard` stops ambient loops outside the viewport.
 -   **Resource Safety**: Particle counts capped (15 mobile, 40 desktop).
 -   **Contrast**: checked with axe-core against WCAG 2.2 AA across all themes; status badges use a fixed dark ink (`--vitra-color-on-status`) so they stay legible in light themes.
