@@ -928,7 +928,7 @@ const Vitra = (() => {
     const _manage = (el) => {
       if (_managed.has(el)) return;
       _managed.add(el);
-      if (!_active || _active.el !== el) el.setAttribute('inert', '');
+      el.setAttribute('inert', '');
       _sync(el, false);
     };
 
@@ -939,7 +939,7 @@ const Vitra = (() => {
       el.classList.remove('open');
       _sync(el, false);
       if (en.setRole) el.removeAttribute('role');
-      if (en.setModal) el.removeAttribute('aria-modal');
+      if (en.setRole) el.removeAttribute('aria-modal');
       if (en.hid) el.setAttribute('aria-hidden', 'true');
       en.untrap();
       en.unlock();
@@ -965,11 +965,12 @@ const Vitra = (() => {
         el,
         prev: opener || document.activeElement,
         setRole: !el.hasAttribute('role'),
-        setModal: !el.hasAttribute('aria-modal'),
         hid: el.hasAttribute('aria-hidden')
       };
-      if (en.setRole) el.setAttribute('role', 'dialog');
-      if (en.setModal) el.setAttribute('aria-modal', 'true');
+      if (en.setRole) {
+        el.setAttribute('role', 'dialog');
+        el.setAttribute('aria-modal', 'true');
+      }
       if (en.hid) el.setAttribute('aria-hidden', 'false');
       el.removeAttribute('inert');
       el.classList.add('open');
@@ -994,13 +995,20 @@ const Vitra = (() => {
       if (!t.closest) return;
       const tg = t.closest('[data-vitra-drawer-toggle]');
       if (tg) {
+        e.preventDefault();
         toggle(tg.getAttribute('data-vitra-drawer-toggle'), tg);
         return;
       }
       const btn = t.closest('.vitra-drawer-close');
       const d = btn && btn.closest('.vitra-drawer');
       if (d && _managed.has(d)) close(d);
-      else if (_active && !_active.el.contains(t) && !t.closest('.vitra-modal-open')) close();
+      else if (_active && !_active.el.contains(t) && !t.closest('.vitra-modal-open')) {
+        const en = _active;
+        // The overlay closes at once; any other outside click is deferred so an
+        // author button that calls toggle()/open() in its own handler wins.
+        if (t === _overlay(en.el)) close();
+        else setTimeout(() => _close(en));
+      }
     };
 
     const _onKey = (e) => {

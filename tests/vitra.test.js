@@ -495,7 +495,9 @@ describe('Drawer Module', () => {
     warn.mockRestore();
   });
 
-  it('close button, overlay click and outside click close it', () => {
+  const tick = () => new Promise((r) => setTimeout(r));
+
+  it('close button, overlay click and outside click close it', async () => {
     Vitra.drawer.init();
     click($('#t1'));
     click($('#d1 .vitra-drawer-close'));
@@ -507,7 +509,36 @@ describe('Drawer Module', () => {
     click($('#d1a'));
     expect($('#d1').classList.contains('open')).toBe(true);
     click($('#outside'));
+    await tick();
     expect($('#d1').classList.contains('open')).toBe(false);
+  });
+
+  it('a plain author button calling toggle() opens and closes (outside-click close is deferred)', async () => {
+    $('#outside').addEventListener('click', () => Vitra.drawer.toggle('#d1'));
+    Vitra.drawer.init();
+    click($('#outside'));
+    await tick();
+    expect($('#d1').classList.contains('open')).toBe(true);
+    click($('#outside'));
+    await tick();
+    expect($('#d1').classList.contains('open')).toBe(false);
+  });
+
+  it('author role navigation: no aria-modal while open', () => {
+    $('#d1').setAttribute('role', 'navigation');
+    Vitra.drawer.open('#d1');
+    expect($('#d1').hasAttribute('aria-modal')).toBe(false);
+    Vitra.drawer.close();
+    expect($('#d1').getAttribute('role')).toBe('navigation');
+    expect($('#d1').hasAttribute('aria-modal')).toBe(false);
+  });
+
+  it('a link toggle does not navigate', () => {
+    document.body.insertAdjacentHTML('beforeend', '<a id="lk" href="#" data-vitra-drawer-toggle="#d1">l</a>');
+    Vitra.drawer.init();
+    const ev = new MouseEvent('click', { bubbles: true, cancelable: true });
+    $('#lk').dispatchEvent(ev);
+    expect(ev.defaultPrevented).toBe(true);
   });
 
   it('init() twice: one click toggles once; destroy() stops responding and removes inert', () => {
