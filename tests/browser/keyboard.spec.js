@@ -354,7 +354,7 @@ test.describe('tabs', () => {
     page.evaluate((sel) => [...document.querySelectorAll(sel)].indexOf(document.activeElement), tabs);
 
   test('[K-tabs-keyboard] tabs: arrows, Home and End move focus and selection; the panel follows', async ({ page }) => {
-    expectedFail(test, 'K-tabs-keyboard');
+    test.skip(true, 'no Vitra.tabs module in 1.14: JS budget; ARIA markup is documented instead');
     await openSink(page);
     await page.locator('#ks-tab-1').focus();
     await page.keyboard.press('ArrowRight');
@@ -375,7 +375,7 @@ test.describe('tabs', () => {
   });
 
   test('[K-tabs-keyboard] tabs: roving tabindex keeps a single tab stop and clicking selects', async ({ page }) => {
-    expectedFail(test, 'K-tabs-keyboard');
+    test.skip(true, 'no Vitra.tabs module in 1.14: JS budget; ARIA markup is documented instead');
     await openSink(page);
     await page.locator('#ks-tab-3').click();
     expect(await selectedIndex(page), 'click aria-selected').toBe(2);

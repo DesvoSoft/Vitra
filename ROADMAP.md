@@ -161,6 +161,7 @@ All 29 audit findings are now closed. (Note: findings 12's dead-token removal â€
 - CSS Layers exposed for consumer override documentation
 - CSS custom properties for animation durations per-component
 - `Vitra.destroyAll()` comprehensive teardown
+- `Vitra.tabs` keyboard module (roles, roving tabindex, arrow keys, Home/End): deferred from 1.14 for bundle-size reasons; until then tabs ship CSS only and the ARIA markup is documented
 - npm publish for shorter CDN URLs (`cdn.jsdelivr.net/npm/vitra-css@latest/...`)
 
 ---

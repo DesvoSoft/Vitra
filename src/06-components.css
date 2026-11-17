@@ -1410,8 +1410,15 @@
     display: flex;
     gap: 0;
 
-    /* Border bottom to separate from content */
-    border-bottom: 2px solid var(--vitra-color-border);
+    /* Long or many tabs scroll instead of spilling out of the box */
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    /* Separator under the tabs. It is an inset shadow, not a border: a
+       scroll container clips the active tab's underline if that underline
+       has to overlap a border. */
+    box-shadow: inset 0 -2px 0 var(--vitra-color-border);
 
     /* Spacing */
     margin-bottom: var(--vitra-space-3);
@@ -1436,7 +1443,6 @@
 
     /* Border bottom (hidden by default) */
     border-bottom: 2px solid transparent;
-    margin-bottom: -2px; /* Offset container border */
 
     /* Transition */
     transition: color var(--vitra-duration-fast) var(--vitra-ease-default),
@@ -1515,6 +1521,8 @@
   .vitra-tab-panel.vitra-active,
   .vitra-tabs-panel.vitra-active {
     display: block;
+    flex-shrink: 0;
+
     opacity: 1;
   }
 
@@ -1550,6 +1558,17 @@
   /* ============================================
      PROGRESS (COMP-09)
      Progress bars with striped animation
+  .vitra-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (pointer: coarse) {
+    .vitra-tab,
+    .vitra-tabs-tab {
+      min-height: 44px;
+    }
+  }
+
      ============================================ */
 
   /* --- PROGRESS CONTAINER --- */
@@ -1565,6 +1584,8 @@
     border-radius: var(--vitra-radius-full);
 
     /* Overflow hidden for rounded corners */
+    overflow: visible;
+    box-shadow: none;
     overflow: hidden;
 
     /* Spacing */
