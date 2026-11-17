@@ -424,6 +424,38 @@ test.describe('tooltip', () => {
     await expect(page.locator('.vitra-tooltip-js')).toHaveCount(0);
     expect(await attr(page, '#ks-tooltip', 'aria-describedby'), 'author id restored').toBe('ks-note');
   });
+
+  test('[contract] tooltip: stays inside the 360px viewport when the target hugs the top-left corner', async ({ page }) => {
+    await openSink(page, { viewport: MOBILE });
+    await page.addStyleTag({ content: '[data-state="long-text"] { display: none !important; }' });
+    await page.evaluate(() => {
+      const t = document.querySelector('#ks-tooltip');
+      t.style.cssText = 'position:fixed;top:0;left:0;margin:0';
+      t.setAttribute('data-vitra-tooltip', 'A tooltip that is long enough to need wrapping inside a very narrow viewport');
+    });
+    await page.locator('#ks-tooltip').focus();
+    await expect(page.locator('.vitra-tooltip-js')).toBeVisible();
+    const r = await page.evaluate(() => {
+      const b = document.querySelector('.vitra-tooltip-js').getBoundingClientRect();
+      return { l: b.left, t: b.top, r: b.right, b: b.bottom, w: innerWidth, h: innerHeight, sw: document.documentElement.scrollWidth };
+    });
+    expect(r.l).toBeGreaterThanOrEqual(0);
+    expect(r.t).toBeGreaterThanOrEqual(0);
+    expect(r.r).toBeLessThanOrEqual(r.w);
+    expect(r.b).toBeLessThanOrEqual(r.h);
+    expect(r.sw).toBe(360);
+  });
+
+  test('[contract] tooltip: a 60-character unbroken string does not scroll the page sideways', async ({ page }) => {
+    await openSink(page, { viewport: MOBILE });
+    await page.addStyleTag({ content: '[data-state="long-text"] { display: none !important; }' });
+    await page.evaluate(() => {
+      document.querySelector('#ks-tooltip').setAttribute('data-vitra-tooltip', 'W'.repeat(60));
+    });
+    await page.locator('#ks-tooltip').focus();
+    await expect(page.locator('.vitra-tooltip-js')).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(360);
+  });
 });
 
 // ----------------------------------------------------------------- toast ---

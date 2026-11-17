@@ -1044,10 +1044,51 @@ const Vitra = (() => {
   // =========================================================================
 
   const tooltip = (() => {
-    let _activeTooltip = null;
+    let _active = null;
+    let _cur = null;
     let _showTimeout = null;
+    let _touch = false;
+    let _bound = false;
+    const _SEL = '[data-vitra-tooltip]';
     const _offset = 8;
-    const _listeners = new WeakMap();
+    const _opp = { top: 'bottom', bottom: 'top', left: 'right', right: 'left' };
+
+    // Place the tip: requested side, else the opposite side, else clamped
+    // to the viewport with an 8px margin.
+    const _positionTooltip = (target, tip, position) => {
+      const r = target.getBoundingClientRect();
+      const w = tip.offsetWidth;
+      const h = tip.offsetHeight;
+      const W = document.documentElement.clientWidth;
+      const H = window.innerHeight;
+      const xy = (p) => p === 'bottom' ? [r.left + (r.width - w) / 2, r.bottom + _offset]
+        : p === 'left' ? [r.left - w - _offset, r.top + (r.height - h) / 2]
+        : p === 'right' ? [r.right + _offset, r.top + (r.height - h) / 2]
+        : [r.left + (r.width - w) / 2, r.top - h - _offset];
+      const fits = (p, [x, y]) => p === 'left' ? x >= _offset : p === 'right' ? x + w <= W - _offset
+        : p === 'bottom' ? y + h <= H - _offset : y >= _offset;
+      let p = _opp[position] ? position : 'top';
+      let c = xy(p);
+      if (!fits(p, c)) {
+        p = _opp[p];
+        c = fits(p, xy(p)) ? xy(p) : c;
+      }
+      tip.style.left = `${Math.max(_offset, Math.min(c[0], W - w - _offset)) + window.scrollX}px`;
+      tip.style.top = `${Math.max(_offset, Math.min(c[1], H - h - _offset)) + window.scrollY}px`;
+    };
+
+    const _key = (e) => { if (e.key === 'Escape') hide(); };
+    const _watch = (on) => {
+      const f = on ? 'addEventListener' : 'removeEventListener';
+      document[f]('keydown', _key);
+      document[f]('scroll', _scroll, { capture: true, passive: true });
+      window[f]('resize', _off);
+    };
+    const _off = () => hide();
+    // Focus can scroll the target into view just after the tip opens: only a
+    // scroll that moves the target away from the tip hides it.
+    const _at = () => { const r = _cur.getBoundingClientRect(); return r.top + ',' + r.left; };
+    const _scroll = () => { if (_at() !== _active._at) hide(); };
 
     /**
      * Show a tooltip
@@ -1058,11 +1099,7 @@ const Vitra = (() => {
      * @param {number} options.delay - Delay before show in ms (default: 0)
      */
     const show = (target, text, options = {}) => {
-      const {
-        position = 'top',
-        delay = 0
-      } = options;
-
+      const { position = 'top', delay = 0 } = options;
       const targetEl = _resolve(target);
 
       if (!targetEl) {
@@ -1070,13 +1107,9 @@ const Vitra = (() => {
         return false;
       }
 
-      // Hide any active tooltip first
+      // Hide any active tooltip first (also clears a pending one)
       hide();
-
-      if (_showTimeout) {
-        clearTimeout(_showTimeout);
-        _showTimeout = null;
-      }
+      _cur = targetEl;
 
       _showTimeout = setTimeout(() => {
         const tooltipEl = document.createElement('div');
@@ -1086,155 +1119,85 @@ const Vitra = (() => {
         tooltipEl.setAttribute('role', 'tooltip');
         tooltipEl.textContent = text;
 
-        // Style the tooltip
-        tooltipEl.style.position = 'absolute';
-        tooltipEl.style.zIndex = '9999';
-        tooltipEl.style.background = 'var(--vitra-color-bg, #0f0f14)';
-        tooltipEl.style.color = 'var(--vitra-color-text-primary, #ffffff)';
-        tooltipEl.style.border = '1px solid var(--vitra-color-border, #2a2a35)';
-        tooltipEl.style.borderRadius = 'var(--vitra-radius-sm, 4px)';
-        tooltipEl.style.padding = 'var(--vitra-space-1, 4px) var(--vitra-space-2, 8px)';
-        tooltipEl.style.fontSize = 'var(--vitra-font-size-sm, 0.875rem)';
-        tooltipEl.style.whiteSpace = 'normal';
-        tooltipEl.style.wordWrap = 'break-word';
-        tooltipEl.style.maxWidth = '90vw';
-        tooltipEl.style.pointerEvents = 'none';
-        tooltipEl.style.opacity = '0';
-        tooltipEl.style.transition = 'opacity 0.2s ease';
-
-        // Connect tooltip to target via aria-describedby
-        targetEl.setAttribute('aria-describedby', tooltipId);
+        // Add to (never replace) the author's aria-describedby list
+        targetEl.setAttribute('aria-describedby',
+          [targetEl.getAttribute('aria-describedby'), tooltipId].filter(Boolean).join(' '));
 
         document.body.appendChild(tooltipEl);
-
-        // Position the tooltip
         _positionTooltip(targetEl, tooltipEl, position);
 
-        // Show with animation
+        // Show with animation (the opacity transition lives in CSS)
         setTimeout(() => {
           tooltipEl.style.opacity = '1';
         }, 10);
 
-        _activeTooltip = tooltipEl;
-
-        // Cross-references so hide() can clean up without a DOM query
-        targetEl._vitraTooltip = tooltipEl;
+        _active = tooltipEl;
+        tooltipEl._at = _at();
         tooltipEl._vitraTarget = targetEl;
+        _watch(true);
       }, delay);
 
       return true;
     };
 
     /**
-     * Position tooltip relative to target
-     */
-    const _positionTooltip = (target, tooltip, position) => {
-      const targetRect = target.getBoundingClientRect();
-      const tooltipRect = tooltip.getBoundingClientRect();
-
-      let top, left;
-
-      switch (position) {
-        case 'bottom':
-          top = targetRect.bottom + _offset;
-          left = targetRect.left + (targetRect.width - tooltipRect.width) / 2;
-          break;
-        case 'left':
-          top = targetRect.top + (targetRect.height - tooltipRect.height) / 2;
-          left = targetRect.left - tooltipRect.width - _offset;
-          break;
-        case 'right':
-          top = targetRect.top + (targetRect.height - tooltipRect.height) / 2;
-          left = targetRect.right + _offset;
-          break;
-        case 'top':
-        default:
-          top = targetRect.top - tooltipRect.height - _offset;
-          left = targetRect.left + (targetRect.width - tooltipRect.width) / 2;
-          break;
-      }
-
-      // Adjust for viewport
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-
-      if (left + tooltipRect.width > viewportWidth) {
-        left = viewportWidth - tooltipRect.width - 8;
-      }
-      if (left < 0) {
-        left = 8;
-      }
-      if (top + tooltipRect.height > viewportHeight) {
-        top = targetRect.top - tooltipRect.height - _offset; // Flip to top
-      }
-      if (top < 0) {
-        top = targetRect.bottom + _offset; // Flip to bottom
-      }
-
-      tooltip.style.top = `${top + window.scrollY}px`;
-      tooltip.style.left = `${left + window.scrollX}px`;
-    };
-
-    /**
      * Hide the active tooltip
      * @param {string|HTMLElement} target - Optional target to hide tooltip for
      */
-    const _removeDescribedBy = (target) => {
-      if (target && target.getAttribute('aria-describedby')?.startsWith('vitra-tt-')) {
-        target.removeAttribute('aria-describedby');
-      }
-    };
-
-    const hide = (target = null) => {
-      if (_showTimeout) {
-        clearTimeout(_showTimeout);
-        _showTimeout = null;
-      }
+    const hide = (target) => {
+      if (target && _resolve(target) !== _cur) return;
+      clearTimeout(_showTimeout);
+      _cur = null;
 
       // Only one tooltip is ever alive. Capture the node: the fade-out
-      // timer used to read _activeTooltip after it was nulled (so the
-      // node was never removed) or after the next show() had replaced
-      // it (so it removed the new tooltip instead).
-      const el = _activeTooltip;
-      _activeTooltip = null;
+      // timer must remove this node, not whichever tooltip is active then.
+      const el = _active;
+      _active = null;
       if (el) {
-        _removeDescribedBy(el._vitraTarget);
-        if (el._vitraTarget) el._vitraTarget._vitraTooltip = null;
+        _watch(false);
+        const tg = el._vitraTarget;
+        const rest = (tg.getAttribute('aria-describedby') || '').split(' ').filter(i => i && i !== el.id).join(' ');
+        if (rest) tg.setAttribute('aria-describedby', rest);
+        else tg.removeAttribute('aria-describedby');
         el.style.opacity = '0';
         setTimeout(() => el.remove(), 200);
       }
-
-      if (target) {
-        const targetEl = _resolve(target);
-        _removeDescribedBy(targetEl);
-      }
     };
 
+    const _open = (e) => {
+      const t = e.pointerType === 'touch' ? null : e.target.closest?.(_SEL);
+      if (t && t !== _cur) {
+        show(t, t.getAttribute('data-vitra-tooltip'), {
+          position: t.getAttribute('data-vitra-tooltip-position') || 'top',
+          delay: +t.getAttribute('data-vitra-tooltip-delay') || 0
+        });
+      }
+    };
+    const _close = (e) => {
+      const t = e.target.closest?.(_SEL);
+      if (t && t === _cur && !t.contains(e.relatedTarget)) hide();
+    };
+    // Touch: a tap on a target shows, a tap anywhere else hides
+    const _tap = (e) => {
+      if (!_touch) return;
+      if (e.target.closest?.(_SEL)) _open({ target: e.target });
+      else hide();
+    };
+    const _events = [
+      ['pointerenter', _open], ['focusin', _open],
+      ['pointerleave', _close], ['focusout', _close],
+      ['pointerdown', (e) => { _touch = e.pointerType === 'touch'; }],
+      ['click', _tap]
+    ];
+    const _bind = (on) => _events.forEach(([n, f]) =>
+      document[on ? 'addEventListener' : 'removeEventListener'](n, f, true));
+
     /**
-     * Initialize tooltips from data attributes
-     * Looks for [data-vitra-tooltip] elements
+     * Initialize tooltips: one delegated set of listeners on document, so
+     * elements added later work too. Calling it again is a no-op.
      */
     const init = () => {
-      const elements = document.querySelectorAll('[data-vitra-tooltip]');
-      elements.forEach(el => {
-        const text = el.getAttribute('data-vitra-tooltip');
-        const position = el.getAttribute('data-vitra-tooltip-position') || 'top';
-        const delay = parseInt(el.getAttribute('data-vitra-tooltip-delay') || '0', 10);
-
-        const handlers = {
-          mouseenter: () => show(el, text, { position, delay }),
-          mouseleave: () => hide(el),
-          focus: () => show(el, text, { position, delay }),
-          blur: () => hide(el)
-        };
-
-        el.addEventListener('mouseenter', handlers.mouseenter);
-        el.addEventListener('mouseleave', handlers.mouseleave);
-        el.addEventListener('focus', handlers.focus);
-        el.addEventListener('blur', handlers.blur);
-
-        _listeners.set(el, handlers);
-      });
+      if (!_bound) _bind(_bound = true);
     };
 
     /**
@@ -1242,17 +1205,8 @@ const Vitra = (() => {
      */
     const destroy = () => {
       hide();
-      const elements = document.querySelectorAll('[data-vitra-tooltip]');
-      elements.forEach(el => {
-        const handlers = _listeners.get(el);
-        if (handlers) {
-          el.removeEventListener('mouseenter', handlers.mouseenter);
-          el.removeEventListener('mouseleave', handlers.mouseleave);
-          el.removeEventListener('focus', handlers.focus);
-          el.removeEventListener('blur', handlers.blur);
-          _listeners.delete(el);
-        }
-      });
+      document.querySelectorAll('.vitra-tooltip-js').forEach(n => n.remove());
+      _bind(_bound = false);
     };
 
     return {

@@ -1324,7 +1324,11 @@
     box-shadow: var(--vitra-shadow-medium);
     opacity: 0;
     visibility: hidden;
-    transform: translateY(5px);
+    bottom: calc(100% + var(--vitra-space-2));
+    left: 50%;
+    white-space: nowrap;
+    pointer-events: none;
+    transform: translate(-50%, 5px);
     transition: opacity var(--vitra-duration-normal) var(--vitra-ease-luxury),
                 visibility var(--vitra-duration-normal) var(--vitra-ease-luxury),
                  transform var(--vitra-duration-normal) var(--vitra-ease-luxury);
@@ -1336,6 +1340,48 @@
       background-color: var(--vitra-glass-bg);
       backdrop-filter: blur(var(--vitra-blur-md));
     }
+  }
+
+  /* Visible state: keyboard focus anywhere inside, hover on pointer devices */
+  .vitra-tooltip:focus-within::before {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+  }
+
+  @media (hover: hover) {
+    .vitra-tooltip:hover::before {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vitra-tooltip::before,
+    .vitra-tooltip-js {
+      transition: none;
+    }
+  }
+
+  /* --- JS TOOLTIP (Vitra.tooltip) ---
+     Visual styling lives here; the script only writes top, left and opacity. */
+  .vitra-tooltip-js {
+    position: absolute;
+    z-index: 9999;
+    box-sizing: border-box;
+    max-width: calc(100vw - 16px);
+    padding: var(--vitra-space-1) var(--vitra-space-2);
+    background-color: var(--vitra-color-bg);
+    color: var(--vitra-color-text-primary);
+    border: 1px solid var(--vitra-color-border);
+    border-radius: var(--vitra-radius-sm);
+    font-size: var(--vitra-font-size-sm);
+    white-space: normal;
+    overflow-wrap: anywhere;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
   }
 
   /* ============================================

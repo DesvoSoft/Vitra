@@ -671,6 +671,107 @@ describe('Tooltip Module', () => {
       }, 50);
     });
   });
+
+  describe('delegated init', () => {
+    const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+    const enter = (el) => el.dispatchEvent(new Event('pointerenter', { bubbles: false }));
+    const tip = () => document.querySelector('.vitra-tooltip-js');
+
+    afterEach(() => {
+      Vitra.tooltip.destroy();
+    });
+
+    it('init() twice then destroy() leaves nothing bound', async () => {
+      document.body.innerHTML = '<button id="b" data-vitra-tooltip="Hi">B</button>';
+      Vitra.tooltip.init();
+      Vitra.tooltip.init();
+      Vitra.tooltip.destroy();
+      enter(document.getElementById('b'));
+      await wait(30);
+      expect(tip()).toBeNull();
+    });
+
+    it('init() twice binds once: one tooltip, one describedby id', async () => {
+      document.body.innerHTML = '<button id="b" data-vitra-tooltip="Hi">B</button>';
+      Vitra.tooltip.init();
+      Vitra.tooltip.init();
+      enter(document.getElementById('b'));
+      await wait(30);
+      expect(document.querySelectorAll('.vitra-tooltip-js').length).toBe(1);
+      expect(document.getElementById('b').getAttribute('aria-describedby')).toBe(tip().id);
+    });
+
+    it('works for an element added after init()', async () => {
+      Vitra.tooltip.init();
+      document.body.innerHTML = '<button id="late" data-vitra-tooltip="Late">L</button>';
+      document.getElementById('late').dispatchEvent(new Event('focusin', { bubbles: true }));
+      await wait(30);
+      expect(tip().textContent).toBe('Late');
+    });
+
+    it('appends to an existing aria-describedby and removes only its own id', async () => {
+      document.body.innerHTML = '<button id="b" aria-describedby="x" data-vitra-tooltip="Hi">B</button>';
+      const b = document.getElementById('b');
+      Vitra.tooltip.init();
+      enter(b);
+      await wait(30);
+      expect(b.getAttribute('aria-describedby')).toBe('x ' + tip().id);
+      b.dispatchEvent(new Event('pointerleave'));
+      expect(b.getAttribute('aria-describedby')).toBe('x');
+    });
+
+    it('Esc hides the tooltip', async () => {
+      document.body.innerHTML = '<button id="b" data-vitra-tooltip="Hi">B</button>';
+      Vitra.tooltip.init();
+      enter(document.getElementById('b'));
+      await wait(30);
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      expect(document.getElementById('b').hasAttribute('aria-describedby')).toBe(false);
+      await wait(260);
+      expect(tip()).toBeNull();
+    });
+
+    it('scroll and resize hide it', async () => {
+      document.body.innerHTML = '<button id="b" data-vitra-tooltip="Hi">B</button>';
+      Vitra.tooltip.init();
+      enter(document.getElementById('b'));
+      await wait(30);
+      window.dispatchEvent(new Event('resize'));
+      expect(document.getElementById('b').hasAttribute('aria-describedby')).toBe(false);
+      enter(document.getElementById('b'));
+      await wait(30);
+      // A scroll that leaves the target where it was (focus scroll-into-view) keeps it
+      document.dispatchEvent(new Event('scroll'));
+      expect(document.getElementById('b').hasAttribute('aria-describedby')).toBe(true);
+      document.getElementById('b').getBoundingClientRect = () => ({ top: 40, left: 0 });
+      document.dispatchEvent(new Event('scroll'));
+      expect(document.getElementById('b').hasAttribute('aria-describedby')).toBe(false);
+    });
+
+    it('a tap on a target shows it and a tap elsewhere hides it', async () => {
+      document.body.innerHTML = '<button id="b" data-vitra-tooltip="Hi">B</button><p id="p">x</p>';
+      Vitra.tooltip.init();
+      const b = document.getElementById('b');
+      const down = (el) => el.dispatchEvent(Object.assign(new Event('pointerdown', { bubbles: true }), { pointerType: 'touch' }));
+      down(b);
+      b.dispatchEvent(new Event('click', { bubbles: true }));
+      await wait(30);
+      expect(tip()).not.toBeNull();
+      const p = document.getElementById('p');
+      down(p);
+      p.dispatchEvent(new Event('click', { bubbles: true }));
+      expect(b.hasAttribute('aria-describedby')).toBe(false);
+    });
+
+    it('keeps visual styling out of inline styles', async () => {
+      document.body.innerHTML = '<button id="b" data-vitra-tooltip="Hi">B</button>';
+      Vitra.tooltip.show('#b', 'Hi');
+      await wait(30);
+      expect(tip().style.background).toBe('');
+      expect(tip().style.position).toBe('');
+      Vitra.tooltip.hide();
+    });
+  });
 });
 
 describe('Toast Module', () => {
