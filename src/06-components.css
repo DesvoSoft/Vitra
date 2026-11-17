@@ -1963,7 +1963,7 @@
     inset: 0;
     pointer-events: none;
     background: radial-gradient(
-      600px circle at var(--mouse-x, 0) var(--mouse-y, 0),
+      600px circle at var(--vitra-mouse-x, var(--mouse-x, 50%)) var(--vitra-mouse-y, var(--mouse-y, 50%)),
       hsl(var(--vitra-color-accent-h, 250) 100% 70% / 10%),
       transparent 40%
     );

@@ -109,19 +109,16 @@ var Vitra = (() => {
               el.setAttribute("aria-live", "polite");
               el.setAttribute("aria-atomic", "true");
               el.style.cssText = "position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;";
-              document.body.appendChild(el);
+              (document.body || html).appendChild(el);
               return el;
             })();
             announcer.textContent = `Theme changed to ${themeName}`;
-            if (theme._isLocalStorageAvailable()) {
+            if (theme._persist) {
               try {
                 localStorage.setItem(STORAGE_KEY, themeName);
               } catch (e) {
                 console.warn("[Vitra Theme] Could not save theme to localStorage:", e.message);
               }
-            }
-            if (themeName === "auto") {
-              theme._watchSystemTheme();
             }
             return true;
           },
@@ -130,24 +127,25 @@ var Vitra = (() => {
            * @returns {string} The new active theme
            */
           toggle(options) {
-            const current = this.get();
+            const current = theme.get();
             let next;
             if (current === "light") {
               next = "dark";
             } else if (current === "dark") {
               next = "light";
             } else if (current === "auto") {
-              const effective = this.getEffective();
+              const effective = theme.getEffective();
               next = effective === "dark" ? "light" : "dark";
             } else {
               next = "light";
             }
-            this.set(next, options);
+            theme.set(next, options);
             return next;
           },
           // Animated theme swaps are opt-in: theme.init({ transition: true }),
           // or per call via set(name, { transition: true }).
           _transition: false,
+          _persist: true,
           _canTransition() {
             return typeof document.startViewTransition === "function" && !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
           },
@@ -199,26 +197,20 @@ var Vitra = (() => {
           init(options = {}) {
             const { defaultTheme = options.default || "auto", persist = true } = options;
             theme._transition = options.transition === true;
+            theme._persist = persist;
             let themeToSet = null;
-            if (theme._isLocalStorageAvailable()) {
-              try {
-                themeToSet = localStorage.getItem(STORAGE_KEY);
-              } catch (e) {
-              }
+            try {
+              themeToSet = localStorage.getItem(STORAGE_KEY);
+            } catch (e) {
             }
             if (!themeToSet || !VALID_THEMES.includes(themeToSet)) {
               themeToSet = defaultTheme;
             }
             const html = document.documentElement;
             html.dataset.theme = themeToSet;
-            if (persist && theme._isLocalStorageAvailable() && !localStorage.getItem(STORAGE_KEY)) {
-              try {
-                localStorage.setItem(STORAGE_KEY, themeToSet);
-              } catch (e) {
-              }
-            }
-            if (themeToSet === "auto") {
-              theme._watchSystemTheme();
+            try {
+              if (persist && !localStorage.getItem(STORAGE_KEY)) localStorage.setItem(STORAGE_KEY, themeToSet);
+            } catch (e) {
             }
             return themeToSet;
           },
@@ -245,55 +237,12 @@ var Vitra = (() => {
             return "light";
           },
           /**
-           * Watch for system theme changes (when using 'auto' theme)
-           * @private
-           */
-          _watchSystemTheme() {
-            if (!window.matchMedia) return;
-            const media = window.matchMedia("(prefers-color-scheme: dark)");
-            if (theme._mediaChangeHandler) {
-              if (typeof media.removeEventListener === "function") {
-                media.removeEventListener("change", theme._mediaChangeHandler);
-              } else if (typeof media.removeListener === "function") {
-                media.removeListener(theme._mediaChangeHandler);
-              }
-            }
-            theme._mediaChangeHandler = () => {
-              if (theme.get() === "auto") {
-                document.documentElement.dataset.theme = "auto";
-              }
-            };
-            if (typeof media.addEventListener === "function") {
-              media.addEventListener("change", theme._mediaChangeHandler);
-            } else if (typeof media.addListener === "function") {
-              media.addListener(theme._mediaChangeHandler);
-            }
-          },
-          /**
-           * Check if localStorage is available
-           * @returns {boolean} True if localStorage is available
-           * @private
-           */
-          _isLocalStorageAvailable() {
-            try {
-              if (typeof window === "undefined" || !window.localStorage) return false;
-              const test = "__vitra_test__";
-              window.localStorage.setItem(test, test);
-              window.localStorage.removeItem(test);
-              return true;
-            } catch (e) {
-              return false;
-            }
-          },
-          /**
            * Clear stored theme preference
            */
           clear() {
-            if (theme._isLocalStorageAvailable()) {
-              try {
-                localStorage.removeItem(STORAGE_KEY);
-              } catch (e) {
-              }
+            try {
+              localStorage.removeItem(STORAGE_KEY);
+            } catch (e) {
             }
           },
           /**
@@ -306,7 +255,6 @@ var Vitra = (() => {
         };
         const particles = /* @__PURE__ */ (() => {
           let _activeParticles = [];
-          let _maxParticles = 40;
           const _getDeviceLimit = () => {
             if (window.innerWidth <= 768) {
               return 15;
@@ -317,6 +265,9 @@ var Vitra = (() => {
             down: 180,
             "down-left": 210,
             "down-right": 150
+          };
+          const _prune = () => {
+            _activeParticles = _activeParticles.filter((p) => p.isConnected);
           };
           const _resolveAngle = (direction) => {
             if (typeof direction === "number") {
@@ -341,6 +292,7 @@ var Vitra = (() => {
               direction = null
             } = options;
             const limit = _getDeviceLimit();
+            _prune();
             const availableSlots = limit - _activeParticles.length;
             const actualCount = Math.min(count, availableSlots);
             if (actualCount <= 0) {
@@ -391,6 +343,7 @@ var Vitra = (() => {
             return removed.length;
           };
           const limits = () => {
+            _prune();
             return {
               max: _getDeviceLimit(),
               active: _activeParticles.length,
@@ -400,6 +353,7 @@ var Vitra = (() => {
           const init = () => {
             const containers = document.querySelectorAll("[data-vitra-particles]");
             containers.forEach((container) => {
+              if (_activeParticles.some((p) => p.parentNode === container)) return;
               const count = parseInt(container.dataset.vitraParticles || "10", 10);
               const color = container.dataset.vitraParticleColor || void 0;
               const emoji = container.dataset.vitraParticleEmoji || null;
@@ -596,8 +550,9 @@ var Vitra = (() => {
               if (!target) return;
               const rect = target.getBoundingClientRect();
               const size = Math.max(rect.width, rect.height);
-              const x = e.clientX - rect.left - size / 2;
-              const y = e.clientY - rect.top - size / 2;
+              const key = e.detail === 0;
+              const x = (key ? rect.width / 2 : e.clientX - rect.left) - size / 2;
+              const y = (key ? rect.height / 2 : e.clientY - rect.top) - size / 2;
               const span = document.createElement("span");
               span.className = "vitra-ripple-effect";
               span.style.width = `${size}px`;
@@ -929,7 +884,7 @@ var Vitra = (() => {
           let _container = null;
           const _pendingTimeouts = /* @__PURE__ */ new Set();
           const _ensureContainer = () => {
-            if (!_container) {
+            if (!_container || !_container.isConnected) {
               _container = document.createElement("div");
               _container.className = "vitra-toast-container";
               _container.setAttribute("role", "status");
@@ -945,6 +900,9 @@ var Vitra = (() => {
             }, delay);
             _pendingTimeouts.add(id);
             return id;
+          };
+          const init = () => {
+            if (document.body) _ensureContainer();
           };
           const show = (message, options = {}) => {
             const { type = "default", duration = 3e3, closable = false } = options;
@@ -989,7 +947,7 @@ var Vitra = (() => {
             }
             _container = null;
           };
-          return { show, destroy };
+          return { show, init, destroy };
         })();
         const dropdown = (() => {
           const _supportsPopover = typeof HTMLElement !== "undefined" && "showPopover" in HTMLElement.prototype;
@@ -1148,16 +1106,18 @@ var Vitra = (() => {
                 const { el: target, x, y } = _pending;
                 _pending = null;
                 const rect = target.getBoundingClientRect();
-                target.style.setProperty("--mouse-x", `${x - rect.left}px`);
-                target.style.setProperty("--mouse-y", `${y - rect.top}px`);
+                const px = `${x - rect.left}px`;
+                const py = `${y - rect.top}px`;
+                ["--vitra-mouse-x", "--mouse-x"].forEach((n) => target.style.setProperty(n, px));
+                ["--vitra-mouse-y", "--mouse-y"].forEach((n) => target.style.setProperty(n, py));
               });
             };
-            document.addEventListener("mousemove", _handleMove, { passive: true });
+            document.addEventListener("pointermove", _handleMove, { passive: true });
             initialized = true;
           };
           const destroy = () => {
             if (_handleMove) {
-              document.removeEventListener("mousemove", _handleMove);
+              document.removeEventListener("pointermove", _handleMove);
               _handleMove = null;
             }
             if (_rafId) {
@@ -1191,6 +1151,7 @@ var Vitra = (() => {
               });
               _mounted.push(el);
             }
+            motionGuard.observe(el);
             const moon = options.moon || el.dataset.vitraMoon;
             if (moon) {
               const halo = el.querySelector(".vitra-scenery-halo");
@@ -1221,6 +1182,12 @@ var Vitra = (() => {
           const PAUSED_CLASS = "vitra-motion-paused";
           let _observer = null;
           let initialized = false;
+          let _seen = /* @__PURE__ */ new WeakSet();
+          const observe = (el) => {
+            if (!_observer || _seen.has(el)) return;
+            _seen.add(el);
+            _observer.observe(el);
+          };
           const init = () => {
             if (initialized) return;
             if (_reducedMotion()) return;
@@ -1228,14 +1195,12 @@ var Vitra = (() => {
               console.warn("[Vitra MotionGuard] IntersectionObserver not supported");
               return;
             }
-            const elements = [...document.querySelectorAll(SELECTOR)];
-            if (elements.length === 0) return;
             _observer = new IntersectionObserver((entries) => {
               entries.forEach((entry) => {
                 entry.target.classList.toggle(PAUSED_CLASS, !entry.isIntersecting);
               });
             }, { rootMargin: "50px" });
-            elements.forEach((el) => _observer.observe(el));
+            document.querySelectorAll(SELECTOR).forEach(observe);
             initialized = true;
           };
           const destroy = () => {
@@ -1246,9 +1211,10 @@ var Vitra = (() => {
             document.querySelectorAll(`.${PAUSED_CLASS}`).forEach((el) => {
               el.classList.remove(PAUSED_CLASS);
             });
+            _seen = /* @__PURE__ */ new WeakSet();
             initialized = false;
           };
-          return { init, destroy };
+          return { init, observe, destroy };
         })();
         const _parseDataConfig = () => {
           const el = document.querySelector("[data-config]");
@@ -1279,6 +1245,7 @@ var Vitra = (() => {
           if (config.ripple !== false) {
             ripple.init();
           }
+          toast.init();
           if (config.tooltip !== false) {
             tooltip.init();
           }

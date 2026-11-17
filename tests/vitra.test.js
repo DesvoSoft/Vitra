@@ -1089,7 +1089,7 @@ describe('Spotlight Module', () => {
     el.getBoundingClientRect = () => ({ left: 10, top: 20, right: 110, bottom: 120, width: 100, height: 100 });
 
     Vitra.spotlight.init();
-    document.getElementById('inner').dispatchEvent(new MouseEvent('mousemove', { clientX: 60, clientY: 70, bubbles: true }));
+    document.getElementById('inner').dispatchEvent(new MouseEvent('pointermove', { clientX: 60, clientY: 70, bubbles: true }));
 
     await new Promise(resolve => requestAnimationFrame(resolve));
 
@@ -1106,7 +1106,7 @@ describe('Spotlight Module', () => {
     b.getBoundingClientRect = () => { bMeasured++; return { left: 0, top: 0, right: 100, bottom: 100, width: 100, height: 100 }; };
 
     Vitra.spotlight.init();
-    a.dispatchEvent(new MouseEvent('mousemove', { clientX: 5, clientY: 6, bubbles: true }));
+    a.dispatchEvent(new MouseEvent('pointermove', { clientX: 5, clientY: 6, bubbles: true }));
 
     await new Promise(resolve => requestAnimationFrame(resolve));
 
@@ -1120,7 +1120,7 @@ describe('Spotlight Module', () => {
     const el = document.querySelector('.vitra-spotlight');
 
     Vitra.spotlight.init();
-    document.getElementById('outside').dispatchEvent(new MouseEvent('mousemove', { clientX: 60, clientY: 70, bubbles: true }));
+    document.getElementById('outside').dispatchEvent(new MouseEvent('pointermove', { clientX: 60, clientY: 70, bubbles: true }));
 
     await new Promise(resolve => requestAnimationFrame(resolve));
 
@@ -1134,7 +1134,7 @@ describe('Spotlight Module', () => {
 
     Vitra.spotlight.init();
     Vitra.spotlight.destroy();
-    el.dispatchEvent(new MouseEvent('mousemove', { clientX: 60, clientY: 70, bubbles: true }));
+    el.dispatchEvent(new MouseEvent('pointermove', { clientX: 60, clientY: 70, bubbles: true }));
 
     await new Promise(resolve => requestAnimationFrame(resolve));
 
@@ -1632,6 +1632,151 @@ describe('Audit 2026-11 regressions', () => {
       expect(io.targets.has(el)).toBe(false);
       Vitra.reveal.reset();
       expect(io.targets.has(el)).toBe(true);
+    });
+  });
+});
+
+// Edge cases: theme, particles, motionGuard, spotlight, ripple, toast
+describe('Edge cases (task 12)', () => {
+  afterEach(() => {
+    Vitra.destroyAll();
+    document.body.innerHTML = '';
+    vi.restoreAllMocks();
+  });
+
+  describe('theme', () => {
+    it('set() without document.body does not throw, applies the theme and returns true', () => {
+      const body = document.body;
+      body.remove();
+      try {
+        let result;
+        expect(() => { result = Vitra.theme.set('dark'); }).not.toThrow();
+        expect(result).toBe(true);
+        expect(document.documentElement.dataset.theme).toBe('dark');
+      } finally {
+        document.documentElement.appendChild(body);
+      }
+    });
+
+    it('toggle() works when destructured', () => {
+      const { toggle } = Vitra.theme;
+      Vitra.theme.set('light');
+      expect(() => toggle()).not.toThrow();
+      expect(Vitra.theme.get()).toBe('dark');
+    });
+
+    it('init({ persist: false }) makes a later set() skip localStorage', () => {
+      Vitra.theme.init({ persist: false });
+      Vitra.theme.set('neon');
+      expect(localStorage.getItem('vitra-theme')).toBeNull();
+      expect(Vitra.theme.get()).toBe('neon');
+      Vitra.theme.init();
+    });
+  });
+
+  describe('particles', () => {
+    let origMM;
+    beforeEach(() => {
+      origMM = window.matchMedia;
+      window.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} });
+    });
+    afterEach(() => {
+      window.matchMedia = origMM;
+      Vitra.particles.destroy();
+    });
+
+    it('frees slots when the container is removed from the DOM', () => {
+      document.body.innerHTML = '<div id="box"></div>';
+      expect(Vitra.particles.spawn(40, { container: '#box' })).toBe(40);
+      document.getElementById('box').remove();
+      expect(Vitra.particles.limits().active).toBe(0);
+      document.body.innerHTML = '<div id="box2"></div>';
+      expect(Vitra.particles.spawn(5, { container: '#box2' })).toBe(5);
+    });
+
+    it('init() twice does not spawn a second batch', () => {
+      document.body.innerHTML = '<div id="p" data-vitra-particles="5"></div>';
+      Vitra.particles.init();
+      Vitra.particles.init();
+      expect(document.querySelectorAll('#p > *').length).toBe(5);
+    });
+  });
+
+  describe('motionGuard.observe', () => {
+    let observed;
+    let origIO;
+    let origMM;
+    beforeEach(() => {
+      observed = [];
+      origIO = window.IntersectionObserver;
+      origMM = window.matchMedia;
+      window.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} });
+      window.IntersectionObserver = class {
+        observe(el) { observed.push(el); }
+        disconnect() {}
+      };
+    });
+    afterEach(() => {
+      window.IntersectionObserver = origIO;
+      window.matchMedia = origMM;
+    });
+
+    it('is a no-op before init', () => {
+      const el = document.createElement('div');
+      Vitra.motionGuard.observe(el);
+      expect(observed).toEqual([]);
+    });
+
+    it('observes an element once, and scenery.mount() uses it', () => {
+      document.body.innerHTML = '<div id="s"></div>';
+      Vitra.motionGuard.init();
+      const el = document.getElementById('s');
+      Vitra.scenery.mount(el);
+      Vitra.motionGuard.observe(el);
+      expect(observed.filter(o => o === el).length).toBe(1);
+    });
+  });
+
+  it('spotlight: pointermove writes --vitra-mouse-* and the --mouse-* aliases', async () => {
+    document.body.innerHTML = '<div class="vitra-spotlight"></div>';
+    const el = document.querySelector('.vitra-spotlight');
+    el.getBoundingClientRect = () => ({ left: 10, top: 20, width: 100, height: 100 });
+    Vitra.spotlight.init();
+    el.dispatchEvent(new MouseEvent('pointermove', { clientX: 60, clientY: 70, bubbles: true }));
+    await new Promise(r => requestAnimationFrame(r));
+    expect(el.style.getPropertyValue('--vitra-mouse-x')).toBe('50px');
+    expect(el.style.getPropertyValue('--mouse-x')).toBe('50px');
+    expect(el.style.getPropertyValue('--vitra-mouse-y')).toBe('50px');
+    expect(el.style.getPropertyValue('--mouse-y')).toBe('50px');
+  });
+
+  it('ripple: a keyboard click (detail 0) starts from the centre', () => {
+    document.body.innerHTML = '<button class="vitra-ripple">Go</button>';
+    const btn = document.querySelector('button');
+    btn.getBoundingClientRect = () => ({ left: 100, top: 50, width: 80, height: 40 });
+    Vitra.ripple.init();
+    btn.click();
+    const fx = btn.querySelector('.vitra-ripple-effect');
+    // size 80: centre (40, 20) minus half the size
+    expect(fx.style.left).toBe('0px');
+    expect(fx.style.top).toBe('-20px');
+  });
+
+  describe('toast live region', () => {
+    it('exists empty after auto-init and show() reuses it', async () => {
+      vi.resetModules();
+      document.body.innerHTML = '';
+      const fresh = await import('../src/vitra.js');
+      const V = fresh.default || fresh;
+      const containers = document.querySelectorAll('.vitra-toast-container');
+      expect(containers.length).toBe(1);
+      expect(containers[0].children.length).toBe(0);
+      expect(containers[0].getAttribute('role')).toBe('status');
+      V.toast.show('hello');
+      expect(document.querySelectorAll('.vitra-toast-container').length).toBe(1);
+      expect(containers[0].children.length).toBe(1);
+      V.destroyAll();
+      expect(document.querySelector('.vitra-toast-container')).toBeNull();
     });
   });
 });

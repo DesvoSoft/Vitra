@@ -28,7 +28,7 @@ declare namespace Vitra {
     color?: string;
     size?: number;
     emoji?: string | null;
-    container?: string;
+    container?: string | Element;
     direction?: string | number | null;
   }
 
@@ -99,6 +99,7 @@ declare namespace Vitra {
   }
 
   interface ToastModule {
+    init(): void;
     show(message: string, options?: ToastOptions): HTMLElement;
     destroy(): void;
   }
@@ -131,6 +132,7 @@ declare namespace Vitra {
 
   interface MotionGuardModule {
     init(): void;
+    observe(el: Element): void;
     destroy(): void;
   }
 

@@ -133,23 +133,19 @@ const Vitra = (() => {
         el.setAttribute('aria-live', 'polite');
         el.setAttribute('aria-atomic', 'true');
         el.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;';
-        document.body.appendChild(el);
+        (document.body || html).appendChild(el);
         return el;
       })();
       announcer.textContent = `Theme changed to ${themeName}`;
 
       // Persist to localStorage if available
-      if (theme._isLocalStorageAvailable()) {
+      if (theme._persist) {
         try {
           localStorage.setItem(STORAGE_KEY, themeName);
         } catch (e) {
           // localStorage may be full or disabled
           console.warn('[Vitra Theme] Could not save theme to localStorage:', e.message);
         }
-      }
-
-      if (themeName === 'auto') {
-        theme._watchSystemTheme();
       }
 
       return true;
@@ -160,7 +156,7 @@ const Vitra = (() => {
      * @returns {string} The new active theme
      */
     toggle(options) {
-      const current = this.get();
+      const current = theme.get();
       let next;
 
       if (current === 'light') {
@@ -168,20 +164,21 @@ const Vitra = (() => {
       } else if (current === 'dark') {
         next = 'light';
       } else if (current === 'auto') {
-        const effective = this.getEffective();
+        const effective = theme.getEffective();
         next = effective === 'dark' ? 'light' : 'dark';
       } else {
         // If in a special theme, toggle back to light/dark based on contrast or just default to light
         next = 'light';
       }
 
-      this.set(next, options);
+      theme.set(next, options);
       return next;
     },
 
     // Animated theme swaps are opt-in: theme.init({ transition: true }),
     // or per call via set(name, { transition: true }).
     _transition: false,
+    _persist: true,
 
     _canTransition() {
       return typeof document.startViewTransition === 'function' &&
@@ -239,15 +236,14 @@ const Vitra = (() => {
       // is the original option name. Accept both.
       const { defaultTheme = options.default || 'auto', persist = true } = options;
       theme._transition = options.transition === true;
+      theme._persist = persist;
 
       // Try to restore from localStorage first
       let themeToSet = null;
-      if (theme._isLocalStorageAvailable()) {
-        try {
-          themeToSet = localStorage.getItem(STORAGE_KEY);
-        } catch (e) {
-          // localStorage may be disabled
-        }
+      try {
+        themeToSet = localStorage.getItem(STORAGE_KEY);
+      } catch (e) {
+        // localStorage may be disabled
       }
 
       // If no stored theme, use default
@@ -260,17 +256,10 @@ const Vitra = (() => {
       html.dataset.theme = themeToSet;
 
       // If persist is enabled and we had to use default, save it
-      if (persist && theme._isLocalStorageAvailable() && !localStorage.getItem(STORAGE_KEY)) {
-        try {
-          localStorage.setItem(STORAGE_KEY, themeToSet);
-        } catch (e) {
-          // Ignore storage errors
-        }
-      }
-
-      // Listen for system theme changes when using 'auto' theme
-      if (themeToSet === 'auto') {
-        theme._watchSystemTheme();
+      try {
+        if (persist && !localStorage.getItem(STORAGE_KEY)) localStorage.setItem(STORAGE_KEY, themeToSet);
+      } catch (e) {
+        // Ignore storage errors
       }
 
       return themeToSet;
@@ -301,63 +290,13 @@ const Vitra = (() => {
     },
 
     /**
-     * Watch for system theme changes (when using 'auto' theme)
-     * @private
-     */
-    _watchSystemTheme() {
-      if (!window.matchMedia) return;
-
-      const media = window.matchMedia('(prefers-color-scheme: dark)');
-
-      // Remove previous listener before adding new one to avoid accumulation
-      if (theme._mediaChangeHandler) {
-        if (typeof media.removeEventListener === 'function') {
-          media.removeEventListener('change', theme._mediaChangeHandler);
-        } else if (typeof media.removeListener === 'function') {
-          media.removeListener(theme._mediaChangeHandler);
-        }
-      }
-
-      theme._mediaChangeHandler = () => {
-        if (theme.get() === 'auto') {
-          document.documentElement.dataset.theme = 'auto';
-        }
-      };
-
-      if (typeof media.addEventListener === 'function') {
-        media.addEventListener('change', theme._mediaChangeHandler);
-      } else if (typeof media.addListener === 'function') {
-        media.addListener(theme._mediaChangeHandler);
-      }
-    },
-
-    /**
-     * Check if localStorage is available
-     * @returns {boolean} True if localStorage is available
-     * @private
-     */
-    _isLocalStorageAvailable() {
-      try {
-        if (typeof window === 'undefined' || !window.localStorage) return false;
-        const test = '__vitra_test__';
-        window.localStorage.setItem(test, test);
-        window.localStorage.removeItem(test);
-        return true;
-      } catch (e) {
-        return false;
-      }
-    },
-
-    /**
      * Clear stored theme preference
      */
     clear() {
-      if (theme._isLocalStorageAvailable()) {
-        try {
-          localStorage.removeItem(STORAGE_KEY);
-        } catch (e) {
-          // Ignore
-        }
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (e) {
+        // Ignore
       }
     },
 
@@ -378,7 +317,6 @@ const Vitra = (() => {
   const particles = (() => {
     // Active particle instances
     let _activeParticles = [];
-    let _maxParticles = 40; // Desktop default
 
     // Get device-based particle limit
     const _getDeviceLimit = () => {
@@ -394,6 +332,9 @@ const Vitra = (() => {
       'down-left': 210,
       'down-right': 150
     };
+
+    // Drop nodes someone else removed from the DOM (e.g. their container)
+    const _prune = () => { _activeParticles = _activeParticles.filter(p => p.isConnected); };
 
     const _resolveAngle = (direction) => {
       if (typeof direction === 'number') {
@@ -413,7 +354,7 @@ const Vitra = (() => {
      * @param {string} options.color - Particle color (CSS color value)
      * @param {number} options.size - Particle size in pixels
      * @param {string} options.emoji - Emoji to use instead of dot
-     * @param {string} options.container - CSS selector for container (default: body)
+     * @param {string|Element} options.container - CSS selector or element for container (default: body)
      * @param {string|number} options.direction - Opt-in directional drift: 'down', 'down-left',
      *   'down-right', or a custom angle in degrees. Omitted/null keeps the default symmetric bob.
      * @returns {number} Number of particles actually spawned
@@ -435,6 +376,7 @@ const Vitra = (() => {
 
       // Apply device limit
       const limit = _getDeviceLimit();
+      _prune();
       const availableSlots = limit - _activeParticles.length;
       const actualCount = Math.min(count, availableSlots);
 
@@ -509,6 +451,7 @@ const Vitra = (() => {
      * @returns {Object} Limit information
      */
     const limits = () => {
+      _prune();
       return {
         max: _getDeviceLimit(),
         active: _activeParticles.length,
@@ -523,6 +466,7 @@ const Vitra = (() => {
     const init = () => {
       const containers = document.querySelectorAll('[data-vitra-particles]');
       containers.forEach(container => {
+        if (_activeParticles.some(p => p.parentNode === container)) return;
         const count = parseInt(container.dataset.vitraParticles || '10', 10);
         const color = container.dataset.vitraParticleColor || undefined;
         const emoji = container.dataset.vitraParticleEmoji || null;
@@ -787,8 +731,10 @@ const Vitra = (() => {
 
         const rect = target.getBoundingClientRect();
         const size = Math.max(rect.width, rect.height);
-        const x = e.clientX - rect.left - size / 2;
-        const y = e.clientY - rect.top - size / 2;
+        // detail 0 = keyboard / programmatic click: no pointer, start from the centre
+        const key = e.detail === 0;
+        const x = (key ? rect.width / 2 : e.clientX - rect.left) - size / 2;
+        const y = (key ? rect.height / 2 : e.clientY - rect.top) - size / 2;
 
         const span = document.createElement('span');
         span.className = 'vitra-ripple-effect';
@@ -1224,7 +1170,7 @@ const Vitra = (() => {
     const _pendingTimeouts = new Set();
 
     const _ensureContainer = () => {
-      if (!_container) {
+      if (!_container || !_container.isConnected) {
         _container = document.createElement('div');
         _container.className = 'vitra-toast-container';
         _container.setAttribute('role', 'status');
@@ -1248,6 +1194,9 @@ const Vitra = (() => {
      * @param {string} message - The message to display
      * @param {Object} options - Options (type: 'success'|'error'|'info'|'warning'|'default', duration: number, closable: boolean)
      */
+    // Created empty at auto-init so the live region exists before the first message
+    const init = () => { if (document.body) _ensureContainer(); };
+
     const show = (message, options = {}) => {
       const { type = 'default', duration = 3000, closable = false } = options;
       const container = _ensureContainer();
@@ -1306,7 +1255,7 @@ const Vitra = (() => {
       _container = null;
     };
 
-    return { show, destroy };
+    return { show, init, destroy };
   })();
 
   // =========================================================================
@@ -1507,17 +1456,20 @@ const Vitra = (() => {
           const { el: target, x, y } = _pending;
           _pending = null;
           const rect = target.getBoundingClientRect();
-          target.style.setProperty('--mouse-x', `${x - rect.left}px`);
-          target.style.setProperty('--mouse-y', `${y - rect.top}px`);
+          const px = `${x - rect.left}px`;
+          const py = `${y - rect.top}px`;
+          // --mouse-* are the pre-1.14 names, kept as aliases
+          ['--vitra-mouse-x', '--mouse-x'].forEach(n => target.style.setProperty(n, px));
+          ['--vitra-mouse-y', '--mouse-y'].forEach(n => target.style.setProperty(n, py));
         });
       };
-      document.addEventListener('mousemove', _handleMove, { passive: true });
+      document.addEventListener('pointermove', _handleMove, { passive: true });
       initialized = true;
     };
 
     const destroy = () => {
       if (_handleMove) {
-        document.removeEventListener('mousemove', _handleMove);
+        document.removeEventListener('pointermove', _handleMove);
         _handleMove = null;
       }
       if (_rafId) {
@@ -1566,6 +1518,8 @@ const Vitra = (() => {
         _mounted.push(el);
       }
 
+      motionGuard.observe(el);
+
       const moon = options.moon || el.dataset.vitraMoon;
       if (moon) {
         const halo = el.querySelector('.vitra-scenery-halo');
@@ -1610,6 +1564,15 @@ const Vitra = (() => {
     let _observer = null;
     let initialized = false;
 
+    let _seen = new WeakSet();
+
+    // Observe one element (e.g. a scene mounted after init); no-op before init
+    const observe = (el) => {
+      if (!_observer || _seen.has(el)) return;
+      _seen.add(el);
+      _observer.observe(el);
+    };
+
     const init = () => {
       if (initialized) return;
 
@@ -1622,16 +1585,13 @@ const Vitra = (() => {
         return;
       }
 
-      const elements = [...document.querySelectorAll(SELECTOR)];
-      if (elements.length === 0) return;
-
       _observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           entry.target.classList.toggle(PAUSED_CLASS, !entry.isIntersecting);
         });
       }, { rootMargin: '50px' });
 
-      elements.forEach(el => _observer.observe(el));
+      document.querySelectorAll(SELECTOR).forEach(observe);
       initialized = true;
     };
 
@@ -1643,10 +1603,11 @@ const Vitra = (() => {
       document.querySelectorAll(`.${PAUSED_CLASS}`).forEach(el => {
         el.classList.remove(PAUSED_CLASS);
       });
+      _seen = new WeakSet();
       initialized = false;
     };
 
-    return { init, destroy };
+    return { init, observe, destroy };
   })();
 
   // =========================================================================
@@ -1696,6 +1657,8 @@ const Vitra = (() => {
     if (config.ripple !== false) {
       ripple.init();
     }
+
+    toast.init();
 
     // 5. Tooltip Configuration
     if (config.tooltip !== false) {
