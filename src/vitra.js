@@ -424,6 +424,7 @@ const Vitra = (() => {
         targetContainer.appendChild(particle);
         _activeParticles.push(particle);
       }
+      motionGuard.observe(targetContainer);
 
       return actualCount;
     };
@@ -1556,12 +1557,14 @@ const Vitra = (() => {
   // =========================================================================
   // MOTION GUARD MODULE
   // Pauses infinite ambient animations (glow orbs, aurora, mesh gradient,
-  // gradient text, scenery) while
+  // gradient text, scenery, particles, loaders, noise) while
   // their container is offscreen, so long-running blur/transform loops
   // don't keep compositing every frame on sections the user has scrolled past.
   // =========================================================================
   const motionGuard = (() => {
-    const SELECTOR = '.vitra-glow-orb, .vitra-aurora-bg, .vitra-aurora-layer, .vitra-aurora-layer-1, .vitra-aurora-layer-2, .vitra-gradient-bg, .vitra-gradient-text, .vitra-border-glow, .vitra-shape-morph, .vitra-gradient-rotate, .vitra-scenery, .vitra-scenery-inline';
+    // Particles are paused through their container ([data-vitra-particles],
+    // or whatever spawn() appended them to, which it observes).
+    const SELECTOR = '.vitra-glow-orb, .vitra-aurora-bg, .vitra-aurora-layer, .vitra-aurora-layer-1, .vitra-aurora-layer-2, .vitra-gradient-bg, .vitra-gradient-text, .vitra-border-glow, .vitra-shape-morph, .vitra-gradient-rotate, .vitra-scenery, .vitra-scenery-inline, [data-vitra-particles], .vitra-spinner, .vitra-skeleton, .vitra-progress-bar-animated, .vitra-progress-ring-indeterminate, .vitra-noise-overlay';
     const PAUSED_CLASS = 'vitra-motion-paused';
 
     let _observer = null;

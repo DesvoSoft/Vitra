@@ -44,6 +44,14 @@
     will-change: transform, opacity;
   }
 
+  /* Paused by Vitra.motionGuard while their container is offscreen. The
+     container is what is watched: a drifting particle clipped by it would
+     read as offscreen, pause, and never come back. */
+  .vitra-motion-paused > .vitra-particle,
+  .vitra-motion-paused > .vitra-particles-emoji {
+    animation-play-state: paused;
+  }
+
   /* --- PARTICLE ANIMATION --- */
   @keyframes vitra-particle-float {
     0%, 100% {

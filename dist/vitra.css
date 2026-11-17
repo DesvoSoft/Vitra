@@ -784,6 +784,14 @@
     will-change: transform, opacity;
   }
 
+  /* Paused by Vitra.motionGuard while their container is offscreen. The
+     container is what is watched: a drifting particle clipped by it would
+     read as offscreen, pause, and never come back. */
+  .vitra-motion-paused > .vitra-particle,
+  .vitra-motion-paused > .vitra-particles-emoji {
+    animation-play-state: paused;
+  }
+
   /* --- PARTICLE ANIMATION --- */
   @keyframes vitra-particle-float {
     0%, 100% {
@@ -1073,9 +1081,12 @@
     will-change: transform, opacity;
   }
 
+  /* will-change only while the element waits to be revealed: kept after
+     that, every revealed card would hold a compositor layer forever. */
   .vitra-revealed {
     opacity: 1 !important;
     transform: translateY(0) scale(1) !important;
+    will-change: auto;
   }
 
   /* The directional variants below carry a keyframe animation with
@@ -1196,7 +1207,6 @@
   /* Hover Lift - subtle upward translation */
   .vitra-hover-lift {
     transition: transform var(--vitra-duration-normal, 250ms) var(--vitra-ease-out, cubic-bezier(0, 0, 0.2, 1));
-    will-change: transform;
   }
 
   /* hover: hover keeps the lift from sticking after a tap on touch screens */
@@ -1420,13 +1430,20 @@
     overflow: hidden;
   }
 
+  /* The spinning layer is a square centred on the host, 1.5x its longer
+     side (more than its diagonal), so every angle of the turn covers all
+     four corners. A 200% x 200% rectangle only did while the host was at
+     most 1.73x wider than tall: on a 600x60 bar it left the ends bare.
+     min-width/min-height with aspect-ratio give the larger of the two. */
   .vitra-border-glow::before {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
+    top: 50%;
+    left: 50%;
+    min-width: 150%;
+    min-height: 150%;
+    aspect-ratio: 1;
+    translate: -50% -50%;
     z-index: -2;
     background: conic-gradient(
       from var(--vitra-border-glow-angle, 0deg),
@@ -1676,7 +1693,6 @@
 
   .vitra-text-reveal {
     animation: vitra-text-reveal 0.8s var(--vitra-ease-luxury) both;
-    will-change: clip-path;
   }
 
   /* ============================================
@@ -3270,7 +3286,6 @@
     box-sizing: border-box;
     position: relative;
     overflow: hidden;
-    will-change: transform;
   }
 
   /* --- BUTTON VARIANTS --- */
@@ -3890,7 +3905,6 @@
     transition: transform 0.35s var(--vitra-ease-luxury),
                 opacity 0.2s var(--vitra-ease-luxury);
     transform-origin: center;
-    will-change: transform;
   }
 
   .vitra-burger.active .vitra-burger-line:nth-child(1) {
@@ -4974,20 +4988,44 @@
 
   /* --- PROGRESS BAR ANIMATED --- */
 
-  /* Animated stripes */
-  .vitra-progress-bar-animated {
+  /* Animated stripes. The stripes move to a pseudo-element that slides
+     with transform, clipped by the bar, so the loop runs on the
+     compositor. (Animating background-position on the bar itself was a
+     style recalc plus a repaint on every frame.) The layer reaches 1rem
+     past the bar on the left and its pattern starts 1rem in, so the
+     stripes sit exactly where background-position put them. */
+  .vitra-progress-bar-striped.vitra-progress-bar-animated {
+    background-image: none;
+  }
+
+  .vitra-progress-bar-striped.vitra-progress-bar-animated::after {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 -1rem;
+    width: calc(200% + 2rem);
+    background-image: linear-gradient(
+      45deg,
+      rgb(255 255 255 / 15%) 25%,
+      transparent 25%,
+      transparent 50%,
+      rgb(255 255 255 / 15%) 50%,
+      rgb(255 255 255 / 15%) 75%,
+      transparent 75%,
+      transparent
+    );
+    background-position: 1rem 0;
+    background-size: inherit;
     animation: vitra-progress-bar-stripes var(--vitra-duration-slower) linear infinite;
   }
 
-  /* Keyframes for animated stripes */
-  @keyframes vitra-progress-bar-stripes {
-    0% {
-      background-position: 1rem 0;
-    }
+  /* Paused by Vitra.motionGuard when offscreen */
+  .vitra-progress-bar-animated.vitra-motion-paused::after {
+    animation-play-state: paused;
+  }
 
-    100% {
-      background-position: 0 0;
-    }
+  @keyframes vitra-progress-bar-stripes {
+    from { transform: translateX(1rem); }
+    to { transform: translateX(0); }
   }
 
   /* --- PROGRESS SIZE VARIANTS --- */
@@ -5081,7 +5119,7 @@
   /* --- prefers-reduced-motion --- */
   @media (prefers-reduced-motion: reduce) {
     .vitra-progress-bar,
-    .vitra-progress-bar-animated,
+    .vitra-progress-bar-animated::after,
     .vitra-progress-indeterminate .vitra-progress-bar {
       transition: none;
       animation: none;
@@ -5453,8 +5491,18 @@
     will-change: transform;
   }
 
+  /* Both ends explicit: Chromium only hands a keyframe rule to the
+     compositor when its start is declared. */
   @keyframes vitra-spinner-spin {
+    from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
+  }
+
+  /* Paused by Vitra.motionGuard when offscreen */
+  .vitra-spinner.vitra-motion-paused,
+  .vitra-skeleton.vitra-motion-paused,
+  .vitra-skeleton.vitra-motion-paused::after {
+    animation-play-state: paused;
   }
 
   /* Spinner sizes */
@@ -6509,12 +6557,14 @@
      ============================================ */
 
   .vitra-noise-overlay {
+    --vitra-noise-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 1;
     opacity: var(--vitra-noise-opacity, 0.035);
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-image: var(--vitra-noise-image);
     background-size: 256px 256px;
     background-repeat: repeat;
     mix-blend-mode: overlay;
@@ -6585,14 +6635,26 @@
     inset: 8px;
   }
 
-  /* Determinate -> indeterminate: animate the value */
-  .vitra-progress-ring-indeterminate {
+  /* Indeterminate: a fixed quarter arc on a pseudo-element, turned with
+     transform so the loop runs on the compositor. (Animating the
+     registered --vitra-progress-ring-value repainted the gradient on
+     every frame.) */
+  .vitra-progress-ring-indeterminate::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: conic-gradient(var(--vitra-color-accent) 0 25%, transparent 25%);
     animation: vitra-progress-ring-spin 2s linear infinite;
   }
 
+  .vitra-progress-ring-indeterminate.vitra-motion-paused::before {
+    animation-play-state: paused;
+  }
+
   @keyframes vitra-progress-ring-spin {
-    from { --vitra-progress-ring-value: 0%; }
-    to { --vitra-progress-ring-value: 100%; }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
 
   /* ============================================
@@ -6645,7 +6707,6 @@
        what stepping it gave, depending on the speed variant - reads as
        a low frame rate, so they spin continuously.) */
     animation: vitra-shape-morph var(--vitra-shape-morph-duration, 12s) steps(48) infinite;
-    will-change: clip-path;
   }
 
   .vitra-shape-morph-sm {
@@ -6703,7 +6764,8 @@
   /* Paused by Vitra.motionGuard when offscreen */
   .vitra-shape-morph.vitra-motion-paused,
   .vitra-gradient-rotate.vitra-motion-paused::before,
-  .vitra-gradient-rotate.vitra-motion-paused::after {
+  .vitra-gradient-rotate.vitra-motion-paused::after,
+  .vitra-gradient-rotate.vitra-motion-paused .vitra-gradient-rotate-layer {
     animation-play-state: paused;
   }
 
@@ -6733,9 +6795,27 @@
     50% { opacity: calc(var(--vitra-noise-opacity, 0.035) * 1.8); }
   }
 
+  /* The grain moves to a static pseudo-element and the overlay itself
+     only fades. Firefox re-rasterises an element's SVG background on the
+     main thread every frame that element animates; a container that
+     merely holds the painted layer animates for free. The blend mode
+     stays on the overlay, so the group still mixes with the page exactly
+     as before. */
   .vitra-noise-overlay-animated {
+    background-image: none;
     animation: vitra-noise-pulse 4s ease-in-out infinite;
     will-change: opacity;
+  }
+
+  .vitra-noise-overlay-animated::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--vitra-noise-image) 0 0 / 256px 256px repeat;
+  }
+
+  .vitra-noise-overlay-animated.vitra-motion-paused {
+    animation-play-state: paused;
   }
 
   /* ============================================
@@ -6837,6 +6917,7 @@
   .vitra-scroll-reveal-right.vitra-scroll-revealed,
   .vitra-scroll-reveal-scale.vitra-scroll-revealed {
     animation: none;
+    will-change: auto;
   }
 
   .vitra-scroll-reveal.vitra-scroll-revealed {
@@ -6963,7 +7044,7 @@
     .vitra-noise-overlay-animated,
     .vitra-progress-ring,
     .vitra-progress-ring-dashed,
-    .vitra-progress-ring-indeterminate,
+    .vitra-progress-ring-indeterminate::before,
     .vitra-shape-morph,
     .vitra-gradient-rotate::before,
     .vitra-gradient-rotate-double .vitra-gradient-rotate-layer,
