@@ -312,6 +312,26 @@ for (const [kind, sel] of [['classic', '#ks-dd'], ['popover', '#ks-dd-popover']]
       });
     }
 
+    test(`dropdown (${kind}): after a Tab close, a script can reopen the menu and its first item is focusable and clickable`, async ({ page }) => {
+      await openSink(page);
+      await activate(page, toggle);
+      await expect.poll(() => focusedIndex(page)).toBe(0);
+      await page.keyboard.press('Tab');
+      await expect(page.locator(toggle)).toHaveAttribute('aria-expanded', 'false');
+      await page.evaluate((sel) => {
+        const dd = document.querySelector(sel);
+        const menu = dd.querySelector('.vitra-dropdown-menu');
+        if (menu.hasAttribute('popover')) menu.showPopover(); else dd.classList.add('open');
+      }, sel);
+      const first = page.locator(items).first();
+      await expect(first).toBeVisible();
+      await expect.poll(async () => {
+        await first.evaluate((el) => el.focus());
+        return focusedIndex(page);
+      }, { message: 'first item becomes focusable after the guard releases' }).toBe(0);
+      await first.click({ timeout: 2000 });
+    });
+
     test(`[contract] dropdown (${kind}): Esc closes it, clears aria-expanded and returns focus to the toggle`, async ({ page }) => {
       await openSink(page);
       await activate(page, toggle);

@@ -1072,7 +1072,7 @@ var require_vitra = __commonJS({
               }
             }
           }
-          if (menu) menu.inert = false;
+          _release();
           if (toggle && menu && e.detail === 0 && _isOpen(dropdown2, menu)) {
             const first = _items(menu)[0];
             if (first) first.focus();
@@ -1080,6 +1080,13 @@ var require_vitra = __commonJS({
         };
         const _isOpen = (dd, menu) => _supportsPopover && menu.hasAttribute("popover") ? menu.matches(":popover-open") : dd.classList.contains("open");
         const _items = (menu) => [...menu.querySelectorAll(".vitra-dropdown-item")].filter((i) => !i.disabled && i.getAttribute("aria-disabled") !== "true");
+        let _guardMenu = null;
+        let _guardTimer = 0;
+        const _release = () => {
+          clearTimeout(_guardTimer);
+          if (_guardMenu) _guardMenu.inert = false;
+          _guardMenu = null;
+        };
         const _keyHandler = (e) => {
           const k = e.key;
           if (e.altKey || e.ctrlKey || e.metaKey) return;
@@ -1110,7 +1117,10 @@ var require_vitra = __commonJS({
             return;
           }
           if (k === "Tab") {
+            _release();
+            _guardMenu = menu;
             menu.inert = true;
+            _guardTimer = setTimeout(_release, 400);
             if (!onToggle) {
               toggle.focus();
               if (e.shiftKey) e.preventDefault();
@@ -1136,6 +1146,7 @@ var require_vitra = __commonJS({
           _initialized = true;
         };
         const destroy = () => {
+          _release();
           document.removeEventListener("click", _clickHandler);
           document.removeEventListener("keydown", _keyHandler);
           _initialized = false;

@@ -901,6 +901,39 @@ describe('Dropdown Module', () => {
       expect(document.activeElement).toBe(c);
     });
 
+    describe('inert guard after Tab', () => {
+      const tabClose = () => {
+        vi.useFakeTimers();
+        const ctx = setup();
+        ctx.toggle.focus();
+        ctx.press(ctx.toggle, 'ArrowDown');
+        ctx.press(ctx.a, 'Tab');
+        ctx.menu = ctx.dd.querySelector('.vitra-dropdown-menu');
+        return ctx;
+      };
+      afterEach(() => vi.useRealTimers());
+
+      it('is transient: timers clear it', () => {
+        const { menu } = tabClose();
+        expect(menu.inert).toBe(true);
+        vi.runAllTimers();
+        expect(menu.inert).toBe(false);
+      });
+
+      it('a script adding .open right after leaves the menu usable once the timer fires', () => {
+        const { dd, menu } = tabClose();
+        dd.classList.add('open');
+        vi.runAllTimers();
+        expect(menu.inert).toBe(false);
+      });
+
+      it('destroy() clears it at once', () => {
+        const { menu } = tabClose();
+        Vitra.dropdown.destroy();
+        expect(menu.inert).toBe(false);
+      });
+    });
+
     it('Tab closes the menu without preventing the default focus move', () => {
       const { dd, toggle, a, press } = setup();
       toggle.focus();

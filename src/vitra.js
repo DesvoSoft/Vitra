@@ -1438,7 +1438,7 @@ const Vitra = (() => {
       }
 
       // Opened with the keyboard (detail 0): focus the first enabled item
-      if (menu) menu.inert = false;
+      _release();
       if (toggle && menu && e.detail === 0 && _isOpen(dropdown, menu)) {
         const first = _items(menu)[0];
         if (first) first.focus();
@@ -1449,6 +1449,17 @@ const Vitra = (() => {
       _supportsPopover && menu.hasAttribute('popover') ? menu.matches(':popover-open') : dd.classList.contains('open');
     const _items = (menu) => [...menu.querySelectorAll('.vitra-dropdown-item')]
       .filter(i => !i.disabled && i.getAttribute('aria-disabled') !== 'true');
+
+    // Transient guard: a Tab-closed menu is inert only while it is still
+    // rendered and fading out (longer than the closing transition), so Tab
+    // cannot step into it. It never persists.
+    let _guardMenu = null;
+    let _guardTimer = 0;
+    const _release = () => {
+      clearTimeout(_guardTimer);
+      if (_guardMenu) _guardMenu.inert = false;
+      _guardMenu = null;
+    };
 
     // One delegated keydown: Esc, Tab and the arrow keys of an open menu
     const _keyHandler = (e) => {
@@ -1481,7 +1492,10 @@ const Vitra = (() => {
       if (k === 'Tab') {
         // Close and make the menu unreachable at once (it stays rendered
         // while it fades out), then let Tab move on from the toggle
+        _release();
+        _guardMenu = menu;
         menu.inert = true;
+        _guardTimer = setTimeout(_release, 400);
         if (!onToggle) {
           toggle.focus();
           if (e.shiftKey) e.preventDefault();
@@ -1508,6 +1522,7 @@ const Vitra = (() => {
     };
 
     const destroy = () => {
+      _release();
       document.removeEventListener('click', _clickHandler);
       document.removeEventListener('keydown', _keyHandler);
       _initialized = false;
