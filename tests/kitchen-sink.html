@@ -10,6 +10,15 @@
       var q = new URLSearchParams(location.search);
       var theme = q.get('theme');
       if (theme) document.documentElement.setAttribute('data-theme', theme);
+      /* ?only=<component> shows that one section and hides the rest
+         (?only=empty hides everything: the empty-page baseline of
+         scripts/measure-motion.cjs). Optional fixture sections (.ks-optional)
+         only render when named here. */
+      var only = (q.get('only') || '').replace(/[^\w-]/g, '');
+      if (only) {
+        document.write('<style>body > :not(script):not([data-component="' + only + '"]) { display: none !important; }' +
+          '[data-component="' + only + '"] { display: block !important; }</style>');
+      }
       if (q.get('css') === 'pieces') {
         ['core', 'scenery', 'effects'].forEach(function (n) {
           document.write('<link rel="stylesheet" href="../dist/vitra.' + n + '.min.css">');
@@ -29,6 +38,9 @@
     .ks-col { display: flex; flex-direction: column; gap: .75rem; max-width: 420px; margin-bottom: .75rem; }
     .ks-narrow { width: 160px; }
     .ks-scenery-host { position: relative; height: 240px; overflow: clip; }
+    .ks-optional { display: none; }
+    .ks-backdrop { display: flex; gap: 1rem; padding: 1rem; background: linear-gradient(90deg, #1e3a8a, #f59e0b, #f8fafc); }
+    .ks-backdrop > * { flex: 1; height: 120px; border-radius: 8px; }
   </style>
 </head>
 <body>
@@ -309,6 +321,8 @@
       <div class="vitra-progress vitra-progress-sm" data-state="sm" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" aria-label="Small progress"><div class="vitra-progress-bar vitra-progress-success" style="width: 30%"></div></div>
       <div class="vitra-progress vitra-progress-lg" data-state="lg" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" aria-label="Large progress"><div class="vitra-progress-bar vitra-progress-bar-striped vitra-progress-error" style="width: 80%"></div></div>
       <div class="vitra-progress vitra-progress-indeterminate" data-state="indeterminate" role="progressbar" aria-label="Loading"><div class="vitra-progress-bar"></div></div>
+      <div class="vitra-progress" data-state="animated" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" aria-label="Animated progress"><div class="vitra-progress-bar vitra-progress-bar-striped vitra-progress-bar-animated" id="ks-progress-animated" style="width: 70%"></div></div>
+      <div class="vitra-progress vitra-progress-lg vitra-progress-success" data-state="animated-lg" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" aria-label="Large animated progress"><div class="vitra-progress-bar vitra-progress-bar-striped vitra-progress-bar-animated" style="width: 45%"></div></div>
       <div class="vitra-progress-container" data-state="long-text">
         <span class="vitra-progress-label">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</span>
         <div class="vitra-progress" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" aria-label="Labelled progress"><div class="vitra-progress-bar" style="width: 50%"></div></div>
@@ -460,6 +474,43 @@
       <div class="vitra-scenery-inline" data-vitra-moon="crescent"></div>
     </div>
     <p class="vitra-text-secondary" data-state="long-text">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</p>
+  </section>
+
+  <!-- Motion fixtures: hidden unless named with ?only= (scripts/measure-motion.cjs,
+       tests/browser/motion.spec.js). -->
+  <section class="ks-section ks-optional" data-component="ring">
+    <h2>Progress ring</h2>
+    <div class="ks-row">
+      <div class="vitra-progress-ring vitra-progress-ring-indeterminate" id="ks-ring" data-state="indeterminate" role="progressbar" aria-label="Loading"><span class="vitra-progress-ring-inner"></span></div>
+      <div class="vitra-progress-ring vitra-progress-ring-lg vitra-progress-ring-indeterminate" data-state="indeterminate-lg" role="progressbar" aria-label="Loading large"><span class="vitra-progress-ring-inner"></span></div>
+    </div>
+  </section>
+
+  <section class="ks-section ks-optional" data-component="noise">
+    <h2>Noise overlay</h2>
+    <div class="ks-backdrop"><div style="background:#0f172a"></div><div style="background:#7c3aed"></div><div style="background:#e2e8f0"></div></div>
+    <div class="vitra-noise-overlay vitra-noise-overlay-animated" id="ks-noise" data-state="animated"></div>
+  </section>
+
+  <section class="ks-section ks-optional" data-component="rotate">
+    <h2>Gradient rotate</h2>
+    <div class="ks-row">
+      <div class="vitra-gradient-rotate" id="ks-rotate" data-state="default" style="padding: 1.5rem 2rem;">Rotate</div>
+      <div class="vitra-gradient-rotate vitra-gradient-rotate-double" id="ks-rotate-double" data-state="double" style="padding: 1.5rem 2rem;"><span class="vitra-gradient-rotate-layer"></span>Double</div>
+    </div>
+  </section>
+
+  <section class="ks-section ks-optional" data-component="border-glow">
+    <h2>Border glow</h2>
+    <div class="ks-col">
+      <div class="vitra-border-glow" id="ks-border-glow" data-state="default" style="padding: 1.5rem;">Border glow</div>
+      <div class="vitra-border-glow" id="ks-border-glow-wide" data-state="wide" style="width: 600px; height: 60px; box-sizing: border-box;"></div>
+    </div>
+  </section>
+
+  <section class="ks-section ks-optional" data-component="particles">
+    <h2>Particles</h2>
+    <div id="ks-particles" style="position: relative; height: 120px; overflow: hidden;"></div>
   </section>
 
   <script src="../dist/vitra.min.js"></script>
