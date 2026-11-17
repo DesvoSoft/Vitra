@@ -1,5 +1,20 @@
 import { test, expect } from '@playwright/test';
-import { SCHEMES, openSink } from './helpers.js';
+import { SCHEMES, openSink, contrastRatio } from './helpers.js';
+
+test('contrastRatio throws on an unrecognised color format', async ({ page }) => {
+  await openSink(page, { theme: 'dark' });
+  const h1 = page.locator('h1');
+  await h1.evaluate((el) => { el.style.color = 'lab(50% 20 20)'; });
+  await expect(contrastRatio(h1)).rejects.toThrow(/unrecognised color format/);
+});
+
+test('contrastRatio factors in opacity', async ({ page }) => {
+  await openSink(page, { theme: 'dark' });
+  const h1 = page.locator('h1');
+  const full = await contrastRatio(h1);
+  await h1.evaluate((el) => { el.style.opacity = '0.5'; });
+  expect(await contrastRatio(h1)).toBeLessThan(full);
+});
 
 const COMPONENTS = [
   'button', 'card', 'input', 'toggle', 'radio', 'checkbox', 'select', 'tabs',
