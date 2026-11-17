@@ -189,6 +189,8 @@ describe('Reveal Module', () => {
 
   it('should reveal elements immediately when reduced motion is set', () => {
     Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      configurable: true,
       value: vi.fn().mockImplementation(() => ({
         matches: true,
         addEventListener: vi.fn(),
@@ -921,6 +923,99 @@ describe('vitra.d.ts drift guard', () => {
     const runtimeTopLevel = Object.keys(Vitra);
     runtimeTopLevel.forEach((key) => {
       expect(declaredTopLevel).toContain(key);
+    });
+  });
+});
+
+// Regression guards for the 2026-11 audit
+describe('Audit 2026-11 regressions', () => {
+  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+  beforeEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  it('tooltip: hide() removes the node it faded out', async () => {
+    document.body.innerHTML = '<button id="a">A</button>';
+    Vitra.tooltip.show('#a', 'one');
+    await wait(30);
+    expect(document.querySelectorAll('.vitra-tooltip-js').length).toBe(1);
+    Vitra.tooltip.hide();
+    await wait(260);
+    expect(document.querySelectorAll('.vitra-tooltip-js').length).toBe(0);
+  });
+
+  it('tooltip: showing a second tooltip does not delete it', async () => {
+    document.body.innerHTML = '<button id="a">A</button><button id="b">B</button>';
+    Vitra.tooltip.show('#a', 'one');
+    await wait(30);
+    Vitra.tooltip.show('#b', 'two');
+    await wait(300);
+    const left = [...document.querySelectorAll('.vitra-tooltip-js')];
+    expect(left.length).toBe(1);
+    expect(left[0].textContent).toBe('two');
+    expect(document.getElementById('b').getAttribute('aria-describedby')).toBe(left[0].id);
+    expect(document.getElementById('a').hasAttribute('aria-describedby')).toBe(false);
+    Vitra.tooltip.hide();
+  });
+
+  it('theme: init accepts `default` as an alias of `defaultTheme`', () => {
+    Vitra.theme.init({ default: 'neon', persist: false });
+    expect(document.documentElement.dataset.theme).toBe('neon');
+  });
+
+  describe('reveal with an observer', () => {
+    let observers;
+    let originalIO;
+    let originalMatchMedia;
+
+    beforeEach(() => {
+      observers = [];
+      originalIO = window.IntersectionObserver;
+      originalMatchMedia = window.matchMedia;
+      window.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} });
+      window.IntersectionObserver = class {
+        constructor(cb) { this.cb = cb; this.targets = new Set(); this.disconnected = false; observers.push(this); }
+        observe(el) { this.targets.add(el); }
+        unobserve(el) { this.targets.delete(el); }
+        disconnect() { this.disconnected = true; this.targets.clear(); }
+      };
+    });
+
+    afterEach(() => {
+      Vitra.reveal.destroy();
+      window.IntersectionObserver = originalIO;
+      window.matchMedia = originalMatchMedia;
+    });
+
+    it('destroy() makes not-yet-revealed elements visible again', () => {
+      document.body.innerHTML = '<div class="vitra-reveal" id="r"></div>';
+      const el = document.getElementById('r');
+      Vitra.reveal.init();
+      expect(el.style.opacity).toBe('0');
+      Vitra.reveal.destroy();
+      expect(el.style.opacity).toBe('1');
+    });
+
+    it('init() twice disconnects the first observer', () => {
+      document.body.innerHTML = '<div class="vitra-reveal"></div>';
+      Vitra.reveal.init();
+      Vitra.reveal.init();
+      expect(observers.length).toBe(2);
+      expect(observers[0].disconnected).toBe(true);
+    });
+
+    it('reset() observes revealed elements again', async () => {
+      document.body.innerHTML = '<div class="vitra-reveal" id="r"></div>';
+      const el = document.getElementById('r');
+      Vitra.reveal.init({ stagger: 0 });
+      const io = observers[observers.length - 1];
+      io.cb([{ isIntersecting: true, target: el }]);
+      await wait(10);
+      expect(el.classList.contains('vitra-revealed')).toBe(true);
+      expect(io.targets.has(el)).toBe(false);
+      Vitra.reveal.reset();
+      expect(io.targets.has(el)).toBe(true);
     });
   });
 });

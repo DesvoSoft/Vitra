@@ -134,7 +134,7 @@ var require_vitra = __commonJS({
          * @param {boolean} options.transition - Animate later theme changes with a circular reveal (default: false)
          */
         init(options = {}) {
-          const { defaultTheme = "auto", persist = true } = options;
+          const { defaultTheme = options.default || "auto", persist = true } = options;
           theme._transition = options.transition === true;
           let themeToSet = null;
           if (theme._isLocalStorageAvailable()) {
@@ -357,6 +357,7 @@ var require_vitra = __commonJS({
       const reveal = /* @__PURE__ */ (() => {
         let _observer = null;
         let _revealedElements = [];
+        const _pendingElements = /* @__PURE__ */ new Set();
         const _prefersReducedMotion = () => {
           return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         };
@@ -391,6 +392,10 @@ var require_vitra = __commonJS({
             rootMargin = "0px",
             scrollReveal = false
           } = options;
+          if (_observer) {
+            _observer.disconnect();
+            _observer = null;
+          }
           let elements = [];
           if (scrollReveal) {
             const scrollSelectors = ".vitra-scroll-reveal, .vitra-scroll-reveal-left, .vitra-scroll-reveal-right, .vitra-scroll-reveal-scale";
@@ -434,6 +439,7 @@ var require_vitra = __commonJS({
                 entry.target.style.transform = "none";
               }, batchIndex * effectiveStagger);
               _observer.unobserve(entry.target);
+              _pendingElements.delete(entry.target);
               _revealedElements.push(entry.target);
             });
           }, { threshold, rootMargin });
@@ -454,6 +460,7 @@ var require_vitra = __commonJS({
               el.style.transition = "opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1), transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)";
             }
             el.style.opacity = "0";
+            _pendingElements.add(el);
             _observer.observe(el);
           });
         };
@@ -479,6 +486,10 @@ var require_vitra = __commonJS({
               el.style.opacity = "0";
               el.style.transform = "translateY(20px)";
             }
+            if (_observer) {
+              _pendingElements.add(el);
+              _observer.observe(el);
+            }
           });
           _revealedElements = [];
         };
@@ -494,7 +505,7 @@ var require_vitra = __commonJS({
           _lastScrollY = null;
           _lastScrollTime = null;
           _isFastScrolling = false;
-          _revealedElements.forEach((el) => {
+          [..._revealedElements, ..._pendingElements].forEach((el) => {
             el.style.opacity = "";
             el.style.transform = "";
             el.style.transition = "";
@@ -504,8 +515,13 @@ var require_vitra = __commonJS({
             } else {
               el.classList.remove("vitra-revealed");
             }
+            if (_pendingElements.has(el)) {
+              el.style.opacity = "1";
+              el.style.transform = "none";
+            }
           });
           _revealedElements = [];
+          _pendingElements.clear();
         };
         return {
           init,
@@ -720,6 +736,7 @@ var require_vitra = __commonJS({
             }, 10);
             _activeTooltip = tooltipEl;
             targetEl._vitraTooltip = tooltipEl;
+            tooltipEl._vitraTarget = targetEl;
           }, delay);
           return true;
         };
@@ -773,28 +790,17 @@ var require_vitra = __commonJS({
             clearTimeout(_showTimeout);
             _showTimeout = null;
           }
-          if (_activeTooltip) {
-            _removeDescribedBy(document.querySelector(`[aria-describedby="${_activeTooltip.id}"]`));
-            _activeTooltip.style.opacity = "0";
-            setTimeout(() => {
-              if (_activeTooltip && _activeTooltip.parentNode) {
-                _activeTooltip.parentNode.removeChild(_activeTooltip);
-              }
-            }, 200);
-            _activeTooltip = null;
+          const el = _activeTooltip;
+          _activeTooltip = null;
+          if (el) {
+            _removeDescribedBy(el._vitraTarget);
+            if (el._vitraTarget) el._vitraTarget._vitraTooltip = null;
+            el.style.opacity = "0";
+            setTimeout(() => el.remove(), 200);
           }
           if (target) {
             const targetEl = typeof target === "string" ? document.querySelector(target) : target;
-            if (targetEl && targetEl._vitraTooltip) {
-              _removeDescribedBy(targetEl);
-              targetEl._vitraTooltip.style.opacity = "0";
-              setTimeout(() => {
-                if (targetEl._vitraTooltip && targetEl._vitraTooltip.parentNode) {
-                  targetEl._vitraTooltip.parentNode.removeChild(targetEl._vitraTooltip);
-                }
-                targetEl._vitraTooltip = null;
-              }, 200);
-            }
+            _removeDescribedBy(targetEl);
           }
         };
         const init = () => {
@@ -892,16 +898,44 @@ var require_vitra = __commonJS({
       const dropdown = (() => {
         const _supportsPopover = typeof HTMLElement !== "undefined" && "showPopover" in HTMLElement.prototype;
         let _initialized = false;
+        const _boundMenus = /* @__PURE__ */ new WeakSet();
+        const _bindPopover = (menu, toggle) => {
+          if (_boundMenus.has(menu)) return;
+          _boundMenus.add(menu);
+          menu.addEventListener("toggle", (ev) => {
+            toggle.setAttribute("aria-expanded", String(ev.newState === "open"));
+          });
+        };
+        const _placePopover = (menu, toggle) => {
+          const gap = 8;
+          const t = toggle.getBoundingClientRect();
+          const m = menu.getBoundingClientRect();
+          const alignEnd = menu.classList.contains("vitra-dropdown-menu-end");
+          let left = alignEnd ? t.right - m.width : t.left;
+          left = Math.max(gap, Math.min(left, window.innerWidth - m.width - gap));
+          let top = t.bottom + gap;
+          if (top + m.height > window.innerHeight - gap && t.top - gap - m.height >= gap) {
+            top = t.top - gap - m.height;
+          }
+          menu.style.position = "fixed";
+          menu.style.margin = "0";
+          menu.style.inset = `${top}px auto auto ${left}px`;
+        };
         const _clickHandler = (e) => {
           const toggle = e.target.closest("[data-vitra-dropdown-toggle]");
           const dropdown2 = toggle ? toggle.closest(".vitra-dropdown") : null;
           const menu = dropdown2 ? dropdown2.querySelector(".vitra-dropdown-menu") : null;
+          const item = e.target.closest(".vitra-dropdown-item");
+          const itemMenu = item ? item.closest(".vitra-dropdown-menu[popover]") : null;
+          if (_supportsPopover && itemMenu && itemMenu.matches(":popover-open")) {
+            itemMenu.hidePopover();
+          }
           if (_supportsPopover && menu && menu.hasAttribute("popover")) {
             if (toggle) {
               e.preventDefault();
+              _bindPopover(menu, toggle);
               menu.togglePopover();
-              const isOpen = menu.matches(":popover-open");
-              toggle.setAttribute("aria-expanded", String(isOpen));
+              if (menu.matches(":popover-open")) _placePopover(menu, toggle);
             }
           } else {
             document.querySelectorAll(".vitra-dropdown.open").forEach((dd) => {

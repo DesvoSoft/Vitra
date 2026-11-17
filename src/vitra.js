@@ -157,7 +157,9 @@ const Vitra = (() => {
      * @param {boolean} options.transition - Animate later theme changes with a circular reveal (default: false)
      */
     init(options = {}) {
-      const { defaultTheme = 'auto', persist = true } = options;
+      // `default` is the key the docs and data-config use; `defaultTheme`
+      // is the original option name. Accept both.
+      const { defaultTheme = options.default || 'auto', persist = true } = options;
       theme._transition = options.transition === true;
 
       // Try to restore from localStorage first
@@ -473,6 +475,7 @@ const Vitra = (() => {
   const reveal = (() => {
     let _observer = null;
     let _revealedElements = [];
+    const _pendingElements = new Set();
 
     // Check for reduced motion preference
     const _prefersReducedMotion = () => {
@@ -526,6 +529,12 @@ const Vitra = (() => {
         rootMargin = '0px',
         scrollReveal = false
       } = options;
+
+      // Idempotent: a second init() used to orphan the first observer
+      if (_observer) {
+        _observer.disconnect();
+        _observer = null;
+      }
 
       // Collect all elements to observe
       let elements = [];
@@ -583,6 +592,7 @@ const Vitra = (() => {
           }, batchIndex * effectiveStagger);
 
           _observer.unobserve(entry.target);
+          _pendingElements.delete(entry.target);
           _revealedElements.push(entry.target);
         });
       }, { threshold, rootMargin });
@@ -605,6 +615,7 @@ const Vitra = (() => {
           el.style.transition = 'opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1), transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
         }
         el.style.opacity = '0';
+        _pendingElements.add(el);
         _observer.observe(el);
       });
     };
@@ -639,6 +650,11 @@ const Vitra = (() => {
           el.style.opacity = '0';
           el.style.transform = 'translateY(20px)';
         }
+        // Watch it again, otherwise "reset" just hid it for good
+        if (_observer) {
+          _pendingElements.add(el);
+          _observer.observe(el);
+        }
       });
       _revealedElements = [];
     };
@@ -658,7 +674,9 @@ const Vitra = (() => {
       _lastScrollY = null;
       _lastScrollTime = null;
       _isFastScrolling = false;
-      _revealedElements.forEach(el => {
+      // Elements still waiting to be revealed must come back too, or
+      // destroy() leaves them at inline opacity: 0 with nothing watching.
+      [..._revealedElements, ..._pendingElements].forEach(el => {
         el.style.opacity = '';
         el.style.transform = '';
         el.style.transition = '';
@@ -668,8 +686,14 @@ const Vitra = (() => {
         } else {
           el.classList.remove('vitra-revealed');
         }
+        // Without the observer the CSS hidden state would win again
+        if (_pendingElements.has(el)) {
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+        }
       });
       _revealedElements = [];
+      _pendingElements.clear();
     };
 
     return {
@@ -1000,8 +1024,9 @@ const Vitra = (() => {
 
         _activeTooltip = tooltipEl;
 
-        // Store reference on target for hide
+        // Cross-references so hide() can clean up without a DOM query
         targetEl._vitraTooltip = tooltipEl;
+        tooltipEl._vitraTarget = targetEl;
       }, delay);
 
       return true;
@@ -1073,30 +1098,22 @@ const Vitra = (() => {
         _showTimeout = null;
       }
 
-      if (_activeTooltip) {
-        _removeDescribedBy(document.querySelector(`[aria-describedby="${_activeTooltip.id}"]`));
-        _activeTooltip.style.opacity = '0';
-        setTimeout(() => {
-          if (_activeTooltip && _activeTooltip.parentNode) {
-            _activeTooltip.parentNode.removeChild(_activeTooltip);
-          }
-        }, 200);
-        _activeTooltip = null;
+      // Only one tooltip is ever alive. Capture the node: the fade-out
+      // timer used to read _activeTooltip after it was nulled (so the
+      // node was never removed) or after the next show() had replaced
+      // it (so it removed the new tooltip instead).
+      const el = _activeTooltip;
+      _activeTooltip = null;
+      if (el) {
+        _removeDescribedBy(el._vitraTarget);
+        if (el._vitraTarget) el._vitraTarget._vitraTooltip = null;
+        el.style.opacity = '0';
+        setTimeout(() => el.remove(), 200);
       }
 
-      // Also check target-specific tooltip
       if (target) {
         const targetEl = typeof target === 'string' ? document.querySelector(target) : target;
-        if (targetEl && targetEl._vitraTooltip) {
-          _removeDescribedBy(targetEl);
-          targetEl._vitraTooltip.style.opacity = '0';
-          setTimeout(() => {
-            if (targetEl._vitraTooltip && targetEl._vitraTooltip.parentNode) {
-              targetEl._vitraTooltip.parentNode.removeChild(targetEl._vitraTooltip);
-            }
-            targetEl._vitraTooltip = null;
-          }, 200);
-        }
+        _removeDescribedBy(targetEl);
       }
     };
 
@@ -1239,19 +1256,56 @@ const Vitra = (() => {
   const dropdown = (() => {
     const _supportsPopover = typeof HTMLElement !== 'undefined' && 'showPopover' in HTMLElement.prototype;
     let _initialized = false;
+    const _boundMenus = new WeakSet();
+
+    // aria-expanded follows the popover's own state, so light dismiss
+    // (outside click, Esc) is reflected too - not only toggle clicks.
+    const _bindPopover = (menu, toggle) => {
+      if (_boundMenus.has(menu)) return;
+      _boundMenus.add(menu);
+      menu.addEventListener('toggle', (ev) => {
+        toggle.setAttribute('aria-expanded', String(ev.newState === 'open'));
+      });
+    };
+
+    // A popover lives in the top layer: its containing block is the
+    // viewport, so the stylesheet's `top: 100%` cannot anchor it to the
+    // toggle. Place it under the toggle and keep it inside the viewport.
+    const _placePopover = (menu, toggle) => {
+      const gap = 8;
+      const t = toggle.getBoundingClientRect();
+      const m = menu.getBoundingClientRect();
+      const alignEnd = menu.classList.contains('vitra-dropdown-menu-end');
+      let left = alignEnd ? t.right - m.width : t.left;
+      left = Math.max(gap, Math.min(left, window.innerWidth - m.width - gap));
+      let top = t.bottom + gap;
+      if (top + m.height > window.innerHeight - gap && t.top - gap - m.height >= gap) {
+        top = t.top - gap - m.height;
+      }
+      menu.style.position = 'fixed';
+      menu.style.margin = '0';
+      menu.style.inset = `${top}px auto auto ${left}px`;
+    };
 
     const _clickHandler = (e) => {
       const toggle = e.target.closest('[data-vitra-dropdown-toggle]');
       const dropdown = toggle ? toggle.closest('.vitra-dropdown') : null;
       const menu = dropdown ? dropdown.querySelector('.vitra-dropdown-menu') : null;
 
+      // A click on an item inside an open popover menu closes it
+      const item = e.target.closest('.vitra-dropdown-item');
+      const itemMenu = item ? item.closest('.vitra-dropdown-menu[popover]') : null;
+      if (_supportsPopover && itemMenu && itemMenu.matches(':popover-open')) {
+        itemMenu.hidePopover();
+      }
+
       if (_supportsPopover && menu && menu.hasAttribute('popover')) {
         // Popover API handles close-on-outside-click automatically
         if (toggle) {
           e.preventDefault();
+          _bindPopover(menu, toggle);
           menu.togglePopover();
-          const isOpen = menu.matches(':popover-open');
-          toggle.setAttribute('aria-expanded', String(isOpen));
+          if (menu.matches(':popover-open')) _placePopover(menu, toggle);
         }
       } else {
         // Fallback: close all other dropdowns
