@@ -743,8 +743,16 @@ describe('Tooltip Module', () => {
       // A scroll that leaves the target where it was (focus scroll-into-view) keeps it
       document.dispatchEvent(new Event('scroll'));
       expect(document.getElementById('b').hasAttribute('aria-describedby')).toBe(true);
-      document.getElementById('b').getBoundingClientRect = () => ({ top: 40, left: 0 });
+      document.getElementById('b').getBoundingClientRect = () => ({ top: 40, left: 0 }); // target moved, tip did not
       document.dispatchEvent(new Event('scroll'));
+      expect(document.getElementById('b').hasAttribute('aria-describedby')).toBe(false);
+    });
+
+    it('hide(anything) still hides the active tooltip', async () => {
+      document.body.innerHTML = '<button id="b">B</button><button id="o">O</button>';
+      Vitra.tooltip.show('#b', 'Hi');
+      await wait(30);
+      Vitra.tooltip.hide('#o');
       expect(document.getElementById('b').hasAttribute('aria-describedby')).toBe(false);
     });
 

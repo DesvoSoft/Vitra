@@ -446,6 +446,24 @@ test.describe('tooltip', () => {
     expect(r.sw).toBe(360);
   });
 
+  test('[contract] tooltip: a long CSS-only data-tooltip does not widen the page at 360px while hidden', async ({ page }) => {
+    await openSink(page, { viewport: MOBILE });
+    await page.addStyleTag({ content: '[data-state="long-text"]:not(.vitra-tooltip) { display: none !important; }' });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(360);
+  });
+
+  test('[contract] tooltip: hides when the page scrolls under a fixed target', async ({ page }) => {
+    await openSink(page);
+    await page.evaluate(() => {
+      document.body.style.minHeight = '3000px';
+      document.querySelector('#ks-tooltip').style.cssText = 'position:fixed;top:100px;left:100px;margin:0';
+    });
+    await page.locator('#ks-tooltip').focus();
+    await expect(page.locator('.vitra-tooltip-js')).toBeVisible();
+    await page.evaluate(() => window.scrollTo(0, 300));
+    await expect(page.locator('.vitra-tooltip-js')).toHaveCount(0);
+  });
+
   test('[contract] tooltip: a 60-character unbroken string does not scroll the page sideways', async ({ page }) => {
     await openSink(page, { viewport: MOBILE });
     await page.addStyleTag({ content: '[data-state="long-text"] { display: none !important; }' });

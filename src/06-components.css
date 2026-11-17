@@ -1326,7 +1326,14 @@
     visibility: hidden;
     bottom: calc(100% + var(--vitra-space-2));
     left: 50%;
-    white-space: nowrap;
+
+    /* Zero-sized while hidden so a long data-tooltip cannot widen the page */
+    width: 0;
+    padding-inline: 0;
+    border-width: 0;
+    overflow: hidden;
+    max-width: min(20rem, calc(100vw - 2rem));
+    overflow-wrap: anywhere;
     pointer-events: none;
     transform: translate(-50%, 5px);
     transition: opacity var(--vitra-duration-normal) var(--vitra-ease-luxury),
@@ -1344,6 +1351,9 @@
 
   /* Visible state: keyboard focus anywhere inside, hover on pointer devices */
   .vitra-tooltip:focus-within::before {
+    width: max-content;
+    padding-inline: var(--vitra-space-3);
+    border-width: 1px;
     opacity: 1;
     visibility: visible;
     transform: translate(-50%, 0);
@@ -1351,6 +1361,9 @@
 
   @media (hover: hover) {
     .vitra-tooltip:hover::before {
+      width: max-content;
+      padding-inline: var(--vitra-space-3);
+      border-width: 1px;
       opacity: 1;
       visibility: visible;
       transform: translate(-50%, 0);
@@ -1381,7 +1394,7 @@
     overflow-wrap: anywhere;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.2s ease;
+    transition: opacity var(--vitra-duration-fast) var(--vitra-ease-default);
   }
 
   /* ============================================

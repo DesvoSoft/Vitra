@@ -796,7 +796,6 @@ var require_vitra = __commonJS({
         let _cur = null;
         let _showTimeout = null;
         let _touch = false;
-        let _bound = false;
         const _SEL = "[data-vitra-tooltip]";
         const _offset = 8;
         const _opp = { top: "bottom", bottom: "top", left: "right", right: "left" };
@@ -824,12 +823,12 @@ var require_vitra = __commonJS({
           const f = on ? "addEventListener" : "removeEventListener";
           document[f]("keydown", _key);
           document[f]("scroll", _scroll, { capture: true, passive: true });
-          window[f]("resize", _off);
+          window[f]("resize", hide);
         };
-        const _off = () => hide();
         const _at = () => {
           const r = _cur.getBoundingClientRect();
-          return r.top + "," + r.left;
+          const q = _active.getBoundingClientRect();
+          return r.top - q.top + "," + (r.left - q.left);
         };
         const _scroll = () => {
           if (_at() !== _active._at) hide();
@@ -866,8 +865,7 @@ var require_vitra = __commonJS({
           }, delay);
           return true;
         };
-        const hide = (target) => {
-          if (target && _resolve(target) !== _cur) return;
+        const hide = () => {
           clearTimeout(_showTimeout);
           _cur = null;
           const el = _active;
@@ -875,11 +873,11 @@ var require_vitra = __commonJS({
           if (el) {
             _watch(false);
             const tg = el._vitraTarget;
-            const rest = (tg.getAttribute("aria-describedby") || "").split(" ").filter((i) => i && i !== el.id).join(" ");
+            const rest = (tg.getAttribute("aria-describedby") || "").split(/\s+/).filter((i) => i && i !== el.id).join(" ");
             if (rest) tg.setAttribute("aria-describedby", rest);
             else tg.removeAttribute("aria-describedby");
             el.style.opacity = "0";
-            setTimeout(() => el.remove(), 200);
+            setTimeout(() => el.remove(), 150);
           }
         };
         const _open = (e) => {
@@ -912,12 +910,12 @@ var require_vitra = __commonJS({
         ];
         const _bind = (on) => _events.forEach(([n, f]) => document[on ? "addEventListener" : "removeEventListener"](n, f, true));
         const init = () => {
-          if (!_bound) _bind(_bound = true);
+          _bind(true);
         };
         const destroy = () => {
           hide();
           document.querySelectorAll(".vitra-tooltip-js").forEach((n) => n.remove());
-          _bind(_bound = false);
+          _bind(false);
         };
         return {
           show,
