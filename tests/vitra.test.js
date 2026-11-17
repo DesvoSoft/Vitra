@@ -826,6 +826,71 @@ describe('Dropdown Module', () => {
     expect(document.activeElement).toBe(toggle);
   });
 
+  describe('keyboard navigation (.open route)', () => {
+    const setup = () => {
+      document.body.innerHTML = `
+        <div class="vitra-dropdown">
+          <button data-vitra-dropdown-toggle aria-expanded="false">Menu</button>
+          <div class="vitra-dropdown-menu">
+            <button class="vitra-dropdown-item" disabled>Off</button>
+            <button class="vitra-dropdown-item">A</button>
+            <button class="vitra-dropdown-item" aria-disabled="true">Off2</button>
+            <button class="vitra-dropdown-item">B</button>
+            <button class="vitra-dropdown-item">C</button>
+          </div>
+        </div>`;
+      Vitra.dropdown.init();
+      const dd = document.querySelector('.vitra-dropdown');
+      const toggle = dd.querySelector('[data-vitra-dropdown-toggle]');
+      const [, a, , b, c] = dd.querySelectorAll('.vitra-dropdown-item');
+      const press = (el, key) => el.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+      return { dd, toggle, a, b, c, press };
+    };
+
+    it('keyboard click focuses the first enabled item; a mouse click does not move focus', () => {
+      const { dd, toggle, a } = setup();
+      toggle.focus();
+      toggle.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, detail: 1 }));
+      expect(dd.classList.contains('open')).toBe(true);
+      expect(document.activeElement).toBe(toggle);
+      toggle.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, detail: 0 }));
+      toggle.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, detail: 0 }));
+      expect(dd.classList.contains('open')).toBe(true);
+      expect(document.activeElement).toBe(a);
+    });
+
+    it('ArrowDown on the toggle opens and focuses the first item; arrows wrap and skip disabled items', () => {
+      const { dd, toggle, a, b, c, press } = setup();
+      toggle.focus();
+      press(toggle, 'ArrowDown');
+      expect(dd.classList.contains('open')).toBe(true);
+      expect(toggle.getAttribute('aria-expanded')).toBe('true');
+      expect(document.activeElement).toBe(a);
+      press(a, 'ArrowDown');
+      expect(document.activeElement).toBe(b);
+      press(b, 'ArrowDown');
+      press(c, 'ArrowDown');
+      expect(document.activeElement).toBe(a);
+      press(a, 'ArrowUp');
+      expect(document.activeElement).toBe(c);
+      press(c, 'Home');
+      expect(document.activeElement).toBe(a);
+      press(a, 'End');
+      expect(document.activeElement).toBe(c);
+    });
+
+    it('Tab closes the menu without preventing the default focus move', () => {
+      const { dd, toggle, a, press } = setup();
+      toggle.focus();
+      press(toggle, 'ArrowDown');
+      const ev = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true });
+      a.dispatchEvent(ev);
+      expect(dd.classList.contains('open')).toBe(false);
+      expect(toggle.getAttribute('aria-expanded')).toBe('false');
+      expect(ev.defaultPrevented).toBe(false);
+    });
+  });
+
   it('should not respond to clicks after destroy', () => {
     document.body.innerHTML = `
       <div class="vitra-dropdown">

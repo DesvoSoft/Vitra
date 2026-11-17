@@ -42,11 +42,11 @@
     },
     {
       "path": "dist/vitra.min.js",
-      "limit": "7 kB"
+      "limit": "7.5 kB"
     },
     {
       "path": "dist/vitra.esm.js",
-      "limit": "9.9 kB"
+      "limit": "10.6 kB"
     }
   ],
   "devDependencies": {

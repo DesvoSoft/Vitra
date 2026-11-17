@@ -1,2 +1,2 @@
-vitra.min.css: sha256-HK5dYx0DZn/xaAUJpI3diTz6T6a4ElssH9r2ozkctJg=
-vitra.min.js: sha256-jTe7wfyshHgZA+RKGiPUqsQEIlSV6qYoEvAZMDJmZCc=
+vitra.min.css: sha256-JKBTSxwOf+bMaroD8ZmOwrShErrbNrYLHYF69UvYi5k=
+vitra.min.js: sha256-JFasfGopUQiMW4AvHQqIzRPt4i2s17j1FrTumOJR+lM=

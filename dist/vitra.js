@@ -1073,27 +1073,64 @@ var Vitra = (() => {
                 }
               }
             }
+            if (toggle && menu && e.detail === 0 && _isOpen(dropdown2, menu)) {
+              const first = _items(menu)[0];
+              if (first) first.focus();
+            }
           };
-          const _escHandler = (e) => {
-            if (e.key !== "Escape") return;
-            document.querySelectorAll(".vitra-dropdown.open").forEach((dd) => {
-              dd.classList.remove("open");
-              const btn = dd.querySelector("[data-vitra-dropdown-toggle]");
-              if (btn) {
-                btn.setAttribute("aria-expanded", "false");
-                btn.focus();
+          const _isOpen = (dd, menu) => _supportsPopover && menu.hasAttribute("popover") ? menu.matches(":popover-open") : dd.classList.contains("open");
+          const _items = (menu) => [...menu.querySelectorAll(".vitra-dropdown-item")].filter((i) => !i.disabled && i.getAttribute("aria-disabled") !== "true");
+          const _keyHandler = (e) => {
+            const k = e.key;
+            if (k === "Escape") {
+              document.querySelectorAll(".vitra-dropdown.open").forEach((dd2) => {
+                dd2.classList.remove("open");
+                const btn = dd2.querySelector("[data-vitra-dropdown-toggle]");
+                if (btn) {
+                  btn.setAttribute("aria-expanded", "false");
+                  btn.focus();
+                }
+              });
+              return;
+            }
+            const dd = e.target.closest && e.target.closest(".vitra-dropdown");
+            const menu = dd && dd.querySelector(".vitra-dropdown-menu");
+            const toggle = dd && dd.querySelector("[data-vitra-dropdown-toggle]");
+            if (!menu || !toggle) return;
+            const onToggle = e.target === toggle;
+            if (!onToggle && !menu.contains(e.target)) return;
+            const items = _items(menu);
+            if (!_isOpen(dd, menu)) {
+              if (onToggle && k === "ArrowDown") {
+                e.preventDefault();
+                toggle.click();
               }
-            });
+              return;
+            }
+            if (k === "Tab") {
+              if (menu.hasAttribute("popover") && _supportsPopover) menu.hidePopover();
+              else {
+                dd.classList.remove("open");
+                toggle.setAttribute("aria-expanded", "false");
+              }
+              return;
+            }
+            const i = items.indexOf(document.activeElement);
+            const n = items.length;
+            const to = k === "ArrowDown" ? onToggle ? 0 : (i + 1) % n : k === "ArrowUp" ? onToggle ? n - 1 : (i - 1 + n) % n : k === "Home" ? 0 : k === "End" ? n - 1 : -1;
+            if (to < 0 || !n) return;
+            e.preventDefault();
+            items[to].focus();
           };
           const init = () => {
             if (_initialized) return;
             document.addEventListener("click", _clickHandler);
-            document.addEventListener("keydown", _escHandler);
+            document.addEventListener("keydown", _keyHandler);
             _initialized = true;
           };
           const destroy = () => {
             document.removeEventListener("click", _clickHandler);
-            document.removeEventListener("keydown", _escHandler);
+            document.removeEventListener("keydown", _keyHandler);
             _initialized = false;
           };
           return { init, destroy };

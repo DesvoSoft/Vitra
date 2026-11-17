@@ -1805,7 +1805,7 @@
     visibility: visible;
     transition: opacity var(--vitra-duration-fast) var(--vitra-ease-out),
                 transform 320ms var(--vitra-ease-spring-soft),
-                visibility var(--vitra-duration-fast) var(--vitra-ease-out),
+                /* no visibility transition on open: items are focusable at once */
                 display var(--vitra-duration-fast) var(--vitra-ease-out) allow-discrete,
                 overlay var(--vitra-duration-fast) var(--vitra-ease-out) allow-discrete;
   }
