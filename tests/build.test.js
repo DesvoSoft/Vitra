@@ -187,3 +187,24 @@ describe('every theme covers the dark tokens', () => {
     });
   }
 });
+
+// ------------------------------------------------------------ backdrop ---
+
+describe('backdrop-filter', () => {
+  it('is always inside an @supports backdrop-filter block, unless marked vitra-backdrop-ok', () => {
+    const offenders = [];
+    for (const file of srcFiles) {
+      parseSrc(file).walkDecls(/^(-webkit-)?backdrop-filter$/, (decl) => {
+        if (/^\s*none\b/.test(decl.value)) return;
+        for (let n = decl.parent; n; n = n.parent) {
+          if (n.type === 'atrule' && n.name === 'supports' && /backdrop-filter/.test(n.params) && !/^\s*not\b/.test(n.params)) return;
+        }
+        const prev = decl.prev();
+        if (prev && prev.type === 'comment' && /^\s*vitra-backdrop-ok:\s*\S/.test(prev.text)) return;
+        const rule = decl.parent.type === 'rule' ? decl.parent.selector.replace(/\s+/g, ' ') : '?';
+        offenders.push(`${file}:${decl.source.start.line} ${rule}`);
+      });
+    }
+    expect(offenders).toEqual([]);
+  });
+});

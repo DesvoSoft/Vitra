@@ -400,12 +400,14 @@
   }
 
   .vitra-gradient-text {
+    --vitra-gradient-text-l: 55%;
+
     background: linear-gradient(
       135deg,
-      hsl(var(--vitra-color-accent-h) 85% 55%),
-      hsl(calc(var(--vitra-color-accent-h) + 40) 85% 50%),
-      hsl(calc(var(--vitra-color-accent-h) - 20) 85% 55%),
-      hsl(var(--vitra-color-accent-h) 85% 55%)
+      hsl(var(--vitra-color-accent-h) 85% var(--vitra-gradient-text-l)),
+      hsl(calc(var(--vitra-color-accent-h) + 40) 85% calc(var(--vitra-gradient-text-l) - 5%)),
+      hsl(calc(var(--vitra-color-accent-h) - 20) 85% var(--vitra-gradient-text-l)),
+      hsl(var(--vitra-color-accent-h) 85% var(--vitra-gradient-text-l))
     );
     background-size: 300% 300%;
     background-clip: text;
@@ -425,15 +427,7 @@
 
   /* @vitra-auto-mirror light */
   html[data-theme="light"] .vitra-gradient-text {
-    background: linear-gradient(
-      135deg,
-      hsl(var(--vitra-color-accent-h) 85% 35%),
-      hsl(calc(var(--vitra-color-accent-h) + 40) 85% 30%),
-      hsl(calc(var(--vitra-color-accent-h) - 20) 85% 35%),
-      hsl(var(--vitra-color-accent-h) 85% 35%)
-    );
-    background-size: 300% 300%;
-    background-clip: text;
+    --vitra-gradient-text-l: 35%;
   }
 
   /* --- Animated Gradient Border --- */

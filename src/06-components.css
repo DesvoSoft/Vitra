@@ -48,11 +48,16 @@
   /* --- BUTTON VARIANTS --- */
 
   .vitra-btn-glass {
-    background: var(--vitra-color-surface);
+    background: var(--vitra-glass-bg-fallback);
     border-color: var(--vitra-color-border);
     color: var(--vitra-color-text-primary);
-    backdrop-filter: blur(var(--vitra-blur-sm));
     box-shadow: var(--vitra-shadow-subtle);
+  }
+
+  @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
+    .vitra-btn-glass {
+      backdrop-filter: blur(var(--vitra-blur-sm));
+    }
   }
 
   .vitra-btn-glass::after {
@@ -129,6 +134,24 @@
     border-radius: var(--vitra-radius-lg);
   }
 
+  /* Coarse pointers get 44px targets; fine pointers keep the compact density */
+  @media (pointer: coarse) {
+    .vitra-btn-sm,
+    .vitra-toggle + .vitra-toggle-label,
+    .vitra-radio,
+    .vitra-checkbox,
+    .vitra-navbar-brand,
+    .vitra-navbar-link {
+      min-height: 44px;
+    }
+
+    .vitra-navbar-brand,
+    .vitra-navbar-link {
+      display: inline-flex;
+      align-items: center;
+    }
+  }
+
 
   /* ============================================
       CARDS (COMP-02)
@@ -157,9 +180,15 @@
   /* --- CARD VARIANTS --- */
 
   .vitra-card-glass {
-    background: var(--vitra-glass-bg);
-    backdrop-filter: blur(var(--vitra-blur-md));
+    background: var(--vitra-glass-bg-fallback);
     border-color: var(--vitra-color-border);
+  }
+
+  @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
+    .vitra-card-glass {
+      background: var(--vitra-glass-bg);
+      backdrop-filter: blur(var(--vitra-blur-md));
+    }
   }
 
   .vitra-card-glass::after {
@@ -385,6 +414,8 @@
     align-items: center;
     gap: var(--vitra-space-2);
     cursor: pointer;
+    max-width: 100%;
+    overflow-wrap: anywhere;
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -423,9 +454,12 @@
     outline-offset: 2px;
   }
 
-  /* --- RADIO BUTTON --- */
-  .vitra-radio {
+  /* --- RADIO BUTTON / CHECKBOX --- */
+  .vitra-radio,
+  .vitra-checkbox {
     display: inline-flex;
+    max-width: 100%;
+    overflow-wrap: anywhere;
     align-items: center;
     gap: var(--vitra-space-2);
     cursor: pointer;
@@ -434,29 +468,71 @@
     user-select: none;
   }
 
-  .vitra-radio input[type="radio"] {
+  /* Painted controls: the border is the control-border token (3:1 on the
+     surface), the mark is drawn with the inverse text colour on the accent. */
+  .vitra-radio input[type="radio"],
+  .vitra-checkbox input[type="checkbox"] {
+    appearance: none;
+    position: relative;
+    flex-shrink: 0;
     width: 18px;
     height: 18px;
     margin: 0;
     cursor: pointer;
-    accent-color: var(--vitra-color-accent);
+    background-color: var(--vitra-color-surface);
+    border: 1px solid var(--vitra-color-border-control);
+    box-sizing: border-box;
   }
 
-  .vitra-radio:hover {
+  .vitra-radio input[type="radio"] {
+    border-radius: var(--vitra-radius-full);
+  }
+
+  .vitra-checkbox input[type="checkbox"] {
+    border-radius: var(--vitra-radius-sm);
+  }
+
+  .vitra-radio input[type="radio"]:checked,
+  .vitra-checkbox input[type="checkbox"]:checked {
+    background-color: var(--vitra-color-accent);
+    border-color: var(--vitra-color-accent);
+  }
+
+  .vitra-radio input[type="radio"]:checked::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border-radius: var(--vitra-radius-full);
+    background: var(--vitra-color-text-inverse);
+  }
+
+  .vitra-checkbox input[type="checkbox"]:checked::before {
+    content: '';
+    position: absolute;
+    inset: 3px 2px;
+    background: var(--vitra-color-text-inverse);
+    clip-path: polygon(14% 52%, 0 66%, 38% 100%, 100% 24%, 86% 10%, 38% 72%);
+  }
+
+  .vitra-radio:hover,
+  .vitra-checkbox:hover {
     color: var(--vitra-color-text-primary);
   }
 
-  .vitra-radio input[type="radio"]:focus-visible {
+  .vitra-radio input[type="radio"]:focus-visible,
+  .vitra-checkbox input[type="checkbox"]:focus-visible {
     outline: 2px solid var(--vitra-color-accent);
     outline-offset: 2px;
   }
 
-  .vitra-radio input[type="radio"]:disabled {
+  .vitra-radio input[type="radio"]:disabled,
+  .vitra-checkbox input[type="checkbox"]:disabled {
     cursor: not-allowed;
     opacity: 0.5;
   }
 
-  .vitra-radio:has(input[type="radio"]:disabled) {
+  .vitra-radio:has(input[type="radio"]:disabled),
+  .vitra-checkbox:has(input[type="checkbox"]:disabled) {
     opacity: 0.5;
     cursor: not-allowed;
   }
@@ -504,6 +580,8 @@
     color: var(--vitra-color-text-primary);
     text-decoration: none;
     letter-spacing: -0.03em;
+    min-width: 0;
+    overflow-wrap: anywhere;
     transition: color var(--vitra-duration-normal) var(--vitra-ease-luxury),
                 text-shadow var(--vitra-duration-normal) var(--vitra-ease-luxury);
   }
@@ -796,6 +874,8 @@
 
     /* Radial gradient backdrop — more premium than flat black */
     background: radial-gradient(ellipse at 50% 40%, rgb(0 0 0 / 45%), rgb(0 0 0 / 72%));
+
+    /* vitra-backdrop-ok: the dimming gradient above is already a readable backdrop without blur */
     backdrop-filter: blur(4px);
 
     /* Ensure overlay appears above all content */
@@ -852,6 +932,8 @@
   /* --- MODAL CONTENT --- */
   .vitra-modal-content {
     background: hsl(var(--vitra-color-accent-h) 14% 5% / 96%);
+
+    /* vitra-backdrop-ok: the 96% opaque panel background is the fallback */
     backdrop-filter: blur(var(--vitra-blur-xl));
     border: 1px solid hsl(var(--vitra-color-accent-h) 40% 70% / 10%);
     border-top-color: hsl(var(--vitra-color-accent-h) 40% 70% / 22%);
@@ -976,6 +1058,13 @@
                 border-color var(--vitra-duration-fast) var(--vitra-ease-default);
   }
 
+  @media (pointer: coarse) {
+    .vitra-modal-close {
+      width: 44px;
+      height: 44px;
+    }
+  }
+
   .vitra-modal-close:hover {
     color: var(--vitra-color-text-primary);
     background-color: var(--vitra-color-surface-hover);
@@ -1007,6 +1096,7 @@
     width: 95vw;
     max-width: 1200px;
     height: 90vh;
+    height: 90dvh;
   }
 
   /* --- FOCUS TRAP PREPARATION --- */
@@ -1056,6 +1146,8 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     border-radius: var(--vitra-radius-full);
+    max-width: 100%;
+    overflow-wrap: anywhere;
     background-color: var(--vitra-color-accent);
     color: var(--vitra-color-text-inverse);
     transition: background-color var(--vitra-duration-normal) var(--vitra-ease-luxury),
@@ -1429,6 +1521,8 @@
   /* Individual tab button */
   .vitra-tab,
   .vitra-tabs-tab {
+    flex-shrink: 0;
+
     /* Button reset */
     background: none;
     border: none;
@@ -1462,6 +1556,17 @@
     outline-offset: -2px;
   }
 
+  .vitra-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (pointer: coarse) {
+    .vitra-tab,
+    .vitra-tabs-tab {
+      min-height: 44px;
+    }
+  }
+
   /* --- TAB ACTIVE STATE --- */
   .vitra-tab.vitra-active,
   .vitra-tab[aria-selected="true"],
@@ -1477,6 +1582,8 @@
   /* Vertical tab navigation */
   .vitra-tabs-vertical {
     flex-direction: column;
+    overflow: visible;
+    box-shadow: none;
     border-bottom: none;
     border-right: 2px solid var(--vitra-color-border);
 
@@ -1521,8 +1628,6 @@
   .vitra-tab-panel.vitra-active,
   .vitra-tabs-panel.vitra-active {
     display: block;
-    flex-shrink: 0;
-
     opacity: 1;
   }
 
@@ -1558,17 +1663,6 @@
   /* ============================================
      PROGRESS (COMP-09)
      Progress bars with striped animation
-  .vitra-tabs::-webkit-scrollbar {
-    display: none;
-  }
-
-  @media (pointer: coarse) {
-    .vitra-tab,
-    .vitra-tabs-tab {
-      min-height: 44px;
-    }
-  }
-
      ============================================ */
 
   /* --- PROGRESS CONTAINER --- */
@@ -1584,8 +1678,6 @@
     border-radius: var(--vitra-radius-full);
 
     /* Overflow hidden for rounded corners */
-    overflow: visible;
-    box-shadow: none;
     overflow: hidden;
 
     /* Spacing */
@@ -2147,9 +2239,12 @@
     display: inline-flex;
     align-items: center;
     gap: var(--vitra-space-2);
+    max-width: 100%;
   }
 
   .vitra-spinner-label {
+    min-width: 0;
+    overflow-wrap: anywhere;
     font-size: var(--vitra-font-size-sm);
     color: var(--vitra-color-text-secondary);
   }
@@ -2258,6 +2353,13 @@
   .vitra-alert-dismiss:hover {
     color: var(--vitra-color-text-primary);
     background-color: var(--vitra-color-surface-hover);
+  }
+
+  @media (pointer: coarse) {
+    .vitra-alert-dismiss {
+      min-width: 44px;
+      min-height: 44px;
+    }
   }
 
   /* ============================================
@@ -2414,10 +2516,6 @@
     .vitra-spinner {
       animation: none;
       opacity: 0.5;
-    }
-
-    .vitra-skeleton-shimmer {
-      animation: none;
     }
 
     .vitra-burger-line {

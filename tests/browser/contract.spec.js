@@ -106,6 +106,53 @@ test.describe('contrast', () => {
   }
 });
 
+// Checkbox and radio paint their own border: it must reach 3:1 against the
+// surface behind the control, like inputs, selects and the switch.
+test.describe('contrast (border): checkbox and radio', () => {
+  test('[contract] unchecked checkbox and radio borders reach 3:1 in every scheme', async ({ page }) => {
+    const failures = [];
+    let checked = 0;
+    for (const s of SCHEMES) {
+      await openSink(page, s);
+      const r = await page.evaluate(() => {
+        const ctx = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
+        const px = (paint) => {
+          ctx.clearRect(0, 0, 1, 1);
+          for (const c of paint) { ctx.fillStyle = c; ctx.fillRect(0, 0, 1, 1); }
+          return [...ctx.getImageData(0, 0, 1, 1).data];
+        };
+        const lum = ([r, g, b]) => {
+          const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+          return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+        };
+        const out = [];
+        let n = 0;
+        const inputs = document.querySelectorAll(
+          '[data-component="checkbox"] .vitra-checkbox input:not(:checked):not(:disabled), [data-component="radio"] .vitra-radio input:not(:checked):not(:disabled)');
+        for (const el of inputs) {
+          if (!el.checkVisibility()) continue;
+          n++;
+          const chain = [];
+          for (let a = el.parentElement; a; a = a.parentElement) chain.unshift(getComputedStyle(a).backgroundColor);
+          const cs = getComputedStyle(el);
+          const behind = px(chain);
+          const border = px([...chain, cs.borderTopColor]);
+          const [hi, lo] = [lum(behind), lum(border)].sort((x, y) => y - x);
+          const ratio = (hi + 0.05) / (lo + 0.05);
+          if (parseFloat(cs.borderTopWidth) === 0 || !(ratio >= 3)) {
+            out.push(el.type + ' ' + ratio.toFixed(2) + ' width ' + cs.borderTopWidth);
+          }
+        }
+        return { n, out };
+      });
+      checked += r.n;
+      failures.push(...r.out.map((f) => schemeLabel(s) + ': ' + f));
+    }
+    expect(checked, 'something was measured').toBeGreaterThan(0);
+    expect(failures).toEqual([]);
+  });
+});
+
 // ---------------------------------------------------------------- touch ---
 
 const TOUCH_COMPONENTS = [

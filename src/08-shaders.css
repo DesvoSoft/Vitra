@@ -274,6 +274,7 @@
 
   .vitra-gradient-rotate-double::before {
     animation: vitra-gradient-rotate-spin 4s linear infinite;
+    will-change: transform;
   }
 
   .vitra-gradient-rotate-double::after {
@@ -299,10 +300,6 @@
       transparent 120deg
     );
     animation: vitra-gradient-rotate-spin 6s linear infinite reverse;
-    will-change: transform;
-  }
-
-  .vitra-gradient-rotate-double::before {
     will-change: transform;
   }
 
