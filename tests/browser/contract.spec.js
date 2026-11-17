@@ -383,6 +383,66 @@ test.describe('auto theme', () => {
   });
 });
 
+// ---------------------------------------------------------------- stars ---
+
+// Stars belong to every dark-scheme theme and to a page with no theme at all
+// (the :root defaults are the dark palette). Where they are hidden they must
+// not animate either (C17).
+test.describe('scenery stars', () => {
+  const STARS = [
+    { label: 'dark', open: { theme: 'dark' }, visible: true },
+    { label: 'neon', open: { theme: 'neon' }, visible: true },
+    { label: 'ocean', open: { theme: 'ocean' }, visible: true },
+    { label: 'emerald', open: { theme: 'emerald' }, visible: true },
+    { label: 'no theme', open: {}, visible: true },
+    { label: 'auto+dark', open: { theme: 'auto', scheme: 'dark' }, visible: true },
+    { label: 'light', open: { theme: 'light' }, visible: false },
+    { label: 'pastel', open: { theme: 'pastel' }, visible: false },
+    { label: 'auto+light', open: { theme: 'auto', scheme: 'light' }, visible: false },
+  ];
+
+  const probe = (page) => page.evaluate(() => {
+    const layers = [...document.querySelectorAll('.vitra-scenery-stars')];
+    const skies = [...document.querySelectorAll('.vitra-scenery-sky')];
+    const vis = (el, pseudo) => getComputedStyle(el, pseudo).visibility;
+    const animations = document.getAnimations().map((a) => ({
+      name: a.animationName,
+      pseudo: a.effect && a.effect.pseudoElement ? a.effect.pseudoElement : '',
+      star: !!(a.effect && a.effect.target && layers.some((l) => l.contains(a.effect.target))),
+      sky: !!(a.effect && a.effect.target && skies.includes(a.effect.target)),
+    }));
+    return {
+      hasThemeAttr: document.documentElement.hasAttribute('data-theme'),
+      count: layers.length,
+      stars: layers.map((l) => vis(l)),
+      farStars: skies.map((s) => vis(s, '::before')),
+      shooting: skies.map((s) => vis(s, '::after')),
+      twinkle: animations.filter((a) => a.star && a.pseudo === '').length,
+      shootingAnims: animations.filter((a) => a.sky && a.pseudo === '::after').length,
+      starAnims: animations.filter((a) => a.star || (a.sky && a.pseudo === '::after')).map((a) => a.name),
+    };
+  });
+
+  for (const { label, open, visible } of STARS) {
+    test(`[C17] stars are ${visible ? 'visible and twinkling' : 'hidden and still'} in ${label}`, async ({ page }) => {
+      await openSink(page, open);
+      const r = await probe(page);
+      expect(r.hasThemeAttr).toBe(open.theme !== undefined);
+      expect(r.count).toBeGreaterThan(0);
+      const want = visible ? 'visible' : 'hidden';
+      expect(r.stars).toEqual(Array(r.count).fill(want));
+      expect(r.farStars).toEqual(Array(r.count).fill(want));
+      expect(r.shooting).toEqual(Array(r.count).fill(want));
+      if (visible) {
+        expect(r.twinkle).toBeGreaterThanOrEqual(r.count);
+        expect(r.shootingAnims).toBe(r.count);
+      } else {
+        expect(r.starAnims).toEqual([]);
+      }
+    });
+  }
+});
+
 // ---------------------------------------------------------------- no JS ---
 
 test.describe('without JavaScript', () => {

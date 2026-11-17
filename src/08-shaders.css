@@ -323,7 +323,7 @@
   .vitra-ripple-effect {
     position: absolute;
     border-radius: 50%;
-    background: hsl(0deg 0% 100% / 25%);
+    background: color-mix(in srgb, var(--vitra-color-text-primary) 26%, transparent);
     pointer-events: none;
     transform: scale(0);
     animation: vitra-ripple-expand 0.6s var(--vitra-ease-out) forwards;

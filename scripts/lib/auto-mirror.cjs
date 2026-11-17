@@ -61,8 +61,46 @@ function closingParen(text, open) {
   throw new Error(`mirrorAuto: unbalanced parenthesis in selector "${text}"`);
 }
 
+/**
+ * A selector can only be mirrored when the theme attribute appears in exactly
+ * one place: as plain attribute(s) or as one :where()/:is() list. Anything
+ * else would be copied into `auto` with a different meaning, so it throws:
+ *   - a theme attribute inside :not() (`auto` cannot express "not this theme");
+ *   - theme attributes in several places (`[data-theme="light"] [data-theme="pastel"]`).
+ */
+function assertMirrorable(selector) {
+  if (!themesIn(selector).length) return;
+  const not = /:not\(/g;
+  for (let m; (m = not.exec(selector)); ) {
+    const open = m.index + m[0].length - 1;
+    if (themesIn(selector.slice(open + 1, closingParen(selector, open))).length) {
+      throw new Error(`mirrorAuto: theme attribute inside :not() in "${selector}" cannot be mirrored`);
+    }
+  }
+  let places = 0;
+  let rest = '';
+  let i = 0;
+  const list = /:(where|is)\(/g;
+  for (let m; (m = list.exec(selector)); ) {
+    const open = m.index + m[0].length - 1;
+    const close = closingParen(selector, open);
+    if (themesIn(selector.slice(open + 1, close)).length) {
+      places++;
+      rest += selector.slice(i, m.index);
+      i = close + 1;
+      list.lastIndex = i;
+    }
+  }
+  rest += selector.slice(i);
+  places += themesIn(rest).length;
+  if (places > 1) {
+    throw new Error(`mirrorAuto: theme attributes appear more than once in "${selector}" and cannot be mirrored`);
+  }
+}
+
 /** Rewrite one complex selector; returns null when it does not name `theme`. */
 function rewriteSelector(selector, theme) {
+  assertMirrorable(selector);
   if (!themesIn(selector).includes(theme)) return null;
   let out = '';
   let i = 0;

@@ -286,10 +286,11 @@
     height: 68%;
     visibility: hidden;
 
-    /* The ONLY animation on this element's opacity. A second one on the
-       same property - an entrance fade was tried - makes Chromium run
-       both on the main thread: a style recalc on every frame, forever. */
-    animation: vitra-scenery-twinkle 8s steps(4) infinite;
+    /* The twinkle animation is declared with the visibility rules further
+       down, so a layer hidden by the theme does not animate. It is the ONLY
+       animation on this element's opacity: a second one on the same
+       property - an entrance fade was tried - makes Chromium run both on
+       the main thread: a style recalc on every frame, forever. */
     will-change: opacity;
   }
 
@@ -377,7 +378,8 @@
     opacity: 0;
     transform-origin: 0 0;
     transform: translate(66cqw, 14cqh) rotate(-35deg) translateX(0) scaleX(1);
-    animation: vitra-scenery-shooting-star 34s linear 4s infinite;
+
+    /* The animation is declared with the visibility rules below. */
   }
 
   @keyframes vitra-scenery-shooting-star {
@@ -396,15 +398,32 @@
     100% { transform: translate(40cqw, 8cqh) rotate(-18deg) translateX(-420px) scaleX(1.44); opacity: 0; }
   }
 
+  /* Stars appear in every dark-scheme theme and on a page with no theme at
+     all (the :root defaults are the dark palette). The no-theme selector
+     carries no theme attribute for light/dark, so mirrorAuto drops it from
+     the `auto` copy and keeps only the first selector of each list;
+     :where() keeps it at zero specificity, like the theme list.
+     Each layer's animation lives in the same rule as its visibility, so a
+     layer the theme hides never animates. */
+
   /* @vitra-auto-mirror dark */
-  :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"]) .vitra-scenery-stars {
+  :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"], [data-theme="emerald"]) .vitra-scenery-stars,
+  :where(:root:not([data-theme])) .vitra-scenery-stars {
+    visibility: visible;
+    animation: vitra-scenery-twinkle 8s steps(4) infinite;
+  }
+
+  /* @vitra-auto-mirror dark */
+  :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"], [data-theme="emerald"]) .vitra-scenery-sky::before,
+  :where(:root:not([data-theme])) .vitra-scenery-sky::before {
     visibility: visible;
   }
 
   /* @vitra-auto-mirror dark */
-  :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"]) .vitra-scenery-sky::before,
-  :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"]) .vitra-scenery-sky::after {
+  :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"], [data-theme="emerald"]) .vitra-scenery-sky::after,
+  :where(:root:not([data-theme])) .vitra-scenery-sky::after {
     visibility: visible;
+    animation: vitra-scenery-shooting-star 34s linear 4s infinite;
   }
 
   /* --- HALO LAYER (sun / moon) --- */
@@ -895,7 +914,9 @@
       to { translate: 0 calc(3cqh * var(--vitra-scenery-depth)); }
     }
 
-    .vitra-scenery-inline > .vitra-scenery-stars {
+    /* @vitra-auto-mirror dark */
+    :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"], [data-theme="emerald"]) .vitra-scenery-inline > .vitra-scenery-stars,
+    :where(:root:not([data-theme])) .vitra-scenery-inline > .vitra-scenery-stars {
       animation:
         vitra-scenery-twinkle 8s steps(4) infinite,
         vitra-scenery-depth-sky linear both;
