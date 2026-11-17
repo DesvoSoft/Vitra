@@ -860,19 +860,13 @@
 
   /* Light-scheme themes: the panel was hard-coded near-black while its
      text followed the theme (dark on dark). */
+
+  /* @vitra-auto-mirror light */
   [data-theme="light"] .vitra-modal-content,
   [data-theme="pastel"] .vitra-modal-content {
     background: var(--vitra-glass-bg-menu);
     border-color: var(--vitra-color-border);
     box-shadow: var(--vitra-shadow-elevated);
-  }
-
-  @media (prefers-color-scheme: light) {
-    [data-theme="auto"] .vitra-modal-content {
-      background: var(--vitra-glass-bg-menu);
-      border-color: var(--vitra-color-border);
-      box-shadow: var(--vitra-shadow-elevated);
-    }
   }
 
   .vitra-modal-overlay[open] .vitra-modal-content,

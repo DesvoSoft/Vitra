@@ -248,3 +248,65 @@ export function expectedFail(test, id, when) {
   if (typeof when === 'function' && !when(browser)) return;
   test.fail();
 }
+
+export const SAMPLE_PROPS = [
+  'color', 'background-color', 'background-image', 'border-color',
+  'box-shadow', 'opacity', 'visibility',
+];
+
+/**
+ * Computed styles of a fixed sample of ~40 elements of the kitchen sink:
+ * the root, the body, the first Vitra element of every component section, the
+ * modal panel, a gradient-text probe injected here, and the eight scenery
+ * layers (plus the pseudo-elements that paint stars, the shooting star, the
+ * halo ring and the ridge masses). Keys are stable labels, so two snapshots
+ * taken under different themes can be compared entry by entry. Running
+ * transitions, fades and loops are settled first, so two reads of the same
+ * style cannot differ by timing.
+ * @param {import('@playwright/test').Page} page
+ * @param {string[]} [props] computed properties to read
+ * @returns {Promise<Record<string, Record<string, string>>>}
+ */
+export async function sampleStyles(page, props = SAMPLE_PROPS) {
+  return page.evaluate((props) => {
+    // Transitions and finite animations jump to their end state (a theme switch
+    // is still fading otherwise); loops park at their first frame. Scroll-driven
+    // animations have no clock to move and are deterministic already.
+    for (const a of document.getAnimations().filter((x) => x.timeline === document.timeline)) {
+      if (a.effect.getComputedTiming().iterations === Infinity) {
+        a.pause();
+        a.currentTime = 0;
+      } else {
+        a.finish();
+      }
+    }
+    if (!document.querySelector('#ks-gradient-probe')) {
+      const probe = document.createElement('span');
+      probe.id = 'ks-gradient-probe';
+      probe.className = 'vitra-gradient-text';
+      probe.textContent = 'Gradient';
+      document.body.appendChild(probe);
+    }
+    const targets = [['html', document.documentElement, null], ['body', document.body, null]];
+    for (const section of document.querySelectorAll('[data-component]')) {
+      const el = section.querySelector('[class*="vitra-"]');
+      if (el) targets.push([`${section.dataset.component}:${el.className.split(/\s+/)[0]}`, el, null]);
+    }
+    targets.push(['modal-content', document.querySelector('.vitra-modal-content'), null]);
+    targets.push(['gradient-text', document.querySelector('#ks-gradient-probe'), null]);
+    const scenery = document.querySelector('.vitra-scenery-inline');
+    for (const layer of scenery.children) {
+      const name = layer.className.split(/\s+/)[0];
+      targets.push([name, layer, null]);
+      for (const pseudo of ['::before', '::after']) {
+        if (getComputedStyle(layer, pseudo).content !== 'none') targets.push([name + pseudo, layer, pseudo]);
+      }
+    }
+    const out = {};
+    for (const [label, el, pseudo] of targets) {
+      const cs = getComputedStyle(el, pseudo);
+      out[label] = Object.fromEntries(props.map((p) => [p, cs.getPropertyValue(p)]));
+    }
+    return out;
+  }, props);
+}

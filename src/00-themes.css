@@ -22,6 +22,8 @@
   /* Default theme matches the base token values */
 
   /* --- LIGHT THEME --- */
+
+  /* @vitra-auto-mirror light */
   html[data-theme="light"] {
     --vitra-color-accent-h: 222;
     --vitra-color-accent-s: 72%;
@@ -50,6 +52,8 @@
   }
 
   /* --- DARK THEME --- */
+
+  /* @vitra-auto-mirror dark */
   html[data-theme="dark"] {
     --vitra-color-bg: hsl(var(--vitra-color-accent-h) 15% 4%);
     --vitra-bg-accent: hsl(var(--vitra-color-accent-h) 20% 6%);
@@ -180,53 +184,5 @@
        src/02-glass.css, not here - see the comment there for why. */
 
     color-scheme: dark;
-  }
-
-  /* --- AUTO THEME --- */
-  html[data-theme="auto"] {
-    --vitra-color-bg: hsl(var(--vitra-color-accent-h) 15% 4%);
-    --vitra-color-surface: hsl(var(--vitra-color-accent-h) 20% 95% / 5%);
-    --vitra-color-surface-hover: hsl(var(--vitra-color-accent-h) 20% 95% / 8%);
-    --vitra-color-surface-active: hsl(var(--vitra-color-accent-h) 20% 95% / 12%);
-    --vitra-color-border: hsl(var(--vitra-color-accent-h) 20% 95% / 10%);
-    --vitra-color-border-hover: hsl(var(--vitra-color-accent-h) 20% 95% / 20%);
-    --vitra-color-text-primary: hsl(0deg 0% 100% / 95%);
-    --vitra-color-text-secondary: hsl(0deg 0% 100% / 70%);
-    --vitra-color-text-tertiary: hsl(0deg 0% 100% / 50%);
-    --vitra-color-text-inverse: hsl(var(--vitra-color-accent-h) 15% 4%);
-
-    /* --vitra-glass-bg / --vitra-glass-bg-menu for this theme are set in
-       src/02-glass.css, not here - see the comment there for why. */
-
-    color-scheme: dark;
-  }
-
-  @media (prefers-color-scheme: light) {
-    html[data-theme="auto"] {
-      --vitra-color-accent-h: 222;
-      --vitra-color-accent-s: 72%;
-      --vitra-color-accent-l: 52%;
-      --vitra-color-accent-rgb: 44, 97, 221;
-      --vitra-color-bg: hsl(222deg 32% 97%);
-      --vitra-bg-accent: hsl(222deg 35% 93%);
-      --vitra-color-surface: hsl(222deg 30% 10% / 5%);
-      --vitra-color-surface-hover: hsl(222deg 30% 10% / 9%);
-      --vitra-color-surface-active: hsl(222deg 30% 10% / 13%);
-      --vitra-color-border: hsl(222deg 25% 15% / 10%);
-      --vitra-color-border-hover: hsl(222deg 25% 15% / 22%);
-      --vitra-color-border-rgb: 25, 33, 51;
-      --vitra-color-text-primary: hsl(222deg 28% 10%);
-      --vitra-color-text-secondary: hsl(222deg 12% 32%);
-      --vitra-color-text-tertiary: hsl(222deg 8% 52%);
-      --vitra-color-text-inverse: hsl(0deg 0% 100%);
-      --vitra-shadow-subtle: 0 1px 3px rgb(20 30 60 / 8%), 0 0 0 1px hsl(222deg 25% 15% / 5%);
-      --vitra-shadow-medium: 0 4px 16px rgb(20 30 60 / 10%), 0 0 0 1px hsl(222deg 25% 15% / 6%);
-      --vitra-shadow-elevated: 0 10px 32px rgb(20 30 60 / 12%), 0 0 0 1px hsl(222deg 25% 15% / 8%);
-
-      /* --vitra-glass-bg / --vitra-glass-bg-menu for this theme are set in
-         src/02-glass.css, not here - see the comment there for why. */
-
-      color-scheme: light;
-    }
   }
 }

@@ -83,6 +83,8 @@
   /* NOTE: plain attribute selectors, not :where() - the token defaults
      above live on :root (specificity 0,1,0) and a zero-specificity
      :where() can never override them. */
+
+  /* @vitra-auto-mirror light */
   [data-theme="light"],
   [data-theme="pastel"] {
     --vitra-scenery-opacity-far: 0.78;
@@ -167,6 +169,8 @@
 
   /* Light schemes: golden hour - same structure, brighter values,
      stronger warm presence against the pale sky */
+
+  /* @vitra-auto-mirror light */
   :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-sky {
     background:
       radial-gradient(
@@ -233,6 +237,8 @@
   }
 
   /* Light schemes: bright wisps, warm-white against the pale sky */
+
+  /* @vitra-auto-mirror light */
   :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-clouds {
     background: linear-gradient(
       to top,
@@ -390,33 +396,15 @@
     100% { transform: translate(40cqw, 8cqh) rotate(-18deg) translateX(-420px) scaleX(1.44); opacity: 0; }
   }
 
+  /* @vitra-auto-mirror dark */
   :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"]) .vitra-scenery-stars {
     visibility: visible;
   }
 
+  /* @vitra-auto-mirror dark */
   :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"]) .vitra-scenery-sky::before,
   :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"]) .vitra-scenery-sky::after {
     visibility: visible;
-  }
-
-  html[data-theme="auto"] .vitra-scenery-stars {
-    visibility: hidden;
-  }
-
-  html[data-theme="auto"] .vitra-scenery-sky::before,
-  html[data-theme="auto"] .vitra-scenery-sky::after {
-    visibility: hidden;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    html[data-theme="auto"] .vitra-scenery-stars {
-      visibility: visible;
-    }
-
-    html[data-theme="auto"] .vitra-scenery-sky::before,
-    html[data-theme="auto"] .vitra-scenery-sky::after {
-      visibility: visible;
-    }
   }
 
   /* --- HALO LAYER (sun / moon) --- */
@@ -492,6 +480,8 @@
      Lightness dropped well below the pale sky (97%) instead of sitting
      a few points above it - a sun needs to read as a saturated disc,
      not a paler patch of the same sky. */
+
+  /* @vitra-auto-mirror light */
   :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-halo {
     background: radial-gradient(
       circle at 45% 40%,
@@ -501,6 +491,7 @@
     box-shadow: 0 0 34px 12px hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.9) 60% / 55%);
   }
 
+  /* @vitra-auto-mirror light */
   :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-halo::after {
     background: radial-gradient(
       closest-side,
@@ -649,6 +640,8 @@
      no depth. Lower the lightness further and raise both saturation
      and alpha so each ridge reads as a solid, richly-colored mass
      instead of a translucent haze over pale grey. */
+
+  /* @vitra-auto-mirror light */
   :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-ridge-far::after {
     background: linear-gradient(
       to bottom,
@@ -658,6 +651,7 @@
     );
   }
 
+  /* @vitra-auto-mirror light */
   :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-ridge-mid::after {
     background: linear-gradient(
       to bottom,
@@ -667,6 +661,7 @@
     );
   }
 
+  /* @vitra-auto-mirror light */
   :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-ridge-near::after {
     background: linear-gradient(
       to bottom,
@@ -996,94 +991,6 @@
     .vitra-scenery-sky::after {
       animation: none;
       opacity: 0;
-    }
-  }
-
-  /* AUTO + OS LIGHT
-     data-theme="auto" on a light system gets the same daytime art as
-     data-theme="light". Without this mirror the pale sky kept the
-     night-scheme ridges, halo and clouds. Generated from the
-     light/pastel rules above - keep the two in sync. */
-  @media (prefers-color-scheme: light) {
-    [data-theme="auto"] {
-      --vitra-scenery-opacity-far: 0.78;
-      --vitra-scenery-opacity-mid: 0.88;
-      --vitra-scenery-opacity-near: 0.97;
-      --vitra-scenery-opacity-clouds: 0.42;
-      --vitra-scenery-opacity-rim: 0.6;
-      --vitra-scenery-warm-h: 32;
-    }
-
-    :where([data-theme="auto"]) .vitra-scenery-sky {
-      background: radial-gradient(
-        58% 26% at var(--vitra-scenery-glow-x) 97%,
-        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.85) 78% / 42%) 0%,
-        transparent 62%
-      ),
-      radial-gradient(
-        115% 52% at var(--vitra-scenery-glow-x) 90%,
-        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.7) 74% / 26%) 0%,
-        transparent 68%
-      ),
-      linear-gradient(
-        to bottom,
-        var(--vitra-color-bg) 0%,
-        hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.45) 78% / 35%) 55%,
-        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.5) 80% / 40%) 100%
-      );
-    }
-
-    :where([data-theme="auto"]) .vitra-scenery-clouds {
-      background: linear-gradient(
-      to top,
-      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.6) 88% / 55%) 0%,
-      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.15) 96% / 20%) 100%
-    );
-    }
-
-    :where([data-theme="auto"]) .vitra-scenery-halo {
-      background: radial-gradient(
-      circle at 45% 40%,
-      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 1.1) 72% / 100%) 0%,
-      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 1.05) 56% / 100%) 100%
-    );
-      box-shadow: 0 0 34px 12px hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.9) 60% / 55%);
-    }
-
-    :where([data-theme="auto"]) .vitra-scenery-halo::after {
-      background: radial-gradient(
-      closest-side,
-      transparent 23.5%,
-      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.8) 58% / 42%) 24.5%,
-      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.8) 55% / 14%) 55%,
-      transparent 100%
-    );
-    }
-
-    :where([data-theme="auto"]) .vitra-scenery-ridge-far::after {
-      background: linear-gradient(
-      to bottom,
-      hsl(calc(var(--vitra-scenery-hue) - 12) calc(var(--vitra-scenery-sat) * 0.85) 34% / 78%) 0%,
-      hsl(calc(var(--vitra-scenery-hue) - 12) calc(var(--vitra-scenery-sat) * 0.95) 25% / 90%) 30%,
-      hsl(calc(var(--vitra-scenery-hue) - 12) var(--vitra-scenery-sat) 16% / 97%) 100%
-    );
-    }
-
-    :where([data-theme="auto"]) .vitra-scenery-ridge-mid::after {
-      background: linear-gradient(
-      to bottom,
-      hsl(calc(var(--vitra-scenery-hue) - 6) calc(var(--vitra-scenery-sat) * 0.95) 17% / 90%) 0%,
-      hsl(calc(var(--vitra-scenery-hue) - 6) var(--vitra-scenery-sat) 11% / 97%) 35%,
-      hsl(calc(var(--vitra-scenery-hue) - 6) var(--vitra-scenery-sat) 6% / 99%) 100%
-    );
-    }
-
-    :where([data-theme="auto"]) .vitra-scenery-ridge-near::after {
-      background: linear-gradient(
-      to bottom,
-      hsl(calc(var(--vitra-scenery-hue) + 15) var(--vitra-scenery-sat) 6% / 98%) 0%,
-      hsl(calc(var(--vitra-scenery-hue) + 15) var(--vitra-scenery-sat) 2% / 99%) 100%
-    );
     }
   }
 }

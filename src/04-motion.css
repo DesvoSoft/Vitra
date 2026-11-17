@@ -422,6 +422,8 @@
   }
 
   /* Light theme: darken gradient text for contrast on light bg */
+
+  /* @vitra-auto-mirror light */
   html[data-theme="light"] .vitra-gradient-text {
     background: linear-gradient(
       135deg,
@@ -432,20 +434,6 @@
     );
     background-size: 300% 300%;
     background-clip: text;
-  }
-
-  @media (prefers-color-scheme: light) {
-    html[data-theme="auto"] .vitra-gradient-text {
-      background: linear-gradient(
-        135deg,
-        hsl(var(--vitra-color-accent-h) 85% 35%),
-        hsl(calc(var(--vitra-color-accent-h) + 40) 85% 30%),
-        hsl(calc(var(--vitra-color-accent-h) - 20) 85% 35%),
-        hsl(var(--vitra-color-accent-h) 85% 35%)
-      );
-      background-size: 300% 300%;
-      background-clip: text;
-    }
   }
 
   /* --- Animated Gradient Border --- */

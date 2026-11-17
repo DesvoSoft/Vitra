@@ -49,6 +49,8 @@
      be silently beaten by this layer's own :root default. Plain
      attribute selectors, not :where() - see src/09-scenery.css for the
      same trap. */
+
+  /* @vitra-auto-mirror light */
   [data-theme="light"],
   [data-theme="pastel"] {
     --vitra-glass-bg: hsl(222deg 45% 96% / 70%);
@@ -58,13 +60,6 @@
   [data-theme="pastel"] {
     --vitra-glass-bg: hsl(330deg 80% 98% / 65%);
     --vitra-glass-bg-menu: hsl(330deg 60% 99% / 92%);
-  }
-
-  @media (prefers-color-scheme: light) {
-    [data-theme="auto"] {
-      --vitra-glass-bg: hsl(222deg 45% 96% / 70%);
-      --vitra-glass-bg-menu: hsl(222deg 40% 99% / 92%);
-    }
   }
 
   /* Dark-family themes keep their own hue-tinted glass at the same low

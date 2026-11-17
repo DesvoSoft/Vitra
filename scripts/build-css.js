@@ -6,6 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 const lightningcss = require('lightningcss');
+const { mirrorAuto } = require('./lib/auto-mirror.cjs');
 
 // Define source files in layer order
 const sourceFiles = [
@@ -46,6 +47,9 @@ for (const file of sourceFiles) {
   combinedCSS += `/* === ${file} === */\n`;
   combinedCSS += content + '\n\n';
 }
+
+// Generate [data-theme="auto"] from the rules marked with @vitra-auto-mirror
+combinedCSS = mirrorAuto(combinedCSS);
 
 // Write unminified version
 const unminifiedPath = path.join(distDir, 'vitra.css');
