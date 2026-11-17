@@ -4994,13 +4994,20 @@
      style recalc plus a repaint on every frame.) The layer reaches 1rem
      past the bar on the left and its pattern starts 1rem in, so the
      stripes sit exactly where background-position put them. */
+
+  /* isolation + z-index: -1 keep the layer above the bar's own fill but
+     under anything inside the bar (a label), like the background it
+     replaces; pointer-events: none leaves clicks to that content. */
   .vitra-progress-bar-striped.vitra-progress-bar-animated {
     background-image: none;
+    isolation: isolate;
   }
 
   .vitra-progress-bar-striped.vitra-progress-bar-animated::after {
     content: '';
     position: absolute;
+    z-index: -1;
+    pointer-events: none;
     inset: 0 auto 0 -1rem;
     width: calc(200% + 2rem);
     background-image: linear-gradient(

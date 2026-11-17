@@ -31,8 +31,9 @@
  *   Firefox: rafFps and framesOver25ms over the window, measured with
  *     requestAnimationFrame inside the page, plus p95/max frame interval and
  *     tickMsPerSec: main-thread time each refresh tick spends after its rAF
- *     callbacks (style, layout, display list, main-thread raster), timed
- *     with a message posted from the callback.
+ *     callbacks (style, layout and display-list building), timed with a
+ *     message posted from the callback. Under WebRender rasterisation runs
+ *     off the main thread, so this proxy does not see raster cost.
  * Headless engines render in software: compare before/after and against
  * `empty`, never read the absolute numbers as a real machine's.
  */
@@ -130,8 +131,9 @@ async function measureFirefox(page) {
     let last = 0;
     let start = 0;
     // Main-thread signal: a message posted from inside the rAF callback runs
-    // after the rest of that refresh tick (style, layout, paint/display list,
-    // and any main-thread raster), so its delay is the tick's own work.
+    // after the rest of that refresh tick (style, layout, display-list
+    // building), so its delay is the tick's own work. WebRender rasterises
+    // off the main thread; raster cost is not in this number.
     let tickWork = 0;
     let posted = 0;
     const ch = new MessageChannel();

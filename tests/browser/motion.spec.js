@@ -47,6 +47,39 @@ test.describe('compositor-only loops', () => {
   });
 });
 
+// ------------------------------------------------- progress stripes layer ---
+
+test.describe('animated progress stripes', () => {
+  test('[C15] stripes paint under a label inside the bar and do not take its pointer events', async ({ page }) => {
+    await openOnly(page, 'progress-label');
+    // The label's own pixels: its box rounded inward, so no screenshot edge
+    // pixel is partly covered by the bar around it.
+    const clip = await page.evaluate(() => {
+      const r = document.querySelector('#ks-progress-label').getBoundingClientRect();
+      const x = Math.ceil(r.left), y = Math.ceil(r.top);
+      return { x, y, width: Math.floor(r.right) - x, height: Math.floor(r.bottom) - y };
+    });
+    const shotAt = async (time) => {
+      await page.evaluate((t) => {
+        for (const a of document.querySelector('[data-component="progress-label"]').getAnimations({ subtree: true })) {
+          a.pause();
+          a.currentTime = t;
+        }
+      }, time);
+      await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+      return page.screenshot({ clip });
+    };
+    const [a, b] = [await shotAt(0), await shotAt(400)];
+    expect(a.equals(b), 'label pixels change with the stripes phase').toBe(true);
+    const hit = await page.evaluate(() => {
+      const r = document.querySelector('#ks-progress-label').getBoundingClientRect();
+      const el = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      return el && el.id;
+    });
+    expect(hit).toBe('ks-progress-label');
+  });
+});
+
 // ----------------------------------------------------------- border glow ---
 
 test.describe('border glow', () => {
@@ -128,7 +161,7 @@ test.describe('motionGuard offscreen pause', () => {
 // ---------------------------------------------------------- reduced motion ---
 
 test.describe('motion fixtures under reduced motion', () => {
-  for (const only of ['progress', 'ring', 'noise', 'rotate', 'border-glow', 'spinner', 'skeleton', 'particles']) {
+  for (const only of ['progress', 'progress-label', 'ring', 'noise', 'rotate', 'border-glow', 'spinner', 'skeleton', 'particles']) {
     test(`[contract] reduced motion: zero running animations in ${only}`, async ({ page }) => {
       await openOnly(page, only, { reducedMotion: true });
       if (only === 'particles') await page.evaluate(() => window.Vitra.particles.spawn(5, { container: '#ks-particles' }));
