@@ -205,6 +205,7 @@
     html[data-theme="auto"] {
       --vitra-color-accent-h: 222;
       --vitra-color-accent-s: 72%;
+      --vitra-color-accent-l: 52%;
       --vitra-color-accent-rgb: 44, 97, 221;
       --vitra-color-bg: hsl(222deg 32% 97%);
       --vitra-bg-accent: hsl(222deg 35% 93%);

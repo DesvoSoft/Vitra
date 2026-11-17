@@ -16,6 +16,12 @@
        Immutable: defined once, overridden only in themes
        ============================================ */
 
+    /* The token defaults below are the dark palette. Without this a page
+       with no data-theme resolved light-dark() to its light branch and
+       drew light form controls/scrollbars on a dark page. Every
+       html[data-theme] block sets its own value. */
+    color-scheme: dark;
+
     /* --- Colors (HSL System for flexibility) --- */
     --vitra-color-accent-h: 177;
     --vitra-color-accent-s: 80%;

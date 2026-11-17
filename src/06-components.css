@@ -48,8 +48,8 @@
   /* --- BUTTON VARIANTS --- */
 
   .vitra-btn-glass {
-    background: hsl(0deg 0% 100% / 5%);
-    border-color: hsl(0deg 0% 100% / 10%);
+    background: var(--vitra-color-surface);
+    border-color: var(--vitra-color-border);
     color: var(--vitra-color-text-primary);
     backdrop-filter: blur(var(--vitra-blur-sm));
     box-shadow: var(--vitra-shadow-subtle);
@@ -90,14 +90,17 @@
 
   /* --- BUTTON STATES --- */
 
-  .vitra-btn:hover:not(:disabled) {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: var(--vitra-shadow-elevated);
+  /* hover: hover keeps the lift from sticking after a tap on touch screens */
+  @media (hover: hover) {
+    .vitra-btn:hover:not(:disabled) {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: var(--vitra-shadow-elevated);
+    }
   }
 
   .vitra-btn-glass:hover:not(:disabled) {
-    background-color: hsl(0deg 0% 100% / 8%);
-    border-color: hsl(0deg 0% 100% / 20%);
+    background-color: var(--vitra-color-surface-hover);
+    border-color: var(--vitra-color-border-hover);
   }
 
   .vitra-btn-solid:hover:not(:disabled) {
@@ -154,9 +157,9 @@
   /* --- CARD VARIANTS --- */
 
   .vitra-card-glass {
-    background: hsl(0deg 0% 100% / 3%);
+    background: var(--vitra-glass-bg);
     backdrop-filter: blur(var(--vitra-blur-md));
-    border-color: hsl(0deg 0% 100% / 10%);
+    border-color: var(--vitra-color-border);
   }
 
   .vitra-card-glass::after {
@@ -171,10 +174,12 @@
     pointer-events: none;
   }
 
-  .vitra-card-hover:hover {
-    transform: translateY(-6px);
-    box-shadow: var(--vitra-shadow-elevated), 0 0 20px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 10%);
-    border-color: var(--vitra-color-border-hover);
+  @media (hover: hover) {
+    .vitra-card-hover:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--vitra-shadow-elevated), 0 0 20px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 10%);
+      border-color: var(--vitra-color-border-hover);
+    }
   }
 
   .vitra-card-stacked {
@@ -303,7 +308,7 @@
   .vitra-input:focus {
     border-color: var(--vitra-color-accent);
     box-shadow: 0 0 0 4px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 15%);
-    background-color: hsl(0deg 0% 100% / 8%);
+    background-color: var(--vitra-color-surface-hover);
   }
 
   /* Glass input variant - solid fallback when backdrop-filter
@@ -318,7 +323,7 @@
     .vitra-input-glass {
       background: var(--vitra-glass-bg);
       backdrop-filter: blur(var(--vitra-blur-md));
-      border-color: hsl(0deg 0% 100% / 15%);
+      border-color: var(--vitra-color-border-hover);
     }
   }
 
@@ -381,10 +386,19 @@
     display: inline-block;
     width: 44px;
     height: 24px;
+    flex-shrink: 0;
     background-color: var(--vitra-color-surface);
+
+    /* The thumb is a painted dot on the track: no extra element, and it
+       only repaints when the switch flips. */
+    background-image: radial-gradient(circle closest-side, var(--vitra-color-text-secondary) 88%, transparent 96%);
+    background-repeat: no-repeat;
+    background-size: 18px 18px;
+    background-position: 3px 50%;
     border: 1px solid var(--vitra-color-border);
     border-radius: var(--vitra-radius-full);
     transition: background-color var(--vitra-duration-normal) var(--vitra-ease-luxury),
+                background-position var(--vitra-duration-normal) var(--vitra-ease-luxury),
                 border-color var(--vitra-duration-normal) var(--vitra-ease-luxury),
                 box-shadow var(--vitra-duration-normal) var(--vitra-ease-luxury);
     position: relative;
@@ -392,7 +406,14 @@
 
   .vitra-toggle:checked + .vitra-toggle-label::before {
     background-color: var(--vitra-color-accent);
+    background-image: radial-gradient(circle closest-side, var(--vitra-color-text-inverse) 88%, transparent 96%);
+    background-position: 23px 50%;
     box-shadow: 0 0 10px hsl(var(--vitra-color-accent-h) var(--vitra-color-accent-s) var(--vitra-color-accent-l) / 30%);
+  }
+
+  .vitra-toggle:focus-visible + .vitra-toggle-label::before {
+    outline: 2px solid var(--vitra-color-accent);
+    outline-offset: 2px;
   }
 
   /* --- RADIO BUTTON --- */
@@ -518,9 +539,13 @@
     align-items: center;
     justify-content: center;
     gap: 5px;
-    width: 28px;
-    height: 28px;
-    padding: 0;
+
+    /* 44px tap target; the padding keeps the drawn lines 28px wide */
+    box-sizing: border-box;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    padding: 8px;
     background: transparent;
     border: none;
     cursor: pointer;
@@ -583,7 +608,14 @@
     width: 80%;
     max-width: 320px;
     height: 100vh;
+
+    /* dvh: the last links otherwise sit under the mobile URL bar */
+    height: 100dvh;
     z-index: 999;
+
+    /* Closed = out of the tab order and the accessibility tree, not
+       just parked offscreen. Flips after the slide-out finishes. */
+    visibility: hidden;
 
     /* border-box required: right:-100% assumes the box's rendered width
        equals its declared width. Without this, padding/border inflate the
@@ -609,6 +641,7 @@
     transform: translateX(100%);
     transition: transform var(--vitra-duration-normal) var(--vitra-ease-out),
                 right 0s linear var(--vitra-duration-normal),
+                visibility 0s linear var(--vitra-duration-normal),
                 display var(--vitra-duration-normal) var(--vitra-ease-out) allow-discrete,
                 overlay var(--vitra-duration-normal) var(--vitra-ease-out) allow-discrete;
 
@@ -621,9 +654,11 @@
   /* Opening: `right` snaps to 0 at once and the panel springs in */
   .vitra-drawer.open {
     right: 0;
+    visibility: visible;
     transform: translateX(0);
     transition: transform var(--vitra-duration-spring) var(--vitra-ease-spring-soft),
                 right 0s linear,
+                visibility 0s linear,
                 display var(--vitra-duration-normal) var(--vitra-ease-out) allow-discrete,
                 overlay var(--vitra-duration-normal) var(--vitra-ease-out) allow-discrete;
   }
@@ -668,8 +703,8 @@
     border: none;
     color: var(--vitra-color-text-secondary);
     cursor: pointer;
-    width: 32px;
-    height: 32px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -823,6 +858,23 @@
                 opacity var(--vitra-duration-normal) var(--vitra-ease-luxury);
   }
 
+  /* Light-scheme themes: the panel was hard-coded near-black while its
+     text followed the theme (dark on dark). */
+  [data-theme="light"] .vitra-modal-content,
+  [data-theme="pastel"] .vitra-modal-content {
+    background: var(--vitra-glass-bg-menu);
+    border-color: var(--vitra-color-border);
+    box-shadow: var(--vitra-shadow-elevated);
+  }
+
+  @media (prefers-color-scheme: light) {
+    [data-theme="auto"] .vitra-modal-content {
+      background: var(--vitra-glass-bg-menu);
+      border-color: var(--vitra-color-border);
+      box-shadow: var(--vitra-shadow-elevated);
+    }
+  }
+
   .vitra-modal-overlay[open] .vitra-modal-content,
   .vitra-modal-overlay.vitra-modal-open .vitra-modal-content,
   .vitra-modal[open] .vitra-modal-content,
@@ -901,8 +953,8 @@
 
   /* --- MODAL CLOSE BUTTON --- */
   .vitra-modal-close {
-    background: hsl(0deg 0% 100% / 4%);
-    border: 1px solid hsl(0deg 0% 100% / 6%);
+    background: var(--vitra-color-surface);
+    border: 1px solid var(--vitra-color-border);
     cursor: pointer;
     width: 40px;
     height: 40px;
@@ -919,8 +971,8 @@
 
   .vitra-modal-close:hover {
     color: var(--vitra-color-text-primary);
-    background-color: hsl(0deg 0% 100% / 8%);
-    border-color: hsl(0deg 0% 100% / 12%);
+    background-color: var(--vitra-color-surface-hover);
+    border-color: var(--vitra-color-border-hover);
   }
 
   .vitra-modal-close:focus-visible {
@@ -1014,9 +1066,9 @@
 
   @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
     .vitra-badge-glass {
-      background: hsl(0deg 0% 100% / 10%);
+      background: var(--vitra-color-surface-active);
       backdrop-filter: blur(var(--vitra-blur-sm));
-      border-color: hsl(0deg 0% 100% / 10%);
+      border-color: var(--vitra-color-border);
     }
   }
 
@@ -1635,8 +1687,9 @@
     display: flex;
     align-items: center;
     gap: var(--vitra-space-3);
-    min-width: 250px;
-    max-width: 350px;
+    box-sizing: border-box;
+    min-width: min(250px, calc(100vw - var(--vitra-space-4) * 2));
+    max-width: min(350px, calc(100vw - var(--vitra-space-4) * 2));
     transform: translateX(120%);
     opacity: 0;
     transition: transform var(--vitra-duration-normal) var(--vitra-ease-luxury),
@@ -1958,7 +2011,7 @@
 
   @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
     .vitra-spinner-glass {
-      border-color: hsl(0deg 0% 100% / 10%);
+      border-color: var(--vitra-color-border);
       border-top-color: hsl(0deg 0% 100% / 80%);
     }
   }
@@ -2056,9 +2109,9 @@
 
   @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
     .vitra-alert-glass {
-      background: hsl(0deg 0% 100% / 3%);
+      background: color-mix(in srgb, var(--vitra-color-surface) 55%, transparent);
       backdrop-filter: blur(var(--vitra-blur-sm));
-      border-color: hsl(0deg 0% 100% / 10%);
+      border-color: var(--vitra-color-border);
     }
   }
 
@@ -2103,7 +2156,7 @@
   }
 
   .vitra-table thead {
-    background: hsl(0deg 0% 100% / 3%);
+    background: color-mix(in srgb, var(--vitra-color-surface) 55%, transparent);
     border-bottom: 2px solid var(--vitra-color-border);
   }
 
@@ -2125,7 +2178,7 @@
   }
 
   .vitra-table tbody tr:hover {
-    background: hsl(0deg 0% 100% / 3%);
+    background: color-mix(in srgb, var(--vitra-color-surface) 55%, transparent);
   }
 
   .vitra-table tbody tr:last-child td {
@@ -2140,14 +2193,14 @@
 
   @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
     .vitra-table-glass {
-      background: hsl(0deg 0% 100% / 2%);
+      background: color-mix(in srgb, var(--vitra-color-surface) 55%, transparent);
       backdrop-filter: blur(var(--vitra-blur-sm));
     }
   }
 
   /* Table striped variant */
   .vitra-table-striped tbody tr:nth-child(even) {
-    background: hsl(0deg 0% 100% / 2%);
+    background: color-mix(in srgb, var(--vitra-color-surface) 55%, transparent);
   }
 
   /* Table responsive card layout - container query when an ancestor
@@ -2243,11 +2296,6 @@
 
     .vitra-burger-line {
       transition: none;
-    }
-
-    .vitra-burger.active .vitra-burger-line:nth-child(1),
-    .vitra-burger.active .vitra-burger-line:nth-child(3) {
-      transform: none;
     }
 
     .vitra-toast {

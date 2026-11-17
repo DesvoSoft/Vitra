@@ -101,6 +101,22 @@
     transform: translateY(0) scale(1) !important;
   }
 
+  /* The directional variants below carry a keyframe animation with
+     fill-mode: both. Next to .vitra-reveal it used to run at page load
+     and hold opacity: 1 over the hidden state, so nothing was left to
+     reveal on scroll. Hold it until the element is actually revealed. */
+  .vitra-reveal:not(.vitra-revealed) {
+    animation-name: none;
+  }
+
+  /* No script, no observer: never leave content hidden. */
+  @media (scripting: none) {
+    .vitra-reveal {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
   /* Reveal Up - fade in while sliding up */
   .vitra-reveal-up {
     animation-name: vitra-fade-up;
@@ -206,8 +222,11 @@
     will-change: transform;
   }
 
-  .vitra-hover-lift:hover {
-    transform: translateY(-4px);
+  /* hover: hover keeps the lift from sticking after a tap on touch screens */
+  @media (hover: hover) {
+    .vitra-hover-lift:hover {
+      transform: translateY(-4px);
+    }
   }
 
   .vitra-hover-lift:focus-visible {
@@ -561,18 +580,26 @@
      ============================================ */
 
   .vitra-tilt-card {
-    perspective: 1000px;
+    /* perspective() lives in the transform itself: the `perspective`
+       property only affects children, so the card's own tilt rendered
+       as a flat squash. */
+    transform: perspective(1000px);
     transform-style: preserve-3d;
     transition: transform var(--vitra-duration-normal) var(--vitra-ease-luxury);
-    will-change: transform;
   }
 
-  .vitra-tilt-card:hover {
-    transform: rotateX(4deg) rotateY(-4deg);
+  @media (hover: hover) {
+    .vitra-tilt-card:hover {
+      transform: perspective(1000px) rotateX(4deg) rotateY(-4deg);
+    }
+  }
+
+  .vitra-tilt-card:focus-visible {
+    transform: perspective(1000px) rotateX(4deg) rotateY(-4deg);
   }
 
   .vitra-tilt-card:active {
-    transform: rotateX(2deg) rotateY(-2deg) scale(0.98);
+    transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) scale(0.98);
   }
 
   /* ============================================
