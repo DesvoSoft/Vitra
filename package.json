@@ -31,7 +31,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "stylelint \"src/**/*.css\" --fix",
-    "size": "size-limit"
+    "size": "size-limit",
+    "test:unit": "vitest run",
+    "test:browser": "playwright test"
   },
   "size-limit": [
     {
@@ -48,10 +50,13 @@
     }
   ],
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.65.1",
     "@size-limit/file": "^14.1.0",
     "esbuild": "^0.28.2",
     "jsdom": "^30.1.2",
     "lightningcss": "^1.33.0",
+    "postcss": "^8.5.33",
     "size-limit": "^14.1.0",
     "stylelint": "^17.16.0",
     "stylelint-config-standard": "^40.0.0",

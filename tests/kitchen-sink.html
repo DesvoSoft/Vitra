@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vitra Kitchen Sink</title>
+  <script>
+    /* Apply ?theme= and pick the CSS flavour before first paint. */
+    (function () {
+      var q = new URLSearchParams(location.search);
+      var theme = q.get('theme');
+      if (theme) document.documentElement.setAttribute('data-theme', theme);
+      if (q.get('css') === 'pieces') {
+        ['core', 'scenery', 'effects'].forEach(function (n) {
+          document.write('<link rel="stylesheet" href="../dist/vitra.' + n + '.min.css">');
+        });
+      } else {
+        document.write('<link rel="stylesheet" href="../dist/vitra.min.css">');
+      }
+    })();
+  </script>
+  <style>
+    /* Page chrome for the sink only; components keep their own styling. */
+    body { margin: 0; padding: 1rem; }
+    .ks-section { margin: 0 0 2rem; }
+    .ks-section > h2 { margin: 0 0 .75rem; font-size: 1rem; }
+    .ks-row { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin-bottom: .75rem; }
+    .ks-col { display: flex; flex-direction: column; gap: .75rem; max-width: 420px; margin-bottom: .75rem; }
+    .ks-narrow { width: 160px; }
+    .ks-scenery-host { position: relative; height: 240px; overflow: clip; }
+  </style>
+</head>
+<body>
+  <h1>Vitra Kitchen Sink</h1>
+
+  <section class="ks-section" data-component="button">
+    <h2>Button</h2>
+    <div class="ks-row">
+      <button class="vitra-btn" data-state="default">Default</button>
+      <button class="vitra-btn vitra-btn-solid" data-state="solid">Solid</button>
+      <button class="vitra-btn vitra-btn-ghost" data-state="ghost">Ghost</button>
+      <button class="vitra-btn vitra-btn-gradient" data-state="gradient">Gradient</button>
+      <button class="vitra-btn vitra-btn-glass" data-state="glass">Glass</button>
+      <button class="vitra-btn vitra-btn-sm" data-state="sm">Small</button>
+      <button class="vitra-btn vitra-btn-lg" data-state="lg">Large</button>
+      <button class="vitra-btn" data-state="disabled" disabled>Disabled</button>
+      <button class="vitra-btn" data-state="hover-target">Hover target</button>
+    </div>
+    <div class="ks-row ks-narrow" data-state="long-text">
+      <button class="vitra-btn">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</button>
+    </div>
+  </section>
+
+  <section class="ks-section" data-component="card">
+    <h2>Card</h2>
+    <div class="ks-row">
+      <div class="vitra-card" data-state="default">
+        <div class="vitra-card-body">
+          <h3 class="vitra-card-title">Card title</h3>
+          <p class="vitra-card-subtitle">Subtitle</p>
+          <p>Card body text.</p>
+        </div>
+        <div class="vitra-card-footer">Footer</div>
+      </div>
+      <div class="vitra-card vitra-card-hover" data-state="hover-target">
+        <div class="vitra-card-body"><h3 class="vitra-card-title">Hover card</h3></div>
+      </div>
+      <div class="vitra-card vitra-card-glass" data-state="glass">
+        <div class="vitra-card-body"><h3 class="vitra-card-title">Glass card</h3></div>
+      </div>
+      <div class="vitra-card vitra-card-sm" data-state="sm">
+        <div class="vitra-card-body">Small card</div>
+      </div>
+      <div class="vitra-card vitra-card-lg" data-state="lg">
+        <div class="vitra-card-body">Large card</div>
+      </div>
+    </div>
+    <div class="ks-narrow" data-state="long-text">
+      <div class="vitra-card">
+        <div class="vitra-card-body">
+          <h3 class="vitra-card-title">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</h3>
+          <p>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ks-section" data-component="input">
+    <h2>Input</h2>
+    <div class="ks-col">
+      <input class="vitra-input" data-state="default" type="text" placeholder="Default" aria-label="Default input">
+      <input class="vitra-input vitra-input-glass" data-state="glass" type="text" placeholder="Glass" aria-label="Glass input">
+      <input class="vitra-input vitra-input-valid" data-state="valid" type="text" value="Valid value" aria-label="Valid input">
+      <input class="vitra-input vitra-input-invalid" data-state="invalid" type="text" value="Invalid value" aria-label="Invalid input">
+      <input class="vitra-input" data-state="disabled" type="text" value="Disabled" disabled aria-label="Disabled input">
+      <input class="vitra-input" data-state="long-text" type="text" value="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567" aria-label="Long text input">
+    </div>
+  </section>
+
+  <section class="ks-section" data-component="toggle">
+    <h2>Toggle</h2>
+    <div class="ks-row">
+      <span data-state="default"><input type="checkbox" id="ks-toggle-off" class="vitra-toggle"><label for="ks-toggle-off" class="vitra-toggle-label">Off</label></span>
+      <span data-state="checked"><input type="checkbox" id="ks-toggle-on" class="vitra-toggle" checked><label for="ks-toggle-on" class="vitra-toggle-label">On</label></span>
+      <span data-state="disabled"><input type="checkbox" id="ks-toggle-dis" class="vitra-toggle" disabled><label for="ks-toggle-dis" class="vitra-toggle-label">Disabled</label></span>
+    </div>
+    <div class="ks-narrow" data-state="long-text">
+      <input type="checkbox" id="ks-toggle-long" class="vitra-toggle"><label for="ks-toggle-long" class="vitra-toggle-label">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</label>
+    </div>
+  </section>
+
+  <section class="ks-section" data-component="radio">
+    <h2>Radio</h2>
+    <div class="ks-row">
+      <label class="vitra-radio" data-state="default"><input type="radio" name="ks-radio" value="a"> Option A</label>
+      <label class="vitra-radio" data-state="checked"><input type="radio" name="ks-radio" value="b" checked> Option B</label>
+      <label class="vitra-radio" data-state="disabled"><input type="radio" name="ks-radio" value="c" disabled> Option C</label>
+    </div>
+    <div class="ks-narrow" data-state="long-text">
+      <label class="vitra-radio"><input type="radio" name="ks-radio-long" value="x"> ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</label>
+    </div>
+  </section>
+
+  <section class="ks-section" data-component="checkbox">
+    <h2>Checkbox</h2>
+    <div class="ks-row">
+      <label data-state="default"><input type="checkbox"> Unchecked</label>
+      <label data-state="checked"><input type="checkbox" checked> Checked</label>
+      <label data-state="disabled"><input type="checkbox" disabled> Disabled</label>
+    </div>
+    <div class="ks-narrow" data-state="long-text">
+      <label><input type="checkbox"> ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</label>
+    </div>
+  </section>
+
+  <section class="ks-section" data-component="select">
+    <h2>Select</h2>
+    <div class="ks-col">
+      <div class="vitra-select-wrapper" data-state="default">
+        <select class="vitra-input" aria-label="Default select">
+          <option>Option one</option>
+          <option>Option two</option>
+        </select>
+      </div>
+      <div class="vitra-select-wrapper" data-state="disabled">
+        <select class="vitra-input" disabled aria-label="Disabled select">
+          <option>Disabled</option>
+        </select>
+      </div>
+      <div class="vitra-select-wrapper" data-state="long-text">
+        <select class="vitra-input" aria-label="Long text select">
+          <option>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <section class="ks-section" data-component="tabs">
+    <h2>Tabs</h2>
+    <div id="ks-tabs" data-state="default">
+      <div class="vitra-tabs" role="tablist">
+        <button class="vitra-tabs-tab vitra-tabs-tab-active" role="tab" id="ks-tab-1" aria-selected="true" aria-controls="ks-panel-1">First</button>
+        <button class="vitra-tabs-tab" role="tab" id="ks-tab-2" aria-selected="false" aria-controls="ks-panel-2" tabindex="-1">Second</button>
+        <button class="vitra-tabs-tab" role="tab" id="ks-tab-3" aria-selected="false" aria-controls="ks-panel-3" tabindex="-1">Third</button>
+      </div>
+      <div class="vitra-tabs-panel vitra-active" role="tabpanel" id="ks-panel-1" aria-labelledby="ks-tab-1">First panel</div>
+      <div class="vitra-tabs-panel" role="tabpanel" id="ks-panel-2" aria-labelledby="ks-tab-2">Second panel</div>
+      <div class="vitra-tabs-panel" role="tabpanel" id="ks-panel-3" aria-labelledby="ks-tab-3">Third panel</div>
+    </div>
+    <div data-state="long-text" class="ks-narrow">
+      <div class="vitra-tabs" role="tablist">
+        <button class="vitra-tabs-tab vitra-tabs-tab-active" role="tab" aria-selected="true">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</button>
+        <button class="vitra-tabs-tab" role="tab" aria-selected="false">Other</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="ks-section" data-component="modal">
+    <h2>Modal</h2>
+    <div class="ks-row">
+      <button class="vitra-btn" id="ks-modal-open" data-state="default" onclick="Vitra.modal.open('#ks-modal')">Open modal</button>
+      <button class="vitra-btn" id="ks-modal-empty-open" data-state="no-focusables" onclick="Vitra.modal.open('#ks-modal-empty')">Open empty modal</button>
+    </div>
+    <div id="ks-modal" class="vitra-modal-overlay" aria-hidden="true">
+      <div class="vitra-modal-content" role="dialog" aria-modal="true" aria-labelledby="ks-modal-title">
+        <div class="vitra-modal-header">
+          <h2 id="ks-modal-title">Modal title</h2>
+          <button class="vitra-modal-close" data-vitra-modal-close aria-label="Close">&times;</button>
+        </div>
+        <div class="vitra-modal-body">
+          <p>Modal body text.</p>
+          <p data-state="long-text">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</p>
+          <input class="vitra-input" type="text" placeholder="Focusable input" aria-label="Modal input">
+        </div>
+        <div class="vitra-modal-footer">
+          <button class="vitra-btn" data-vitra-modal-close>Close</button>
+        </div>
+      </div>
+    </div>
+    <div id="ks-modal-empty" class="vitra-modal-overlay" aria-hidden="true">
+      <div class="vitra-modal-content" role="dialog" aria-modal="true" aria-label="Modal without focusable elements">
+        <div class="vitra-modal-body">
+          <p>Nothing focusable in here.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ks-section" data-component="drawer">
+    <h2>Drawer</h2>
+    <div class="ks-row">
+      <button class="vitra-burger" id="ks-drawer-toggle" data-state="default" data-vitra-drawer-toggle="#ks-drawer" aria-label="Open menu" aria-expanded="false">
+        <span class="vitra-burger-line"></span>
+        <span class="vitra-burger-line"></span>
+        <span class="vitra-burger-line"></span>
+      </button>
+    </div>
+    <div class="vitra-drawer-overlay"></div>
+    <nav id="ks-drawer" class="vitra-drawer" aria-label="Drawer" aria-hidden="true">
+      <div class="vitra-drawer-header">
+        <span class="vitra-drawer-title">Menu</span>
+        <button class="vitra-drawer-close" aria-label="Close menu">&times;</button>
+      </div>
+      <div class="vitra-drawer-body">
+        <a class="vitra-drawer-link active" href="#ks-drawer">Home</a>
+        <a class="vitra-drawer-link" href="#ks-drawer">Docs</a>
+        <a class="vitra-drawer-link" data-state="long-text" href="#ks-drawer">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</a>
+      </div>
+    </nav>
+    <!-- Drawer without a toggle: opened and closed by script only. -->
+    <nav id="ks-drawer-manual" class="vitra-drawer" data-state="manual" aria-label="Manual drawer" aria-hidden="true">
+      <div class="vitra-drawer-header">
+        <span class="vitra-drawer-title">Manual</span>
+        <button class="vitra-drawer-close" aria-label="Close manual menu">&times;</button>
+      </div>
+      <div class="vitra-drawer-body">
+        <a class="vitra-drawer-link" href="#ks-drawer-manual">Link</a>
+      </div>
+    </nav>
+  </section>
+
+  <section class="ks-section" data-component="dropdown">
+    <h2>Dropdown</h2>
+    <div class="ks-row">
+      <div class="vitra-dropdown" id="ks-dd" data-state="default">
+        <button class="vitra-btn" data-vitra-dropdown-toggle>Options</button>
+        <div class="vitra-dropdown-menu">
+          <button class="vitra-dropdown-item">Edit</button>
+          <button class="vitra-dropdown-item">Delete</button>
+          <button class="vitra-dropdown-item" data-state="long-text">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</button>
+        </div>
+      </div>
+      <div class="vitra-dropdown" data-state="end">
+        <button class="vitra-btn" data-vitra-dropdown-toggle>Right aligned</button>
+        <div class="vitra-dropdown-menu vitra-dropdown-menu-end">
+          <button class="vitra-dropdown-item">Edit</button>
+          <button class="vitra-dropdown-item">Delete</button>
+        </div>
+      </div>
+      <div class="vitra-dropdown" id="ks-dd-popover" data-state="popover">
+        <button class="vitra-btn" data-vitra-dropdown-toggle>Popover</button>
+        <div class="vitra-dropdown-menu" popover>
+          <button class="vitra-dropdown-item">Edit</button>
+          <button class="vitra-dropdown-item">Delete</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ks-section" data-component="tooltip">
+    <h2>Tooltip</h2>
+    <div class="ks-row">
+      <button class="vitra-btn" id="ks-tooltip" data-state="default" data-vitra-tooltip="Save changes">Hover me</button>
+      <button class="vitra-btn" data-state="bottom" data-vitra-tooltip="Below" data-vitra-tooltip-position="bottom">Bottom</button>
+      <button class="vitra-btn" data-state="long-text" data-vitra-tooltip="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567">Long tooltip</button>
+    </div>
+  </section>
+
+  <section class="ks-section" data-component="toast">
+    <h2>Toast</h2>
+    <div class="ks-row">
+      <button class="vitra-btn" id="ks-toast-btn-success" data-state="success" onclick="Vitra.toast.show('Saved successfully', {type: 'success'})">Success</button>
+      <button class="vitra-btn" id="ks-toast-btn-error" data-state="error" onclick="Vitra.toast.show('Something went wrong', {type: 'error'})">Error</button>
+      <button class="vitra-btn" id="ks-toast-btn-info" data-state="info" onclick="Vitra.toast.show('Heads up', {type: 'info'})">Info</button>
+      <button class="vitra-btn" id="ks-toast-btn-warning" data-state="warning" onclick="Vitra.toast.show('Careful now', {type: 'warning'})">Warning</button>
+      <button class="vitra-btn" id="ks-toast-btn-sticky" data-state="sticky" onclick="Vitra.toast.show('Sticky toast', {type: 'info', duration: 0})">Sticky</button>
+      <button class="vitra-btn" id="ks-toast-btn-long" data-state="long-text" onclick="Vitra.toast.show('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567', {duration: 0})">Long text</button>
+    </div>
+  </section>
+
+  <section class="ks-section" data-component="progress">
+    <h2>Progress</h2>
+    <div class="ks-col">
+      <div class="vitra-progress" data-state="default" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" aria-label="Progress"><div class="vitra-progress-bar" style="width: 60%"></div></div>
+      <div class="vitra-progress vitra-progress-sm" data-state="sm" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" aria-label="Small progress"><div class="vitra-progress-bar vitra-progress-success" style="width: 30%"></div></div>
+      <div class="vitra-progress vitra-progress-lg" data-state="lg" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" aria-label="Large progress"><div class="vitra-progress-bar vitra-progress-bar-striped vitra-progress-error" style="width: 80%"></div></div>
+      <div class="vitra-progress vitra-progress-indeterminate" data-state="indeterminate" role="progressbar" aria-label="Loading"><div class="vitra-progress-bar"></div></div>
+      <div class="vitra-progress-container" data-state="long-text">
+        <span class="vitra-progress-label">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</span>
+        <div class="vitra-progress" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" aria-label="Labelled progress"><div class="vitra-progress-bar" style="width: 50%"></div></div>
+        <span class="vitra-progress-value">50%</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="ks-section" data-component="badge">
+    <h2>Badge</h2>
+    <div class="ks-row">
+      <span class="vitra-badge" data-state="default">Default</span>
+      <span class="vitra-badge vitra-badge-success" data-state="success">Success</span>
+      <span class="vitra-badge vitra-badge-warning" data-state="warning">Warning</span>
+      <span class="vitra-badge vitra-badge-error" data-state="error">Error</span>
+      <span class="vitra-badge vitra-badge-info" data-state="info">Info</span>
+      <span class="vitra-badge vitra-badge-ghost" data-state="ghost">Ghost</span>
+      <span class="vitra-badge vitra-badge-glass" data-state="glass">Glass</span>
+      <span class="vitra-badge vitra-badge-sm" data-state="sm">Small</span>
+      <span class="vitra-badge vitra-badge-lg" data-state="lg">Large</span>
+      <span class="vitra-badge vitra-badge-dot" data-state="dot"></span>
+    </div>
+    <div class="ks-narrow" data-state="long-text">
+      <span class="vitra-badge">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</span>
+    </div>
+  </section>
+
+  <section class="ks-section" data-component="alert">
+    <h2>Alert</h2>
+    <div class="ks-col">
+      <div class="vitra-alert vitra-alert-info" data-state="info" role="alert">Info alert</div>
+      <div class="vitra-alert vitra-alert-success" data-state="success" role="alert">Success alert</div>
+      <div class="vitra-alert vitra-alert-warning" data-state="warning" role="alert">Warning alert</div>
+      <div class="vitra-alert vitra-alert-error" data-state="error" role="alert">Error alert</div>
+      <div class="vitra-alert vitra-alert-info vitra-alert-glass" data-state="glass" role="alert">Glass alert</div>
+      <div class="vitra-alert vitra-alert-info" data-state="dismissible" role="alert">
+        <span>Dismissible alert</span>
+        <button class="vitra-alert-dismiss" aria-label="Dismiss">&times;</button>
+      </div>
+      <div class="vitra-alert vitra-alert-info" data-state="long-text" role="alert">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</div>
+    </div>
+  </section>
+
+  <section class="ks-section" data-component="table">
+    <h2>Table</h2>
+    <div class="vitra-table-wrapper" data-state="default">
+      <table class="vitra-table vitra-table-striped">
+        <thead><tr><th>Name</th><th>Role</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Ada</td><td>Engineer</td><td>Active</td></tr>
+          <tr><td>Grace</td><td>Admiral</td><td>Active</td></tr>
+          <tr><td>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</td><td data-state="long-text">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</td><td>Idle</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="vitra-table-wrapper" data-state="glass">
+      <table class="vitra-table vitra-table-glass">
+        <thead><tr><th>Name</th><th>Role</th></tr></thead>
+        <tbody><tr><td>Ada</td><td>Engineer</td></tr></tbody>
+      </table>
+    </div>
+    <div class="vitra-table-wrapper" data-state="stack">
+      <table class="vitra-table vitra-table-stack">
+        <thead><tr><th>Name</th><th>Role</th></tr></thead>
+        <tbody><tr><td data-label="Name">Ada</td><td data-label="Role">Engineer</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="ks-section" data-component="navbar">
+    <h2>Navbar</h2>
+    <nav class="vitra-navbar" data-state="default" aria-label="Main">
+      <a class="vitra-navbar-brand" href="#">Brand</a>
+      <div class="vitra-navbar-links">
+        <a class="vitra-navbar-link" href="#">Home</a>
+        <a class="vitra-navbar-link" href="#">Docs</a>
+        <a class="vitra-navbar-link" data-state="long-text" href="#">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</a>
+      </div>
+      <div class="vitra-navbar-actions"><button class="vitra-btn vitra-btn-sm">Sign in</button></div>
+    </nav>
+    <nav class="vitra-navbar vitra-navbar-glass" data-state="glass" aria-label="Glass">
+      <a class="vitra-navbar-brand" href="#">Glass</a>
+      <div class="vitra-navbar-links"><a class="vitra-navbar-link" href="#">Home</a></div>
+    </nav>
+  </section>
+
+  <section class="ks-section" data-component="spinner">
+    <h2>Spinner</h2>
+    <div class="ks-row">
+      <div class="vitra-spinner" data-state="default" role="status" aria-label="Loading"></div>
+      <div class="vitra-spinner vitra-spinner-sm" data-state="sm" role="status" aria-label="Loading small"></div>
+      <div class="vitra-spinner vitra-spinner-lg" data-state="lg" role="status" aria-label="Loading large"></div>
+      <div class="vitra-spinner vitra-spinner-glass" data-state="glass" role="status" aria-label="Loading glass"></div>
+      <div class="vitra-spinner-container" data-state="long-text">
+        <div class="vitra-spinner" role="status" aria-label="Loading"></div>
+        <span class="vitra-spinner-label">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="ks-section" data-component="skeleton">
+    <h2>Skeleton</h2>
+    <div class="ks-col">
+      <div class="vitra-skeleton vitra-skeleton-heading" data-state="heading"></div>
+      <div class="vitra-skeleton vitra-skeleton-text" data-state="text"></div>
+      <div class="vitra-skeleton vitra-skeleton-circle" data-state="circle"></div>
+      <div class="vitra-skeleton vitra-skeleton-shimmer vitra-skeleton-text" data-state="shimmer"></div>
+      <div class="vitra-skeleton vitra-skeleton-pulse vitra-skeleton-text" data-state="pulse"></div>
+      <div class="vitra-skeleton-card" data-state="default">
+        <div class="vitra-skeleton"></div>
+        <div class="vitra-skeleton"></div>
+        <div class="vitra-skeleton"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ks-section" data-component="glass">
+    <h2>Glass</h2>
+    <div class="ks-row" style="background: linear-gradient(135deg, #6366f1, #ec4899); padding: 1rem; border-radius: 12px;">
+      <div class="vitra-glass" data-state="default" style="padding: 1rem;">Glass</div>
+      <div class="vitra-glass vitra-glass-subtle" data-state="subtle" style="padding: 1rem;">Subtle</div>
+      <div class="vitra-glass vitra-glass-sm" data-state="sm" style="padding: 1rem;">Small</div>
+      <div class="vitra-glass vitra-glass-md" data-state="md" style="padding: 1rem;">Medium</div>
+      <div class="vitra-glass vitra-glass-lg" data-state="lg" style="padding: 1rem;">Large</div>
+      <div class="vitra-glass vitra-glass-xl" data-state="xl" style="padding: 1rem;">XL</div>
+      <div class="vitra-glass vitra-glass-reflect" data-state="reflect" style="padding: 1rem;">Reflect</div>
+      <div class="vitra-glass ks-narrow" data-state="long-text" style="padding: 1rem;">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</div>
+    </div>
+  </section>
+
+  <section class="ks-section" data-component="reveal">
+    <h2>Reveal</h2>
+    <div class="ks-col">
+      <div class="vitra-card vitra-reveal" data-state="default"><div class="vitra-card-body">Reveal</div></div>
+      <div class="vitra-card vitra-reveal vitra-reveal-up" data-state="up"><div class="vitra-card-body">Reveal up</div></div>
+      <div class="vitra-card vitra-reveal vitra-reveal-left" data-state="left"><div class="vitra-card-body">Reveal left</div></div>
+      <div class="vitra-card vitra-reveal vitra-reveal-scale" data-state="scale"><div class="vitra-card-body">Reveal scale</div></div>
+      <div class="vitra-card vitra-reveal vitra-reveal-blur" data-state="blur"><div class="vitra-card-body">Reveal blur</div></div>
+      <div class="vitra-card vitra-reveal" data-state="long-text"><div class="vitra-card-body">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</div></div>
+    </div>
+  </section>
+
+  <section class="ks-section" data-component="scenery">
+    <h2>Scenery</h2>
+    <div class="ks-scenery-host" data-state="default">
+      <div class="vitra-scenery-inline"></div>
+    </div>
+    <div class="ks-scenery-host" data-state="crescent">
+      <div class="vitra-scenery-inline" data-vitra-moon="crescent"></div>
+    </div>
+    <p class="vitra-text-secondary" data-state="long-text">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567</p>
+  </section>
+
+  <script src="../dist/vitra.min.js"></script>
+</body>
+</html>
