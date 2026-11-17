@@ -24,6 +24,17 @@ async function activate(page, sel, key = 'Enter') {
 // ----------------------------------------------------------------- modal ---
 
 test.describe('modal', () => {
+  test('[J7] modal: focus lands inside synchronously on open, not after a later frame', async ({ page }) => {
+    await openSink(page);
+    const r = await page.evaluate(() => {
+      Vitra.modal.open('#ks-modal');
+      const el = document.querySelector('#ks-modal');
+      return { inside: el.contains(document.activeElement), visibility: getComputedStyle(el).visibility };
+    });
+    expect(r.visibility, 'overlay is visible as soon as it opens').toBe('visible');
+    expect(r.inside, 'focus is inside the modal in the same task as open()').toBe(true);
+  });
+
   test('[contract] modal: focus enters, Tab cycles inside, Esc closes and focus returns to the opener', async ({ page }) => {
     await openSink(page);
     await activate(page, '#ks-modal-open');

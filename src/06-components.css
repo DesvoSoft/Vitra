@@ -825,6 +825,12 @@
     opacity: 1;
     pointer-events: auto;
     visibility: visible;
+
+    /* Opening: visible at once (not after the first transition tick), so
+       focus can land synchronously. Closing keeps the base rule: it stays
+       visible while it fades. */
+    transition: opacity var(--vitra-duration-normal) var(--vitra-ease-out),
+                visibility 0s linear;
   }
 
   @starting-style {
