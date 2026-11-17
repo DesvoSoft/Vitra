@@ -13,7 +13,7 @@ var Vitra = (() => {
     "src/vitra.js"(exports, module) {
       var Vitra = (() => {
         "use strict";
-        const _resolve = (t) => typeof t === "string" ? document.querySelector(t) : t instanceof Element ? t : null;
+        const _resolve = (t) => typeof t === "string" ? document.querySelector(t) : t && t.nodeType === 1 ? t : null;
         const _reducedMotion = () => !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
         const _FOCUSABLE = 'a[href],button,input:not([type=hidden]),textarea,select,summary,[tabindex],[contenteditable=""],[contenteditable="true"]';
         const _focusables = (root) => Array.from(root.querySelectorAll(_FOCUSABLE)).filter((el) => {
@@ -24,24 +24,23 @@ var Vitra = (() => {
           }
           return true;
         });
-        const _trapFocus = (root) => {
-          const hadTabindex = root.getAttribute("tabindex");
-          if (hadTabindex === null) root.setAttribute("tabindex", "-1");
+        const _trapFocus = (root, home = root) => {
+          const hadTabindex = home.getAttribute("tabindex");
+          if (hadTabindex === null) home.setAttribute("tabindex", "-1");
           let r1, r2;
-          const focusFirst = () => (_focusables(root)[0] || root).focus();
+          const focusFirst = () => (_focusables(root)[0] || home).focus();
           const onKey = (e) => {
             if (e.key !== "Tab") return;
             const list = _focusables(root);
-            const first = list[0] || root;
-            const last = list[list.length - 1] || root;
+            const first = list[0] || home;
+            const last = list[list.length - 1] || home;
             const active = document.activeElement;
-            const edge = e.shiftKey ? first : last;
-            if (active === edge || active === root || !root.contains(active)) {
+            if (active === (e.shiftKey ? first : last) || active === home || !root.contains(active)) {
               e.preventDefault();
               (e.shiftKey ? last : first).focus();
             }
           };
-          root.addEventListener("keydown", onKey);
+          document.addEventListener("keydown", onKey);
           focusFirst();
           if (!root.contains(document.activeElement)) {
             r1 = requestAnimationFrame(() => {
@@ -49,11 +48,11 @@ var Vitra = (() => {
             });
           }
           return () => {
-            root.removeEventListener("keydown", onKey);
+            document.removeEventListener("keydown", onKey);
             cancelAnimationFrame(r1);
             cancelAnimationFrame(r2);
-            if (hadTabindex === null) root.removeAttribute("tabindex");
-            else root.setAttribute("tabindex", hadTabindex);
+            if (hadTabindex === null) home.removeAttribute("tabindex");
+            else home.setAttribute("tabindex", hadTabindex);
           };
         };
         let _scrollLocks = 0;
@@ -616,11 +615,10 @@ var Vitra = (() => {
           return { init, destroy };
         })();
         const modal = /* @__PURE__ */ (() => {
-          const _stack = [];
+          let _active = null;
           const _closeEntry = (en) => {
-            const i = _stack.indexOf(en);
-            if (i < 0) return;
-            _stack.splice(i, 1);
+            if (en !== _active) return;
+            _active = null;
             const el = en.el;
             el.classList.remove("vitra-modal-open");
             el.removeAttribute("open");
@@ -631,12 +629,11 @@ var Vitra = (() => {
             en.unlock();
             el.removeEventListener("click", en.onClick);
             en.buttons.forEach((btn) => btn.removeEventListener("click", en.close));
-            if (!_stack.length) document.removeEventListener("keydown", _handleEsc);
+            document.removeEventListener("keydown", _handleEsc);
             if (en.prev && en.prev.focus) en.prev.focus();
           };
           const _handleEsc = (e) => {
-            const top = _stack[_stack.length - 1];
-            if (e.key === "Escape" && top && top.esc) _closeEntry(top);
+            if (e.key === "Escape" && _active && _active.esc) _closeEntry(_active);
           };
           const open = (target, options = {}) => {
             const { closeOnOverlay = true, closeOnEsc = true } = options;
@@ -645,7 +642,7 @@ var Vitra = (() => {
               console.warn("[Vitra Modal] Modal element not found");
               return false;
             }
-            if (_stack.some((en2) => en2.el === modalEl)) return true;
+            if (_active && _active.el === modalEl) return true;
             close();
             const en = {
               el: modalEl,
@@ -665,20 +662,17 @@ var Vitra = (() => {
             en.unlock = _lockScroll();
             modalEl.classList.add("vitra-modal-open");
             modalEl.setAttribute("open", "");
-            en.untrap = _trapFocus(modalEl.querySelector(".vitra-modal-content") || modalEl);
+            en.untrap = _trapFocus(modalEl, modalEl.querySelector(".vitra-modal-content") || modalEl);
             modalEl.addEventListener("click", en.onClick);
             en.buttons.forEach((btn) => btn.addEventListener("click", en.close));
-            if (!_stack.length) document.addEventListener("keydown", _handleEsc);
-            _stack.push(en);
+            document.addEventListener("keydown", _handleEsc);
+            _active = en;
             return true;
           };
           const close = () => {
-            if (_stack.length) _closeEntry(_stack[_stack.length - 1]);
+            if (_active) _closeEntry(_active);
           };
-          const destroy = () => {
-            while (_stack.length) close();
-          };
-          return { open, close, destroy };
+          return { open, close, destroy: close };
         })();
         const tooltip = /* @__PURE__ */ (() => {
           let _activeTooltip = null;

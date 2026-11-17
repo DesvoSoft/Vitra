@@ -334,17 +334,39 @@ describe('Modal Module', () => {
       expect(tab().defaultPrevented).toBe(true);
     });
 
-    it('does not move focus into a modal closed before the deferred focus', async () => {
+    it('cancels the deferred focus when closed right after open', async () => {
       const m = mk('j7-race', '<button id="j7-race-b">x</button>');
-      const trigger = document.createElement('button');
-      document.body.appendChild(trigger);
-      made.push(trigger);
-      trigger.focus();
+      const orig = HTMLElement.prototype.focus;
+      const seen = [];
+      // Simulate a modal that is not focusable yet (transition): focus() inside it is a no-op,
+      // so open() schedules the deferred retry.
+      HTMLElement.prototype.focus = function (...args) {
+        if (m.contains(this)) { seen.push(this.id); return undefined; }
+        return orig.apply(this, args);
+      };
+      try {
+        Vitra.modal.open(m);
+        Vitra.modal.close();
+        seen.length = 0;
+        await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+        await new Promise((r) => setTimeout(r, 50));
+      } finally {
+        HTMLElement.prototype.focus = orig;
+      }
+      expect(seen).toEqual([]);
+    });
+
+    it('keeps Tab inside the modal when the focused element is removed', () => {
+      const m = mk('j7-lost', '<button id="j7-l1">one</button><button id="j7-l2">two</button>');
       Vitra.modal.open(m);
-      Vitra.modal.close();
-      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
-      await new Promise((r) => setTimeout(r, 50));
-      expect(m.contains(document.activeElement)).toBe(false);
+      const one = m.querySelector('#j7-l1');
+      one.focus();
+      one.remove();
+      expect(document.activeElement).toBe(document.body);
+      const e = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true });
+      document.dispatchEvent(e);
+      expect(e.defaultPrevented).toBe(true);
+      expect(m.contains(document.activeElement)).toBe(true);
     });
 
     it('binds a single effective close listener per button across 3 open/close cycles', () => {
