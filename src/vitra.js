@@ -1438,6 +1438,7 @@ const Vitra = (() => {
       }
 
       // Opened with the keyboard (detail 0): focus the first enabled item
+      if (menu) menu.inert = false;
       if (toggle && menu && e.detail === 0 && _isOpen(dropdown, menu)) {
         const first = _items(menu)[0];
         if (first) first.focus();
@@ -1452,6 +1453,7 @@ const Vitra = (() => {
     // One delegated keydown: Esc, Tab and the arrow keys of an open menu
     const _keyHandler = (e) => {
       const k = e.key;
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
       if (k === 'Escape') {
         document.querySelectorAll('.vitra-dropdown.open').forEach(dd => {
           dd.classList.remove('open');
@@ -1469,6 +1471,7 @@ const Vitra = (() => {
       if (!menu || !toggle) return;
       const onToggle = e.target === toggle;
       if (!onToggle && !menu.contains(e.target)) return;
+      if (e.target.closest('input, textarea, select, [contenteditable]')) return;
       const items = _items(menu);
       if (!_isOpen(dd, menu)) {
         // click() has detail 0, so the click handler focuses the first item
@@ -1476,15 +1479,21 @@ const Vitra = (() => {
         return;
       }
       if (k === 'Tab') {
-        // focus moves on naturally; the menu just closes
+        // Close and make the menu unreachable at once (it stays rendered
+        // while it fades out), then let Tab move on from the toggle
+        menu.inert = true;
+        if (!onToggle) {
+          toggle.focus();
+          if (e.shiftKey) e.preventDefault();
+        }
         if (menu.hasAttribute('popover') && _supportsPopover) menu.hidePopover();
         else { dd.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); }
         return;
       }
-      const i = items.indexOf(document.activeElement);
+      const i = onToggle ? -1 : items.indexOf(document.activeElement);
       const n = items.length;
-      const to = k === 'ArrowDown' ? (onToggle ? 0 : (i + 1) % n)
-        : k === 'ArrowUp' ? (onToggle ? n - 1 : (i - 1 + n) % n)
+      const to = k === 'ArrowDown' ? (i + 1) % n
+        : k === 'ArrowUp' ? (i < 0 ? n - 1 : (i - 1 + n) % n)
         : k === 'Home' ? 0 : k === 'End' ? n - 1 : -1;
       if (to < 0 || !n) return;
       e.preventDefault();

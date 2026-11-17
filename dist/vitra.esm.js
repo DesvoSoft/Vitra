@@ -1072,6 +1072,7 @@ var require_vitra = __commonJS({
               }
             }
           }
+          if (menu) menu.inert = false;
           if (toggle && menu && e.detail === 0 && _isOpen(dropdown2, menu)) {
             const first = _items(menu)[0];
             if (first) first.focus();
@@ -1081,6 +1082,7 @@ var require_vitra = __commonJS({
         const _items = (menu) => [...menu.querySelectorAll(".vitra-dropdown-item")].filter((i) => !i.disabled && i.getAttribute("aria-disabled") !== "true");
         const _keyHandler = (e) => {
           const k = e.key;
+          if (e.altKey || e.ctrlKey || e.metaKey) return;
           if (k === "Escape") {
             document.querySelectorAll(".vitra-dropdown.open").forEach((dd2) => {
               dd2.classList.remove("open");
@@ -1098,6 +1100,7 @@ var require_vitra = __commonJS({
           if (!menu || !toggle) return;
           const onToggle = e.target === toggle;
           if (!onToggle && !menu.contains(e.target)) return;
+          if (e.target.closest("input, textarea, select, [contenteditable]")) return;
           const items = _items(menu);
           if (!_isOpen(dd, menu)) {
             if (onToggle && k === "ArrowDown") {
@@ -1107,6 +1110,11 @@ var require_vitra = __commonJS({
             return;
           }
           if (k === "Tab") {
+            menu.inert = true;
+            if (!onToggle) {
+              toggle.focus();
+              if (e.shiftKey) e.preventDefault();
+            }
             if (menu.hasAttribute("popover") && _supportsPopover) menu.hidePopover();
             else {
               dd.classList.remove("open");
@@ -1114,9 +1122,9 @@ var require_vitra = __commonJS({
             }
             return;
           }
-          const i = items.indexOf(document.activeElement);
+          const i = onToggle ? -1 : items.indexOf(document.activeElement);
           const n = items.length;
-          const to = k === "ArrowDown" ? onToggle ? 0 : (i + 1) % n : k === "ArrowUp" ? onToggle ? n - 1 : (i - 1 + n) % n : k === "Home" ? 0 : k === "End" ? n - 1 : -1;
+          const to = k === "ArrowDown" ? (i + 1) % n : k === "ArrowUp" ? i < 0 ? n - 1 : (i - 1 + n) % n : k === "Home" ? 0 : k === "End" ? n - 1 : -1;
           if (to < 0 || !n) return;
           e.preventDefault();
           items[to].focus();

@@ -879,6 +879,28 @@ describe('Dropdown Module', () => {
       expect(document.activeElement).toBe(c);
     });
 
+    it('ArrowUp from a non-item goes to the last item; text fields and modified keys are ignored', () => {
+      const { dd, toggle, a, c, press } = setup();
+      const input = document.createElement('input');
+      dd.querySelector('.vitra-dropdown-menu').appendChild(input);
+      toggle.focus();
+      press(toggle, 'ArrowDown');
+      input.focus();
+      press(input, 'ArrowUp');
+      expect(document.activeElement).toBe(input);
+      const alt = new KeyboardEvent('keydown', { key: 'ArrowDown', altKey: true, bubbles: true, cancelable: true });
+      a.focus();
+      a.dispatchEvent(alt);
+      expect(document.activeElement).toBe(a);
+      const menu = dd.querySelector('.vitra-dropdown-menu');
+      const plain = document.createElement('div');
+      plain.tabIndex = -1;
+      menu.appendChild(plain);
+      plain.focus();
+      press(plain, 'ArrowUp');
+      expect(document.activeElement).toBe(c);
+    });
+
     it('Tab closes the menu without preventing the default focus move', () => {
       const { dd, toggle, a, press } = setup();
       toggle.focus();

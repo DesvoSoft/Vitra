@@ -272,6 +272,46 @@ for (const [kind, sel] of [['classic', '#ks-dd'], ['popover', '#ks-dd-popover']]
       expect(await focusedIndex(page), 'Home').toBe(0);
     });
 
+    // Where Tab / Shift+Tab should land: the neighbours of the whole dropdown
+    // among the controls outside any dropdown menu, in document order.
+    const neighbours = (page) => page.evaluate((sel) => {
+      const dd = document.querySelector(sel);
+      const all = [...document.querySelectorAll('button, a[href], input, select, textarea, [tabindex]')]
+        .filter((e) => !e.closest('.vitra-dropdown-menu') && !e.disabled && e.tabIndex >= 0 && e.getClientRects().length && !e.closest('[inert]') && getComputedStyle(e).visibility !== 'hidden');
+      const mark = (e) => (e ? e.textContent.trim() || e.id : null);
+      const inside = all.filter((e) => dd.contains(e));
+      const next = all.find((e) => dd.compareDocumentPosition(e) & Node.DOCUMENT_POSITION_FOLLOWING && !dd.contains(e));
+      const prev = [...all].reverse().find((e) => dd.compareDocumentPosition(e) & Node.DOCUMENT_POSITION_PRECEDING && !dd.contains(e));
+      return { next: mark(next), prev: mark(prev), inside: inside.length };
+    }, sel);
+    const where = (page) => page.evaluate((sel) => {
+      const a = document.activeElement;
+      return { text: a.textContent.trim() || a.id, item: !!a.closest('.vitra-dropdown-menu'), toggle: a === document.querySelector(sel + ' [data-vitra-dropdown-toggle]') };
+    }, sel);
+
+    for (const [from, key, expect_] of [
+      ['toggle', 'Tab', 'next'], ['item', 'Tab', 'next'], ['item', 'Shift+Tab', 'toggle'], ['toggle', 'Shift+Tab', 'prev'],
+    ]) {
+      test(`dropdown (${kind}): ${key} from the ${from} closes the menu and focus moves on`, async ({ page }) => {
+        await openSink(page);
+        const n = await neighbours(page);
+        await activate(page, toggle);
+        await expect(page.locator(toggle)).toHaveAttribute('aria-expanded', 'true');
+        await expect.poll(() => focusedIndex(page)).toBe(0);
+        if (from === 'toggle') await page.locator(toggle).focus();
+        await page.keyboard.press(key);
+        await expect(page.locator(toggle)).toHaveAttribute('aria-expanded', 'false');
+        const w = await where(page);
+        expect(w.item, 'never on a menu item').toBe(false);
+        if (expect_ === 'toggle') expect(w.toggle, 'Shift+Tab from an item lands on the toggle').toBe(true);
+        else {
+          expect(w.toggle, 'not stuck on the toggle').toBe(false);
+          expect(w.text).toBe(n[expect_]);
+        }
+        await expect(page.locator(items).first()).toBeHidden();
+      });
+    }
+
     test(`[contract] dropdown (${kind}): Esc closes it, clears aria-expanded and returns focus to the toggle`, async ({ page }) => {
       await openSink(page);
       await activate(page, toggle);
