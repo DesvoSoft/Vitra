@@ -423,6 +423,170 @@ describe('Modal Module', () => {
   });
 });
 
+describe('Drawer Module', () => {
+  const HTML = `
+    <button id="t1" class="vitra-burger" data-vitra-drawer-toggle="#d1" aria-expanded="false">menu</button>
+    <button id="t2" data-vitra-drawer-toggle="#d1">second</button>
+    <div class="vitra-drawer-overlay" id="ov"></div>
+    <nav id="d1" class="vitra-drawer"><button class="vitra-drawer-close">x</button><a href="#a" id="d1a">a</a></nav>
+    <nav id="manual" class="vitra-drawer"><a href="#m" id="ma">m</a></nav>
+    <button id="outside">outside</button>
+  `;
+  const $ = (s) => document.querySelector(s);
+  const click = (el) => el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+  const esc = () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+
+  beforeEach(() => {
+    document.body.innerHTML = HTML;
+  });
+  afterEach(() => {
+    Vitra.drawer.destroy();
+    document.body.innerHTML = '';
+    document.body.removeAttribute('style');
+  });
+
+  it('open/close/toggle return values and set classes and attributes', () => {
+    Vitra.drawer.init();
+    expect($('#d1').hasAttribute('inert')).toBe(true);
+    expect(Vitra.drawer.open('#d1')).toBe(true);
+    const d = $('#d1');
+    expect(d.classList.contains('open')).toBe(true);
+    expect(d.hasAttribute('inert')).toBe(false);
+    expect($('#ov').classList.contains('open')).toBe(true);
+    expect(d.getAttribute('role')).toBe('dialog');
+    expect(d.getAttribute('aria-modal')).toBe('true');
+    expect(document.body.style.overflow).toBe('hidden');
+    ['#t1', '#t2'].forEach((s) => expect($(s).getAttribute('aria-expanded')).toBe('true'));
+    expect($('#t1').classList.contains('active')).toBe(true);
+    expect($('#t2').classList.contains('active')).toBe(false);
+    expect(d.contains(document.activeElement)).toBe(true);
+    Vitra.drawer.close();
+    expect(d.classList.contains('open')).toBe(false);
+    expect(d.hasAttribute('inert')).toBe(true);
+    expect(d.hasAttribute('role')).toBe(false);
+    expect(d.hasAttribute('aria-modal')).toBe(false);
+    expect($('#ov').classList.contains('open')).toBe(false);
+    expect($('#t1').getAttribute('aria-expanded')).toBe('false');
+    expect($('#t1').classList.contains('active')).toBe(false);
+    expect(document.body.style.overflow).toBe('');
+    expect(Vitra.drawer.toggle($('#d1'))).toBe(true);
+    expect(Vitra.drawer.toggle('#d1')).toBe(false);
+  });
+
+  it('keeps an author role and returns focus to the toggle that opened it', () => {
+    $('#d1').setAttribute('role', 'navigation');
+    Vitra.drawer.init();
+    $('#t1').focus();
+    click($('#t1'));
+    expect($('#d1').getAttribute('role')).toBe('navigation');
+    expect($('#d1').classList.contains('open')).toBe(true);
+    esc();
+    expect($('#d1').classList.contains('open')).toBe(false);
+    expect($('#d1').getAttribute('role')).toBe('navigation');
+    expect(document.activeElement).toBe($('#t1'));
+    expect($('#t1').getAttribute('aria-expanded')).toBe('false');
+    expect($('#t1').classList.contains('active')).toBe(false);
+  });
+
+  it('missing target returns false and warns', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    expect(Vitra.drawer.open('#nope')).toBe(false);
+    expect(warn).toHaveBeenCalledWith('[Vitra Drawer] Target element not found');
+    warn.mockRestore();
+  });
+
+  it('close button, overlay click and outside click close it', () => {
+    Vitra.drawer.init();
+    click($('#t1'));
+    click($('#d1 .vitra-drawer-close'));
+    expect($('#d1').classList.contains('open')).toBe(false);
+    click($('#t1'));
+    click($('#ov'));
+    expect($('#d1').classList.contains('open')).toBe(false);
+    click($('#t1'));
+    click($('#d1a'));
+    expect($('#d1').classList.contains('open')).toBe(true);
+    click($('#outside'));
+    expect($('#d1').classList.contains('open')).toBe(false);
+  });
+
+  it('init() twice: one click toggles once; destroy() stops responding and removes inert', () => {
+    Vitra.drawer.init();
+    Vitra.drawer.init();
+    click($('#t1'));
+    expect($('#d1').classList.contains('open')).toBe(true);
+    click($('#t1'));
+    expect($('#d1').classList.contains('open')).toBe(false);
+    Vitra.drawer.destroy();
+    expect($('#d1').hasAttribute('inert')).toBe(false);
+    click($('#t1'));
+    expect($('#d1').classList.contains('open')).toBe(false);
+  });
+
+  it('destroy() while open releases the scroll lock and the trap', () => {
+    Vitra.drawer.init();
+    click($('#t1'));
+    Vitra.drawer.destroy();
+    expect(document.body.style.overflow).toBe('');
+    expect($('#d1').classList.contains('open')).toBe(false);
+  });
+
+  it('does not touch a drawer without toggle (init and manual .open)', () => {
+    Vitra.drawer.init();
+    const m = $('#manual');
+    expect(m.hasAttribute('inert')).toBe(false);
+    m.classList.add('open');
+    expect(m.hasAttribute('inert')).toBe(false);
+    esc();
+    click($('#outside'));
+    expect(m.classList.contains('open')).toBe(true);
+    expect(m.hasAttribute('role')).toBe(false);
+    expect(getComputedStyle(m).visibility).not.toBe('hidden');
+    expect(Vitra.drawer.close()).toBeUndefined();
+  });
+
+  it('a toggle and drawer inserted after init() work', () => {
+    Vitra.drawer.init();
+    document.body.insertAdjacentHTML('beforeend',
+      '<button id="t3" data-vitra-drawer-toggle="#d2">x</button><nav id="d2" class="vitra-drawer"><a href="#z">z</a></nav>');
+    click($('#t3'));
+    expect($('#d2').classList.contains('open')).toBe(true);
+    expect($('#t3').getAttribute('aria-expanded')).toBe('true');
+    click($('#t3'));
+    expect($('#d2').classList.contains('open')).toBe(false);
+    expect($('#d2').hasAttribute('inert')).toBe(true);
+  });
+
+  it('opening a modal over the drawer keeps the drawer open, locked and trapped after the modal closes', () => {
+    document.body.insertAdjacentHTML('beforeend',
+      '<div id="m1" class="vitra-modal"><div class="vitra-modal-content"><button id="mc" data-vitra-modal-close>c</button></div></div>');
+    $('#d1').insertAdjacentHTML('beforeend', '<button id="om">open modal</button>');
+    Vitra.drawer.init();
+    click($('#t1'));
+    $('#om').focus();
+    Vitra.modal.open('#m1');
+    // clicks and Esc inside the modal layer do not close the drawer
+    click($('#mc'));
+    expect($('#d1').classList.contains('open')).toBe(true);
+    expect(document.body.style.overflow).toBe('hidden');
+    expect($('#d1').contains(document.activeElement)).toBe(true);
+    Vitra.modal.open('#m1');
+    esc();
+    expect($('#d1').classList.contains('open')).toBe(true);
+    Vitra.modal.close();
+    expect(document.body.style.overflow).toBe('hidden');
+    // drawer trap is active again: Tab from the last focusable wraps inside
+    const list = Array.from($('#d1').querySelectorAll('button,a[href]'));
+    list[list.length - 1].focus();
+    const ev = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true });
+    document.dispatchEvent(ev);
+    expect(ev.defaultPrevented).toBe(true);
+    expect(document.activeElement).toBe(list[0]);
+    Vitra.drawer.close();
+    expect(document.body.style.overflow).toBe('');
+  });
+});
+
 describe('Tooltip Module', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
@@ -834,6 +998,7 @@ describe('Module Structure', () => {
     expect(Vitra.particles).toBeDefined();
     expect(Vitra.reveal).toBeDefined();
     expect(Vitra.modal).toBeDefined();
+    expect(Vitra.drawer).toBeDefined();
     expect(Vitra.tooltip).toBeDefined();
     expect(Vitra.toast).toBeDefined();
     expect(Vitra.dropdown).toBeDefined();
@@ -1055,6 +1220,7 @@ describe('vitra.d.ts drift guard', () => {
     ['particles', 'ParticlesModule'],
     ['reveal', 'RevealModule'],
     ['modal', 'ModalModule'],
+    ['drawer', 'DrawerModule'],
     ['tooltip', 'TooltipModule']
   ])('%s runtime keys match declared %s interface', (moduleName, interfaceName) => {
     const runtimeKeys = Object.keys(Vitra[moduleName]).sort();

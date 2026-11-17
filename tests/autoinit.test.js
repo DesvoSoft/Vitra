@@ -43,6 +43,22 @@ describe('Auto-init', () => {
     expect(toggle.getAttribute('aria-expanded')).toBe('true');
   });
 
+  it('initializes drawer by default and respects drawer:false', async () => {
+    const DRAWER = `<button id="t" data-vitra-drawer-toggle="#d">m</button><nav id="d" class="vitra-drawer"><a href="#x">x</a></nav>`;
+    document.body.innerHTML = DRAWER;
+    Vitra = await importVitra();
+    document.getElementById('t').click();
+    expect(document.getElementById('d').classList.contains('open')).toBe(true);
+    Vitra.destroyAll();
+
+    vi.resetModules();
+    document.body.innerHTML = `<div data-config='{"drawer": false}'></div>` + DRAWER;
+    Vitra = await importVitra();
+    document.getElementById('t').click();
+    expect(document.getElementById('d').classList.contains('open')).toBe(false);
+    expect(document.getElementById('d').hasAttribute('inert')).toBe(false);
+  });
+
   it('respects dropdown:false opt-out via data-config', async () => {
     document.body.innerHTML =
       `<div data-config='{"dropdown": false}'></div>` + DROPDOWN_HTML;

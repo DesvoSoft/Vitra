@@ -191,8 +191,26 @@ test.describe('drawer', () => {
     await expect(page.locator('#ks-drawer')).toHaveClass(/\bopen\b/);
     await expect(page.locator('[data-component="drawer"] .vitra-drawer-overlay')).toHaveClass(/\bopen\b/);
     // Click the overlay on the side the drawer does not cover.
-    await page.mouse.click(MOBILE.width - 4, MOBILE.height - 4);
+    await page.mouse.click(4, MOBILE.height - 4);
     await expect(page.locator('#ks-drawer')).not.toHaveClass(/\bopen\b/);
+  });
+
+  test('[J9] drawer: a modal opened from inside keeps the scroll lock and returns focus into the drawer', async ({ page }) => {
+    await openSink(page, { viewport: MOBILE });
+    await activate(page, '#ks-drawer-toggle');
+    await expect(page.locator('#ks-drawer')).toHaveClass(/open/);
+    await activate(page, '#ks-drawer-modal-open');
+    await expect(page.locator('#ks-modal')).toHaveAttribute('aria-hidden', 'false');
+    await expect(page.locator('#ks-drawer')).toHaveClass(/open/);
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#ks-modal')).toHaveAttribute('aria-hidden', 'true');
+    await expect(page.locator('#ks-drawer')).toHaveClass(/open/);
+    expect(await page.evaluate(() => getComputedStyle(document.body).overflow)).toBe('hidden');
+    await expect.poll(() => isInside(page, '#ks-drawer')).toBe(true);
+    for (let i = 0; i < 6; i++) {
+      await page.keyboard.press('Tab');
+      expect(await isInside(page, '#ks-drawer'), `Tab #${i + 1} stays inside the drawer`).toBe(true);
+    }
   });
 
   test('[J9] drawer opened by the author script (.open) is left untouched by the module', async ({ page }) => {

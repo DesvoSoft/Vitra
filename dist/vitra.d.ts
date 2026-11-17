@@ -71,6 +71,14 @@ declare namespace Vitra {
     destroy(): void;
   }
 
+  interface DrawerModule {
+    open(target: string | HTMLElement): boolean;
+    close(target?: string | HTMLElement): void;
+    toggle(target: string | HTMLElement): boolean;
+    init(): void;
+    destroy(): void;
+  }
+
   interface TooltipOptions {
     position?: 'top' | 'bottom' | 'left' | 'right';
     delay?: number;
@@ -130,6 +138,7 @@ declare namespace Vitra {
     reveal: RevealModule;
     ripple: RippleModule;
     modal: ModalModule;
+    drawer: DrawerModule;
     tooltip: TooltipModule;
     toast: ToastModule;
     dropdown: DropdownModule;

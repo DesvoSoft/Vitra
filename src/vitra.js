@@ -33,13 +33,15 @@ const Vitra = (() => {
   // Focus the first focusable of root (or home, default root) and keep Tab inside root.
   // The keydown listener is on document so it still works after focus fell to body.
   // Returns the release function.
+  // Traps stack: only the most recent one (e.g. a modal over a drawer) handles Tab.
+  const _traps = [];
   const _trapFocus = (root, home = root) => {
     const hadTabindex = home.getAttribute('tabindex');
     if (hadTabindex === null) home.setAttribute('tabindex', '-1');
     let r1, r2;
     const focusFirst = () => (_focusables(root)[0] || home).focus();
     const onKey = (e) => {
-      if (e.key !== 'Tab') return;
+      if (e.key !== 'Tab' || _traps[_traps.length - 1] !== onKey) return;
       const list = _focusables(root);
       const first = list[0] || home;
       const last = list[list.length - 1] || home;
@@ -50,6 +52,7 @@ const Vitra = (() => {
       }
     };
     document.addEventListener('keydown', onKey);
+    _traps.push(onKey);
     focusFirst();
     // A transition may keep the element unfocusable until the paint commits.
     if (!root.contains(document.activeElement)) {
@@ -57,6 +60,7 @@ const Vitra = (() => {
     }
     return () => {
       document.removeEventListener('keydown', onKey);
+      if (_traps.includes(onKey)) _traps.splice(_traps.indexOf(onKey), 1);
       cancelAnimationFrame(r1);
       cancelAnimationFrame(r2);
       if (hadTabindex === null) home.removeAttribute('tabindex');
@@ -895,6 +899,138 @@ const Vitra = (() => {
   })();
 
   // =========================================================================
+  // DRAWER MODULE
+  // Side drawer: .open class, inert when closed, focus trap, Esc, overlay
+  // =========================================================================
+
+  const drawer = (() => {
+    const _managed = new Set();
+    let _active = null; // { el, prev, setRole, setModal, untrap, unlock }
+    let _bound = false;
+
+    const _toggles = (el) =>
+      Array.from(document.querySelectorAll('[data-vitra-drawer-toggle]'))
+        .filter((t) => _resolve(t.getAttribute('data-vitra-drawer-toggle')) === el);
+
+    const _overlay = (el) =>
+      _resolve(el.getAttribute('data-vitra-drawer-overlay')) ||
+      (el.parentElement && el.parentElement.querySelector(':scope > .vitra-drawer-overlay'));
+
+    const _sync = (el, on) => {
+      const ov = _overlay(el);
+      if (ov) ov.classList.toggle('open', on);
+      _toggles(el).forEach((t) => {
+        t.setAttribute('aria-expanded', String(on));
+        if (t.classList.contains('vitra-burger')) t.classList.toggle('active', on);
+      });
+    };
+
+    const _manage = (el) => {
+      if (_managed.has(el)) return;
+      _managed.add(el);
+      if (!_active || _active.el !== el) el.setAttribute('inert', '');
+      _sync(el, false);
+    };
+
+    const _close = (en) => {
+      if (en !== _active) return;
+      _active = null;
+      const el = en.el;
+      el.classList.remove('open');
+      _sync(el, false);
+      if (en.setRole) el.removeAttribute('role');
+      if (en.setModal) el.removeAttribute('aria-modal');
+      if (en.hid) el.setAttribute('aria-hidden', 'true');
+      en.untrap();
+      en.unlock();
+      if (en.prev && en.prev.focus) en.prev.focus();
+      el.setAttribute('inert', '');
+    };
+
+    const close = (target) => {
+      if (!_active) return;
+      if (target === undefined || _resolve(target) === _active.el) _close(_active);
+    };
+
+    const open = (target, opener) => {
+      const el = _resolve(target);
+      if (!el) {
+        console.warn('[Vitra Drawer] Target element not found');
+        return false;
+      }
+      if (_active && _active.el === el) return true;
+      close();
+      _manage(el);
+      const en = {
+        el,
+        prev: opener || document.activeElement,
+        setRole: !el.hasAttribute('role'),
+        setModal: !el.hasAttribute('aria-modal'),
+        hid: el.hasAttribute('aria-hidden')
+      };
+      if (en.setRole) el.setAttribute('role', 'dialog');
+      if (en.setModal) el.setAttribute('aria-modal', 'true');
+      if (en.hid) el.setAttribute('aria-hidden', 'false');
+      el.removeAttribute('inert');
+      el.classList.add('open');
+      _sync(el, true);
+      en.unlock = _lockScroll();
+      en.untrap = _trapFocus(el);
+      _active = en;
+      return true;
+    };
+
+    const toggle = (target, opener) => {
+      const el = _resolve(target);
+      if (el && _active && _active.el === el) {
+        close();
+        return false;
+      }
+      return open(target, opener);
+    };
+
+    const _onClick = (e) => {
+      const t = e.target;
+      if (!t.closest) return;
+      const tg = t.closest('[data-vitra-drawer-toggle]');
+      if (tg) {
+        toggle(tg.getAttribute('data-vitra-drawer-toggle'), tg);
+        return;
+      }
+      const btn = t.closest('.vitra-drawer-close');
+      const d = btn && btn.closest('.vitra-drawer');
+      if (d && _managed.has(d)) close(d);
+      else if (_active && !_active.el.contains(t) && !t.closest('.vitra-modal-open')) close();
+    };
+
+    const _onKey = (e) => {
+      if (e.key === 'Escape' && _active && !document.querySelector('.vitra-modal-open')) close();
+    };
+
+    const init = () => {
+      document.querySelectorAll('[data-vitra-drawer-toggle]').forEach((t) => {
+        const el = _resolve(t.getAttribute('data-vitra-drawer-toggle'));
+        if (el) _manage(el);
+      });
+      if (_bound) return;
+      _bound = true;
+      document.addEventListener('click', _onClick, true); // capture: sees the modal still open
+      document.addEventListener('keydown', _onKey);
+    };
+
+    const destroy = () => {
+      close();
+      _managed.forEach((el) => el.removeAttribute('inert'));
+      _managed.clear();
+      document.removeEventListener('click', _onClick, true);
+      document.removeEventListener('keydown', _onKey);
+      _bound = false;
+    };
+
+    return { open, close, toggle, init, destroy };
+  })();
+
+  // =========================================================================
   // TOOLTIP MODULE
   // Tooltip with positioning and accessibility
   // =========================================================================
@@ -1525,6 +1661,10 @@ const Vitra = (() => {
       tooltip.init();
     }
 
+    if (config.drawer !== false) {
+      drawer.init();
+    }
+
     // 6. Dropdown Configuration
     if (config.dropdown !== false) {
       dropdown.init();
@@ -1575,6 +1715,7 @@ const Vitra = (() => {
     reveal.destroy();
     ripple.destroy();
     modal.destroy();
+    drawer.destroy();
     tooltip.destroy();
     toast.destroy();
     dropdown.destroy();
@@ -1591,6 +1732,7 @@ const Vitra = (() => {
     reveal,
     ripple,
     modal,
+    drawer,
     tooltip,
     toast,
     dropdown,
