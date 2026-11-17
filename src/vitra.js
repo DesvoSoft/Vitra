@@ -816,7 +816,7 @@ const Vitra = (() => {
   // =========================================================================
 
   const modal = (() => {
-    // Open modals, last is the top one. Opening a second one stacks it.
+    // Open modals (at most one: opening another closes the current one).
     const _stack = [];
 
     const _closeEntry = (en) => {
@@ -858,6 +858,8 @@ const Vitra = (() => {
         return false;
       }
       if (_stack.some((en) => en.el === modalEl)) return true;
+      // One modal at a time: opening another closes the current one first
+      close();
 
       const en = {
         el: modalEl,

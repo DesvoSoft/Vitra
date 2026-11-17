@@ -645,6 +645,7 @@ var require_vitra = __commonJS({
             return false;
           }
           if (_stack.some((en2) => en2.el === modalEl)) return true;
+          close();
           const en = {
             el: modalEl,
             prev: document.activeElement,

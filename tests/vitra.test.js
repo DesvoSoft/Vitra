@@ -382,16 +382,21 @@ describe('Modal Module', () => {
       expect(document.activeElement).toBe(late);
     });
 
-    it('keeps the scroll lock until the last of two modals closes', () => {
+    it('opening a second modal closes the first and leaks no scroll lock', () => {
       const a = mk('j7-two-a');
       const b = mk('j7-two-b');
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = 'scroll';
       Vitra.modal.open(a);
       Vitra.modal.open(b);
-      Vitra.modal.close();
+      expect(a.classList.contains('vitra-modal-open')).toBe(false);
+      expect(b.classList.contains('vitra-modal-open')).toBe(true);
       expect(document.body.style.overflow).toBe('hidden');
       Vitra.modal.close();
-      expect(document.body.style.overflow).toBe('auto');
+      expect(b.classList.contains('vitra-modal-open')).toBe(false);
+      expect(document.body.style.overflow).toBe('scroll');
+      Vitra.modal.open(a);
+      Vitra.modal.close();
+      expect(document.body.style.overflow).toBe('scroll');
     });
   });
 });
