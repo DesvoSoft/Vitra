@@ -127,16 +127,17 @@ const Vitra = (() => {
       }
 
       // Announce theme change for screen readers
-      const announcer = document.getElementById('vitra-theme-announcer') || (() => {
+      // (skipped while there is no <body> yet, e.g. a script in <head>)
+      const announcer = document.getElementById('vitra-theme-announcer') || (document.body && (() => {
         const el = document.createElement('div');
         el.id = 'vitra-theme-announcer';
         el.setAttribute('aria-live', 'polite');
         el.setAttribute('aria-atomic', 'true');
         el.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;';
-        (document.body || html).appendChild(el);
+        document.body.appendChild(el);
         return el;
-      })();
-      announcer.textContent = `Theme changed to ${themeName}`;
+      })());
+      if (announcer) announcer.textContent = `Theme changed to ${themeName}`;
 
       // Persist to localStorage if available
       if (theme._persist) {
@@ -144,7 +145,6 @@ const Vitra = (() => {
           localStorage.setItem(STORAGE_KEY, themeName);
         } catch (e) {
           // localStorage may be full or disabled
-          console.warn('[Vitra Theme] Could not save theme to localStorage:', e.message);
         }
       }
 
@@ -1190,13 +1190,16 @@ const Vitra = (() => {
     };
 
     /**
+     * Create the (empty) live-region container so it exists before the first
+     * message is inserted. show() still creates it lazily if init() was skipped.
+     */
+    const init = () => { if (document.body) _ensureContainer(); };
+
+    /**
      * Show a toast notification
      * @param {string} message - The message to display
      * @param {Object} options - Options (type: 'success'|'error'|'info'|'warning'|'default', duration: number, closable: boolean)
      */
-    // Created empty at auto-init so the live region exists before the first message
-    const init = () => { if (document.body) _ensureContainer(); };
-
     const show = (message, options = {}) => {
       const { type = 'default', duration = 3000, closable = false } = options;
       const container = _ensureContainer();
@@ -1658,7 +1661,9 @@ const Vitra = (() => {
       ripple.init();
     }
 
-    toast.init();
+    if (config.toast !== false) {
+      toast.init();
+    }
 
     // 5. Tooltip Configuration
     if (config.tooltip !== false) {

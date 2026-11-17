@@ -103,21 +103,20 @@ var Vitra = (() => {
             } else {
               html.dataset.theme = themeName;
             }
-            const announcer = document.getElementById("vitra-theme-announcer") || (() => {
+            const announcer = document.getElementById("vitra-theme-announcer") || document.body && (() => {
               const el = document.createElement("div");
               el.id = "vitra-theme-announcer";
               el.setAttribute("aria-live", "polite");
               el.setAttribute("aria-atomic", "true");
               el.style.cssText = "position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;";
-              (document.body || html).appendChild(el);
+              document.body.appendChild(el);
               return el;
             })();
-            announcer.textContent = `Theme changed to ${themeName}`;
+            if (announcer) announcer.textContent = `Theme changed to ${themeName}`;
             if (theme._persist) {
               try {
                 localStorage.setItem(STORAGE_KEY, themeName);
               } catch (e) {
-                console.warn("[Vitra Theme] Could not save theme to localStorage:", e.message);
               }
             }
             return true;
@@ -1245,7 +1244,9 @@ var Vitra = (() => {
           if (config.ripple !== false) {
             ripple.init();
           }
-          toast.init();
+          if (config.toast !== false) {
+            toast.init();
+          }
           if (config.tooltip !== false) {
             tooltip.init();
           }

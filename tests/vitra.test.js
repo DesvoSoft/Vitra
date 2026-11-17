@@ -1645,7 +1645,7 @@ describe('Edge cases (task 12)', () => {
   });
 
   describe('theme', () => {
-    it('set() without document.body does not throw, applies the theme and returns true', () => {
+    it('set() without document.body applies the theme, skips the announcer, and creates it in <body> later', () => {
       const body = document.body;
       body.remove();
       try {
@@ -1653,9 +1653,14 @@ describe('Edge cases (task 12)', () => {
         expect(() => { result = Vitra.theme.set('dark'); }).not.toThrow();
         expect(result).toBe(true);
         expect(document.documentElement.dataset.theme).toBe('dark');
+        expect(document.getElementById('vitra-theme-announcer')).toBeNull();
       } finally {
         document.documentElement.appendChild(body);
       }
+      Vitra.theme.set('light');
+      const ann = document.getElementById('vitra-theme-announcer');
+      expect(ann).not.toBeNull();
+      expect(ann.parentNode).toBe(document.body);
     });
 
     it('toggle() works when destructured', () => {
@@ -1732,6 +1737,7 @@ describe('Edge cases (task 12)', () => {
       Vitra.motionGuard.init();
       const el = document.getElementById('s');
       Vitra.scenery.mount(el);
+      expect(observed).toContain(el);
       Vitra.motionGuard.observe(el);
       expect(observed.filter(o => o === el).length).toBe(1);
     });

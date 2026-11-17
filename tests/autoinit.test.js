@@ -72,4 +72,12 @@ describe('Auto-init', () => {
     expect(dd.classList.contains('open')).toBe(false);
     expect(toggle.getAttribute('aria-expanded')).toBe('false');
   });
+
+  it('respects toast:false (no container at load) and show() still works lazily', async () => {
+    document.body.innerHTML = `<div data-config='{"toast": false}'></div>`;
+    Vitra = await importVitra();
+    expect(document.querySelector('.vitra-toast-container')).toBeNull();
+    Vitra.toast.show('hi');
+    expect(document.querySelectorAll('.vitra-toast-container').length).toBe(1);
+  });
 });
