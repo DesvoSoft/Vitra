@@ -9,6 +9,79 @@
 const Vitra = (() => {
   'use strict';
 
+  // Shared private helpers
+
+  const _resolve = (t) => (typeof t === 'string' ? document.querySelector(t) : t instanceof Element ? t : null);
+
+  const _reducedMotion = () =>
+    !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  const _FOCUSABLE = 'a[href],button,input:not([type=hidden]),textarea,select,summary,[tabindex],[contenteditable=""],[contenteditable="true"]';
+
+  // Visible, enabled, non-inert focusable descendants. Recomputed on every call.
+  // Walks ancestors instead of using offsetParent so it also works without layout.
+  const _focusables = (root) =>
+    Array.from(root.querySelectorAll(_FOCUSABLE)).filter((el) => {
+      if (el.tabIndex < 0 || el.matches(':disabled') || getComputedStyle(el).visibility === 'hidden') return false;
+      for (let n = el; n; n = n.parentElement) {
+        if (n.hidden || n.hasAttribute('inert') || getComputedStyle(n).display === 'none') return false;
+        if (n === root) break;
+      }
+      return true;
+    });
+
+  // Focus the first focusable (or root) and keep Tab inside root. Returns the release function.
+  const _trapFocus = (root) => {
+    const hadTabindex = root.getAttribute('tabindex');
+    if (hadTabindex === null) root.setAttribute('tabindex', '-1');
+    let r1, r2;
+    const focusFirst = () => (_focusables(root)[0] || root).focus();
+    const onKey = (e) => {
+      if (e.key !== 'Tab') return;
+      const list = _focusables(root);
+      const first = list[0] || root;
+      const last = list[list.length - 1] || root;
+      const active = document.activeElement;
+      const edge = e.shiftKey ? first : last;
+      if (active === edge || active === root || !root.contains(active)) {
+        e.preventDefault();
+        (e.shiftKey ? last : first).focus();
+      }
+    };
+    root.addEventListener('keydown', onKey);
+    focusFirst();
+    // A transition may keep the element unfocusable until the paint commits.
+    if (!root.contains(document.activeElement)) {
+      r1 = requestAnimationFrame(() => { r2 = requestAnimationFrame(focusFirst); });
+    }
+    return () => {
+      root.removeEventListener('keydown', onKey);
+      cancelAnimationFrame(r1);
+      cancelAnimationFrame(r2);
+      if (hadTabindex === null) root.removeAttribute('tabindex');
+      else root.setAttribute('tabindex', hadTabindex);
+    };
+  };
+
+  // Counted body scroll lock: only the last release restores the author's values.
+  let _scrollLocks = 0;
+  let _savedBody;
+  const _lockScroll = () => {
+    const b = document.body;
+    if (!_scrollLocks++) {
+      _savedBody = [b.style.overflow, b.style.paddingRight];
+      const gap = document.documentElement.clientWidth && window.innerWidth - document.documentElement.clientWidth;
+      b.style.overflow = 'hidden';
+      if (gap > 0) b.style.paddingRight = (parseFloat(getComputedStyle(b).paddingRight) || 0) + gap + 'px';
+    }
+    let done = false;
+    return () => {
+      if (done) return;
+      done = true;
+      if (!--_scrollLocks) [b.style.overflow, b.style.paddingRight] = _savedBody;
+    };
+  };
+
   // Storage key for localStorage persistence
   const STORAGE_KEY = 'vitra-theme';
 
@@ -302,11 +375,6 @@ const Vitra = (() => {
     let _activeParticles = [];
     let _maxParticles = 40; // Desktop default
 
-    // Check for reduced motion preference
-    // Check for reduced motion preference
-    const _prefersReducedMotion = () => {
-      return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    };
 
     // Get device-based particle limit
     const _getDeviceLimit = () => {
@@ -348,7 +416,7 @@ const Vitra = (() => {
      */
     const spawn = (count, options = {}) => {
       // Respect reduced motion
-      if (_prefersReducedMotion()) {
+      if (_reducedMotion()) {
         console.warn('[Vitra Particles] prefers-reduced-motion detected, skipping particle spawn');
         return 0;
       }
@@ -372,7 +440,7 @@ const Vitra = (() => {
       }
 
       const targetContainer = container
-        ? (typeof container === 'string' ? document.querySelector(container) || document.body : (container instanceof Element ? container : document.body))
+        ? _resolve(container) || document.body
         : document.body;
 
       const angle = direction !== null ? _resolveAngle(direction) : null;
@@ -477,10 +545,6 @@ const Vitra = (() => {
     let _revealedElements = [];
     const _pendingElements = new Set();
 
-    // Check for reduced motion preference
-    const _prefersReducedMotion = () => {
-      return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    };
 
     // --- FAST-SCROLL DETECTION ---
     // Tracks scroll speed so a fast flick/fling doesn't queue up a visible
@@ -551,7 +615,7 @@ const Vitra = (() => {
       }
 
       // Respect reduced motion - reveal immediately without animation
-      if (_prefersReducedMotion()) {
+      if (_reducedMotion()) {
         elements.forEach(el => {
           if (el.classList.contains('vitra-scroll-reveal-observer')) {
             el.classList.add('vitra-scroll-revealed');
@@ -752,197 +816,90 @@ const Vitra = (() => {
   // =========================================================================
 
   const modal = (() => {
-    let _activeModal = null;
-    let _previousFocus = null;
-    let _focusableElements = null;
-    let _firstFocusable = null;
-    let _tabKeyTarget = null;
-    let _lastFocusable = null;
-    let _overlayClickHandler = null;
+    // Open modals, last is the top one. Opening a second one stacks it.
+    const _stack = [];
+
+    const _closeEntry = (en) => {
+      const i = _stack.indexOf(en);
+      if (i < 0) return;
+      _stack.splice(i, 1);
+      const el = en.el;
+      el.classList.remove('vitra-modal-open');
+      el.removeAttribute('open');
+      if (en.setRole) el.removeAttribute('role');
+      if (en.setModal) el.removeAttribute('aria-modal');
+      el.setAttribute('aria-hidden', 'true');
+      en.untrap();
+      en.unlock();
+      el.removeEventListener('click', en.onClick);
+      en.buttons.forEach((btn) => btn.removeEventListener('click', en.close));
+      if (!_stack.length) document.removeEventListener('keydown', _handleEsc);
+      if (en.prev && en.prev.focus) en.prev.focus();
+    };
+
+    const _handleEsc = (e) => {
+      const top = _stack[_stack.length - 1];
+      if (e.key === 'Escape' && top && top.esc) _closeEntry(top);
+    };
 
     /**
      * Open a modal
-     * @param {string|HTMLElement} target - CSS selector or element
+     * @param {string|HTMLElement} target - CSS selector, bare id or element
      * @param {Object} options - Modal options
      * @param {boolean} options.closeOnOverlay - Close when clicking overlay (default: true)
      * @param {boolean} options.closeOnEsc - Close on Escape key (default: true)
      */
     const open = (target, options = {}) => {
-      const {
-        closeOnOverlay = true,
-        closeOnEsc = true
-      } = options;
+      const { closeOnOverlay = true, closeOnEsc = true } = options;
 
-      const selector = typeof target === 'string' ? (target.startsWith('#') || target.startsWith('.') ? target : '#' + target) : null;
-      const modalEl = selector ? document.querySelector(selector) : (typeof target === 'object' ? target : null);
-
+      const modalEl = _resolve(typeof target === 'string' && !/^[#.]/.test(target) ? '#' + target : target);
       if (!modalEl) {
         console.warn('[Vitra Modal] Modal element not found');
         return false;
       }
+      if (_stack.some((en) => en.el === modalEl)) return true;
 
-      // Close any active modal first
-      if (_activeModal) {
-        close();
-      }
+      const en = {
+        el: modalEl,
+        prev: document.activeElement,
+        esc: closeOnEsc,
+        setRole: !modalEl.hasAttribute('role'),
+        setModal: !modalEl.hasAttribute('aria-modal'),
+        buttons: Array.from(modalEl.querySelectorAll('[data-vitra-modal-close]')),
+        close: () => _closeEntry(en),
+        onClick: (e) => { if (closeOnOverlay && e.target === modalEl) _closeEntry(en); }
+      };
 
-      _activeModal = modalEl;
-      _previousFocus = document.activeElement;
-
-      // Set ARIA attributes for accessibility
-      modalEl.setAttribute('role', 'dialog');
-      modalEl.setAttribute('aria-modal', 'true');
+      if (en.setRole) modalEl.setAttribute('role', 'dialog');
+      if (en.setModal) modalEl.setAttribute('aria-modal', 'true');
       modalEl.setAttribute('aria-hidden', 'false');
-
-      // Lock body scroll
-      document.body.style.overflow = 'hidden';
-
-      // Show modal
+      en.unlock = _lockScroll();
       modalEl.classList.add('vitra-modal-open');
       modalEl.setAttribute('open', '');
+      en.untrap = _trapFocus(modalEl.querySelector('.vitra-modal-content') || modalEl);
 
-      // Set up focus trap
-      _setupFocusTrap(modalEl);
-
-      // Event listeners with cleanup
-      if (closeOnOverlay) {
-        if (_overlayClickHandler) {
-          modalEl.removeEventListener('click', _overlayClickHandler);
-        }
-        _overlayClickHandler = (e) => {
-          if (e.target === modalEl) {
-            close();
-          }
-        };
-        modalEl.addEventListener('click', _overlayClickHandler);
-      }
-
-      if (closeOnEsc) {
-        document.removeEventListener('keydown', _handleEsc);
-        document.addEventListener('keydown', _handleEsc);
-      }
-
-      // Find close buttons and bind them (remove old listeners first)
-      const closeButtons = modalEl.querySelectorAll('[data-vitra-modal-close]');
-      closeButtons.forEach(btn => {
-        btn.removeEventListener('click', close);
-        btn.addEventListener('click', close);
-      });
-
+      modalEl.addEventListener('click', en.onClick);
+      en.buttons.forEach((btn) => btn.addEventListener('click', en.close));
+      if (!_stack.length) document.addEventListener('keydown', _handleEsc);
+      _stack.push(en);
       return true;
     };
 
     /**
-     * Close the active modal
+     * Close the top modal
      */
     const close = () => {
-      if (!_activeModal) return;
-
-      _activeModal.classList.remove('vitra-modal-open');
-      _activeModal.removeAttribute('open');
-      _activeModal.removeAttribute('role');
-      _activeModal.removeAttribute('aria-modal');
-      _activeModal.setAttribute('aria-hidden', 'true');
-
-      // Restore body scroll
-      document.body.style.overflow = '';
-
-      // Remove event listeners
-      document.removeEventListener('keydown', _handleEsc);
-      if (_tabKeyTarget) {
-        _tabKeyTarget.removeEventListener('keydown', _handleTabKey);
-        _tabKeyTarget = null;
-      }
-      if (_overlayClickHandler) {
-        _activeModal.removeEventListener('click', _overlayClickHandler);
-        _overlayClickHandler = null;
-      }
-
-      // Restore focus
-      if (_previousFocus && _previousFocus.focus) {
-        _previousFocus.focus();
-      }
-
-      _activeModal = null;
-      _previousFocus = null;
+      if (_stack.length) _closeEntry(_stack[_stack.length - 1]);
     };
 
     /**
-     * Set up focus trap within modal
-     */
-    const _setupFocusTrap = (modalEl) => {
-      const focusableSelectors = [
-        'a[href]',
-        'button:not([disabled])',
-        'input:not([disabled])',
-        'textarea:not([disabled])',
-        'select:not([disabled])',
-        '[tabindex]:not([tabindex="-1"])'
-      ].join(', ');
-
-      _focusableElements = Array.from(modalEl.querySelectorAll(focusableSelectors));
-
-      if (_focusableElements.length === 0) return;
-
-      _firstFocusable = _focusableElements[0];
-      _lastFocusable = _focusableElements[_focusableElements.length - 1];
-
-      // Trap focus — remove previous listener first to avoid accumulation
-      if (_tabKeyTarget) {
-        _tabKeyTarget.removeEventListener('keydown', _handleTabKey);
-      }
-      _tabKeyTarget = modalEl;
-      modalEl.addEventListener('keydown', _handleTabKey);
-
-      // Focus first element once the open paint has committed
-      requestAnimationFrame(() => requestAnimationFrame(() => _firstFocusable.focus()));
-    };
-
-    /**
-     * Handle Tab key for focus trap
-     */
-    const _handleTabKey = (e) => {
-      if (e.key !== 'Tab') return;
-
-      if (e.shiftKey) {
-        // Shift + Tab
-        if (document.activeElement === _firstFocusable) {
-          e.preventDefault();
-          _lastFocusable.focus();
-        }
-      } else {
-        // Tab
-        if (document.activeElement === _lastFocusable) {
-          e.preventDefault();
-          _firstFocusable.focus();
-        }
-      }
-    };
-
-    /**
-     * Handle Escape key
-     */
-    const _handleEsc = (e) => {
-      if (e.key === 'Escape') {
-        close();
-      }
-    };
-
-    /**
-     * Destroy modal module - close and clean up
+     * Destroy modal module - close everything and clean up
      */
     const destroy = () => {
-      if (_activeModal) {
-        close();
-      }
-      document.removeEventListener('keydown', _handleEsc);
+      while (_stack.length) close();
     };
 
-    return {
-      open,
-      close,
-      destroy
-    };
+    return { open, close, destroy };
   })();
 
   // =========================================================================
@@ -970,7 +927,7 @@ const Vitra = (() => {
         delay = 0
       } = options;
 
-      const targetEl = typeof target === 'string' ? document.querySelector(target) : target;
+      const targetEl = _resolve(target);
 
       if (!targetEl) {
         console.warn('[Vitra Tooltip] Target element not found');
@@ -1112,7 +1069,7 @@ const Vitra = (() => {
       }
 
       if (target) {
-        const targetEl = typeof target === 'string' ? document.querySelector(target) : target;
+        const targetEl = _resolve(target);
         _removeDescribedBy(targetEl);
       }
     };
@@ -1418,7 +1375,7 @@ const Vitra = (() => {
     let _mounted = [];
 
     const mount = (target, options = {}) => {
-      const el = typeof target === 'string' ? document.querySelector(target) : target;
+      const el = _resolve(target);
       if (!el) {
         console.warn('[Vitra Scenery] Target element not found');
         return null;
@@ -1484,16 +1441,13 @@ const Vitra = (() => {
     let _observer = null;
     let initialized = false;
 
-    const _prefersReducedMotion = () => {
-      return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    };
 
     const init = () => {
       if (initialized) return;
 
       // Reduced-motion already collapses these animations via CSS;
       // nothing to pause, so skip setting up the observer entirely.
-      if (_prefersReducedMotion()) return;
+      if (_reducedMotion()) return;
 
       if (!('IntersectionObserver' in window)) {
         console.warn('[Vitra MotionGuard] IntersectionObserver not supported');

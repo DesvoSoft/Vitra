@@ -277,6 +277,123 @@ describe('Modal Module', () => {
     Vitra.modal.close();
     document.body.removeChild(modal);
   });
+
+  describe('shared helpers (focus trap, scroll lock, role)', () => {
+    const made = [];
+    const mk = (id, inner = '', attrs = '') => {
+      const el = document.createElement('div');
+      el.id = id;
+      el.className = 'vitra-modal-overlay';
+      el.setAttribute('aria-hidden', 'true');
+      if (attrs) el.setAttribute(...attrs.split('='));
+      el.innerHTML = `<div class="vitra-modal-content">${inner}</div>`;
+      document.body.appendChild(el);
+      made.push(el);
+      return el;
+    };
+    const tab = (shift = false) => {
+      const e = new KeyboardEvent('keydown', { key: 'Tab', shiftKey: shift, bubbles: true, cancelable: true });
+      document.activeElement.dispatchEvent(e);
+      return e;
+    };
+    afterEach(() => {
+      Vitra.modal.close();
+      made.splice(0).forEach((el) => el.remove());
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    });
+
+    it('restores the author body overflow after close', () => {
+      const m = mk('j7-scroll');
+      document.body.style.overflow = 'scroll';
+      Vitra.modal.open(m);
+      expect(document.body.style.overflow).toBe('hidden');
+      Vitra.modal.close();
+      expect(document.body.style.overflow).toBe('scroll');
+    });
+
+    it('keeps an author role and borrows dialog only when there is none', () => {
+      const a = mk('j7-alert', '', 'role=alertdialog');
+      const n = mk('j7-norole');
+      Vitra.modal.open(a);
+      expect(a.getAttribute('role')).toBe('alertdialog');
+      Vitra.modal.close();
+      expect(a.getAttribute('role')).toBe('alertdialog');
+      Vitra.modal.open(n);
+      expect(n.getAttribute('role')).toBe('dialog');
+      Vitra.modal.close();
+      expect(n.hasAttribute('role')).toBe(false);
+    });
+
+    it('focuses the content container when there are no focusables', () => {
+      const m = mk('j7-empty', '<p>text</p>');
+      Vitra.modal.open(m);
+      const active = document.activeElement;
+      expect(active === m || active.classList.contains('vitra-modal-content')).toBe(true);
+      expect(active.getAttribute('tabindex')).toBe('-1');
+      expect(tab().defaultPrevented).toBe(true);
+    });
+
+    it('does not move focus into a modal closed before the deferred focus', async () => {
+      const m = mk('j7-race', '<button id="j7-race-b">x</button>');
+      const trigger = document.createElement('button');
+      document.body.appendChild(trigger);
+      made.push(trigger);
+      trigger.focus();
+      Vitra.modal.open(m);
+      Vitra.modal.close();
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+      await new Promise((r) => setTimeout(r, 50));
+      expect(m.contains(document.activeElement)).toBe(false);
+    });
+
+    it('binds a single effective close listener per button across 3 open/close cycles', () => {
+      const m = mk('j7-dup', '<button class="vitra-modal-close" data-vitra-modal-close>x</button>');
+      const btn = m.querySelector('.vitra-modal-close');
+      const live = new Set();
+      const add = btn.addEventListener.bind(btn);
+      const rem = btn.removeEventListener.bind(btn);
+      btn.addEventListener = (t, f, o) => { if (t === 'click') live.add(f); return add(t, f, o); };
+      btn.removeEventListener = (t, f, o) => { if (t === 'click') live.delete(f); return rem(t, f, o); };
+      for (let i = 0; i < 3; i++) { Vitra.modal.open(m); Vitra.modal.close(); }
+      Vitra.modal.open(m);
+      expect(live.size).toBe(1);
+      btn.click();
+      expect(m.classList.contains('vitra-modal-open')).toBe(false);
+      Vitra.modal.close();
+      expect(live.size).toBe(0);
+    });
+
+    it('keeps hidden focusables out of the Tab cycle and sees late ones', () => {
+      const m = mk('j7-tab', '<button id="j7-a">a</button><button id="j7-c">c</button><button id="j7-h" hidden>h</button>');
+      Vitra.modal.open(m);
+      const a = m.querySelector('#j7-a');
+      const c = m.querySelector('#j7-c');
+      c.focus();
+      expect(tab().defaultPrevented).toBe(true);
+      expect(document.activeElement).toBe(a);
+      const late = document.createElement('button');
+      late.id = 'j7-late';
+      m.querySelector('.vitra-modal-content').appendChild(late);
+      late.focus();
+      tab();
+      expect(document.activeElement).toBe(a);
+      tab(true);
+      expect(document.activeElement).toBe(late);
+    });
+
+    it('keeps the scroll lock until the last of two modals closes', () => {
+      const a = mk('j7-two-a');
+      const b = mk('j7-two-b');
+      document.body.style.overflow = 'auto';
+      Vitra.modal.open(a);
+      Vitra.modal.open(b);
+      Vitra.modal.close();
+      expect(document.body.style.overflow).toBe('hidden');
+      Vitra.modal.close();
+      expect(document.body.style.overflow).toBe('auto');
+    });
+  });
 });
 
 describe('Tooltip Module', () => {

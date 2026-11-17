@@ -13,6 +13,66 @@ var Vitra = (() => {
     "src/vitra.js"(exports, module) {
       var Vitra = (() => {
         "use strict";
+        const _resolve = (t) => typeof t === "string" ? document.querySelector(t) : t instanceof Element ? t : null;
+        const _reducedMotion = () => !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+        const _FOCUSABLE = 'a[href],button,input:not([type=hidden]),textarea,select,summary,[tabindex],[contenteditable=""],[contenteditable="true"]';
+        const _focusables = (root) => Array.from(root.querySelectorAll(_FOCUSABLE)).filter((el) => {
+          if (el.tabIndex < 0 || el.matches(":disabled") || getComputedStyle(el).visibility === "hidden") return false;
+          for (let n = el; n; n = n.parentElement) {
+            if (n.hidden || n.hasAttribute("inert") || getComputedStyle(n).display === "none") return false;
+            if (n === root) break;
+          }
+          return true;
+        });
+        const _trapFocus = (root) => {
+          const hadTabindex = root.getAttribute("tabindex");
+          if (hadTabindex === null) root.setAttribute("tabindex", "-1");
+          let r1, r2;
+          const focusFirst = () => (_focusables(root)[0] || root).focus();
+          const onKey = (e) => {
+            if (e.key !== "Tab") return;
+            const list = _focusables(root);
+            const first = list[0] || root;
+            const last = list[list.length - 1] || root;
+            const active = document.activeElement;
+            const edge = e.shiftKey ? first : last;
+            if (active === edge || active === root || !root.contains(active)) {
+              e.preventDefault();
+              (e.shiftKey ? last : first).focus();
+            }
+          };
+          root.addEventListener("keydown", onKey);
+          focusFirst();
+          if (!root.contains(document.activeElement)) {
+            r1 = requestAnimationFrame(() => {
+              r2 = requestAnimationFrame(focusFirst);
+            });
+          }
+          return () => {
+            root.removeEventListener("keydown", onKey);
+            cancelAnimationFrame(r1);
+            cancelAnimationFrame(r2);
+            if (hadTabindex === null) root.removeAttribute("tabindex");
+            else root.setAttribute("tabindex", hadTabindex);
+          };
+        };
+        let _scrollLocks = 0;
+        let _savedBody;
+        const _lockScroll = () => {
+          const b = document.body;
+          if (!_scrollLocks++) {
+            _savedBody = [b.style.overflow, b.style.paddingRight];
+            const gap = document.documentElement.clientWidth && window.innerWidth - document.documentElement.clientWidth;
+            b.style.overflow = "hidden";
+            if (gap > 0) b.style.paddingRight = (parseFloat(getComputedStyle(b).paddingRight) || 0) + gap + "px";
+          }
+          let done = false;
+          return () => {
+            if (done) return;
+            done = true;
+            if (!--_scrollLocks) [b.style.overflow, b.style.paddingRight] = _savedBody;
+          };
+        };
         const STORAGE_KEY = "vitra-theme";
         const VALID_THEMES = Object.freeze(["light", "dark", "auto", "pastel", "neon", "ocean", "emerald"]);
         const theme = {
@@ -245,9 +305,6 @@ var Vitra = (() => {
         const particles = /* @__PURE__ */ (() => {
           let _activeParticles = [];
           let _maxParticles = 40;
-          const _prefersReducedMotion = () => {
-            return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-          };
           const _getDeviceLimit = () => {
             if (window.innerWidth <= 768) {
               return 15;
@@ -270,7 +327,7 @@ var Vitra = (() => {
             return _DIRECTION_ANGLES.down;
           };
           const spawn = (count, options = {}) => {
-            if (_prefersReducedMotion()) {
+            if (_reducedMotion()) {
               console.warn("[Vitra Particles] prefers-reduced-motion detected, skipping particle spawn");
               return 0;
             }
@@ -288,7 +345,7 @@ var Vitra = (() => {
               console.warn(`[Vitra Particles] Particle limit reached (${limit})`);
               return 0;
             }
-            const targetContainer = container ? typeof container === "string" ? document.querySelector(container) || document.body : container instanceof Element ? container : document.body : document.body;
+            const targetContainer = container ? _resolve(container) || document.body : document.body;
             const angle = direction !== null ? _resolveAngle(direction) : null;
             for (let i = 0; i < actualCount; i++) {
               const particle = document.createElement("div");
@@ -359,9 +416,6 @@ var Vitra = (() => {
           let _observer = null;
           let _revealedElements = [];
           const _pendingElements = /* @__PURE__ */ new Set();
-          const _prefersReducedMotion = () => {
-            return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-          };
           const FAST_SCROLL_THRESHOLD = 2.5;
           let _lastScrollY = null;
           let _lastScrollTime = null;
@@ -409,7 +463,7 @@ var Vitra = (() => {
             } else {
               elements = [...document.querySelectorAll(selector)];
             }
-            if (_prefersReducedMotion()) {
+            if (_reducedMotion()) {
               elements.forEach((el) => {
                 if (el.classList.contains("vitra-scroll-reveal-observer")) {
                   el.classList.add("vitra-scroll-revealed");
@@ -562,131 +616,68 @@ var Vitra = (() => {
           return { init, destroy };
         })();
         const modal = /* @__PURE__ */ (() => {
-          let _activeModal = null;
-          let _previousFocus = null;
-          let _focusableElements = null;
-          let _firstFocusable = null;
-          let _tabKeyTarget = null;
-          let _lastFocusable = null;
-          let _overlayClickHandler = null;
+          const _stack = [];
+          const _closeEntry = (en) => {
+            const i = _stack.indexOf(en);
+            if (i < 0) return;
+            _stack.splice(i, 1);
+            const el = en.el;
+            el.classList.remove("vitra-modal-open");
+            el.removeAttribute("open");
+            if (en.setRole) el.removeAttribute("role");
+            if (en.setModal) el.removeAttribute("aria-modal");
+            el.setAttribute("aria-hidden", "true");
+            en.untrap();
+            en.unlock();
+            el.removeEventListener("click", en.onClick);
+            en.buttons.forEach((btn) => btn.removeEventListener("click", en.close));
+            if (!_stack.length) document.removeEventListener("keydown", _handleEsc);
+            if (en.prev && en.prev.focus) en.prev.focus();
+          };
+          const _handleEsc = (e) => {
+            const top = _stack[_stack.length - 1];
+            if (e.key === "Escape" && top && top.esc) _closeEntry(top);
+          };
           const open = (target, options = {}) => {
-            const {
-              closeOnOverlay = true,
-              closeOnEsc = true
-            } = options;
-            const selector = typeof target === "string" ? target.startsWith("#") || target.startsWith(".") ? target : "#" + target : null;
-            const modalEl = selector ? document.querySelector(selector) : typeof target === "object" ? target : null;
+            const { closeOnOverlay = true, closeOnEsc = true } = options;
+            const modalEl = _resolve(typeof target === "string" && !/^[#.]/.test(target) ? "#" + target : target);
             if (!modalEl) {
               console.warn("[Vitra Modal] Modal element not found");
               return false;
             }
-            if (_activeModal) {
-              close();
-            }
-            _activeModal = modalEl;
-            _previousFocus = document.activeElement;
-            modalEl.setAttribute("role", "dialog");
-            modalEl.setAttribute("aria-modal", "true");
+            if (_stack.some((en2) => en2.el === modalEl)) return true;
+            const en = {
+              el: modalEl,
+              prev: document.activeElement,
+              esc: closeOnEsc,
+              setRole: !modalEl.hasAttribute("role"),
+              setModal: !modalEl.hasAttribute("aria-modal"),
+              buttons: Array.from(modalEl.querySelectorAll("[data-vitra-modal-close]")),
+              close: () => _closeEntry(en),
+              onClick: (e) => {
+                if (closeOnOverlay && e.target === modalEl) _closeEntry(en);
+              }
+            };
+            if (en.setRole) modalEl.setAttribute("role", "dialog");
+            if (en.setModal) modalEl.setAttribute("aria-modal", "true");
             modalEl.setAttribute("aria-hidden", "false");
-            document.body.style.overflow = "hidden";
+            en.unlock = _lockScroll();
             modalEl.classList.add("vitra-modal-open");
             modalEl.setAttribute("open", "");
-            _setupFocusTrap(modalEl);
-            if (closeOnOverlay) {
-              if (_overlayClickHandler) {
-                modalEl.removeEventListener("click", _overlayClickHandler);
-              }
-              _overlayClickHandler = (e) => {
-                if (e.target === modalEl) {
-                  close();
-                }
-              };
-              modalEl.addEventListener("click", _overlayClickHandler);
-            }
-            if (closeOnEsc) {
-              document.removeEventListener("keydown", _handleEsc);
-              document.addEventListener("keydown", _handleEsc);
-            }
-            const closeButtons = modalEl.querySelectorAll("[data-vitra-modal-close]");
-            closeButtons.forEach((btn) => {
-              btn.removeEventListener("click", close);
-              btn.addEventListener("click", close);
-            });
+            en.untrap = _trapFocus(modalEl.querySelector(".vitra-modal-content") || modalEl);
+            modalEl.addEventListener("click", en.onClick);
+            en.buttons.forEach((btn) => btn.addEventListener("click", en.close));
+            if (!_stack.length) document.addEventListener("keydown", _handleEsc);
+            _stack.push(en);
             return true;
           };
           const close = () => {
-            if (!_activeModal) return;
-            _activeModal.classList.remove("vitra-modal-open");
-            _activeModal.removeAttribute("open");
-            _activeModal.removeAttribute("role");
-            _activeModal.removeAttribute("aria-modal");
-            _activeModal.setAttribute("aria-hidden", "true");
-            document.body.style.overflow = "";
-            document.removeEventListener("keydown", _handleEsc);
-            if (_tabKeyTarget) {
-              _tabKeyTarget.removeEventListener("keydown", _handleTabKey);
-              _tabKeyTarget = null;
-            }
-            if (_overlayClickHandler) {
-              _activeModal.removeEventListener("click", _overlayClickHandler);
-              _overlayClickHandler = null;
-            }
-            if (_previousFocus && _previousFocus.focus) {
-              _previousFocus.focus();
-            }
-            _activeModal = null;
-            _previousFocus = null;
-          };
-          const _setupFocusTrap = (modalEl) => {
-            const focusableSelectors = [
-              "a[href]",
-              "button:not([disabled])",
-              "input:not([disabled])",
-              "textarea:not([disabled])",
-              "select:not([disabled])",
-              '[tabindex]:not([tabindex="-1"])'
-            ].join(", ");
-            _focusableElements = Array.from(modalEl.querySelectorAll(focusableSelectors));
-            if (_focusableElements.length === 0) return;
-            _firstFocusable = _focusableElements[0];
-            _lastFocusable = _focusableElements[_focusableElements.length - 1];
-            if (_tabKeyTarget) {
-              _tabKeyTarget.removeEventListener("keydown", _handleTabKey);
-            }
-            _tabKeyTarget = modalEl;
-            modalEl.addEventListener("keydown", _handleTabKey);
-            requestAnimationFrame(() => requestAnimationFrame(() => _firstFocusable.focus()));
-          };
-          const _handleTabKey = (e) => {
-            if (e.key !== "Tab") return;
-            if (e.shiftKey) {
-              if (document.activeElement === _firstFocusable) {
-                e.preventDefault();
-                _lastFocusable.focus();
-              }
-            } else {
-              if (document.activeElement === _lastFocusable) {
-                e.preventDefault();
-                _firstFocusable.focus();
-              }
-            }
-          };
-          const _handleEsc = (e) => {
-            if (e.key === "Escape") {
-              close();
-            }
+            if (_stack.length) _closeEntry(_stack[_stack.length - 1]);
           };
           const destroy = () => {
-            if (_activeModal) {
-              close();
-            }
-            document.removeEventListener("keydown", _handleEsc);
+            while (_stack.length) close();
           };
-          return {
-            open,
-            close,
-            destroy
-          };
+          return { open, close, destroy };
         })();
         const tooltip = /* @__PURE__ */ (() => {
           let _activeTooltip = null;
@@ -698,7 +689,7 @@ var Vitra = (() => {
               position = "top",
               delay = 0
             } = options;
-            const targetEl = typeof target === "string" ? document.querySelector(target) : target;
+            const targetEl = _resolve(target);
             if (!targetEl) {
               console.warn("[Vitra Tooltip] Target element not found");
               return false;
@@ -800,7 +791,7 @@ var Vitra = (() => {
               setTimeout(() => el.remove(), 200);
             }
             if (target) {
-              const targetEl = typeof target === "string" ? document.querySelector(target) : target;
+              const targetEl = _resolve(target);
               _removeDescribedBy(targetEl);
             }
           };
@@ -1023,7 +1014,7 @@ var Vitra = (() => {
           const LAYERS = ["sky", "stars", "clouds", "halo", "ridge-far", "ridge-mid", "ridge-near", "grain"];
           let _mounted = [];
           const mount = (target, options = {}) => {
-            const el = typeof target === "string" ? document.querySelector(target) : target;
+            const el = _resolve(target);
             if (!el) {
               console.warn("[Vitra Scenery] Target element not found");
               return null;
@@ -1070,12 +1061,9 @@ var Vitra = (() => {
           const PAUSED_CLASS = "vitra-motion-paused";
           let _observer = null;
           let initialized = false;
-          const _prefersReducedMotion = () => {
-            return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-          };
           const init = () => {
             if (initialized) return;
-            if (_prefersReducedMotion()) return;
+            if (_reducedMotion()) return;
             if (!("IntersectionObserver" in window)) {
               console.warn("[Vitra MotionGuard] IntersectionObserver not supported");
               return;

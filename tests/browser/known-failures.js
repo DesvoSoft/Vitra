@@ -10,7 +10,6 @@ export default new Set([
   'C12-radio', // mobile: radio row is 26px high
   'C12-tabs', // mobile: .vitra-tabs is nowrap with visible overflow instead of scrolling
   'J6', // dropdown: no keyboard navigation (first item focus, arrows, Home, End)
-  'J7', // modal: no focus without focusables, overflow/role not kept, focus timer not cancelled, trap list stale
   'J8', // toast: no role/aria-live, no warning class, no close button
   'J9', // drawer: no Vitra.drawer module (open, inert, focus, Esc, overlay)
   'J13', // tooltip: no Esc, replaces aria-describedby, long tooltip overflows 360px
