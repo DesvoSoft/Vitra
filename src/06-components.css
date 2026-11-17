@@ -294,7 +294,7 @@
     line-height: var(--vitra-line-height-normal);
     color: var(--vitra-color-text-primary);
     padding: var(--vitra-space-2) var(--vitra-space-3);
-    border: 1px solid var(--vitra-color-border);
+    border: 1px solid var(--vitra-color-border-control);
     border-radius: var(--vitra-radius-md);
     background-color: var(--vitra-color-surface);
     transition: border-color var(--vitra-duration-normal) var(--vitra-ease-luxury),
@@ -315,7 +315,7 @@
      is unsupported; translucent + blurred when it is. */
   .vitra-input-glass {
     background: var(--vitra-glass-bg-fallback);
-    border-color: var(--vitra-color-border);
+    border-color: var(--vitra-color-border-control);
     color: var(--vitra-color-text-primary);
   }
 
@@ -323,8 +323,15 @@
     .vitra-input-glass {
       background: var(--vitra-glass-bg);
       backdrop-filter: blur(var(--vitra-blur-md));
-      border-color: var(--vitra-color-border-hover);
+      border-color: var(--vitra-color-border-control);
     }
+  }
+
+  /* Placeholders are text the user reads: secondary, never tertiary or the
+     browser default grey. */
+  .vitra-input::placeholder {
+    color: var(--vitra-color-text-secondary);
+    opacity: 1;
   }
 
   /* Custom Select Styling */
@@ -395,7 +402,7 @@
     background-repeat: no-repeat;
     background-size: 18px 18px;
     background-position: 3px 50%;
-    border: 1px solid var(--vitra-color-border);
+    border: 1px solid var(--vitra-color-border-control);
     border-radius: var(--vitra-radius-full);
     transition: background-color var(--vitra-duration-normal) var(--vitra-ease-luxury),
                 background-position var(--vitra-duration-normal) var(--vitra-ease-luxury),
@@ -516,13 +523,11 @@
   .vitra-navbar-link {
     font-weight: var(--vitra-font-weight-medium);
     letter-spacing: 0.02em;
-    opacity: 0.7;
-    transition: opacity var(--vitra-duration-fast) var(--vitra-ease-default),
-                color var(--vitra-duration-fast) var(--vitra-ease-default);
+    color: var(--vitra-color-text-secondary);
+    transition: color var(--vitra-duration-fast) var(--vitra-ease-default);
   }
 
   .vitra-navbar-link:hover {
-    opacity: 1;
     color: var(--vitra-color-accent);
   }
 
@@ -1815,8 +1820,10 @@
       Input validation states and animations
       ============================================ */
 
+  /* The success green alone is 2.4:1 on the light themes' page; a share of
+     the text colour darkens it there and, in dark themes, lightens it. */
   .vitra-input.vitra-input-valid {
-    border-color: var(--vitra-color-success);
+    border-color: color-mix(in srgb, var(--vitra-color-success) 75%, var(--vitra-color-text-primary));
   }
 
   .vitra-input.vitra-input-valid:focus {
@@ -2117,7 +2124,7 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: var(--vitra-color-text-tertiary);
+    color: var(--vitra-color-text-secondary);
     padding: var(--vitra-space-1);
     border-radius: var(--vitra-radius-sm);
     flex-shrink: 0;

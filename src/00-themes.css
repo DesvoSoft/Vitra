@@ -27,8 +27,8 @@
   html[data-theme="light"] {
     --vitra-color-accent-h: 222;
     --vitra-color-accent-s: 72%;
-    --vitra-color-accent-l: 52%;
-    --vitra-color-accent-rgb: 44, 97, 221;
+    --vitra-color-accent-l: 51%;
+    --vitra-color-accent-rgb: 40, 94, 220;
     --vitra-color-bg: hsl(222deg 32% 97%);
     --vitra-bg-accent: hsl(222deg 35% 93%);
     --vitra-color-surface: hsl(222deg 30% 10% / 5%);
@@ -36,6 +36,7 @@
     --vitra-color-surface-active: hsl(222deg 30% 10% / 13%);
     --vitra-color-border: hsl(222deg 25% 15% / 10%);
     --vitra-color-border-hover: hsl(222deg 25% 15% / 22%);
+    --vitra-color-border-control: hsl(222deg 25% 15% / 50%);
     --vitra-color-border-rgb: 25, 33, 51;
     --vitra-color-text-primary: hsl(222deg 28% 10%);
     --vitra-color-text-secondary: hsl(222deg 12% 32%);
@@ -62,6 +63,7 @@
     --vitra-color-surface-active: hsl(var(--vitra-color-accent-h) 20% 95% / 12%);
     --vitra-color-border: hsl(var(--vitra-color-accent-h) 20% 95% / 10%);
     --vitra-color-border-hover: hsl(var(--vitra-color-accent-h) 20% 95% / 20%);
+    --vitra-color-border-control: hsl(var(--vitra-color-accent-h) 20% 95% / 37%);
     --vitra-color-text-primary: hsl(0deg 0% 100% / 95%);
     --vitra-color-text-secondary: hsl(0deg 0% 100% / 70%);
     --vitra-color-text-tertiary: hsl(0deg 0% 100% / 50%);
@@ -82,6 +84,7 @@
     --vitra-color-surface-active: hsl(330deg 100% 50% / 25%);
     --vitra-color-border: hsl(330deg 30% 60% / 20%);
     --vitra-color-border-hover: hsl(330deg 30% 50% / 35%);
+    --vitra-color-border-control: hsl(330deg 25% 30% / 59%);
     --vitra-color-border-rgb: 140, 90, 120;
     --vitra-color-accent-h: 330;
     --vitra-color-accent-s: 70%;
@@ -114,6 +117,7 @@
     --vitra-color-surface-active: hsl(285deg 100% 70% / 15%);
     --vitra-color-border: hsl(285deg 50% 60% / 12%);
     --vitra-color-border-hover: hsl(285deg 50% 70% / 25%);
+    --vitra-color-border-control: hsl(285deg 50% 70% / 56%);
     --vitra-color-accent-h: 285;
     --vitra-color-accent-s: 100%;
     --vitra-color-accent-l: 58%;
@@ -141,6 +145,7 @@
     --vitra-color-surface-active: hsl(205deg 100% 80% / 15%);
     --vitra-color-border: hsl(205deg 50% 60% / 12%);
     --vitra-color-border-hover: hsl(205deg 50% 70% / 25%);
+    --vitra-color-border-control: hsl(205deg 50% 70% / 50%);
     --vitra-color-accent-h: 205;
     --vitra-color-accent-s: 90%;
     --vitra-color-accent-l: 55%;
@@ -168,6 +173,7 @@
     --vitra-color-surface-active: hsl(145deg 100% 70% / 15%);
     --vitra-color-border: hsl(145deg 50% 50% / 12%);
     --vitra-color-border-hover: hsl(145deg 50% 60% / 25%);
+    --vitra-color-border-control: hsl(145deg 50% 60% / 49%);
     --vitra-color-accent-h: 145;
     --vitra-color-accent-s: 80%;
     --vitra-color-accent-l: 45%;

@@ -68,6 +68,11 @@
     --vitra-color-border: hsl(var(--vitra-color-accent-h) 20% 95% / 10%);
     --vitra-color-border-hover: hsl(var(--vitra-color-accent-h) 20% 95% / 20%);
 
+    /* Border of an interactive control (input, select, switch): the one
+       border that must reach 3:1 against the page. --vitra-color-border
+       stays the quiet decorative line of cards and panels. */
+    --vitra-color-border-control: hsl(var(--vitra-color-accent-h) 20% 95% / 37%);
+
     /* Text */
     --vitra-color-text-primary: hsl(0deg 0% 100% / 95%);
     --vitra-color-text-secondary: hsl(0deg 0% 100% / 70%);

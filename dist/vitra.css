@@ -69,6 +69,11 @@
     --vitra-color-border: hsl(var(--vitra-color-accent-h) 20% 95% / 10%);
     --vitra-color-border-hover: hsl(var(--vitra-color-accent-h) 20% 95% / 20%);
 
+    /* Border of an interactive control (input, select, switch): the one
+       border that must reach 3:1 against the page. --vitra-color-border
+       stays the quiet decorative line of cards and panels. */
+    --vitra-color-border-control: hsl(var(--vitra-color-accent-h) 20% 95% / 37%);
+
     /* Text */
     --vitra-color-text-primary: hsl(0deg 0% 100% / 95%);
     --vitra-color-text-secondary: hsl(0deg 0% 100% / 70%);
@@ -325,8 +330,8 @@
   html[data-theme="light"] {
     --vitra-color-accent-h: 222;
     --vitra-color-accent-s: 72%;
-    --vitra-color-accent-l: 52%;
-    --vitra-color-accent-rgb: 44, 97, 221;
+    --vitra-color-accent-l: 51%;
+    --vitra-color-accent-rgb: 40, 94, 220;
     --vitra-color-bg: hsl(222deg 32% 97%);
     --vitra-bg-accent: hsl(222deg 35% 93%);
     --vitra-color-surface: hsl(222deg 30% 10% / 5%);
@@ -334,6 +339,7 @@
     --vitra-color-surface-active: hsl(222deg 30% 10% / 13%);
     --vitra-color-border: hsl(222deg 25% 15% / 10%);
     --vitra-color-border-hover: hsl(222deg 25% 15% / 22%);
+    --vitra-color-border-control: hsl(222deg 25% 15% / 50%);
     --vitra-color-border-rgb: 25, 33, 51;
     --vitra-color-text-primary: hsl(222deg 28% 10%);
     --vitra-color-text-secondary: hsl(222deg 12% 32%);
@@ -352,8 +358,8 @@
     html[data-theme="auto"] {
       --vitra-color-accent-h: 222;
       --vitra-color-accent-s: 72%;
-      --vitra-color-accent-l: 52%;
-      --vitra-color-accent-rgb: 44, 97, 221;
+      --vitra-color-accent-l: 51%;
+      --vitra-color-accent-rgb: 40, 94, 220;
       --vitra-color-bg: hsl(222deg 32% 97%);
       --vitra-bg-accent: hsl(222deg 35% 93%);
       --vitra-color-surface: hsl(222deg 30% 10% / 5%);
@@ -361,6 +367,7 @@
       --vitra-color-surface-active: hsl(222deg 30% 10% / 13%);
       --vitra-color-border: hsl(222deg 25% 15% / 10%);
       --vitra-color-border-hover: hsl(222deg 25% 15% / 22%);
+      --vitra-color-border-control: hsl(222deg 25% 15% / 50%);
       --vitra-color-border-rgb: 25, 33, 51;
       --vitra-color-text-primary: hsl(222deg 28% 10%);
       --vitra-color-text-secondary: hsl(222deg 12% 32%);
@@ -386,6 +393,7 @@
     --vitra-color-surface-active: hsl(var(--vitra-color-accent-h) 20% 95% / 12%);
     --vitra-color-border: hsl(var(--vitra-color-accent-h) 20% 95% / 10%);
     --vitra-color-border-hover: hsl(var(--vitra-color-accent-h) 20% 95% / 20%);
+    --vitra-color-border-control: hsl(var(--vitra-color-accent-h) 20% 95% / 37%);
     --vitra-color-text-primary: hsl(0deg 0% 100% / 95%);
     --vitra-color-text-secondary: hsl(0deg 0% 100% / 70%);
     --vitra-color-text-tertiary: hsl(0deg 0% 100% / 50%);
@@ -405,6 +413,7 @@
       --vitra-color-surface-active: hsl(var(--vitra-color-accent-h) 20% 95% / 12%);
       --vitra-color-border: hsl(var(--vitra-color-accent-h) 20% 95% / 10%);
       --vitra-color-border-hover: hsl(var(--vitra-color-accent-h) 20% 95% / 20%);
+      --vitra-color-border-control: hsl(var(--vitra-color-accent-h) 20% 95% / 37%);
       --vitra-color-text-primary: hsl(0deg 0% 100% / 95%);
       --vitra-color-text-secondary: hsl(0deg 0% 100% / 70%);
       --vitra-color-text-tertiary: hsl(0deg 0% 100% / 50%);
@@ -426,6 +435,7 @@
     --vitra-color-surface-active: hsl(330deg 100% 50% / 25%);
     --vitra-color-border: hsl(330deg 30% 60% / 20%);
     --vitra-color-border-hover: hsl(330deg 30% 50% / 35%);
+    --vitra-color-border-control: hsl(330deg 25% 30% / 59%);
     --vitra-color-border-rgb: 140, 90, 120;
     --vitra-color-accent-h: 330;
     --vitra-color-accent-s: 70%;
@@ -458,6 +468,7 @@
     --vitra-color-surface-active: hsl(285deg 100% 70% / 15%);
     --vitra-color-border: hsl(285deg 50% 60% / 12%);
     --vitra-color-border-hover: hsl(285deg 50% 70% / 25%);
+    --vitra-color-border-control: hsl(285deg 50% 70% / 56%);
     --vitra-color-accent-h: 285;
     --vitra-color-accent-s: 100%;
     --vitra-color-accent-l: 58%;
@@ -485,6 +496,7 @@
     --vitra-color-surface-active: hsl(205deg 100% 80% / 15%);
     --vitra-color-border: hsl(205deg 50% 60% / 12%);
     --vitra-color-border-hover: hsl(205deg 50% 70% / 25%);
+    --vitra-color-border-control: hsl(205deg 50% 70% / 50%);
     --vitra-color-accent-h: 205;
     --vitra-color-accent-s: 90%;
     --vitra-color-accent-l: 55%;
@@ -512,6 +524,7 @@
     --vitra-color-surface-active: hsl(145deg 100% 70% / 15%);
     --vitra-color-border: hsl(145deg 50% 50% / 12%);
     --vitra-color-border-hover: hsl(145deg 50% 60% / 25%);
+    --vitra-color-border-control: hsl(145deg 50% 60% / 49%);
     --vitra-color-accent-h: 145;
     --vitra-color-accent-s: 80%;
     --vitra-color-accent-l: 45%;
@@ -3522,7 +3535,7 @@
     line-height: var(--vitra-line-height-normal);
     color: var(--vitra-color-text-primary);
     padding: var(--vitra-space-2) var(--vitra-space-3);
-    border: 1px solid var(--vitra-color-border);
+    border: 1px solid var(--vitra-color-border-control);
     border-radius: var(--vitra-radius-md);
     background-color: var(--vitra-color-surface);
     transition: border-color var(--vitra-duration-normal) var(--vitra-ease-luxury),
@@ -3543,7 +3556,7 @@
      is unsupported; translucent + blurred when it is. */
   .vitra-input-glass {
     background: var(--vitra-glass-bg-fallback);
-    border-color: var(--vitra-color-border);
+    border-color: var(--vitra-color-border-control);
     color: var(--vitra-color-text-primary);
   }
 
@@ -3551,8 +3564,15 @@
     .vitra-input-glass {
       background: var(--vitra-glass-bg);
       backdrop-filter: blur(var(--vitra-blur-md));
-      border-color: var(--vitra-color-border-hover);
+      border-color: var(--vitra-color-border-control);
     }
+  }
+
+  /* Placeholders are text the user reads: secondary, never tertiary or the
+     browser default grey. */
+  .vitra-input::placeholder {
+    color: var(--vitra-color-text-secondary);
+    opacity: 1;
   }
 
   /* Custom Select Styling */
@@ -3623,7 +3643,7 @@
     background-repeat: no-repeat;
     background-size: 18px 18px;
     background-position: 3px 50%;
-    border: 1px solid var(--vitra-color-border);
+    border: 1px solid var(--vitra-color-border-control);
     border-radius: var(--vitra-radius-full);
     transition: background-color var(--vitra-duration-normal) var(--vitra-ease-luxury),
                 background-position var(--vitra-duration-normal) var(--vitra-ease-luxury),
@@ -3744,13 +3764,11 @@
   .vitra-navbar-link {
     font-weight: var(--vitra-font-weight-medium);
     letter-spacing: 0.02em;
-    opacity: 0.7;
-    transition: opacity var(--vitra-duration-fast) var(--vitra-ease-default),
-                color var(--vitra-duration-fast) var(--vitra-ease-default);
+    color: var(--vitra-color-text-secondary);
+    transition: color var(--vitra-duration-fast) var(--vitra-ease-default);
   }
 
   .vitra-navbar-link:hover {
-    opacity: 1;
     color: var(--vitra-color-accent);
   }
 
@@ -5048,8 +5066,10 @@
       Input validation states and animations
       ============================================ */
 
+  /* The success green alone is 2.4:1 on the light themes' page; a share of
+     the text colour darkens it there and, in dark themes, lightens it. */
   .vitra-input.vitra-input-valid {
-    border-color: var(--vitra-color-success);
+    border-color: color-mix(in srgb, var(--vitra-color-success) 75%, var(--vitra-color-text-primary));
   }
 
   .vitra-input.vitra-input-valid:focus {
@@ -5350,7 +5370,7 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: var(--vitra-color-text-tertiary);
+    color: var(--vitra-color-text-secondary);
     padding: var(--vitra-space-1);
     border-radius: var(--vitra-radius-sm);
     flex-shrink: 0;
