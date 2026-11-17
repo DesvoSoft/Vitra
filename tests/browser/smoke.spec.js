@@ -43,7 +43,7 @@ for (const s of SCHEMES) {
 }
 
 const FIXED_IDS = [
-  'ks-modal', 'ks-modal-open', 'ks-modal-empty', 'ks-drawer', 'ks-drawer-toggle',
+  'ks-modal', 'ks-modal-open', 'ks-modal-empty', 'ks-modal-alert', 'ks-modal-norole', 'ks-drawer', 'ks-drawer-toggle',
   'ks-drawer-manual', 'ks-dd', 'ks-dd-popover', 'ks-tabs', 'ks-tooltip',
   'ks-toast-btn-success', 'ks-toast-btn-error', 'ks-toast-btn-info',
   'ks-toast-btn-warning', 'ks-toast-btn-sticky',

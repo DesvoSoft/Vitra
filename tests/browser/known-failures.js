@@ -6,7 +6,9 @@
 export default new Set([
   // Audit findings (pending)
   'C6', // toggle row is 26px high, contract wants 44px
-  'C12', // mobile: modal close 40px, radio row 26px, tabs overflow instead of scroll
+  'C12-modal', // mobile: modal close button is 40px
+  'C12-radio', // mobile: radio row is 26px high
+  'C12-tabs', // mobile: .vitra-tabs is nowrap with visible overflow instead of scrolling
   'J6', // dropdown: no keyboard navigation (first item focus, arrows, Home, End)
   'J7', // modal: no focus without focusables, overflow/role not kept, focus timer not cancelled, trap list stale
   'J8', // toast: no role/aria-live, no warning class, no close button
@@ -26,7 +28,6 @@ export default new Set([
   'K-input-placeholder', // placeholder text is 3.8-4.2:1
   'K-navbar-contrast', // navbar links below 4.5:1 in light, pastel, neon, ocean, auto+light (axe agrees)
   'K-navbar-touch', // navbar brand is 38px high, small button 32px
-  'K-overflow-page', // aggregate: the whole sink is 733px wide at 360px; clears when every *-overflow id is gone
   'K-radio-overflow', // long radio label widens the page at 360px
   'K-spinner-overflow', // long spinner label widens the page at 360px
   'K-tabs-keyboard', // no Vitra.tabs: arrows/Home/End and roving tabindex missing

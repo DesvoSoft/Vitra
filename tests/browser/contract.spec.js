@@ -36,7 +36,10 @@ const OPEN_FOR_CONTRAST = {
     await page.waitForTimeout(500);
   },
   drawer: async (page) => {
-    await page.evaluate(() => document.querySelector('#ks-drawer').classList.add('open'));
+    await page.evaluate(() => {
+      if (window.Vitra.drawer) window.Vitra.drawer.open('#ks-drawer');
+      else document.querySelector('#ks-drawer').classList.add('open');
+    });
     await page.waitForTimeout(500);
   },
   dropdown: async (page) => {
@@ -113,9 +116,9 @@ const TOUCH_IDS = {
   alert: 'K-alert-touch',
   button: 'K-button-touch',
   checkbox: 'K-checkbox-touch',
-  modal: 'C12',
+  modal: 'C12-modal',
   navbar: 'K-navbar-touch',
-  radio: 'C12',
+  radio: 'C12-radio',
   toggle: 'C6',
 };
 
@@ -125,7 +128,10 @@ const OPEN_FOR_TOUCH = {
     await page.waitForTimeout(500);
   },
   drawer: async (page) => {
-    await page.evaluate(() => document.querySelector('#ks-drawer').classList.add('open'));
+    await page.evaluate(() => {
+      if (window.Vitra.drawer) window.Vitra.drawer.open('#ks-drawer');
+      else document.querySelector('#ks-drawer').classList.add('open');
+    });
     await page.waitForTimeout(500);
   },
   dropdown: async (page) => {
@@ -181,8 +187,8 @@ test.describe('touch targets', () => {
     });
   }
 
-  test('[C12] tabs scroll horizontally instead of overflowing their container', async ({ page }) => {
-    expectedFail(test, 'C12');
+  test('[C12-tabs] tabs scroll horizontally instead of overflowing their container', async ({ page }) => {
+    expectedFail(test, 'C12-tabs');
     await openSink(page, { viewport: MOBILE });
     const info = await page.evaluate(() => {
       const bar = document.querySelector('[data-component="tabs"] [data-state="long-text"] .vitra-tabs');
@@ -207,7 +213,10 @@ const OVERFLOW_STATES = {
     await page.waitForTimeout(500);
   },
   drawer: async (page) => {
-    await page.evaluate(() => document.querySelector('#ks-drawer').classList.add('open'));
+    await page.evaluate(() => {
+      if (window.Vitra.drawer) window.Vitra.drawer.open('#ks-drawer');
+      else document.querySelector('#ks-drawer').classList.add('open');
+    });
     await page.waitForTimeout(500);
   },
   dropdown: async (page) => {
@@ -232,7 +241,7 @@ const OVERFLOW_COMPONENT_IDS = {
   checkbox: 'K-checkbox-overflow',
   radio: 'K-radio-overflow',
   spinner: 'K-spinner-overflow',
-  tabs: 'C12',
+  tabs: 'C12-tabs',
   toggle: 'K-toggle-overflow',
 };
 
@@ -244,12 +253,11 @@ const scrollWidth = (page) =>
   }));
 
 test.describe('horizontal overflow at 360px', () => {
-  // Whole kitchen sink at rest. It includes the long-text variants of every
-  // component, so it stays red until every per-component test below is green.
-  const REST_ID = 'K-overflow-page';
-  test(`[${REST_ID}] no horizontal overflow at 360x740: whole page at rest`, async ({ page }) => {
-    if (REST_ID) expectedFail(test, REST_ID);
+  // Whole kitchen sink at rest with ordinary content: the long-text variants
+  // are hidden because each has its own per-component test below.
+  test('[contract] no horizontal overflow at 360x740: whole page at rest', async ({ page }) => {
     await openSink(page, { viewport: MOBILE });
+    await page.addStyleTag({ content: '[data-state="long-text"] { display: none !important; }' });
     const w = await scrollWidth(page);
     expect(w.scroll, JSON.stringify(w)).toBe(360);
   });

@@ -65,7 +65,7 @@ test.describe('modal', () => {
     await expect.poll(() => activeId(page)).toBe('ks-modal-empty-open');
   });
 
-  test("[J7] modal keeps the author's body overflow and dialog role", async ({ page }) => {
+  test("[J7] modal restores the author's body overflow", async ({ page }) => {
     expectedFail(test, 'J7');
     await openSink(page);
     await page.evaluate(() => { document.body.style.overflow = 'scroll'; });
@@ -73,11 +73,24 @@ test.describe('modal', () => {
     await expect(page.locator('#ks-modal')).toHaveAttribute('aria-hidden', 'false');
     await page.keyboard.press('Escape');
     await expect(page.locator('#ks-modal')).toHaveAttribute('aria-hidden', 'true');
-    const after = await page.evaluate(() => ({
-      overflow: document.body.style.overflow,
-      role: document.querySelector('#ks-modal .vitra-modal-content').getAttribute('role'),
-    }));
-    expect(after).toEqual({ overflow: 'scroll', role: 'dialog' });
+    expect(await page.evaluate(() => document.body.style.overflow)).toBe('scroll');
+  });
+
+  test('[J7] modal keeps an author role and only borrows dialog when there is none', async ({ page }) => {
+    expectedFail(test, 'J7');
+    await openSink(page);
+    const role = (sel) => page.locator(sel).getAttribute('role');
+    await page.evaluate(() => window.Vitra.modal.open('#ks-modal-alert'));
+    expect(await role('#ks-modal-alert'), 'author alertdialog kept while open').toBe('alertdialog');
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#ks-modal-alert')).toHaveAttribute('aria-hidden', 'true');
+    expect(await role('#ks-modal-alert'), 'author alertdialog kept after close').toBe('alertdialog');
+
+    await page.evaluate(() => window.Vitra.modal.open('#ks-modal-norole'));
+    expect(await role('#ks-modal-norole'), 'no author role: dialog while open').toBe('dialog');
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#ks-modal-norole')).toHaveAttribute('aria-hidden', 'true');
+    expect(await role('#ks-modal-norole'), 'no author role: none after close').toBeNull();
   });
 
   test('[J7] modal closed before its deferred focus fires does not steal focus afterwards', async ({ page }) => {
@@ -95,11 +108,16 @@ test.describe('modal', () => {
       };
       window.Vitra.modal.open('#ks-modal');
       window.Vitra.modal.close('#ks-modal');
+      // A synchronous focus inside open() is allowed; only calls made after
+      // close() returned (the deferred ones) are a bug.
+      seen.length = 0;
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
       await new Promise((r) => setTimeout(r, 600));
       HTMLElement.prototype.focus = orig;
       return seen;
     });
-    expect(calls, 'no focus() call lands inside the modal after it was closed').toEqual([]);
+    expect(calls, 'no focus() call lands inside the modal after close() returned').toEqual([]);
+    expect(await isInside(page, '#ks-modal'), 'focus is not inside the closed modal').toBe(false);
   });
 
   test('[J7] modal trap ignores hidden focusables and picks up ones added later', async ({ page }) => {
