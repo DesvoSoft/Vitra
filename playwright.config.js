@@ -4,7 +4,7 @@ export default defineConfig({
   testDir: './tests/browser',
   testMatch: '**/*.spec.js',
   fullyParallel: true,
-  reporter: 'list',
+  reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
   use: {
     baseURL: 'http://localhost:4173',
   },
