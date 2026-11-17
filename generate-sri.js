@@ -8,5 +8,16 @@ function getSRI(filePath) {
   return 'sha256-' + hashSum.digest('base64');
 }
 
-console.log('vitra.min.css: ' + getSRI('dist/vitra.min.css'));
-console.log('vitra.min.js: ' + getSRI('dist/vitra.min.js'));
+// The first two lines keep their format for existing consumers of SRI.txt.
+for (const file of [
+  'vitra.min.css',
+  'vitra.min.js',
+  'vitra.core.css',
+  'vitra.core.min.css',
+  'vitra.scenery.css',
+  'vitra.scenery.min.css',
+  'vitra.effects.css',
+  'vitra.effects.min.css'
+]) {
+  console.log(file + ': ' + getSRI('dist/' + file));
+}

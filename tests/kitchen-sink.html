@@ -19,8 +19,13 @@
         document.write('<style>body > :not(script):not([data-component="' + only + '"]) { display: none !important; }' +
           '[data-component="' + only + '"] { display: block !important; }</style>');
       }
-      if (q.get('css') === 'pieces') {
-        ['core', 'scenery', 'effects'].forEach(function (n) {
+      /* ?css=pieces loads core, scenery and effects (?order=scenery,effects,core
+         picks the order); ?css=core loads core alone. */
+      var css = q.get('css');
+      if (css === 'pieces' || css === 'core') {
+        var order = css === 'core' ? ['core'] : (q.get('order') || 'core,scenery,effects').split(',');
+        order.forEach(function (n) {
+          n = n.replace(/[^\w-]/g, '');
           document.write('<link rel="stylesheet" href="../dist/vitra.' + n + '.min.css">');
         });
       } else {

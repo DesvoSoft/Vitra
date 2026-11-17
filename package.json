@@ -4,14 +4,17 @@
   "description": "A lightweight, zero-dependency CSS framework focused on glassmorphism, directional particles, ambient scenery, and smooth motion",
   "main": "dist/vitra.js",
   "module": "dist/vitra.esm.js",
-  "style": "dist/vitra.css",
+  "style": "dist/vitra.min.css",
   "types": "dist/vitra.d.ts",
   "exports": {
     ".": {
-      "style": "./dist/vitra.css",
+      "style": "./dist/vitra.min.css",
       "import": "./dist/vitra.esm.js",
       "require": "./dist/vitra.js"
     },
+    "./core.css": "./dist/vitra.core.min.css",
+    "./scenery.css": "./dist/vitra.scenery.min.css",
+    "./effects.css": "./dist/vitra.effects.min.css",
     "./dist/*": "./dist/*"
   },
   "files": [
@@ -39,6 +42,18 @@
     {
       "path": "dist/vitra.min.css",
       "limit": "20 kB"
+    },
+    {
+      "path": "dist/vitra.core.min.css",
+      "limit": "12 kB"
+    },
+    {
+      "path": "dist/vitra.scenery.min.css",
+      "limit": "5.5 kB"
+    },
+    {
+      "path": "dist/vitra.effects.min.css",
+      "limit": "2.5 kB"
     },
     {
       "path": "dist/vitra.min.js",

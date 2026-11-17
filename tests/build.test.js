@@ -208,3 +208,56 @@ describe('backdrop-filter', () => {
     expect(offenders).toEqual([]);
   });
 });
+
+// -------------------------------------------------------------- pieces ---
+
+describe('CSS pieces (core, scenery, effects) next to the full bundle', () => {
+  const dist = path.join(__dirname, '..', 'dist');
+  const read = (f) => fs.readFileSync(path.join(dist, f), 'utf8');
+  const PIECES = ['core', 'scenery', 'effects'];
+  const LAYERS = '@layer tokens, glass, particles, motion, scenery, layout, components, utilities, shaders;';
+  const files = ['vitra', ...PIECES.map((p) => `vitra.${p}`)].flatMap((n) => [`${n}.css`, `${n}.min.css`]);
+
+  // Every rule as "<at-rule context> | <selector> | <declarations>".
+  const rules = (css) => {
+    const out = new Set();
+    postcss.parse(css).walkRules((rule) => {
+      const ctx = [];
+      for (let n = rule.parent; n && n.type !== 'root'; n = n.parent) ctx.unshift(`@${n.name} ${n.params}`);
+      const decls = [];
+      rule.each((c) => { if (c.type === 'decl') decls.push(`${c.prop}:${c.value}`); });
+      out.add(`${ctx.join(' > ')} | ${rule.selector.replace(/\s+/g, ' ')} | ${decls.join(';')}`);
+    });
+    return out;
+  };
+
+  it('writes the six piece files and their source maps', () => {
+    for (const f of files) expect(fs.existsSync(path.join(dist, f)), f).toBe(true);
+    for (const p of ['vitra', ...PIECES.map((x) => `vitra.${x}`)]) {
+      expect(fs.existsSync(path.join(dist, `${p}.min.css.map`)), p + ' map').toBe(true);
+    }
+  });
+
+  it('starts every piece with the layer order declaration', () => {
+    for (const p of PIECES) {
+      for (const f of [`vitra.${p}.css`, `vitra.${p}.min.css`]) {
+        const css = read(f).replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s+/g, '');
+        expect(css.startsWith(LAYERS.replace(/\s+/g, '')), f).toBe(true);
+      }
+    }
+  });
+
+  it('splits the bundle without losing or inventing a rule', () => {
+    const bundle = rules(read('vitra.css'));
+    const union = new Set(PIECES.flatMap((p) => [...rules(read(`vitra.${p}.css`))]));
+    expect([...bundle].filter((r) => !union.has(r))).toEqual([]);
+    expect([...union].filter((r) => !bundle.has(r))).toEqual([]);
+    expect(bundle.size).toBeGreaterThan(500);
+  });
+
+  it('ends every .min.css with its sourceMappingURL', () => {
+    for (const n of ['vitra', ...PIECES.map((p) => `vitra.${p}`)]) {
+      expect(read(`${n}.min.css`).trimEnd().endsWith(`/*# sourceMappingURL=${n}.min.css.map */`), n).toBe(true);
+    }
+  });
+});

@@ -16,9 +16,10 @@ export const schemeLabel = (s) => (s.scheme ? `${s.theme}+${s.scheme}` : s.theme
  * is fully loaded (so DOMContentLoaded auto-init has run) and one frame passed.
  * @param {import('@playwright/test').Page} page
  * @param {{theme?: string, scheme?: 'light'|'dark', reducedMotion?: boolean,
- *          css?: string, viewport?: {width: number, height: number}}} [opts]
+ *          css?: string, order?: string, viewport?: {width: number, height: number}}} [opts]
+ * css 'pieces' loads the three CSS pieces; order (e.g. 'scenery,effects,core') sets their load order.
  */
-export async function openSink(page, { theme, scheme, reducedMotion, css, viewport } = {}) {
+export async function openSink(page, { theme, scheme, reducedMotion, css, order, viewport } = {}) {
   if (viewport) await page.setViewportSize(viewport);
   const media = {};
   if (scheme) media.colorScheme = scheme;
@@ -28,6 +29,7 @@ export async function openSink(page, { theme, scheme, reducedMotion, css, viewpo
   const params = new URLSearchParams();
   if (theme) params.set('theme', theme);
   if (css) params.set('css', css);
+  if (order) params.set('order', order);
   const qs = params.toString();
   await page.goto('/tests/kitchen-sink' + (qs ? '?' + qs : ''));
   await page.waitForFunction(() => typeof window.Vitra !== 'undefined' && document.readyState === 'complete');

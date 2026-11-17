@@ -1,0 +1,1119 @@
+@layer tokens, glass, particles, motion, scenery, layout, components, utilities, shaders;
+
+/* === 09-scenery.css === */
+/* 09-scenery.css - Ambient Scenery System */
+
+/* Part of Vitra CSS Framework */
+
+/* ============================================
+   SCENERY LAYER - Vitra CSS Framework
+   CSS-only ambient landscape backdrop.
+   Gives .vitra-glass panels a "window onto a
+   scene" feel instead of a flat color fill.
+   SVG-silhouette ridgelines (masked, so color
+   stays token-driven), crisp sun/moon disc,
+   atmospheric-perspective depth, grain finish.
+   Six layers: sky, halo, ridge-far/mid/near, grain.
+   Compositor-only animation: every moving layer
+   animates transform exclusively - no filters,
+   no blend modes, no per-frame repaints.
+   The drift loops interpolate CONTINUOUSLY (linear):
+   a landscape creeping at 3-10px/s only reads as
+   gliding if it lands on sub-pixel positions every
+   frame. 1.13.1-1.13.3 stepped them one device pixel
+   at a time to spare the compositor a draw per vsync;
+   on screen that was a range ticking 3-10 times a
+   second. The draw is cheap now that every drifting
+   element is an unmasked carrier (see RIDGE LAYERS).
+   The moon's glow breathes continuously as well: its
+   ring has a hard inner edge, and stepped five times
+   a second that edge visibly jumped in Firefox. Only
+   the twinkle is stepped: a flicker, not travel.
+   Each ridge is a seamless horizontal tile (its SVG
+   silhouette repeated once inside a 200%-wide layer)
+   drifting one direction only, 0% -> -50%, linear
+   infinite - the tile boundary is invisible so the
+   loop never reverses or visibly resets.
+   ============================================ */
+
+@layer scenery {
+  :root {
+    /* --- SCENERY COLOR TOKENS (derived from theme accent) --- */
+    --vitra-scenery-hue: var(--vitra-color-accent-h);
+    --vitra-scenery-sat: var(--vitra-color-accent-s);
+
+    /* --- ALPENGLOW TOKENS ---
+       Warm complement derived from the accent: every theme gets its own
+       harmonic "sunset" hue. Override --vitra-scenery-warm-h to art-direct. */
+    --vitra-scenery-warm-h: calc(var(--vitra-scenery-hue) - 140);
+
+    /* Where the sun went down (afterglow + valley mist anchor) */
+    --vitra-scenery-glow-x: 38%;
+
+    /* Moon position + size: heroes recompose via tokens, no custom CSS */
+    --vitra-scenery-halo-x: 76%;
+    --vitra-scenery-halo-y: 13%;
+    --vitra-scenery-halo-size: clamp(56px, 9vmin, 110px);
+
+    /* Rim-light strength on ridge crests */
+    --vitra-scenery-opacity-rim: 0.85;
+
+    /* --- SCENERY MOTION TOKENS --- */
+    --vitra-scenery-speed: 1;
+
+    /* Entrance choreography length multiplier: 1 = default (~2.4s),
+       2 = slower and more ceremonial, 0 = scene is simply there. */
+    --vitra-scenery-intro: 1;
+
+    /* Scroll-depth strength for .vitra-scenery-inline (see SCROLL DEPTH):
+       1 = default, 0 = layers stay locked to their container. */
+    --vitra-scenery-depth: 1;
+
+    /* --- SCENERY OPACITY TOKENS (atmospheric perspective) ---
+       Dark-scheme defaults: ridges sit on a dark sky, so a
+       lighter mist band read as haze without washing out. */
+    --vitra-scenery-opacity-far: 0.55;
+    --vitra-scenery-opacity-mid: 0.75;
+    --vitra-scenery-opacity-near: 0.92;
+    --vitra-scenery-opacity-clouds: 0.28;
+  }
+
+  /* Light-scheme themes (light, pastel) sit on a bright sky:
+     the same translucent mist bands lose contrast against it,
+     so ridges read heavier/more saturated and the sky glow
+     band is dialed back to keep the horizon legible. */
+
+  /* NOTE: plain attribute selectors, not :where() - the token defaults
+     above live on :root (specificity 0,1,0) and a zero-specificity
+     :where() can never override them. */
+  [data-theme="light"],
+  [data-theme="pastel"] {
+    --vitra-scenery-opacity-far: 0.78;
+    --vitra-scenery-opacity-mid: 0.88;
+    --vitra-scenery-opacity-near: 0.97;
+    --vitra-scenery-opacity-clouds: 0.42;
+    --vitra-scenery-opacity-rim: 0.6;
+
+    /* Light schemes pin the sunset to true amber: the derived
+       complement (accent - 140) lands on lime/cyan for these accents,
+       which never reads as sunlight against a pale sky. */
+    --vitra-scenery-warm-h: 32;
+  }
+  @media (prefers-color-scheme: light) {
+    [data-theme="auto"] {
+      --vitra-scenery-opacity-far: 0.78;
+      --vitra-scenery-opacity-mid: 0.88;
+      --vitra-scenery-opacity-near: 0.97;
+      --vitra-scenery-opacity-clouds: 0.42;
+      --vitra-scenery-opacity-rim: 0.6;
+  
+      /* Light schemes pin the sunset to true amber: the derived
+       complement (accent - 140) lands on lime/cyan for these accents,
+       which never reads as sunlight against a pale sky. */
+      --vitra-scenery-warm-h: 32;
+    }
+  }
+
+  /* --- ROOT CONTAINERS --- */
+
+  /* Full-page fixed ambient backdrop, sits behind all content */
+  .vitra-scenery {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    contain: strict;
+    container-type: size;
+  }
+
+  /* Container-scoped variant: drop into any position:relative host
+     (hero section, large card). It clips itself (contain: strict), so
+     the host needs no overflow rule; if it has one, prefer
+     overflow:clip over overflow:hidden - see SCROLL DEPTH below. */
+  .vitra-scenery-inline {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+    contain: strict;
+
+    /* contain: strict already applies size containment, so making this a
+       size query container is free - it only unlocks cqh units, which the
+       scroll-depth offsets below are expressed in. */
+    container-type: size;
+    view-timeline: --vitra-scenery block;
+  }
+
+  /* --- SKY LAYER --- */
+
+  /* Zenith fades from page bg into an accent-tinted glow band
+     at the horizon, where the sun/ridges sit */
+
+  /* Alpenglow: warm afterglow pooling at the horizon where the sun set,
+     cool accent-tinted zenith above. The warm/cool tension is what makes
+     the scene read as painted light instead of a generated gradient. */
+  .vitra-scenery-sky {
+    position: absolute;
+    inset: 0;
+    background:
+      /* afterglow core: warm light pooling where the sun set - tall
+         enough to stay visible in the sky band above the ridge crests */
+      radial-gradient(
+        70% 46% at var(--vitra-scenery-glow-x) 86%,
+        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.9) 68% / 45%) 0%,
+        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.8) 62% / 20%) 55%,
+        transparent 80%
+      ),
+      /* afterglow spread: wide warm wash dying upward */
+      radial-gradient(
+        140% 75% at var(--vitra-scenery-glow-x) 84%,
+        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.8) 62% / 28%) 0%,
+        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.6) 55% / 12%) 50%,
+        transparent 76%
+      ),
+      /* cool zenith falling into an accent-tinted horizon */
+      linear-gradient(
+        to bottom,
+        var(--vitra-color-bg) 0%,
+        hsl(calc(var(--vitra-scenery-hue) + 10) calc(var(--vitra-scenery-sat) * 0.55) 30% / 45%) 66%,
+        hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.55) 42% / 38%) 100%
+      );
+  }
+
+  /* Light schemes: golden hour - same structure, brighter values,
+     stronger warm presence against the pale sky */
+  :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-sky {
+    background:
+      radial-gradient(
+        58% 26% at var(--vitra-scenery-glow-x) 97%,
+        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.85) 78% / 42%) 0%,
+        transparent 62%
+      ),
+      radial-gradient(
+        115% 52% at var(--vitra-scenery-glow-x) 90%,
+        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.7) 74% / 26%) 0%,
+        transparent 68%
+      ),
+      linear-gradient(
+        to bottom,
+        var(--vitra-color-bg) 0%,
+        hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.45) 78% / 35%) 55%,
+        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.5) 80% / 40%) 100%
+      );
+  }
+  @media (prefers-color-scheme: light) {
+    :where([data-theme="auto"]) .vitra-scenery-sky {
+      background:
+        radial-gradient(
+        58% 26% at var(--vitra-scenery-glow-x) 97%,
+        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.85) 78% / 42%) 0%,
+        transparent 62%
+      ),
+      radial-gradient(
+        115% 52% at var(--vitra-scenery-glow-x) 90%,
+        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.7) 74% / 26%) 0%,
+        transparent 68%
+      ),
+      linear-gradient(
+        to bottom,
+        var(--vitra-color-bg) 0%,
+        hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.45) 78% / 35%) 55%,
+        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.5) 80% / 40%) 100%
+      );
+    }
+  }
+
+  /* --- CLOUD LAYER --- */
+
+  /* Same seamless-loop technique as the ridges below: a single
+     soft-blob silhouette tiled twice across a 200%-wide strip,
+     translate3d(0% -> -50%) lands on an identical frame so the
+     loop has no seam. Drifts the same right-to-left direction as
+     the ridges (slower than even the far ridge) to read as the
+     same wind moving the whole scene, not an independent layer. */
+  .vitra-scenery-clouds {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 45%;
+    opacity: var(--vitra-scenery-opacity-clouds);
+
+    /* Lit from below: dusk light catches the underside of the wisps.
+       Fades to transparent at BOTH ends - the box's bottom edge sits
+       mid-scene (45% down), so a hard-stop color there against the sky
+       gradient beneath reads as a visible seam. Peak brightness moves
+       to the middle of the band instead of the bottom edge. */
+    background: linear-gradient(
+      to top,
+      transparent 0%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.75) 74% / 55%) 22%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.2) 88% / 8%) 100%
+    );
+    animation: vitra-scenery-drift-clouds calc(400s / var(--vitra-scenery-speed)) linear infinite;
+    transform-origin: 0 100%;
+    will-change: transform;
+  }
+
+  @supports (mask-image: url("")) or (-webkit-mask-image: url("")) {
+    .vitra-scenery-clouds {
+      /* Thin horizontal wisps at varied altitudes - dusk stratus, not
+         puffy blobs. Per-ellipse fill-opacity (mask alpha) varies the
+         density wisp to wisp; tiny ry keeps them streak-like so the
+         under-lit gradient reads as light caught on their bellies. */
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 300' preserveAspectRatio='none'><ellipse cx='170' cy='96' rx='150' ry='7' fill-opacity='0.5'/><ellipse cx='250' cy='86' rx='90' ry='5' fill-opacity='0.35'/><ellipse cx='520' cy='150' rx='190' ry='6' fill-opacity='0.42'/><ellipse cx='610' cy='140' rx='90' ry='4' fill-opacity='0.28'/><ellipse cx='860' cy='104' rx='140' ry='6' fill-opacity='0.45'/><ellipse cx='950' cy='114' rx='80' ry='4' fill-opacity='0.3'/><ellipse cx='1180' cy='170' rx='170' ry='7' fill-opacity='0.4'/><ellipse cx='1290' cy='160' rx='80' ry='4' fill-opacity='0.26'/><ellipse cx='1400' cy='90' rx='110' ry='5' fill-opacity='0.3'/></svg>");
+      mask-size: 50% 100%;
+      mask-repeat: repeat-x;
+      mask-position: left top;
+    }
+  }
+
+  /* Light schemes: bright wisps, warm-white against the pale sky */
+  :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-clouds {
+    background: linear-gradient(
+      to top,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.6) 88% / 55%) 0%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.15) 96% / 20%) 100%
+    );
+  }
+  @media (prefers-color-scheme: light) {
+    :where([data-theme="auto"]) .vitra-scenery-clouds {
+      background: linear-gradient(
+      to top,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.6) 88% / 55%) 0%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.15) 96% / 20%) 100%
+    );
+    }
+  }
+
+  @keyframes vitra-scenery-drift-clouds {
+    0% { transform: translate3d(0%, 0, 0) skewX(0.3deg); }
+    100% { transform: translate3d(-50%, 0, 0) skewX(0.3deg); }
+  }
+
+  /* --- STAR FIELD (dark-appropriate themes only) --- */
+
+  /* Three star tiles with different, mutually coprime-ish periods
+     (2200x700 + 1600x900 here; 1200x520 on the drift layer hosted on
+     .vitra-scenery-sky::before). Tiles are large enough that no repeat
+     boundary falls inside a realistic viewport, so the same cluster
+     never appears twice on screen at once.
+     The field only occupies the upper 68% of the scene and fades out
+     via mask before the ridge peaks begin - stars belong to the sky
+     and must never show through the semi-transparent mountains.
+
+     TWINKLE = the near star field shimmers; the far plane stays steady.
+     This element is an unmasked wrapper whose opacity flickers through
+     an irregular sequence, five small steps a second; the stars are
+     painted - and masked - by its ::before, which never changes. The
+     far tile on .vitra-scenery-sky::before keeps a constant brightness,
+     so the eye reads "some stars are twinkling", not "the sky is
+     pulsing".
+     WHY THE WRAPPER: animating the element that paints the star tiles
+     is free in Chromium and ruinous in Firefox, which re-rasterizes
+     that element's SVG backgrounds on every change. 1.13.0-1.13.2 slid
+     a noise mask across the stars with two transform animations on
+     exactly those elements: per-star twinkle at zero cost in Chromium,
+     and ~100ms of main-thread work per step in Firefox - the page fell
+     to 37fps with stalls on every tick (measured, headless Firefox
+     157). Animating a parent that merely contains the painted layer
+     costs nothing in either engine. */
+  .vitra-scenery-stars {
+    position: absolute;
+    z-index: 0;
+    inset: 0 0 auto;
+    height: 68%;
+    visibility: hidden;
+
+    /* The twinkle animation is declared with the visibility rules further
+       down, so a layer hidden by the theme does not animate. It is the ONLY
+       animation on this element's opacity: a second one on the same
+       property - an entrance fade was tried - makes Chromium run both on
+       the main thread: a style recalc on every frame, forever. */
+    will-change: opacity;
+  }
+
+  /* Star plane: static. Two mask layers composited with "intersect" -
+     the vertical fade, and a soft transparent disc at the moon so stars
+     never paint over the disc or its glow, wherever the halo tokens
+     position it. The halo tokens address the moon's top-left corner in
+     the full scene box, so the disc centre is offset by half its size
+     and the Y token is rescaled from the scene's height to this
+     68%-tall band. */
+  .vitra-scenery-stars::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='2200' height='700'><g fill='none' stroke='white' stroke-linecap='round'><path stroke-width='1.5' opacity='.6' d='M2016 80h.01M178 213h.01M1520 387h.01M1788 458h.01M1716 526h.01'/><path stroke-width='1.5' opacity='.75' d='M474 8h.01M494 181h.01M1518 146h.01M1772 145h.01M303 256h.01M977 238h.01M1720 219h.01M739 385h.01M2188 366h.01M315 418h.01M1379 472h.01M1713 454h.01'/><path stroke-width='1.5' opacity='.9' d='M87 127h.01M2005 259h.01M932 381h.01M1153 378h.01M1924 364h.01M521 470h.01M1458 458h.01M1367 581h.01M98 679h.01'/><path stroke-width='1' opacity='.6' d='M1155 466h.01'/><path stroke-width='1' opacity='.75' d='M1139 245h.01M1233 449h.01'/><path stroke-width='2.5' opacity='.6' d='M377 70h.01M749 89h.01M1501 17h.01M321 139h.01M2034 139h.01M779 254h.01M1635 278h.01M1843 216h.01M1015 350h.01M1627 569h.01'/><path stroke-width='2.5' opacity='.75' d='M154 52h.01M612 32h.01M829 52h.01M1392 39h.01M921 188h.01M1343 177h.01M1626 126h.01M723 237h.01M2142 217h.01M127 316h.01M2079 317h.01M37 466h.01M2054 447h.01M923 544h.01M1041 590h.01M1782 555h.01M1944 546h.01M2043 558h.01'/><path stroke-width='2.5' opacity='.9' d='M584 152h.01M1056 273h.01M1297 217h.01M253 316h.01M377 553h.01M1453 537h.01'/><path stroke-width='2' opacity='.6' d='M1163 49h.01M1693 15h.01M1833 63h.01M1671 112h.01M2136 192h.01M381 249h.01M102 375h.01M1330 384h.01M1737 325h.01M2131 588h.01'/><path stroke-width='2' opacity='.75' d='M290 24h.01M1278 84h.01M183 160h.01M357 146h.01M1292 167h.01M76 265h.01M528 219h.01M576 237h.01M456 320h.01M592 343h.01M1615 326h.01M1815 379h.01M196 431h.01M639 473h.01M1048 472h.01M301 555h.01M542 571h.01'/><path stroke-width='2' opacity='.9' d='M855 128h.01M1153 154h.01M1493 209h.01M1965 265h.01M408 487h.01M200 522h.01M600 547h.01M163 685h.01'/><path stroke-width='3' opacity='.6' d='M1586 44h.01M1908 10h.01M1036 149h.01M1418 262h.01M1549 439h.01M1924 430h.01'/><path stroke-width='3' opacity='.75' d='M25 24h.01M968 19h.01M2158 37h.01M702 175h.01M1292 315h.01M753 480h.01M844 433h.01M954 488h.01M2143 492h.01M690 583h.01M836 521h.01M1145 534h.01M1260 542h.01'/><path stroke-width='3' opacity='.9' d='M1035 74h.01M1912 180h.01M352 374h.01M829 361h.01M20 590h.01'/></g></svg>"),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1600' height='900'><g fill='none' stroke='white' stroke-linecap='round'><path stroke-width='1.5' opacity='.6' d='M1144 106h.01M1230 246h.01M344 462h.01M1482 462h.01M1052 603h.01'/><path stroke-width='1.5' opacity='.75' d='M291 47h.01M493 86h.01M716 166h.01M1129 159h.01M1479 247h.01M1102 289h.01M1504 367h.01M549 416h.01M707 405h.01M848 473h.01M1169 462h.01'/><path stroke-width='1.5' opacity='.9' d='M173 194h.01M320 204h.01M862 354h.01'/><path stroke-width='1' opacity='.6' d='M248 862h.01'/><path stroke-width='1' opacity='.75' d='M688 731h.01'/><path stroke-width='1' opacity='.9' d='M894 667h.01'/><path stroke-width='2.5' opacity='.6' d='M872 57h.01M1513 27h.01M956 352h.01M442 459h.01M591 536h.01M720 582h.01'/><path stroke-width='2.5' opacity='.75' d='M108 56h.01M717 70h.01M1215 40h.01M1384 86h.01M904 195h.01M1028 217h.01M389 312h.01M452 375h.01M682 298h.01'/><path stroke-width='2.5' opacity='.9' d='M626 66h.01M108 325h.01M105 404h.01M872 584h.01M54 730h.01'/><path stroke-width='2' opacity='.6' d='M33 244h.01M1382 569h.01M198 717h.01'/><path stroke-width='2' opacity='.75' d='M159 97h.01M549 314h.01M233 496h.01M336 560h.01M1162 572h.01M1428 704h.01'/><path stroke-width='2' opacity='.9' d='M1447 371h.01M337 679h.01M579 712h.01M1161 700h.01M78 835h.01'/><path stroke-width='3' opacity='.75' d='M996 21h.01M627 183h.01M1382 208h.01M207 287h.01M956 496h.01M1255 432h.01M64 621h.01M460 617h.01M1314 622h.01M1500 591h.01M1318 762h.01'/><path stroke-width='3' opacity='.9' d='M434 245h.01M1292 313h.01M1350 472h.01M192 569h.01M420 664h.01M954 692h.01M1577 654h.01'/></g></svg>");
+    background-repeat: repeat;
+    mask-image:
+      linear-gradient(to bottom, white 0%, white 18%, hsl(0deg 0% 100% / 85%) 32%, hsl(0deg 0% 100% / 45%) 52%, transparent 74%),
+      radial-gradient(
+        circle at calc(var(--vitra-scenery-halo-x) + var(--vitra-scenery-halo-size) / 2) calc(var(--vitra-scenery-halo-y) / 0.68 + var(--vitra-scenery-halo-size) / 2),
+        transparent 0%,
+        transparent calc(var(--vitra-scenery-halo-size) * 1.1),
+        white calc(var(--vitra-scenery-halo-size) * 1.9)
+      );
+    mask-composite: intersect;
+  }
+
+  /* Irregular on purpose - evenly spaced dips would read as a pulse.
+     Ten keyframes x steps(4) over 8s = one change every 200ms: enough
+     to shimmer, and half as many re-blurs for any glass panel or
+     navbar sitting over the sky. */
+  @keyframes vitra-scenery-twinkle {
+    0% { opacity: 1; }
+    10% { opacity: 0.74; }
+    20% { opacity: 0.96; }
+    30% { opacity: 0.66; }
+    40% { opacity: 1; }
+    50% { opacity: 0.8; }
+    60% { opacity: 0.94; }
+    70% { opacity: 0.7; }
+    80% { opacity: 0.9; }
+    90% { opacity: 0.78; }
+    100% { opacity: 1; }
+  }
+
+  /* Far star plane: a third tile at a steady, dimmer brightness, hosted
+     on the sky element. It does not move or fade: it is the constant
+     the twinkling near field is read against, and point-sized stars
+     creeping sideways one pixel at a time were the most visible
+     stepping artefact in the scene. Sky pseudos don't inherit the stars
+     element's theme gate, so they are visibility-gated to the same dark
+     themes below. */
+  .vitra-scenery-sky::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 68%;
+    width: 100%;
+    visibility: hidden;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='520'><g fill='none' stroke='white' stroke-linecap='round'><path stroke-width='1.5' opacity='.6' d='M1063 121h.01M144 459h.01'/><path stroke-width='1.5' opacity='.75' d='M371 84h.01M610 96h.01M1118 130h.01M371 364h.01M592 399h.01M867 387h.01M8 467h.01M265 457h.01'/><path stroke-width='1.5' opacity='.9' d='M131 264h.01M1076 260h.01M66 362h.01'/><path stroke-width='1' opacity='.75' d='M435 178h.01'/><path stroke-width='2.5' opacity='.6' d='M354 190h.01M581 173h.01M25 253h.01M218 278h.01M330 231h.01M491 217h.01M1135 234h.01M588 474h.01'/><path stroke-width='2.5' opacity='.75' d='M514 66h.01M773 50h.01M774 245h.01M812 283h.01M236 354h.01'/><path stroke-width='2.5' opacity='.9' d='M270 74h.01M256 116h.01M634 292h.01M136 337h.01M478 362h.01'/><path stroke-width='2' opacity='.6' d='M449 89h.01M870 149h.01M779 375h.01M325 434h.01M441 428h.01'/><path stroke-width='2' opacity='.75' d='M132 31h.01M728 115h.01M990 120h.01M588 249h.01M622 359h.01M987 369h.01M1062 369h.01M1154 341h.01'/><path stroke-width='2' opacity='.9' d='M172 165h.01'/><path stroke-width='3' opacity='.6' d='M827 90h.01'/><path stroke-width='3' opacity='.75' d='M54 32h.01M973 24h.01M1117 76h.01'/><path stroke-width='3' opacity='.9' d='M1025 79h.01M91 127h.01M644 179h.01M926 264h.01'/></g></svg>");
+    background-repeat: repeat;
+    opacity: 0.56;
+    mask-image: linear-gradient(to bottom, white 0%, white 18%, hsl(0deg 0% 100% / 85%) 32%, hsl(0deg 0% 100% / 45%) 52%, transparent 74%);
+  }
+
+  /* Shooting star: thin streak, two brief flashes per 34s cycle, each
+     at a different position/angle so it doesn't always streak across
+     the same spot. The layer is only as big as the streak; its entry
+     point is written in container units (both scenery roots are size
+     containers), so position, angle, length and travel all live in ONE
+     transform list and run on the compositor without a scene-sized
+     transparent layer being blended over the sky for a 90px line. */
+  .vitra-scenery-sky::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 90px;
+    height: 2px;
+    visibility: hidden;
+    background: linear-gradient(to right, white 0%, hsl(0deg 0% 100% / 40%) 35%, transparent 100%);
+    opacity: 0;
+    transform-origin: 0 0;
+    transform: translate(66cqw, 14cqh) rotate(-35deg) translateX(0) scaleX(1);
+
+    /* The animation is declared with the visibility rules below. */
+  }
+
+  @keyframes vitra-scenery-shooting-star {
+    /* Flash A: steep streak from the upper-right. */
+    0% { transform: translate(66cqw, 14cqh) rotate(-35deg) translateX(0) scaleX(1); opacity: 0; }
+    1% { opacity: 0.75; }
+    2.5% { transform: translate(66cqw, 14cqh) rotate(-35deg) translateX(-340px) scaleX(1); opacity: 0; }
+    49.9% { transform: translate(66cqw, 14cqh) rotate(-35deg) translateX(-340px) scaleX(1); opacity: 0; }
+
+    /* Flash B: shallower, longer streak from further left - a
+       different entry point and angle so it doesn't read as the
+       same star every time. */
+    50% { transform: translate(40cqw, 8cqh) rotate(-18deg) translateX(0) scaleX(1.44); opacity: 0; }
+    51% { opacity: 0.7; }
+    53% { transform: translate(40cqw, 8cqh) rotate(-18deg) translateX(-420px) scaleX(1.44); opacity: 0; }
+    100% { transform: translate(40cqw, 8cqh) rotate(-18deg) translateX(-420px) scaleX(1.44); opacity: 0; }
+  }
+
+  /* Stars appear in every dark-scheme theme and on a page with no theme at
+     all (the :root defaults are the dark palette). The no-theme selector
+     carries no theme attribute for light/dark, so mirrorAuto drops it from
+     the `auto` copy and keeps only the first selector of each list;
+     :where() keeps it at zero specificity, like the theme list.
+     Each layer's animation lives in the same rule as its visibility, so a
+     layer the theme hides never animates. */
+  :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"], [data-theme="emerald"]) .vitra-scenery-stars,
+  :where(:root:not([data-theme])) .vitra-scenery-stars {
+    visibility: visible;
+    animation: vitra-scenery-twinkle 8s steps(4) infinite;
+  }
+  @media (prefers-color-scheme: dark) {
+    :where([data-theme="auto"]) .vitra-scenery-stars {
+      visibility: visible;
+      animation: vitra-scenery-twinkle 8s steps(4) infinite;
+    }
+  }
+  :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"], [data-theme="emerald"]) .vitra-scenery-sky::before,
+  :where(:root:not([data-theme])) .vitra-scenery-sky::before {
+    visibility: visible;
+  }
+  @media (prefers-color-scheme: dark) {
+    :where([data-theme="auto"]) .vitra-scenery-sky::before {
+      visibility: visible;
+    }
+  }
+  :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"], [data-theme="emerald"]) .vitra-scenery-sky::after,
+  :where(:root:not([data-theme])) .vitra-scenery-sky::after {
+    visibility: visible;
+    animation: vitra-scenery-shooting-star 34s linear 4s infinite;
+  }
+  @media (prefers-color-scheme: dark) {
+    :where([data-theme="auto"]) .vitra-scenery-sky::after {
+      visibility: visible;
+      animation: vitra-scenery-shooting-star 34s linear 4s infinite;
+    }
+  }
+
+  /* --- HALO LAYER (sun / moon) --- */
+
+  /* Full moon: crisp disc with faint maria texture, positioned by tokens
+     in the upper third - clear of hero headlines by default. A defined,
+     textured disc is what makes the scene read as a landscape with a
+     light source, not an abstract blur.
+     Explicit stacking, not just DOM order: the mask cutout on the star
+     plane already keeps stars off the disc, and z-index pins the moon
+     above the star layer regardless of markup order. Ridges paint above
+     the halo, matching the near-to-far order down the layer list. */
+  .vitra-scenery-halo {
+    position: absolute;
+    z-index: 1;
+    top: var(--vitra-scenery-halo-y);
+    left: var(--vitra-scenery-halo-x);
+    width: var(--vitra-scenery-halo-size);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background:
+      /* maria: three faint darker patches */
+      radial-gradient(30% 30% at 62% 38%, hsl(var(--vitra-scenery-hue) 14% 68% / 38%) 0%, transparent 100%),
+      radial-gradient(24% 24% at 36% 60%, hsl(var(--vitra-scenery-hue) 12% 70% / 30%) 0%, transparent 100%),
+      radial-gradient(16% 16% at 56% 74%, hsl(var(--vitra-scenery-hue) 12% 72% / 26%) 0%, transparent 100%),
+      /* disc: cool paper, subtly brighter toward upper-left */
+      radial-gradient(
+        circle at 40% 36%,
+        hsl(var(--vitra-scenery-hue) 22% 96%) 0%,
+        hsl(var(--vitra-scenery-hue) 16% 88%) 70%,
+        hsl(var(--vitra-scenery-hue) 14% 82%) 100%
+      );
+
+    /* Tight rim glow only - the wide atmospheric glow is the corona below */
+    box-shadow: 0 0 26px 8px hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 82% / 32%);
+  }
+
+  /* Corona: the wide glow around the disc, on its own layer so the light
+     can breathe while the disc itself stays rock solid. (The whole moon
+     used to fade to 75% and back, which read as the moon going
+     translucent rather than its light pulsing.) The gradient is hollow
+     out to the disc's radius - 1 / 4.2 of this box - so nothing of it
+     lands on the disc or inside a crescent. */
+  .vitra-scenery-halo::after {
+    content: '';
+    position: absolute;
+    inset: -160%;
+    border-radius: 50%;
+    background: radial-gradient(
+      closest-side,
+      transparent 23.5%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 74% / 24%) 24.5%,
+      hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.6) 70% / 9%) 52%,
+      transparent 100%
+    );
+    animation: vitra-scenery-halo-breathe calc(9s / var(--vitra-scenery-speed)) ease-in-out infinite alternate;
+    will-change: transform, opacity;
+  }
+
+  /* Crescent variant: hollow disc, lit sliver via inset shadow.
+     Offset scales with the size token so the phase reads the same
+     at any moon size. */
+  .vitra-scenery-halo-crescent {
+    background: none;
+    transform: rotate(-14deg);
+    box-shadow:
+      inset calc(var(--vitra-scenery-halo-size) / -4) calc(var(--vitra-scenery-halo-size) / 9) 0 0
+        hsl(var(--vitra-scenery-hue) 20% 92%),
+      0 0 26px 8px hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 82% / 26%);
+  }
+
+  /* Light schemes: golden hour - the disc reads as a low sun, no maria.
+     Lightness dropped well below the pale sky (97%) instead of sitting
+     a few points above it - a sun needs to read as a saturated disc,
+     not a paler patch of the same sky. */
+  :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-halo {
+    background: radial-gradient(
+      circle at 45% 40%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 1.1) 72% / 100%) 0%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 1.05) 56% / 100%) 100%
+    );
+    box-shadow: 0 0 34px 12px hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.9) 60% / 55%);
+  }
+  @media (prefers-color-scheme: light) {
+    :where([data-theme="auto"]) .vitra-scenery-halo {
+      background: radial-gradient(
+      circle at 45% 40%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 1.1) 72% / 100%) 0%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 1.05) 56% / 100%) 100%
+    );
+      box-shadow: 0 0 34px 12px hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.9) 60% / 55%);
+    }
+  }
+  :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-halo::after {
+    background: radial-gradient(
+      closest-side,
+      transparent 23.5%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.8) 58% / 42%) 24.5%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.8) 55% / 14%) 55%,
+      transparent 100%
+    );
+  }
+  @media (prefers-color-scheme: light) {
+    :where([data-theme="auto"]) .vitra-scenery-halo::after {
+      background: radial-gradient(
+      closest-side,
+      transparent 23.5%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.8) 58% / 42%) 24.5%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.8) 55% / 14%) 55%,
+      transparent 100%
+    );
+    }
+  }
+
+  @keyframes vitra-scenery-halo-breathe {
+    from { transform: scale(0.94); opacity: 0.6; }
+    to { transform: scale(1.05); opacity: 1; }
+  }
+
+  /* --- RIDGE LAYERS (landscape silhouettes, back to front) --- */
+
+  /* Each ridge is a 200%-wide strip holding its silhouette
+     TWICE, back to back (background-size 50% 100%, repeat-x).
+     Because both copies are identical, translating exactly
+     one copy-width (-50% of the strip) lands on a frame that
+     is pixel-identical to frame 0 - the animation can run
+     linear, one direction, infinite, with no visible seam and
+     no ease-in-out "breathing" reversal. */
+
+  /* Each ridge div is now an unmasked ANIMATION CARRIER: the drift
+     transform lives here, while the visible silhouette paints in ::after
+     and the warm crest rim light in ::before. Both pseudos share the
+     parent's transform, so parallax moves silhouette + rim as one body -
+     the rim can never detach from its crest. */
+  .vitra-scenery-ridge-far,
+  .vitra-scenery-ridge-mid,
+  .vitra-scenery-ridge-near {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 200%;
+    transform-origin: 0 100%;
+    will-change: transform, translate;
+  }
+
+  .vitra-scenery-ridge-far::before,
+  .vitra-scenery-ridge-far::after,
+  .vitra-scenery-ridge-mid::before,
+  .vitra-scenery-ridge-mid::after,
+  .vitra-scenery-ridge-near::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .vitra-scenery-ridge-far {
+    height: 58%;
+    opacity: var(--vitra-scenery-opacity-far);
+    animation: vitra-scenery-drift-far calc(480s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) linear infinite;
+  }
+
+  /* Fallback (no mask support): soft gradient band still gives a
+     horizon impression, just without the ridgeline silhouette */
+  .vitra-scenery-ridge-far::after {
+    background: linear-gradient(
+      to bottom,
+      hsl(calc(var(--vitra-scenery-hue) - 12) calc(var(--vitra-scenery-sat) * 0.35) 46% / 48%) 0%,
+      hsl(calc(var(--vitra-scenery-hue) - 12) calc(var(--vitra-scenery-sat) * 0.45) 34% / 62%) 30%,
+      hsl(calc(var(--vitra-scenery-hue) - 12) calc(var(--vitra-scenery-sat) * 0.5) 24% / 80%) 100%
+    );
+  }
+
+  /* Warm rim: same mask as the silhouette, nudged up 3px. Only the
+     sliver above the ::after crest shows crisply; the short fade below
+     it reads as the lit face of the summit. Hidden until mask support
+     confirmed (would be a full-width band otherwise). */
+  .vitra-scenery-ridge-far::before {
+    transform: translateY(-3px);
+    visibility: hidden;
+
+    /* Gradient band aligned to where the silhouette actually lives in
+       this box (peaks start ~15% down): strong at crest altitude, dying
+       toward the valleys. The 3px mask offset draws the crisp sliver;
+       this fill is the soft "lit face" bleeding through ::after. */
+    background: linear-gradient(
+      to bottom,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.95) 74% / calc(0.75 * var(--vitra-scenery-opacity-rim))) 13%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.85) 68% / calc(0.32 * var(--vitra-scenery-opacity-rim))) 30%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.75) 62% / calc(0.1 * var(--vitra-scenery-opacity-rim))) 50%,
+      transparent 68%
+    );
+  }
+
+  .vitra-scenery-ridge-mid {
+    height: 40%;
+    opacity: var(--vitra-scenery-opacity-mid);
+    animation: vitra-scenery-drift-mid calc(160s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) linear infinite;
+  }
+
+  .vitra-scenery-ridge-mid::after {
+    background: linear-gradient(
+      to bottom,
+      hsl(calc(var(--vitra-scenery-hue) - 6) calc(var(--vitra-scenery-sat) * 0.45) 26% / 62%) 0%,
+      hsl(calc(var(--vitra-scenery-hue) - 6) calc(var(--vitra-scenery-sat) * 0.5) 18% / 82%) 35%,
+      hsl(calc(var(--vitra-scenery-hue) - 6) calc(var(--vitra-scenery-sat) * 0.55) 12% / 94%) 100%
+    );
+  }
+
+  /* Mid rim: weaker - farther from the light than the far crests are
+     from the sky, and half in shadow already */
+  .vitra-scenery-ridge-mid::before {
+    transform: translateY(-2px);
+    visibility: hidden;
+
+    /* Mid silhouette tops sit ~46% down its box; weaker light - half
+       in shadow already */
+    background: linear-gradient(
+      to bottom,
+      transparent 42%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.85) 68% / calc(0.5 * var(--vitra-scenery-opacity-rim))) 47%,
+      hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.7) 60% / calc(0.15 * var(--vitra-scenery-opacity-rim))) 62%,
+      transparent 80%
+    );
+  }
+
+  /* Near: a still, dark foreground rise - fully in shadow, darkest
+     value, no rim. It does not drift. A foreground sliding past at
+     speed is the plane that reads as "the room is moving", and it was
+     also the fastest-changing layer on screen; standing still it
+     grounds the scene and costs nothing. It still takes part in
+     scroll depth. */
+  .vitra-scenery-ridge-near {
+    width: 100%;
+    height: 24%;
+    opacity: var(--vitra-scenery-opacity-near);
+    will-change: auto;
+  }
+
+  .vitra-scenery-ridge-near::after {
+    background: linear-gradient(
+      to bottom,
+      hsl(calc(var(--vitra-scenery-hue) + 15) calc(var(--vitra-scenery-sat) * 0.6) 12% / 92%) 0%,
+      hsl(calc(var(--vitra-scenery-hue) + 15) calc(var(--vitra-scenery-sat) * 0.7) 4% / 98%) 100%
+    );
+  }
+
+  /* Light/pastel: the dark-theme lightness ladder (46%->4%) reads as
+     silhouettes against a near-black sky, but alpha-composited over a
+     ~97%-lightness sky it just averages toward flat grey - no color,
+     no depth. Lower the lightness further and raise both saturation
+     and alpha so each ridge reads as a solid, richly-colored mass
+     instead of a translucent haze over pale grey. */
+  :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-ridge-far::after {
+    background: linear-gradient(
+      to bottom,
+      hsl(calc(var(--vitra-scenery-hue) - 12) calc(var(--vitra-scenery-sat) * 0.85) 34% / 78%) 0%,
+      hsl(calc(var(--vitra-scenery-hue) - 12) calc(var(--vitra-scenery-sat) * 0.95) 25% / 90%) 30%,
+      hsl(calc(var(--vitra-scenery-hue) - 12) var(--vitra-scenery-sat) 16% / 97%) 100%
+    );
+  }
+  @media (prefers-color-scheme: light) {
+    :where([data-theme="auto"]) .vitra-scenery-ridge-far::after {
+      background: linear-gradient(
+      to bottom,
+      hsl(calc(var(--vitra-scenery-hue) - 12) calc(var(--vitra-scenery-sat) * 0.85) 34% / 78%) 0%,
+      hsl(calc(var(--vitra-scenery-hue) - 12) calc(var(--vitra-scenery-sat) * 0.95) 25% / 90%) 30%,
+      hsl(calc(var(--vitra-scenery-hue) - 12) var(--vitra-scenery-sat) 16% / 97%) 100%
+    );
+    }
+  }
+  :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-ridge-mid::after {
+    background: linear-gradient(
+      to bottom,
+      hsl(calc(var(--vitra-scenery-hue) - 6) calc(var(--vitra-scenery-sat) * 0.95) 17% / 90%) 0%,
+      hsl(calc(var(--vitra-scenery-hue) - 6) var(--vitra-scenery-sat) 11% / 97%) 35%,
+      hsl(calc(var(--vitra-scenery-hue) - 6) var(--vitra-scenery-sat) 6% / 99%) 100%
+    );
+  }
+  @media (prefers-color-scheme: light) {
+    :where([data-theme="auto"]) .vitra-scenery-ridge-mid::after {
+      background: linear-gradient(
+      to bottom,
+      hsl(calc(var(--vitra-scenery-hue) - 6) calc(var(--vitra-scenery-sat) * 0.95) 17% / 90%) 0%,
+      hsl(calc(var(--vitra-scenery-hue) - 6) var(--vitra-scenery-sat) 11% / 97%) 35%,
+      hsl(calc(var(--vitra-scenery-hue) - 6) var(--vitra-scenery-sat) 6% / 99%) 100%
+    );
+    }
+  }
+  :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-ridge-near::after {
+    background: linear-gradient(
+      to bottom,
+      hsl(calc(var(--vitra-scenery-hue) + 15) var(--vitra-scenery-sat) 6% / 98%) 0%,
+      hsl(calc(var(--vitra-scenery-hue) + 15) var(--vitra-scenery-sat) 2% / 99%) 100%
+    );
+  }
+  @media (prefers-color-scheme: light) {
+    :where([data-theme="auto"]) .vitra-scenery-ridge-near::after {
+      background: linear-gradient(
+      to bottom,
+      hsl(calc(var(--vitra-scenery-hue) + 15) var(--vitra-scenery-sat) 6% / 98%) 0%,
+      hsl(calc(var(--vitra-scenery-hue) + 15) var(--vitra-scenery-sat) 2% / 99%) 100%
+    );
+    }
+  }
+
+  /* SVG-silhouette ridgelines. The mask defines the SHAPE
+     (peaks, foothills, treeline); the gradient above defines the
+     COLOR, so theming via tokens is untouched. Each ridge's mist
+     band sits at its silhouette top, visually separating it from
+     the range behind. mask-size 50% 100% + repeat-x tiles the
+     single 1440-wide path twice across the 200%-wide element. */
+  @supports (mask-image: url("")) or (-webkit-mask-image: url("")) {
+    /* Far: mountain panorama built like a painting - flowing
+       bezier ridgeline, summit hierarchy (one dominant massif at
+       x535, secondary at x1168), asymmetric slopes, eroded round
+       valleys. Sun sits cradled in the saddle between them.
+       Mask applies to BOTH pseudos: silhouette (::after) and its
+       rim light (::before) share the exact same shape. */
+    .vitra-scenery-ridge-far::before {
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M28 265l16-6l13-5l13-4l10-5l7-4l12-4l14-2l14-11l7-5l16-14l7-1l12-3l11-7l10-4l15-12l9-15l11-17l14-14l11-14l10 43l25 42l10 43l29 42l-222-15ZM330 172l9-1l11-4l9-4l13-3l11-4l10-4l10-5l11-9l7-5l9-5l10-6l8-4l8-6l16-13l9-6l8-5l11-6l15-7l14-9l15-14l9-8l7-6l26 45l14 46l19 45l11 45l4 45l31 46l5 45l9 45l-262-43ZM800 214l13-16l11-11l15-10l11-9l21 50l26 50l9 50l-79-18ZM982 242l12-3l8-3l8-4l15-8l10-8l11-9l12-11l12-6l6-6l11-15l10-10l9-9l13-13l11-9l11-8l5-3l9-8l14-14l11-11l30 45l18 45l15 45l31 46l6 45l34 45l14 45l-259-38Z'/></svg>");
+      mask-size: 50% 100%;
+      mask-repeat: repeat-x;
+    }
+
+    .vitra-scenery-ridge-far::after {
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 262l15 1l13 2l16-6l13-5l13-4l10-5l7-4l12-4l14-2l14-11l7-5l16-14l7-1l12-3l11-7l10-4l15-12l9-15l11-17l14-14l11-14l12 15l12 9l11 8l11 7l7 4l12 4l15 7l9-1l11-4l9-4l13-3l11-4l10-4l10-5l11-9l7-5l9-5l10-6l8-4l8-6l16-13l9-6l8-5l11-6l15-7l14-9l15-14l9-8l7-6l8 8l9 13l13 15l8 10l15 13l15 9l12 6l15 9l7 5l9 8l10 8l9 8l7 8l12 16l15 12l16 10l14 5l8 1l15 6l15 5l8 1l13-16l11-11l15-10l11-9l14 11l14 10l12 7l12 8l8 4l16 8l11 13l13 11l11-1l10 1l11 2l12-3l8-3l8-4l15-8l10-8l11-9l12-11l12-6l6-6l11-15l10-10l9-9l13-13l11-9l11-8l5-3l9-8l14-14l11-11l15 15l9 11l11 16l10 3l7 6l13 8l6 3l11 4l6 7l11 15l11 10l10 6l12 6l6 2l12 6l15 12l15 12l6 3l11 7l6 5l10 9l17 3l9 2l7 3l14 4V400H0Z'/></svg>");
+      mask-size: 50% 100%;
+      mask-repeat: repeat-x;
+    }
+
+    /* Mid: soft rolling foothills, one gentle crest left-of-center,
+       long calm undulation elsewhere - lets the far range be the
+       drama while providing the depth overlap. */
+    .vitra-scenery-ridge-mid::before {
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 286l16-4l6-1l11-4l19-3l12-4l16 0l15-8l13-7l9-5l12-6l12-6l9-6l14-16l13-18l6-10l13-20l15 46l10 47l39 46l7 47l19 46l-214-28ZM700 222l14-7l7-5l12-8l16-10l9-6l12-6l6-5l12-9l14-11l7-9l13-14l17 44l14 44l34 44l9 44l10 44l33 44l-179-32ZM1090 272l13-2l8-2l10-2l15-4l6-1l11-2l13 0l14-1l12-5l14-2l9-4l13-7l11-7l11-7l39 50l22 50l23 50l-183-18Z'/></svg>");
+      mask-size: 50% 100%;
+      mask-repeat: repeat-x;
+    }
+
+    .vitra-scenery-ridge-mid::after {
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 286l16-4l6-1l11-4l19-3l12-4l16 0l15-8l13-7l9-5l12-6l12-6l9-6l14-16l13-18l6-10l13-20l7 6l10 11l12 11l11 10l9 4l8 5l8 5l13 4l12 2l14 2l11 2l12 5l6 2l17 5l11 3l15 5l8 2l15 3l11 5l10 1l11 1l21 0l22 2l16-4l7-3l14-5l9-1l16-1l16-2l12-2l9-2l8-2l15-6l17-6l10-4l7-5l14-7l9 1l8-2l8-1l7 2l9 2l8 3l11 3l14-7l7-5l12-8l16-10l9-6l12-6l6-5l12-9l14-11l7-9l13-14l13 14l12 11l7 7l12 12l12 5l8 4l8 1l10 4l13 7l13 7l8 5l16 7l10 7l7 5l14 9l15 9l7 2l12 4l18 7l20 5l13 4l6 1l14 3l13-2l8-2l10-2l15-4l6-1l11-2l13 0l14-1l12-5l14-2l9-4l13-7l11-7l11-7l14 0l8 0l15 6l13 4l11 8l9 5l14 8l13 3l15 4l8 3l8 2l11 3l8 2l17 6l10 1l16 5V400H0Z'/></svg>");
+      mask-size: 50% 100%;
+      mask-repeat: repeat-x;
+    }
+
+    /* Near: quiet dark treeline, barely undulating */
+    .vitra-scenery-ridge-near::after {
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 400' preserveAspectRatio='none'><path d='M0 326l42 3l20-1l48-11l40-5l73 5l42 1l42 6l23 6l67-8l42-3l42-3l39 2l33-6l26-5l57-4l64-3l57 10l33 9l47 1l63 2l49 8l34 3l60 1l37 0l42-1l59-3l40-7l39-9l51 3l30 5l45 4l54 0V400H0Z'/></svg>");
+      mask-size: 100% 100%;
+      mask-repeat: no-repeat;
+    }
+
+    /* Rims only exist once masks are confirmed - without a mask they
+       would render as a full-width warm band */
+    .vitra-scenery-ridge-far::before,
+    .vitra-scenery-ridge-mid::before {
+      visibility: visible;
+    }
+  }
+
+  /* Parallax by differential speed: the nearer the layer, the
+     faster it travels (real-world depth cue). All three drift in
+     the SAME direction (right-to-left) at different speeds, which
+     reads as true camera-pan parallax rather than layers
+     oscillating independently. translate3d keeps each ridge on
+     its own compositor layer; the -50% endpoint is exactly one
+     tile-width, so looping back to 0% is seamless.
+     skewX(0.3deg) is not a look, it is what makes the drift glide in
+     Firefox. WebRender snaps a layer whose transform is a pure
+     translation to whole device pixels, so even a linear drift
+     advanced one pixel at a time, 3-10 times a second (measured on
+     screen, Firefox 158). A transform that is not axis-aligned cannot
+     be snapped and is drawn at its sub-pixel position - which Firefox
+     in turn resolves to about a quarter pixel per row. Hence 0.3deg
+     rather than the 0.02deg that would be enough to defeat snapping:
+     it offsets the rows against each other by a few pixels top to
+     bottom, so they cross those quarter-pixel marks one after another
+     instead of all at once, and the range advances in ~40 partial
+     updates a second instead of ~10 whole ones. The lean is 2-3px over
+     the height of a range. The skew sits after the translation and is
+     anchored bottom-left (see transform-origin on the carriers), so
+     travel stays exactly horizontal, the loop stays seamless and no
+     edge of a strip is ever pulled into view. */
+  @keyframes vitra-scenery-drift-far {
+    0% { transform: translate3d(0%, 0, 0) skewX(0.3deg); }
+    100% { transform: translate3d(-50%, 0, 0) skewX(0.3deg); }
+  }
+
+  @keyframes vitra-scenery-drift-mid {
+    0% { transform: translate3d(0%, 0, 0) skewX(0.3deg); }
+    100% { transform: translate3d(-50%, 0, 0) skewX(0.3deg); }
+  }
+
+  /* --- GRAIN LAYER --- */
+
+  /* Grain host: element stays fully opaque so its pseudos can carry
+     different opacities - noise in ::after, valley mist in ::before. */
+  .vitra-scenery-grain {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Valley mist: soft pools of light hanging between the ridges.
+     Sits in front of the mountains (atmosphere), warm on the afterglow
+     side, cool accent on the other. Static. (1.13.0 let it sway, which put a scene-wide translucent
+     layer in continuous motion - the single most expensive thing in
+     the scene for the compositor, for a movement nobody could see.) */
+  .vitra-scenery-grain::before {
+    content: '';
+    position: absolute;
+    inset: auto 0 6%;
+    height: 26%;
+
+    /* Both pools are centred inside the box and fully faded before its
+       edges - anchoring them to the bottom edge left a hard horizontal
+       line across the valley wherever the box ended. */
+    background:
+      radial-gradient(
+        46% 48% at var(--vitra-scenery-glow-x) 42%,
+        hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.7) 70% / 13%) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        34% 40% at calc(100% - var(--vitra-scenery-glow-x)) 46%,
+        hsl(var(--vitra-scenery-hue) calc(var(--vitra-scenery-sat) * 0.5) 75% / 9%) 0%,
+        transparent 100%
+      );
+  }
+
+  /* Subtle noise texture, breaks up gradient banding.
+     Data-URI SVG feTurbulence, no external asset. Plain low
+     opacity, no blend mode: mix-blend-mode would force the
+     compositor to re-blend the full stack on every animation
+     frame of the layers underneath. */
+  .vitra-scenery-grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-repeat: repeat;
+  }
+
+  /* --- ENTRANCE ---
+     The whole scene fades up as one piece: a single opacity animation
+     on the root, which only contains the layers and paints nothing
+     itself.
+     1.13.0-1.13.2 choreographed it layer by layer (ranges rising
+     back-to-front, the moon climbing, wisps and mist fading up). That
+     meant seven elements animating at once, most of them the very
+     elements that paint a masked SVG or a stack of gradients - smooth
+     in Chromium, 16fps for the first seconds of every page load in
+     Firefox (measured, headless Firefox 157; the same scene with no
+     entrance: 230fps). Animating a wrapper is cheap in every engine;
+     animating what a wrapper contains is not. A scene that starts
+     offscreen is held by Vitra.motionGuard and fades up when it
+     scrolls into view. */
+  .vitra-scenery,
+  .vitra-scenery-inline {
+    animation: vitra-scenery-enter calc(1.6s * var(--vitra-scenery-intro)) ease-out backwards;
+
+    /* How many viewport-widths one ridge tile spans (see PORTRAIT below) */
+    --vitra-scenery-span: 1;
+  }
+
+  /* --- PORTRAIT ---
+     Each ridge tile is stretched to the scene's width, so on a tall
+     narrow screen a range drawn for 16:9 gets squeezed into needles.
+     In portrait the tile spans two viewport-widths instead: the strip
+     doubles (it still holds exactly two tiles, so the -50% loop stays
+     seamless) and the drift takes twice as long, which keeps the
+     on-screen speed where it was. */
+  @media (aspect-ratio <= 4/5) {
+    .vitra-scenery,
+    .vitra-scenery-inline {
+      --vitra-scenery-span: 2;
+    }
+
+    .vitra-scenery-ridge-far,
+    .vitra-scenery-ridge-mid {
+      width: 400%;
+    }
+  }
+
+  @keyframes vitra-scenery-enter {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* --- SCROLL DEPTH (.vitra-scenery-inline) ---
+     Real parallax for a scene that scrolls away with its container:
+     while the hero leaves the viewport, each layer lags behind the
+     scroll by an amount proportional to its distance - the sky and
+     moon hang back the most, the far range less, the near treeline
+     barely at all - so the landscape separates into planes exactly
+     when the visitor starts moving.
+     Pure CSS scroll-driven animation (view timeline named on the
+     container, cqh offsets from its size containment): no scroll
+     listener, no JS, and it runs on the compositor. It writes
+     `translate`, so it layers over the `transform` drift without
+     either knowing about the other. Browsers without scroll-driven
+     animations skip the whole block and keep the drift.
+     HOST REQUIREMENT: a view timeline attaches to the nearest scroll
+     container, and `overflow: hidden` makes the host one - the timeline
+     then never advances and the layers simply stay put (harmless, same
+     as before). Give the host `overflow: clip` instead, or no overflow
+     at all: this element already clips itself via paint containment.
+     The fixed full-page .vitra-scenery is deliberately left out: a
+     backdrop that shifts under body text costs readability. */
+  @supports (animation-timeline: view()) {
+    @keyframes vitra-scenery-depth-sky {
+      from { translate: 0 0; }
+      to { translate: 0 calc(30cqh * var(--vitra-scenery-depth)); }
+    }
+
+    @keyframes vitra-scenery-depth-far {
+      from { translate: 0 0; }
+      to { translate: 0 calc(17cqh * var(--vitra-scenery-depth)); }
+    }
+
+    @keyframes vitra-scenery-depth-mid {
+      from { translate: 0 0; }
+      to { translate: 0 calc(9cqh * var(--vitra-scenery-depth)); }
+    }
+
+    @keyframes vitra-scenery-depth-near {
+      from { translate: 0 0; }
+      to { translate: 0 calc(3cqh * var(--vitra-scenery-depth)); }
+    }
+    :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"], [data-theme="emerald"]) .vitra-scenery-inline > .vitra-scenery-stars,
+    :where(:root:not([data-theme])) .vitra-scenery-inline > .vitra-scenery-stars {
+      animation:
+        vitra-scenery-twinkle 8s steps(4) infinite,
+        vitra-scenery-depth-sky linear both;
+      animation-timeline: auto, --vitra-scenery;
+      animation-range: normal, exit;
+      will-change: opacity, translate;
+    }
+    @media (prefers-color-scheme: dark) {
+    :where([data-theme="auto"]) .vitra-scenery-inline > .vitra-scenery-stars {
+        animation:
+          vitra-scenery-twinkle 8s steps(4) infinite,
+        vitra-scenery-depth-sky linear both;
+        animation-timeline: auto, --vitra-scenery;
+        animation-range: normal, exit;
+        will-change: opacity, translate;
+      }
+  }
+
+    .vitra-scenery-inline > .vitra-scenery-clouds {
+      animation:
+        vitra-scenery-drift-clouds calc(400s / var(--vitra-scenery-speed)) linear infinite,
+        vitra-scenery-depth-sky linear both;
+      animation-timeline: auto, --vitra-scenery;
+      animation-range: normal, exit;
+      will-change: transform, translate;
+    }
+
+    .vitra-scenery-inline > .vitra-scenery-halo {
+      animation: vitra-scenery-depth-sky linear both;
+      animation-timeline: --vitra-scenery;
+      animation-range: exit;
+    }
+
+    .vitra-scenery-inline > .vitra-scenery-ridge-far {
+      animation:
+        vitra-scenery-drift-far calc(480s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) linear infinite,
+        vitra-scenery-depth-far linear both;
+      animation-timeline: auto, --vitra-scenery;
+      animation-range: normal, exit;
+    }
+
+    .vitra-scenery-inline > .vitra-scenery-ridge-mid {
+      animation:
+        vitra-scenery-drift-mid calc(160s * var(--vitra-scenery-span) / var(--vitra-scenery-speed)) linear infinite,
+        vitra-scenery-depth-mid linear both;
+      animation-timeline: auto, --vitra-scenery;
+      animation-range: normal, exit;
+    }
+
+    .vitra-scenery-inline > .vitra-scenery-ridge-near {
+      animation: vitra-scenery-depth-near linear both;
+      animation-timeline: --vitra-scenery;
+      animation-range: exit;
+    }
+  }
+
+  /* --- PAUSE WHEN OFFSCREEN ---
+     Vitra.motionGuard toggles this class on .vitra-scenery /
+     .vitra-scenery-inline when the IntersectionObserver reports the
+     backdrop left the viewport. It pauses the root's own entrance and
+     cascades to the child layers, which carry everything else -
+     pseudo-elements included: `*` never matches them and
+     animation-play-state is not inherited, so without the explicit
+     ::before/::after selectors the star and shooting-star layers
+     kept running offscreen. */
+  .vitra-scenery.vitra-motion-paused,
+  .vitra-scenery-inline.vitra-motion-paused,
+  .vitra-scenery.vitra-motion-paused *,
+  .vitra-scenery.vitra-motion-paused *::before,
+  .vitra-scenery.vitra-motion-paused *::after,
+  .vitra-scenery-inline.vitra-motion-paused *,
+  .vitra-scenery-inline.vitra-motion-paused *::before,
+  .vitra-scenery-inline.vitra-motion-paused *::after {
+    animation-play-state: paused;
+  }
+
+  /* --- ACCESSIBILITY: Reduced Motion --- */
+
+  @media (prefers-reduced-motion: reduce) {
+    .vitra-scenery,
+    .vitra-scenery-inline {
+      animation: none;
+    }
+
+    /* Selectors carry the container class so they also outrank the
+       scroll-depth rules above (same layer, higher specificity). */
+    :is(.vitra-scenery, .vitra-scenery-inline) > .vitra-scenery-halo,
+    .vitra-scenery-halo::after,
+    .vitra-scenery-grain::before {
+      animation: none;
+    }
+
+    /* No shimmer: the field holds at full brightness */
+    :is(.vitra-scenery, .vitra-scenery-inline) > .vitra-scenery-stars {
+      animation: none;
+    }
+
+    :is(.vitra-scenery, .vitra-scenery-inline) > :is(.vitra-scenery-ridge-far, .vitra-scenery-ridge-mid, .vitra-scenery-ridge-near, .vitra-scenery-clouds) {
+      animation: none;
+      transform: none;
+    }
+
+    .vitra-scenery-sky::after {
+      animation: none;
+      opacity: 0;
+    }
+  }
+}
+
+
