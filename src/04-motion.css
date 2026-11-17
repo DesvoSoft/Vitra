@@ -400,8 +400,6 @@
   }
 
   .vitra-gradient-text {
-    --vitra-gradient-text-l: 55%;
-
     background: linear-gradient(
       135deg,
       hsl(var(--vitra-color-accent-h) 85% var(--vitra-gradient-text-l)),

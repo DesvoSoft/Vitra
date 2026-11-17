@@ -10,6 +10,9 @@
 /* Tokens layer - immutable design tokens */
 @layer tokens {
   :root {
+    /* Lightness of the animated gradient text; light themes darken it */
+    --vitra-gradient-text-l: 55%;
+
     /* ============================================
        CORE TOKENS - Vitra CSS Framework
        All tokens use --vitra- prefix

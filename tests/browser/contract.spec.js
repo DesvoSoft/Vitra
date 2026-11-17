@@ -153,6 +153,88 @@ test.describe('contrast (border): checkbox and radio', () => {
   });
 });
 
+// The checked state is painted too: the inverse mark must stand out from the
+// accent fill, and the fill from the page.
+test.describe('checkbox and radio: checked, focus, disabled, forced colors', () => {
+  const CHECKED = '[data-component="checkbox"] .vitra-checkbox input:checked, [data-component="radio"] .vitra-radio input:checked';
+
+  test('[contract] checked mark reaches 3:1 on the fill and the fill on the page in every scheme', async ({ page }) => {
+    const failures = [];
+    let checked = 0;
+    for (const s of SCHEMES) {
+      await openSink(page, s);
+      const r = await page.evaluate((sel) => {
+        const ctx = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
+        const px = (paint) => {
+          ctx.clearRect(0, 0, 1, 1);
+          for (const c of paint) { ctx.fillStyle = c; ctx.fillRect(0, 0, 1, 1); }
+          return [...ctx.getImageData(0, 0, 1, 1).data];
+        };
+        const lum = ([r, g, b]) => {
+          const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+          return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+        };
+        const ratio = (a, b) => { const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x); return (hi + 0.05) / (lo + 0.05); };
+        const out = [];
+        let n = 0;
+        for (const el of document.querySelectorAll(sel)) {
+          if (!el.checkVisibility() || el.disabled) continue;
+          n++;
+          const chain = [];
+          for (let a = el.parentElement; a; a = a.parentElement) chain.unshift(getComputedStyle(a).backgroundColor);
+          const cs = getComputedStyle(el);
+          const mark = getComputedStyle(el, '::before');
+          const page = px(chain);
+          const fill = px([...chain, cs.backgroundColor]);
+          const markPx = px([...chain, cs.backgroundColor, mark.backgroundColor]);
+          const m = ratio(markPx, fill);
+          const f = ratio(fill, page);
+          if (mark.content === 'none' || !(m >= 3)) out.push(el.type + ' mark on fill ' + m.toFixed(2));
+          if (!(f >= 3)) out.push(el.type + ' fill on page ' + f.toFixed(2));
+        }
+        return { n, out };
+      }, CHECKED);
+      checked += r.n;
+      failures.push(...r.out.map((f) => schemeLabel(s) + ': ' + f));
+    }
+    expect(checked, 'something was measured').toBeGreaterThan(0);
+    expect(failures).toEqual([]);
+  });
+
+  test('[contract] focus ring is visible and disabled controls look disabled', async ({ page }) => {
+    await openSink(page);
+    for (const [root, input] of [['checkbox', '.vitra-checkbox input'], ['radio', '.vitra-radio input']]) {
+      const sel = '[data-component="' + root + '"] ' + input;
+      // A keyboard interaction first, so programmatic focus counts as :focus-visible.
+      await page.keyboard.press('Shift');
+      await page.locator(sel + ':not(:disabled)').first().focus();
+      const focus = await page.locator(sel + ':not(:disabled)').first().evaluate((el) => {
+        const cs = getComputedStyle(el);
+        return { match: el.matches(':focus-visible'), style: cs.outlineStyle, width: parseFloat(cs.outlineWidth) };
+      });
+      expect(focus, root + ' focus').toEqual({ match: true, style: 'solid', width: 2 });
+      const opacity = await page.locator(sel + ':disabled').first().evaluate((el) => parseFloat(getComputedStyle(el).opacity));
+      expect(opacity, root + ' disabled opacity').toBeLessThan(1);
+    }
+  });
+
+  test('[contract] forced colors: the painted control is handed back to the system and checked differs from unchecked', async ({ page }) => {
+    await page.emulateMedia({ forcedColors: 'active' });
+    await openSink(page);
+    const matches = await page.evaluate(() => matchMedia('(forced-colors: active)').matches);
+    test.skip(!matches, 'this browser cannot emulate forced-colors');
+    for (const [root, input] of [['checkbox', '.vitra-checkbox input'], ['radio', '.vitra-radio input']]) {
+      const base = '[data-component="' + root + '"] ' + input;
+      const on = page.locator(base + ':checked');
+      const off = page.locator(base + ':not(:checked):not(:disabled)').first();
+      expect(await on.evaluate((el) => getComputedStyle(el).appearance), root + ' appearance').toBe('auto');
+      expect(await on.evaluate((el) => getComputedStyle(el, '::before').content), root + ' mark').toBe('none');
+      const [a, b] = [await on.screenshot(), await off.screenshot()];
+      expect(a.equals(b), root + ' checked looks like unchecked').toBe(false);
+    }
+  });
+});
+
 // ---------------------------------------------------------------- touch ---
 
 const TOUCH_COMPONENTS = [

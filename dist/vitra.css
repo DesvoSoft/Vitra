@@ -11,6 +11,9 @@
 /* Tokens layer - immutable design tokens */
 @layer tokens {
   :root {
+    /* Lightness of the animated gradient text; light themes darken it */
+    --vitra-gradient-text-l: 55%;
+
     /* ============================================
        CORE TOKENS - Vitra CSS Framework
        All tokens use --vitra- prefix
@@ -1374,8 +1377,6 @@
   }
 
   .vitra-gradient-text {
-    --vitra-gradient-text-l: 55%;
-
     background: linear-gradient(
       135deg,
       hsl(var(--vitra-color-accent-h) 85% var(--vitra-gradient-text-l)),
@@ -3739,6 +3740,23 @@
     inset: 3px 2px;
     background: var(--vitra-color-text-inverse);
     clip-path: polygon(14% 52%, 0 66%, 38% 100%, 100% 24%, 86% 10%, 38% 72%);
+  }
+
+  /* Forced colors replace backgrounds and borders, which would make the
+     painted checked state vanish: hand the control back to the system. */
+  @media (forced-colors: active) {
+    .vitra-radio input[type="radio"],
+    .vitra-checkbox input[type="checkbox"] {
+      appearance: auto;
+      background: revert;
+      border: revert;
+      border-radius: revert;
+    }
+
+    .vitra-radio input[type="radio"]:checked::before,
+    .vitra-checkbox input[type="checkbox"]:checked::before {
+      content: none;
+    }
   }
 
   .vitra-radio:hover,
