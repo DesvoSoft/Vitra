@@ -7,30 +7,48 @@ import { openSink, sampleStyles } from './helpers.js';
 
 const PROPS = ['color', 'background-color', 'background-image', 'border', 'box-shadow', 'transform', 'opacity', 'display'];
 
+// sampleStyles() covers ~45 targets; this adds up to 4 Vitra elements per
+// section (after sampleStyles has settled the animations) to reach 60+ in all.
+const sampleMore = (page) => page.evaluate((props) => {
+  const out = {};
+  for (const section of document.querySelectorAll('[data-component]')) {
+    [...section.querySelectorAll('[class*="vitra-"]')].slice(0, 4).forEach((el, i) => {
+      const cs = getComputedStyle(el);
+      out[section.dataset.component + '#' + i + ':' + el.className] = Object.fromEntries(props.map((p) => [p, cs.getPropertyValue(p)]));
+    });
+  }
+  return out;
+}, PROPS);
+const snapshot = async (page) => {
+  const base = await sampleStyles(page, PROPS);
+  const more = await sampleMore(page);
+  return { base, more, count: Object.keys(base).length + Object.keys(more).length };
+};
+
 const openPieces = (page, theme, order) => openSink(page, { theme, css: 'pieces', order });
 
 for (const theme of ['dark', 'light']) {
   test.describe(`pieces vs bundle (${theme})`, () => {
     test(`[pieces] core+scenery+effects compute like the bundle in ${theme}`, async ({ page }) => {
       await openSink(page, { theme });
-      const reference = await sampleStyles(page, PROPS);
-      expect(Object.keys(reference).length).toBeGreaterThanOrEqual(40);
+      const reference = await snapshot(page);
+      expect(reference.count).toBeGreaterThanOrEqual(60);
       await openPieces(page, theme);
-      expect(await sampleStyles(page, PROPS)).toEqual(reference);
+      expect(await snapshot(page)).toEqual(reference);
     });
 
     test(`[pieces] loading scenery, effects, core in that order computes like the bundle in ${theme}`, async ({ page }) => {
       await openSink(page, { theme });
-      const reference = await sampleStyles(page, PROPS);
+      const reference = await snapshot(page);
       await openPieces(page, theme, 'scenery,effects,core');
-      expect(await sampleStyles(page, PROPS)).toEqual(reference);
+      expect(await snapshot(page)).toEqual(reference);
     });
 
     test(`[pieces] loading effects, scenery, core in that order computes like the bundle in ${theme}`, async ({ page }) => {
       await openSink(page, { theme });
-      const reference = await sampleStyles(page, PROPS);
+      const reference = await snapshot(page);
       await openPieces(page, theme, 'effects,scenery,core');
-      expect(await sampleStyles(page, PROPS)).toEqual(reference);
+      expect(await snapshot(page)).toEqual(reference);
     });
   });
 }

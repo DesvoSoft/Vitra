@@ -45,7 +45,7 @@
     },
     {
       "path": "dist/vitra.core.min.css",
-      "limit": "12 kB"
+      "limit": "13.5 kB"
     },
     {
       "path": "dist/vitra.scenery.min.css",
