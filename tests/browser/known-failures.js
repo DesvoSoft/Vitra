@@ -10,7 +10,6 @@ export default new Set([
   'C12-radio', // mobile: radio row is 26px high
   'C12-tabs', // mobile: .vitra-tabs is nowrap with visible overflow instead of scrolling
   'J6', // dropdown: no keyboard navigation (first item focus, arrows, Home, End)
-  'J8', // toast: no role/aria-live, no warning class, no close button
   'J13', // tooltip: no Esc, replaces aria-describedby, long tooltip overflows 360px
 
   // Component contract failures with no audit finding of their own

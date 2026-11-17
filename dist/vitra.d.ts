@@ -92,8 +92,10 @@ declare namespace Vitra {
   }
 
   interface ToastOptions {
-    type?: 'success' | 'error' | 'info' | 'default';
+    type?: 'success' | 'error' | 'info' | 'warning' | 'default';
     duration?: number;
+    /** Show a close button. Always shown when duration is 0. */
+    closable?: boolean;
   }
 
   interface ToastModule {

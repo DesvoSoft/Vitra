@@ -954,6 +954,8 @@ var require_vitra = __commonJS({
           if (!_container) {
             _container = document.createElement("div");
             _container.className = "vitra-toast-container";
+            _container.setAttribute("role", "status");
+            _container.setAttribute("aria-live", "polite");
             document.body.appendChild(_container);
           }
           return _container;
@@ -967,26 +969,38 @@ var require_vitra = __commonJS({
           return id;
         };
         const show = (message, options = {}) => {
-          const { type = "default", duration = 3e3 } = options;
+          const { type = "default", duration = 3e3, closable = false } = options;
           const container = _ensureContainer();
           const el = document.createElement("div");
           el.className = `vitra-toast`;
           if (type !== "default") {
             el.classList.add(`vitra-toast-${type}`);
           }
-          el.textContent = message;
+          if (type === "error") el.setAttribute("role", "alert");
+          const text = document.createElement("span");
+          text.className = "vitra-toast-text";
+          text.textContent = message;
+          el.appendChild(text);
           container.appendChild(el);
-          _schedule(() => el.classList.add("show"), 10);
-          if (duration > 0) {
+          const dismiss = () => {
+            el.classList.remove("show");
             _schedule(() => {
-              el.classList.remove("show");
-              _schedule(() => {
-                if (el.parentNode === container) {
-                  container.removeChild(el);
-                }
-              }, 300);
-            }, duration);
+              if (el.parentNode === container) {
+                container.removeChild(el);
+              }
+            }, 300);
+          };
+          if (closable || duration === 0) {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "vitra-toast-close";
+            btn.setAttribute("aria-label", "Close");
+            btn.textContent = "\xD7";
+            btn.addEventListener("click", dismiss);
+            el.appendChild(btn);
           }
+          _schedule(() => el.classList.add("show"), 10);
+          if (duration > 0) _schedule(dismiss, duration);
           return el;
         };
         const destroy = () => {

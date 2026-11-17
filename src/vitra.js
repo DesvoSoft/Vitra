@@ -1276,6 +1276,8 @@ const Vitra = (() => {
       if (!_container) {
         _container = document.createElement('div');
         _container.className = 'vitra-toast-container';
+        _container.setAttribute('role', 'status');
+        _container.setAttribute('aria-live', 'polite');
         document.body.appendChild(_container);
       }
       return _container;
@@ -1293,10 +1295,10 @@ const Vitra = (() => {
     /**
      * Show a toast notification
      * @param {string} message - The message to display
-     * @param {Object} options - Options (type: 'success'|'error'|'info'|'default', duration: number)
+     * @param {Object} options - Options (type: 'success'|'error'|'info'|'warning'|'default', duration: number, closable: boolean)
      */
     const show = (message, options = {}) => {
-      const { type = 'default', duration = 3000 } = options;
+      const { type = 'default', duration = 3000, closable = false } = options;
       const container = _ensureContainer();
 
       const el = document.createElement('div');
@@ -1304,24 +1306,39 @@ const Vitra = (() => {
       if (type !== 'default') {
         el.classList.add(`vitra-toast-${type}`);
       }
+      // role=alert is its own assertive live region; do not add aria-live
+      if (type === 'error') el.setAttribute('role', 'alert');
 
-      el.textContent = message;
+      const text = document.createElement('span');
+      text.className = 'vitra-toast-text';
+      text.textContent = message;
+      el.appendChild(text);
       container.appendChild(el);
+
+      const dismiss = () => {
+        el.classList.remove('show');
+        _schedule(() => {
+          if (el.parentNode === container) {
+            container.removeChild(el);
+          }
+        }, 300); // Wait for transition
+      };
+
+      // A toast that never expires must be dismissable
+      if (closable || duration === 0) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'vitra-toast-close';
+        btn.setAttribute('aria-label', 'Close');
+        btn.textContent = '×';
+        btn.addEventListener('click', dismiss);
+        el.appendChild(btn);
+      }
 
       // Trigger animation
       _schedule(() => el.classList.add('show'), 10);
 
-      // Remove after duration
-      if (duration > 0) {
-        _schedule(() => {
-          el.classList.remove('show');
-          _schedule(() => {
-            if (el.parentNode === container) {
-              container.removeChild(el);
-            }
-          }, 300); // Wait for transition
-        }, duration);
-      }
+      if (duration > 0) _schedule(dismiss, duration);
 
       return el;
     };

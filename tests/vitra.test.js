@@ -686,6 +686,52 @@ describe('Toast Module', () => {
     expect(el.innerHTML).not.toContain('<img');
     expect(el.textContent).toBe('<img src=x onerror=alert(1)>');
   });
+
+  describe('accessibility', () => {
+    afterEach(() => Vitra.toast.destroy());
+
+    it('container is a polite status live region', () => {
+      Vitra.toast.show('Hi');
+      const c = document.querySelector('.vitra-toast-container');
+      expect(c.getAttribute('role')).toBe('status');
+      expect(c.getAttribute('aria-live')).toBe('polite');
+    });
+
+    it('error toast is role=alert without its own aria-live; others have no role', () => {
+      const err = Vitra.toast.show('Bad', { type: 'error' });
+      expect(err.getAttribute('role')).toBe('alert');
+      expect(err.hasAttribute('aria-live')).toBe(false);
+      expect(Vitra.toast.show('Ok', { type: 'success' }).hasAttribute('role')).toBe(false);
+    });
+
+    it('warning type gets vitra-toast-warning', () => {
+      expect(Vitra.toast.show('W', { type: 'warning' }).classList.contains('vitra-toast-warning')).toBe(true);
+    });
+
+    it('has no close button by default', () => {
+      expect(Vitra.toast.show('x').querySelector('.vitra-toast-close')).toBeNull();
+    });
+
+    it('closable: true adds a labelled close button that removes the toast', () => {
+      vi.useFakeTimers();
+      try {
+        const el = Vitra.toast.show('x', { closable: true });
+        const btn = el.querySelector('button.vitra-toast-close');
+        expect(btn.getAttribute('aria-label')).toBe('Close');
+        expect(btn.getAttribute('type')).toBe('button');
+        btn.click();
+        vi.advanceTimersByTime(400);
+        expect(el.isConnected).toBe(false);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it('duration: 0 forces a close button', () => {
+      const el = Vitra.toast.show('x', { duration: 0 });
+      expect(el.querySelector('.vitra-toast-close')).not.toBeNull();
+    });
+  });
 });
 
 describe('Dropdown Module', () => {
