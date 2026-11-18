@@ -1496,7 +1496,7 @@ describe('CSS Premium Tokens', () => {
 
 describe('vitra.d.ts drift guard', () => {
   const dtsSrc = require('fs').readFileSync(
-    require('path').resolve(__dirname, '../dist/vitra.d.ts'),
+    require('path').resolve(__dirname, '../src/vitra.d.ts'),
     'utf8'
   );
 
@@ -1532,6 +1532,19 @@ describe('vitra.d.ts drift guard', () => {
     const runtimeKeys = Object.keys(Vitra[moduleName]).sort();
     const declaredKeys = interfaceMembers(interfaceName).sort();
     expect(runtimeKeys).toEqual(declaredKeys);
+  });
+
+  it('the module has named exports for every module, and the default object carries the same ones', async () => {
+    const ns = await import('../src/vitra.js');
+    const named = Object.keys(ns).filter((k) => k !== 'default').sort();
+    expect(named).toEqual(Object.keys(ns.default).sort());
+    named.forEach((k) => expect(ns[k]).toBe(ns.default[k]));
+  });
+
+  it('every named export has a matching `export const|function` declaration', async () => {
+    const ns = await import('../src/vitra.js');
+    const declared = [...dtsSrc.matchAll(/^export (?:const|function) ([A-Za-z]+)/gm)].map((m) => m[1]).sort();
+    expect(declared).toEqual(Object.keys(ns).filter((k) => k !== 'default').sort());
   });
 
   it('VitraInstance declares every top-level Vitra module', () => {

@@ -2,6 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { createRequire } from 'node:module';
 import fs from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
+import { JSDOM } from 'jsdom';
 
 const require = createRequire(import.meta.url);
 const { mirrorAuto } = require('../scripts/lib/auto-mirror.cjs');
@@ -259,5 +262,57 @@ describe('CSS pieces (core, scenery, effects) next to the full bundle', () => {
     for (const n of ['vitra', ...PIECES.map((p) => `vitra.${p}`)]) {
       expect(read(`${n}.min.css`).trimEnd().endsWith(`/*# sourceMappingURL=${n}.min.css.map */`), n).toBe(true);
     }
+  });
+});
+
+describe('scripts/build-css.js', () => {
+  it('fails loudly when a listed source file is missing', () => {
+    const root = fs.mkdtempSync(path.join(__dirname, '..', 'node_modules', '.vitra-build-'));
+    try {
+      fs.cpSync(path.join(__dirname, '..', 'scripts'), path.join(root, 'scripts'), { recursive: true });
+      fs.mkdirSync(path.join(root, 'src'));
+      const r = spawnSync(process.execPath, [path.join(root, 'scripts', 'build-css.js')], { encoding: 'utf8' });
+      expect(r.status).not.toBe(0);
+      expect(r.stderr).toMatch(/01-tokens\.css not found/);
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+});
+
+describe('JS builds (run `npm run build` first)', () => {
+  const dist = (f) => path.join(__dirname, '..', 'dist', f);
+  const API = ['theme', 'particles', 'reveal', 'ripple', 'modal', 'drawer', 'tooltip', 'toast', 'dropdown', 'spotlight', 'scenery', 'motionGuard', 'destroyAll'];
+
+  it('ESM build has named exports and a default with the same members', async () => {
+    const mod = await import(pathToFileURL(dist('vitra.esm.js')).href);
+    for (const k of API) {
+      expect(mod[k], k).toBeDefined();
+      expect(mod.default[k], k).toBe(mod[k]);
+    }
+    expect(mod.default.theme).toBe(mod.theme);
+  });
+
+  it('CJS build exposes the API directly and as .default', () => {
+    const cjs = require('../dist/vitra.cjs');
+    expect(typeof cjs.theme.get).toBe('function');
+    expect(cjs.default).toBeDefined();
+    expect(cjs.default.theme).toBe(cjs.theme);
+    for (const k of API) expect(cjs[k], k).toBeDefined();
+  });
+
+  it.each(['vitra.min.js', 'vitra.js'])('%s as a script leaves window.Vitra as the API object', (file) => {
+    const dom = new JSDOM('<!doctype html><html><body></body></html>', { runScripts: 'outside-only' });
+    dom.window.eval(fs.readFileSync(dist(file), 'utf8'));
+    const V = dom.window.Vitra;
+    expect(typeof V.theme.get).toBe('function');
+    expect(V.default).toBeUndefined();
+    expect(typeof V.destroyAll).toBe('function');
+    V.destroyAll();
+    dom.window.close();
+  });
+
+  it('ships the types next to the build, copied from src', () => {
+    expect(fs.readFileSync(dist('vitra.d.ts'), 'utf8')).toBe(fs.readFileSync(path.join(__dirname, '..', 'src', 'vitra.d.ts'), 'utf8'));
   });
 });

@@ -2,15 +2,16 @@
   "name": "vitra-css",
   "version": "1.13.5",
   "description": "A lightweight, zero-dependency CSS framework focused on glassmorphism, directional particles, ambient scenery, and smooth motion",
-  "main": "dist/vitra.js",
+  "main": "dist/vitra.cjs",
   "module": "dist/vitra.esm.js",
   "style": "dist/vitra.min.css",
   "types": "dist/vitra.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/vitra.d.ts",
       "style": "./dist/vitra.min.css",
       "import": "./dist/vitra.esm.js",
-      "require": "./dist/vitra.js"
+      "require": "./dist/vitra.cjs"
     },
     "./core.css": "./dist/vitra.core.min.css",
     "./scenery.css": "./dist/vitra.scenery.min.css",
@@ -23,11 +24,17 @@
     "LICENSE",
     "README.md"
   ],
+  "sideEffects": [
+    "./dist/*.js",
+    "./dist/*.cjs",
+    "./src/vitra.js",
+    "*.css"
+  ],
   "scripts": {
     "build:css": "node scripts/build-css.js",
-    "build:js": "esbuild src/vitra.js --bundle --outfile=dist/vitra.js --format=iife --global-name=Vitra --sourcemap && esbuild src/vitra.js --bundle --minify --outfile=dist/vitra.min.js --format=iife --global-name=Vitra --sourcemap",
+    "build:js": "esbuild src/vitra.iife.js --bundle --outfile=dist/vitra.js --format=iife --sourcemap && esbuild src/vitra.iife.js --bundle --minify --outfile=dist/vitra.min.js --format=iife --sourcemap",
     "build:esm": "esbuild src/vitra.js --bundle --outfile=dist/vitra.esm.js --format=esm --sourcemap",
-    "build": "npm run build:css && npm run build:js && npm run build:esm",
+    "build": "npm run build:css && npm run build:js && npm run build:esm && npm run build:cjs && npm run build:types",
     "postbuild": "node generate-sri.js > dist/SRI.txt",
     "prepublishOnly": "npm test && npm run build",
     "dev": "npx serve .",
@@ -36,7 +43,10 @@
     "lint": "stylelint \"src/**/*.css\" --fix",
     "size": "size-limit",
     "test:unit": "vitest run",
-    "test:browser": "playwright test"
+    "test:browser": "playwright test",
+    "build:cjs": "esbuild src/vitra.js --bundle --outfile=dist/vitra.cjs --format=cjs --sourcemap",
+    "build:types": "node -e \"require('fs').copyFileSync('src/vitra.d.ts','dist/vitra.d.ts')\"",
+    "test:types": "npx -y -p typescript@5 tsc --noEmit -p tests/types/tsconfig.json"
   },
   "size-limit": [
     {
@@ -61,6 +71,10 @@
     },
     {
       "path": "dist/vitra.esm.js",
+      "limit": "10.6 kB"
+    },
+    {
+      "path": "dist/vitra.cjs",
       "limit": "10.6 kB"
     }
   ],

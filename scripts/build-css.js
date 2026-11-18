@@ -55,8 +55,8 @@ function concat(files) {
   for (const file of files) {
     const filePath = path.join(srcDir, file);
     if (!fs.existsSync(filePath)) {
-      console.warn(`  Warning: ${file} not found, skipping...`);
-      continue;
+      console.error(`Error: source file src/${file} not found (listed in scripts/build-css.js).`);
+      process.exit(1);
     }
     css += `/* === ${file} === */\n${fs.readFileSync(filePath, 'utf8')}\n\n`;
   }
