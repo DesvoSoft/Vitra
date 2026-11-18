@@ -36,7 +36,17 @@ __export(vitra_exports, {
   tooltip: () => tooltip
 });
 module.exports = __toCommonJS(vitra_exports);
-var _resolve = (t) => typeof t === "string" ? document.querySelector(t) : t && t.nodeType === 1 ? t : null;
+var _bad = /* @__PURE__ */ new Set();
+var _q = (s, m, all) => {
+  try {
+    return all ? [...document.querySelectorAll(s)] : document.querySelector(s);
+  } catch (e) {
+    if (!_bad.has(s)) console.warn(`[Vitra ${m}] Invalid selector "${s}"`);
+    _bad.add(s);
+    return all ? [] : null;
+  }
+};
+var _resolve = (t, m) => typeof t === "string" ? _q(t, m) : t && t.nodeType === 1 ? t : null;
 var _reducedMotion = () => !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 var _FOCUSABLE = 'a[href],button,input:not([type=hidden]),textarea,select,summary,[tabindex],[contenteditable=""],[contenteditable="true"]';
 var _focusables = (root) => Array.from(root.querySelectorAll(_FOCUSABLE)).filter((el) => {
@@ -322,7 +332,7 @@ var particles = /* @__PURE__ */ (() => {
       console.warn(`[Vitra Particles] Particle limit reached (${limit})`);
       return 0;
     }
-    const targetContainer = container ? _resolve(container) || document.body : document.body;
+    const targetContainer = container ? _resolve(container, "Particles") || document.body : document.body;
     const angle = direction !== null ? _resolveAngle(direction) : null;
     for (let i = 0; i < actualCount; i++) {
       const particle = document.createElement("div");
@@ -438,10 +448,10 @@ var reveal = /* @__PURE__ */ (() => {
       scrollElements.forEach((el) => {
         el.classList.add("vitra-scroll-reveal-observer");
       });
-      elements = [...document.querySelectorAll(selector)];
+      elements = _q(selector, "Reveal", 1);
       elements.push(...scrollElements);
     } else {
-      elements = [...document.querySelectorAll(selector)];
+      elements = _q(selector, "Reveal", 1);
     }
     if (_reducedMotion()) {
       elements.forEach((el) => {
@@ -622,7 +632,7 @@ var modal = /* @__PURE__ */ (() => {
   };
   const open = (target, options = {}) => {
     const { closeOnOverlay = true, closeOnEsc = true } = options;
-    const modalEl = _resolve(typeof target === "string" && !/^[#.]/.test(target) ? "#" + target : target);
+    const modalEl = _resolve(typeof target === "string" && !/^[#.]/.test(target) ? "#" + target : target, "Modal");
     if (!modalEl) {
       console.warn("[Vitra Modal] Modal element not found");
       return false;
@@ -663,8 +673,9 @@ var drawer = /* @__PURE__ */ (() => {
   const _managed = /* @__PURE__ */ new Set();
   let _active = null;
   let _bound = false;
-  const _toggles = (el) => Array.from(document.querySelectorAll("[data-vitra-drawer-toggle]")).filter((t) => _resolve(t.getAttribute("data-vitra-drawer-toggle")) === el);
-  const _overlay = (el) => _resolve(el.getAttribute("data-vitra-drawer-overlay")) || el.parentElement && el.parentElement.querySelector(":scope > .vitra-drawer-overlay");
+  const _r = (t) => _resolve(t, "Drawer");
+  const _toggles = (el) => Array.from(document.querySelectorAll("[data-vitra-drawer-toggle]")).filter((t) => _r(t.getAttribute("data-vitra-drawer-toggle")) === el);
+  const _overlay = (el) => _r(el.getAttribute("data-vitra-drawer-overlay")) || el.parentElement && el.parentElement.querySelector(":scope > .vitra-drawer-overlay");
   const _sync = (el, on) => {
     const ov = _overlay(el);
     if (ov) ov.classList.toggle("open", on);
@@ -695,10 +706,10 @@ var drawer = /* @__PURE__ */ (() => {
   };
   const close = (target) => {
     if (!_active) return;
-    if (target === void 0 || _resolve(target) === _active.el) _close(_active);
+    if (target === void 0 || _r(target) === _active.el) _close(_active);
   };
   const open = (target, opener) => {
-    const el = _resolve(target);
+    const el = _r(target);
     if (!el) {
       console.warn("[Vitra Drawer] Target element not found");
       return false;
@@ -726,7 +737,7 @@ var drawer = /* @__PURE__ */ (() => {
     return true;
   };
   const toggle = (target, opener) => {
-    const el = _resolve(target);
+    const el = _r(target);
     if (el && _active && _active.el === el) {
       close();
       return false;
@@ -756,7 +767,7 @@ var drawer = /* @__PURE__ */ (() => {
   };
   const init = () => {
     document.querySelectorAll("[data-vitra-drawer-toggle]").forEach((t) => {
-      const el = _resolve(t.getAttribute("data-vitra-drawer-toggle"));
+      const el = _r(t.getAttribute("data-vitra-drawer-toggle"));
       if (el) _manage(el);
     });
     if (_bound) return;
@@ -821,7 +832,7 @@ var tooltip = /* @__PURE__ */ (() => {
   };
   const show = (target, text, options = {}) => {
     const { position = "top", delay = 0 } = options;
-    const targetEl = _resolve(target);
+    const targetEl = _resolve(target, "Tooltip");
     if (!targetEl) {
       console.warn("[Vitra Tooltip] Target element not found");
       return false;
@@ -1168,7 +1179,7 @@ var scenery = /* @__PURE__ */ (() => {
   const LAYERS = ["sky", "stars", "clouds", "halo", "ridge-far", "ridge-mid", "ridge-near", "grain"];
   let _mounted = [];
   const mount = (target, options = {}) => {
-    const el = _resolve(target);
+    const el = _resolve(target, "Scenery");
     if (!el) {
       console.warn("[Vitra Scenery] Target element not found");
       return null;
@@ -1261,45 +1272,23 @@ var _parseDataConfig = () => {
       config = {};
     }
   }
-  if (config.theme) {
-    const themeOptions = typeof config.theme === "object" ? config.theme : typeof config.theme === "string" ? { default: config.theme } : {};
-    theme.init(themeOptions);
-  }
-  if (config.particles) {
-    if (config.particles === true) {
-      particles.init();
-    } else if (typeof config.particles === "object") {
-      particles.spawn(config.particles.count || 10, config.particles);
+  const t = config.theme;
+  const p = config.particles;
+  const r = config.reveal;
+  [
+    [t, () => theme.init(typeof t === "object" ? t : typeof t === "string" ? { default: t } : {})],
+    [p, () => p === true ? particles.init() : typeof p === "object" && particles.spawn(p.count || 10, p)],
+    [r, () => reveal.init(typeof r === "object" ? r : {})],
+    // Default-on modules, in this order (scenery before the guard, which
+    // observes the result); each is skipped when its key is false.
+    ...Object.entries({ ripple, toast, tooltip, drawer, dropdown, spotlight, scenery, motionGuard }).map(([k, m]) => [config[k] !== false, m.init])
+  ].forEach(([on, f]) => {
+    if (on) try {
+      f();
+    } catch (e) {
+      console.warn("[Vitra] Init failed:", e);
     }
-  }
-  if (config.reveal) {
-    const revealOptions = typeof config.reveal === "object" ? config.reveal : {};
-    reveal.init(revealOptions);
-  }
-  if (config.ripple !== false) {
-    ripple.init();
-  }
-  if (config.toast !== false) {
-    toast.init();
-  }
-  if (config.tooltip !== false) {
-    tooltip.init();
-  }
-  if (config.drawer !== false) {
-    drawer.init();
-  }
-  if (config.dropdown !== false) {
-    dropdown.init();
-  }
-  if (config.spotlight !== false) {
-    spotlight.init();
-  }
-  if (config.scenery !== false) {
-    scenery.init();
-  }
-  if (config.motionGuard !== false) {
-    motionGuard.init();
-  }
+  });
 };
 (() => {
   try {

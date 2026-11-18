@@ -10,7 +10,19 @@
 
 // Shared private helpers
 
-const _resolve = (t) => (typeof t === 'string' ? document.querySelector(t) : t && t.nodeType === 1 ? t : null);
+// Selector text from markup or callers never throws: a malformed one warns
+// once ([Vitra <m>] Invalid selector "...") and matches nothing.
+const _bad = new Set();
+const _q = (s, m, all) => {
+  try {
+    return all ? [...document.querySelectorAll(s)] : document.querySelector(s);
+  } catch (e) {
+    if (!_bad.has(s)) console.warn(`[Vitra ${m}] Invalid selector "${s}"`);
+    _bad.add(s);
+    return all ? [] : null;
+  }
+};
+const _resolve = (t, m) => (typeof t === 'string' ? _q(t, m) : t && t.nodeType === 1 ? t : null);
 
 const _reducedMotion = () =>
   !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -390,7 +402,7 @@ const particles = (() => {
     }
 
     const targetContainer = container
-      ? _resolve(container) || document.body
+      ? _resolve(container, 'Particles') || document.body
       : document.body;
 
     const angle = direction !== null ? _resolveAngle(direction) : null;
@@ -560,10 +572,10 @@ const reveal = (() => {
       scrollElements.forEach(el => {
         el.classList.add('vitra-scroll-reveal-observer'); // mark for IntersectionObserver
       });
-      elements = [...document.querySelectorAll(selector)];
+      elements = _q(selector, 'Reveal', 1);
       elements.push(...scrollElements);
     } else {
-      elements = [...document.querySelectorAll(selector)];
+      elements = _q(selector, 'Reveal', 1);
     }
 
     // Respect reduced motion - reveal immediately without animation
@@ -807,7 +819,7 @@ const modal = (() => {
   const open = (target, options = {}) => {
     const { closeOnOverlay = true, closeOnEsc = true } = options;
 
-    const modalEl = _resolve(typeof target === 'string' && !/^[#.]/.test(target) ? '#' + target : target);
+    const modalEl = _resolve(typeof target === 'string' && !/^[#.]/.test(target) ? '#' + target : target, 'Modal');
     if (!modalEl) {
       console.warn('[Vitra Modal] Modal element not found');
       return false;
@@ -861,13 +873,14 @@ const drawer = (() => {
   const _managed = new Set();
   let _active = null; // { el, prev, setRole, setModal, untrap, unlock }
   let _bound = false;
+  const _r = (t) => _resolve(t, 'Drawer');
 
   const _toggles = (el) =>
     Array.from(document.querySelectorAll('[data-vitra-drawer-toggle]'))
-      .filter((t) => _resolve(t.getAttribute('data-vitra-drawer-toggle')) === el);
+      .filter((t) => _r(t.getAttribute('data-vitra-drawer-toggle')) === el);
 
   const _overlay = (el) =>
-    _resolve(el.getAttribute('data-vitra-drawer-overlay')) ||
+    _r(el.getAttribute('data-vitra-drawer-overlay')) ||
     (el.parentElement && el.parentElement.querySelector(':scope > .vitra-drawer-overlay'));
 
   const _sync = (el, on) => {
@@ -903,11 +916,11 @@ const drawer = (() => {
 
   const close = (target) => {
     if (!_active) return;
-    if (target === undefined || _resolve(target) === _active.el) _close(_active);
+    if (target === undefined || _r(target) === _active.el) _close(_active);
   };
 
   const open = (target, opener) => {
-    const el = _resolve(target);
+    const el = _r(target);
     if (!el) {
       console.warn('[Vitra Drawer] Target element not found');
       return false;
@@ -936,7 +949,7 @@ const drawer = (() => {
   };
 
   const toggle = (target, opener) => {
-    const el = _resolve(target);
+    const el = _r(target);
     if (el && _active && _active.el === el) {
       close();
       return false;
@@ -971,7 +984,7 @@ const drawer = (() => {
 
   const init = () => {
     document.querySelectorAll('[data-vitra-drawer-toggle]').forEach((t) => {
-      const el = _resolve(t.getAttribute('data-vitra-drawer-toggle'));
+      const el = _r(t.getAttribute('data-vitra-drawer-toggle'));
       if (el) _manage(el);
     });
     if (_bound) return;
@@ -1052,7 +1065,7 @@ const tooltip = (() => {
    */
   const show = (target, text, options = {}) => {
     const { position = 'top', delay = 0 } = options;
-    const targetEl = _resolve(target);
+    const targetEl = _resolve(target, 'Tooltip');
 
     if (!targetEl) {
       console.warn('[Vitra Tooltip] Target element not found');
@@ -1513,7 +1526,7 @@ const scenery = (() => {
   let _mounted = [];
 
   const mount = (target, options = {}) => {
-    const el = _resolve(target);
+    const el = _resolve(target, 'Scenery');
     if (!el) {
       console.warn('[Vitra Scenery] Target element not found');
       return null;
@@ -1649,66 +1662,21 @@ const _parseDataConfig = () => {
     }
   }
 
-  // 1. Theme Configuration
-  if (config.theme) {
-    const themeOptions = typeof config.theme === 'object'
-      ? config.theme
-      : (typeof config.theme === 'string' ? { default: config.theme } : {});
-    theme.init(themeOptions);
-  }
-
-  // 2. Particles Configuration
-  if (config.particles) {
-    if (config.particles === true) {
-      particles.init();
-    } else if (typeof config.particles === 'object') {
-      particles.spawn(config.particles.count || 10, config.particles);
-    }
-  }
-
-  // 3. Reveal Configuration
-  if (config.reveal) {
-    const revealOptions = typeof config.reveal === 'object' ? config.reveal : {};
-    reveal.init(revealOptions);
-  }
-
-  // 4. Ripple Configuration
-  if (config.ripple !== false) {
-    ripple.init();
-  }
-
-  if (config.toast !== false) {
-    toast.init();
-  }
-
-  // 5. Tooltip Configuration
-  if (config.tooltip !== false) {
-    tooltip.init();
-  }
-
-  if (config.drawer !== false) {
-    drawer.init();
-  }
-
-  // 6. Dropdown Configuration
-  if (config.dropdown !== false) {
-    dropdown.init();
-  }
-
-  // 7. Spotlight Configuration
-  if (config.spotlight !== false) {
-    spotlight.init();
-  }
-
-  // 8. Scenery Configuration (before the guard, which observes the result)
-  if (config.scenery !== false) {
-    scenery.init();
-  }
-
-  // 9. Motion Guard Configuration
-  if (config.motionGuard !== false) {
-    motionGuard.init();
-  }
+  const t = config.theme;
+  const p = config.particles;
+  const r = config.reveal;
+  [
+    [t, () => theme.init(typeof t === 'object' ? t : typeof t === 'string' ? { default: t } : {})],
+    [p, () => (p === true ? particles.init() : typeof p === 'object' && particles.spawn(p.count || 10, p))],
+    [r, () => reveal.init(typeof r === 'object' ? r : {})],
+    // Default-on modules, in this order (scenery before the guard, which
+    // observes the result); each is skipped when its key is false.
+    ...Object.entries({ ripple, toast, tooltip, drawer, dropdown, spotlight, scenery, motionGuard })
+      .map(([k, m]) => [config[k] !== false, m.init])
+  ].forEach(([on, f]) => {
+    // One module failing to start must not keep the next ones from starting
+    if (on) try { f(); } catch (e) { console.warn('[Vitra] Init failed:', e); }
+  });
 };
 
 // Flash prevention: restore saved theme before paint

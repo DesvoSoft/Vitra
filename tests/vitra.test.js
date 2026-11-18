@@ -215,6 +215,29 @@ describe('Modal Module', () => {
     expect(result).toBe(false);
   });
 
+  it('a malformed selector returns false and warns instead of throwing', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    expect(Vitra.modal.open('menu[1')).toBe(false);
+    expect(Vitra.modal.open('#1nav')).toBe(false);
+    expect(warn).toHaveBeenCalledWith('[Vitra Modal] Invalid selector "#menu[1"');
+    expect(warn).toHaveBeenCalledWith('[Vitra Modal] Invalid selector "#1nav"');
+    warn.mockRestore();
+  });
+
+  it('other selector entry points warn and no-op on a malformed string', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    expect(Vitra.tooltip.show('a[1', 'x')).toBe(false);
+    expect(Vitra.scenery.mount('b[1')).toBeNull();
+    expect(Vitra.drawer.open('c[1')).toBe(false);
+    expect(Vitra.drawer.toggle('c[1')).toBe(false);
+    expect(() => Vitra.drawer.close('c[1')).not.toThrow();
+    expect(() => Vitra.reveal.init({ selector: 'd[1' })).not.toThrow();
+    Vitra.reveal.destroy();
+    ['a[1', 'b[1', 'c[1', 'd[1'].forEach((s) =>
+      expect(warn.mock.calls.some((c) => String(c[0]).includes(`Invalid selector "${s}"`)), s).toBe(true));
+    warn.mockRestore();
+  });
+
   it('should open and close a modal', () => {
     const modal = document.createElement('div');
     modal.id = 'test-modal';
