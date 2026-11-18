@@ -1,10 +1,14 @@
 const fs = require('fs');
 const crypto = require('crypto');
 
+// Hash the LF form of the file: that is what git stores (dist/** is eol=lf,
+// see .gitattributes) and what the CDN serves, whatever the checkout's line
+// endings are. The build emits LF already; this keeps a stray CRLF copy from
+// producing a hash nobody will ever be served.
 function getSRI(filePath) {
-  const fileBuffer = fs.readFileSync(filePath);
+  const content = Buffer.from(fs.readFileSync(filePath, 'utf8').replace(/\r\n/g, '\n'));
   const hashSum = crypto.createHash('sha256');
-  hashSum.update(fileBuffer);
+  hashSum.update(content);
   return 'sha256-' + hashSum.digest('base64');
 }
 

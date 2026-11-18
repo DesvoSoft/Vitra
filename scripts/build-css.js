@@ -58,7 +58,9 @@ function concat(files) {
       console.error(`Error: source file src/${file} not found (listed in scripts/build-css.js).`);
       process.exit(1);
     }
-    css += `/* === ${file} === */\n${fs.readFileSync(filePath, 'utf8')}\n\n`;
+    // A Windows checkout has CRLF sources: emit LF only, so every platform
+    // builds the same bytes, the bytes git stores and the CDN serves.
+    css += `/* === ${file} === */\n${fs.readFileSync(filePath, 'utf8').replace(/\r\n/g, '\n')}\n\n`;
   }
   return css;
 }

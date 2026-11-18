@@ -3,6 +3,7 @@ import { createRequire } from 'node:module';
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import crypto from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { JSDOM } from 'jsdom';
 
@@ -328,5 +329,25 @@ describe('JS builds (run `npm run build` first)', () => {
 
   it('ships the types next to the build, copied from src', () => {
     expect(fs.readFileSync(dist('vitra.d.ts'), 'utf8')).toBe(fs.readFileSync(path.join(__dirname, '..', 'src', 'vitra.d.ts'), 'utf8'));
+  });
+});
+
+describe('dist line endings and SRI.txt (run `npm run build` first)', () => {
+  const dir = path.join(__dirname, '..', 'dist');
+
+  it('no built .css or .js file contains a carriage return', () => {
+    const files = fs.readdirSync(dir).filter((f) => /\.(css|js|cjs)$/.test(f));
+    expect(files.length).toBeGreaterThanOrEqual(11);
+    expect(files.filter((f) => fs.readFileSync(path.join(dir, f)).includes(13))).toEqual([]);
+  });
+
+  it('every SRI.txt hash is the hash of the file bytes', () => {
+    const lines = fs.readFileSync(path.join(dir, 'SRI.txt'), 'utf8').trim().split('\n');
+    expect(lines.length).toBe(8);
+    for (const line of lines) {
+      const [file, hash] = line.split(': ');
+      const bytes = fs.readFileSync(path.join(dir, file));
+      expect(hash, file).toBe('sha256-' + crypto.createHash('sha256').update(bytes).digest('base64'));
+    }
   });
 });

@@ -79,6 +79,13 @@ jobs:
     - name: Run Build
       run: npm run build
 
+    # dist/ is committed and served as is: it must be exactly what a fresh
+    # build produces (and SRI.txt the hashes of those bytes). Source maps are
+    # left out: they embed the sources with the checkout's line endings.
+    - name: Check dist matches a fresh build
+      shell: bash
+      run: git diff --exit-code -- dist ':!dist/*.map'
+
     - name: Run Tests
       run: npm test
 
