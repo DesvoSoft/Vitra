@@ -14,10 +14,12 @@ npm run dev        # serves the repo root (npx serve .), open index.html for the
 There is no framework build step required to preview changes to `index.html` — it loads `dist/` directly. If you change anything in `src/`, rebuild before viewing:
 
 ```bash
-npm run build       # full build: CSS + JS (+ ESM + SRI manifest)
-npm run build:css   # src/*.css -> dist/vitra.css + dist/vitra.min.css
-npm run build:js    # src/vitra.js -> dist/vitra.js (IIFE) + dist/vitra.min.js
-npm run build:esm   # src/vitra.js -> dist/vitra.esm.js
+npm run build        # full build: CSS + JS (iife, esm, cjs) + types + SRI manifest
+npm run build:css    # src/*.css -> dist/vitra.css + .min.css, plus the core / scenery / effects pieces
+npm run build:js     # src/vitra.iife.js -> dist/vitra.js + dist/vitra.min.js (IIFE)
+npm run build:esm    # src/vitra.js -> dist/vitra.esm.js
+npm run build:cjs    # src/vitra.js -> dist/vitra.cjs
+npm run build:types  # src/vitra.d.ts -> dist/vitra.d.ts
 ```
 
 ## Running Checks Locally
@@ -27,8 +29,10 @@ Run these before opening a pull request — CI runs the same checks on Linux and
 ```bash
 npm run build   # must succeed
 npm run lint     # stylelint --fix on src/**/*.css, must exit clean
-npm test         # vitest run, must pass
-npm run size     # size-limit budget check (dist/vitra.min.css, vitra.min.js, vitra.esm.js)
+npm test         # vitest run (same as npm run test:unit), must pass
+npm run test:browser  # Playwright + axe-core on tests/kitchen-sink.html, Chromium and Firefox
+npm run test:types    # tsc against tests/types/usage.ts
+npm run size     # size-limit budget check (bundle, the three CSS pieces, vitra.min.js, vitra.esm.js, vitra.cjs)
 ```
 
 `npm run lint` auto-fixes what it can; re-run it and inspect the diff before committing.
@@ -50,7 +54,7 @@ Full architectural rules live in [`CLAUDE.md`](./CLAUDE.md) — read it before m
 - **Glass components:** any translucent/glassmorphism surface must be wrapped in `@supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))`, with a solid, non-transparent fallback declared outside/before that block. Never ship a glass effect without a fallback.
 - **Motion:** every new animation, transition, or keyframe-driven effect needs a corresponding rule inside a `@media (prefers-reduced-motion: reduce)` block that disables or neutralizes it.
 - **No new `!important`.** Existing instances are being phased out; don't add more.
-- **JavaScript:** `src/vitra.js` is a single IIFE exposing `window.Vitra`. Private members (functions, variables not part of the public module API) are prefixed with `_`. Console warnings use `console.warn('[Vitra <ModuleName>] ...')` — never `console.error()`.
+- **JavaScript:** `src/vitra.js` is an ES module (named exports plus a default export) that also sets `window.Vitra`; `src/vitra.d.ts` holds the types and must stay in sync. Private members (functions, variables not part of the public module API) are prefixed with `_`. Console warnings use `console.warn('[Vitra <ModuleName>] ...')` — never `console.error()`.
 - **No runtime dependencies.** Vitra CSS ships zero dependencies; keep it that way.
 
 ## Proposing a New Theme

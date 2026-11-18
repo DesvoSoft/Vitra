@@ -626,7 +626,7 @@ tabs.forEach((tab) => tab.addEventListener('click', () => {
 ```
 
 - The selected tab is styled by `aria-selected="true"` (or `.vitra-tabs-tab-active`). A panel is shown only while it has `.vitra-active`; the framework does not switch them for you. `.vitra-tab` / `.vitra-tab-panel` are accepted as shorter class names.
-- **The framework provides no keyboard navigation between tabs in 1.14** (no arrow keys, no Home/End). Because of that, do not put `tabindex="-1"` on the inactive tabs, which is what a roving-tabindex pattern does: without an arrow-key handler they would be unreachable. Leave every tab in the Tab order, or write the arrow-key handling yourself. A `Vitra.tabs` module is on the roadmap.
+- **The framework provides no keyboard navigation between tabs in 1.14** (no arrow keys, no Home/End). The static pattern above therefore keeps every tab in the Tab order: each tab is a normal focusable `<button>`, and Tab moves from one to the next. A roving `tabindex` (`-1` on the inactive tabs) is only correct together with an arrow-key handler; without one, do not use it. A `Vitra.tabs` module is on the roadmap.
 - The tab row scrolls horizontally instead of wrapping, with its scrollbar hidden; tabs are 44 px tall on touch screens.
 
 ### Radio and checkbox
