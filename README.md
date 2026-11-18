@@ -76,7 +76,7 @@ Use jsDelivr to load the minified files. We strongly recommend using a fixed ver
 
 | Piece | Contains | Brotli |
 |-------|----------|--------|
-| `dist/vitra.core.min.css` | tokens, themes, glass, motion, layout, components, utilities | 13.1 kB |
+| `dist/vitra.core.min.css` | tokens, themes, glass, motion, layout, components, utilities | 13.0 kB |
 | `dist/vitra.scenery.min.css` | the mountain scenery (needs `core`) | 5.0 kB |
 | `dist/vitra.effects.min.css` | particles, noise overlay, shape morph, progress ring, gradient-rotate borders, click ripple, scroll reveal (needs `core`) | 2.3 kB |
 

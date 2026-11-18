@@ -77,7 +77,7 @@ Load the JS and the CSS from the same release: the tooltip's styles live in the 
 
 | Piece | File | Contains | Brotli |
 |-------|------|----------|--------|
-| `core` | `dist/vitra.core.min.css` | tokens, themes, glass, motion (keyframes, reveal classes, cinematic effects such as glow orbs, aurora, mesh gradient, gradient text, border glow), layout, components, utilities | 13.1 kB |
+| `core` | `dist/vitra.core.min.css` | tokens, themes, glass, motion (keyframes, reveal classes, cinematic effects such as glow orbs, aurora, mesh gradient, gradient text, border glow), layout, components, utilities | 13.0 kB |
 | `scenery` | `dist/vitra.scenery.min.css` | the `.vitra-scenery` / `.vitra-scenery-inline` mountain landscape and its layers | 5.0 kB |
 | `effects` | `dist/vitra.effects.min.css` | particles (`.vitra-particle*`), noise overlays, shape morph, progress rings, gradient-rotate borders, click ripple (`.vitra-ripple`), CSS scroll reveal (`.vitra-scroll-reveal*`) | 2.3 kB |
 
@@ -152,7 +152,7 @@ import Vitra, { theme, drawer } from './dist/vitra.esm.js';
 
 Vitra supports declarative configuration via the `data-config` attribute. No JavaScript code required!
 
-Only the first element in the document that carries `data-config` is read. The default-on modules start even when there is no `data-config` at all: the attribute is for tuning and opting out. Each module starts on its own: one whose `init()` throws is reported with `console.warn('[Vitra] Init failed: …')` and the modules after it still start.
+Only the first element in the document that carries `data-config` is read. The default-on modules start even when there is no `data-config` at all: the attribute is for tuning and opting out. Each module starts on its own: one whose `init()` throws is reported with `console.warn('[Vitra] <key> init failed:', error)` (`<key>` is the module's `data-config` key) and the modules after it still start.
 
 ### Basic Usage
 
@@ -523,9 +523,9 @@ Keyboard, on both the `.open` route and the `[popover]` route:
 | Arrow Down / Arrow Up | menu open | next / previous item, wrapping around |
 | Home / End | menu open | first / last item |
 | Tab / Shift+Tab | menu open | closes the menu and moves on from the toggle |
-| Esc | menu open | closes the menu and focuses the toggle; inside a modal or a drawer, that Esc leaves the modal or drawer open |
+| Esc | menu open | closes the menu and focuses the toggle (a `[popover]` menu is closed by the browser's light dismiss); inside a modal, a drawer or a native `<dialog>`, that Esc leaves it open |
 
-Disabled items (`disabled` or `aria-disabled="true"`) are skipped; keys typed in a text field inside the menu and keys pressed with Alt, Ctrl or Meta are left alone. `aria-expanded` on the toggle follows the open state, including light dismiss of a popover. A `[popover]` menu is placed under its toggle and kept inside the viewport. A menu is at most `min(20rem, 100vw - 2 * var(--vitra-space-4))` wide and a long item wraps (`overflow-wrap: anywhere`), on both routes. Activating the toggle with a programmatic `toggle.click()` counts as a keyboard activation and moves focus into the menu; a real mouse click does not.
+Disabled items (`disabled` or `aria-disabled="true"`) are skipped; keys typed in a text field inside the menu and keys pressed with Alt, Ctrl or Meta are left alone. `aria-expanded` on the toggle follows the open state, including light dismiss of a popover. A `[popover]` menu is placed under its toggle and kept inside the viewport. A menu is at most `calc(100vw - 2 * var(--vitra-space-4))` wide and a long item wraps (`overflow-wrap: anywhere`), on both routes. Activating the toggle with a programmatic `toggle.click()` counts as a keyboard activation and moves focus into the menu; a real mouse click does not.
 
 ### Spotlight Module
 
@@ -778,7 +778,7 @@ Vitra.drawer.open('#menu');
 
 Importing by name selects the API you call; it does not promise a smaller bundle. Loading the module runs its auto-initialisation (the saved theme is restored at once, and on `DOMContentLoaded` every default-on module starts unless `data-config` turns it off), so the package is not declared free of side effects and a bundler keeps that code. To leave modules out at run time, set their key to `false` in `data-config`. To leave CSS out, use the CSS pieces.
 
-Measured sizes of the built files (brotli): `vitra.min.js` 7.46 kB, `vitra.esm.js` 10.00 kB, `vitra.cjs` 10.35 kB.
+Measured sizes of the built files (brotli): `vitra.min.js` 7.49 kB, `vitra.esm.js` 10.03 kB, `vitra.cjs` 10.39 kB.
 
 ---
 
