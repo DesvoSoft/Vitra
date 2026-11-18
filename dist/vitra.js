@@ -214,7 +214,7 @@
      * @returns {string} The effective theme name
      */
     getEffective() {
-      const current = this.get();
+      const current = theme.get();
       if (current !== "auto") {
         return current;
       }
@@ -615,7 +615,7 @@
       el.setAttribute("inert", "");
       _sync(el, false);
     };
-    const _close = (en) => {
+    const _close = (en, keep) => {
       if (en !== _active) return;
       _active = null;
       const el = en.el;
@@ -626,7 +626,7 @@
       if (en.hid) el.setAttribute("aria-hidden", "true");
       en.untrap();
       en.unlock();
-      if (en.prev && en.prev.focus) en.prev.focus();
+      if (!keep && en.prev && en.prev.focus) en.prev.focus();
       el.setAttribute("inert", "");
     };
     const close = (target) => {
@@ -681,10 +681,10 @@
       const btn = t.closest(".vitra-drawer-close");
       const d = btn && btn.closest(".vitra-drawer");
       if (d && _managed.has(d)) close(d);
-      else if (_active && !_active.el.contains(t) && !t.closest(".vitra-modal-open")) {
+      else if (_active && !_active.el.contains(t) && !t.closest(".vitra-modal-open, .vitra-toast-container")) {
         const en = _active;
         if (t === _overlay(en.el)) close();
-        else setTimeout(() => _close(en));
+        else setTimeout(() => _close(en, 1));
       }
     };
     const _onKey = (e) => {
@@ -750,10 +750,10 @@
     const _at = () => {
       const r = _cur.getBoundingClientRect();
       const q = _active.getBoundingClientRect();
-      return r.top - q.top + "," + (r.left - q.left);
+      return [r.top - q.top, r.left - q.left];
     };
     const _scroll = () => {
-      if (_at() !== _active._at) hide();
+      if (_at().some((v, i) => Math.abs(v - _active._at[i]) > 1)) hide();
     };
     const show = (target, text, options = {}) => {
       const { position = "top", delay = 0 } = options;

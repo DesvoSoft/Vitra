@@ -28,14 +28,18 @@ Every component with state or interaction was checked against one contract: legi
 - **`.vitra-glass` border** was dropped by the browser: `rgb(r, g, b / a)` is invalid when the token is a comma-separated triplet.
 - **Contrast.** Navbar links, alert dismiss buttons and input placeholders reach 4.5:1 in every theme; input, select and switch borders reach 3:1 (values under "Visible changes"). The light-theme primary button was at 4.45:1 and the active drawer link at 4.40:1.
 - **Modal**: focus goes to the content container when nothing inside is focusable; the author's `role`, `aria-modal`, and the body's `overflow` and `padding-right` are kept and restored; the scrollbar width is compensated; the focusable list is recomputed on every Tab and skips hidden elements; the Tab trap listens on `document`, so it survives focus falling to `<body>`; a pending deferred focus is cancelled if the modal closes first. The overlay no longer inherits a `visibility` transition on open, which could leave it hidden for the first frames so that `focus()` failed on a slow frame (seen as a Firefox flake in the test suite).
-- **Tooltip**: Esc closes it; it adds to, and on close restores, the author's `aria-describedby` instead of overwriting it; it opens on tap and closes on a tap elsewhere; it hides on resize and when the target moves relative to it on scroll; it is clamped to the viewport; `init()` is idempotent and delegated (elements added later work); no orphan nodes are left behind; its inline styles are one `.vitra-tooltip-js` rule.
+- **Esc closes one layer at a time.** A tooltip, then a dropdown menu (`.open` or `[popover]`), then the modal or drawer around it: each press closes only the innermost open layer. Before, Esc on a menu or a focused tooltip trigger inside a modal or drawer closed the modal or drawer too, and with it any form state.
+- **Malformed selectors no longer break the page.** A `data-vitra-drawer-toggle` or `data-vitra-drawer-overlay` value that is not a valid selector (`"menu[1"`, `"#1nav"`) threw inside auto-init, so the modules after the drawer (dropdown, spotlight, scenery, motionGuard) never started; after load it left a valid drawer open with no scroll lock, no trap and no way to close it. Every selector taken from markup or from a caller (drawer, modal, tooltip, scenery targets, the particles container, the reveal `selector` option) now warns once, `[Vitra <Module>] Invalid selector "…"`, and matches nothing. Auto-init also runs each module on its own: one whose `init()` throws is reported with `console.warn` and the next ones still start.
+- **`dist/SRI.txt`** listed wrong hashes for `vitra.core.css`, `vitra.scenery.css` and `vitra.effects.css`: the CSS build copied the CRLF line endings of a Windows checkout into the unminified files and hashed those bytes, while git and the CDN serve LF. The build emits LF only, `generate-sri.js` hashes the LF form, `.gitattributes` keeps `dist/` LF in the working copy, and CI checks that `dist/` matches a fresh build. The `.min` files and `vitra.min.js` were already right.
+- **Tooltip**: Esc closes it; it adds to, and on close restores, the author's `aria-describedby` instead of overwriting it; it opens on tap and closes on a tap elsewhere; it hides on resize and when the target moves relative to it on scroll (by more than 1 px, so a fractional offset that rounds differently no longer hides it); it is clamped to the viewport; `init()` is idempotent and delegated (elements added later work); no orphan nodes are left behind; its inline styles are one `.vitra-tooltip-js` rule.
 - **Toast**: the container is `role="status" aria-live="polite"`; error toasts are `role="alert"`; the message wraps instead of overflowing; the toast is bounded to the screen width.
-- **Dropdown**: a `[popover]` menu is placed under its toggle and kept inside the viewport (the top layer ignores `top: 100%`); `aria-expanded` follows the popover's own state, light dismiss included; choosing an item closes it.
+- **Dropdown**: a `[popover]` menu is placed under its toggle and kept inside the viewport (the top layer ignores `top: 100%`); `aria-expanded` follows the popover's own state, light dismiss included; choosing an item closes it. A long item no longer widens a 360 px page to 569 px, open or closed (a closed menu is `visibility: hidden`, which still creates scrollable overflow): the menu is capped at `min(20rem, 100vw - 2 * var(--vitra-space-4))` and items wrap.
+- **Drawer**: a click on a toast (its close button, for one) no longer closes the open drawer; an outside-click close no longer pulls focus back to the toggle, so the input you clicked keeps it (Esc, the close button, the overlay and the API still return focus).
 - **Tabs**: a row of tabs scrolls horizontally instead of wrapping or spilling out; tabs are 44 px tall under `(pointer: coarse)`.
 - **Touch targets** under `(pointer: coarse)`: toggle label, radio, checkbox, `.vitra-btn-sm`, navbar brand and links, alert dismiss, modal close, toast close, tabs. Hover lifts of buttons, cards, `.vitra-hover-lift` and tilt cards sit under `(hover: hover)`, so they no longer stick after a tap.
 - **Overflow** at 360 px: badge, checkbox, radio, spinner label, toggle label, navbar brand and tabs wrap or scroll long text; `.vitra-h-screen` and `.vitra-min-h-screen` use `dvh`; the drawer is `100dvh` and `visibility: hidden` while closed.
-- **Reveal**: the directional variants (`.vitra-reveal` with a direction class) waited for the scroll again, where a load-time keyframe used to hold `opacity: 1` over the hidden state; `@media (scripting: none)` shows the content; `reveal.init()` is idempotent, `reset()` watches elements again and `destroy()` restores elements that were still waiting.
-- **Theme**: `theme.set()` before `<body>` exists no longer throws; `toggle()` works when destructured; `init({ persist: false })` is remembered by later `set()` calls; the system-theme watcher that did nothing is gone; `init({ default })` and `"theme": "neon"` in `data-config` were silently ignored and now work (`defaultTheme` still works); a page with no `data-theme` declares `color-scheme: dark`, so form controls and scrollbars are no longer light on a dark page.
+- **Reveal**: with `reveal.init()`, the directional variants (`.vitra-reveal` with a direction class) wait for the scroll again, where a load-time keyframe used to hold `opacity: 1` over the hidden state (`init()` holds the keyframe inline until each element is revealed; a page that never calls `init()` still shows them at load, as in 1.13.5); `@media (scripting: none)` shows the content; `reveal.init()` is idempotent, `reset()` watches elements again and `destroy()` restores elements that were still waiting.
+- **Theme**: `theme.set()` before `<body>` exists no longer throws; `toggle()` and `getEffective()` work when destructured; `init({ persist: false })` is remembered by later `set()` calls; the system-theme watcher that did nothing is gone; `init({ default })` and `"theme": "neon"` in `data-config` were silently ignored and now work (`defaultTheme` still works); a page with no `data-theme` declares `color-scheme: dark`, so form controls and scrollbars are no longer light on a dark page.
 - **Particles**: disconnected nodes are dropped before the limit is computed; `init()` does not spawn twice into a container that already holds particles.
 - **Spotlight** listens to `pointermove`; **ripple** started from the keyboard now begins at the centre of the element.
 - **Gradient text** takes its lightness from a token and darkens in light themes; `.vitra-modal-full` content gets `90dvh` after the `90vh` fallback; `.vitra-btn-glass` and `.vitra-card-glass` have a solid fallback with their blur inside `@supports (backdrop-filter: …)`.
@@ -43,7 +47,7 @@ Every component with state or interaction was checked against one contract: legi
 ### Removed
 
 - `.vitra-skeleton-shimmer`, a selector that appeared only inside a `prefers-reduced-motion` rule and styled nothing. The `vitra-skeleton-shimmer` keyframes remain.
-- The private `theme._watchSystemTheme`, `theme._mediaChangeHandler` and `theme._isLocalStorageAvailable`.
+- The private `theme._watchSystemTheme`, `theme._mediaChangeHandler` and `theme._isLocalStorageAvailable`, and `theme._canTransition` (it duplicated the shared reduced-motion check).
 
 ### Performance
 
@@ -100,13 +104,19 @@ Things an existing site will see differ after upgrading.
 - **`auto` theme** is identical to `light` under a light system and to `dark` under a dark one, scenery and modal included.
 - **Control sizes**: `.vitra-burger` is 44 px square (the three lines stay 28 px wide), `.vitra-drawer-close` is 44 px (was 32), `.vitra-modal-close` is 44 px under `(pointer: coarse)` only.
 - **Pages with no `data-theme`** declare `color-scheme: dark`.
-- **Long text** in badge, checkbox, radio, spinner label and toggle label wraps instead of overflowing; `overflow-wrap: anywhere` can break an unbroken string mid-word.
+- **Long text** in badge, checkbox, radio, spinner label, toggle label, alert, progress label and dropdown item wraps instead of overflowing; `overflow-wrap: anywhere` can break an unbroken string mid-word. A dropdown menu is at most `min(20rem, 100vw - 2 * var(--vitra-space-4))` wide (it had no maximum).
+- **The burger draws its X under reduced motion** (`.vitra-burger.active`); before, the two outer lines stayed flat, so no X appeared.
+- **`.vitra-tilt-card` renders real 3-D** (its `perspective()` now takes effect) and also tilts on `:focus-visible`.
+- **A closed `.vitra-drawer` is `visibility: hidden`.** Author CSS that showed a closed drawer as a desktop sidebar must also set `visibility: visible`.
+- **The CSS-only tooltip's `::before` is zero-width while hidden.** A rule of your own that revealed it without the `:hover` / `:focus-within` states now shows an empty box.
 - **Border glow layer** is larger on wide hosts (see Performance), and an animated striped progress bar establishes a stacking context (`isolation: isolate`).
 
 ### Behaviour notes for integrators
 
 - **JS and CSS ship together.** The tooltip's styles moved out of the script into `.vitra-tooltip-js`. New `vitra.js` with an old copy of the CSS produces an unstyled tooltip.
-- **Drawer toggles call `preventDefault()`** on every click of an element that carries `data-vitra-drawer-toggle`, so a link or a submit button used as a toggle will not navigate or submit. A click outside an open drawer closes it one tick later, so a button of your own that calls `toggle()` or `open()` in its handler wins.
+- **Drawer toggles call `preventDefault()`** on every click of an element that carries `data-vitra-drawer-toggle`, so a link or a submit button used as a toggle will not navigate or submit. A click outside an open drawer closes it one tick later, so a button of your own that calls `toggle()` or `open()` in its handler wins; that close leaves focus where the click put it.
+- **One Esc closes one layer.** In 1.13.5 Esc on an open `.open` dropdown inside a modal closed the menu and the modal; now the first Esc closes the menu (or a showing tooltip) and the second the modal. The script closes an open `[popover]` menu on Esc itself instead of leaving it to the browser. The modal's and the drawer's Esc listeners are on `window` (bubble phase) and the tooltip's on `window` (capture phase), so a `keydown` listener of yours on `document` that calls `stopPropagation()` keeps Esc from reaching the modal.
+- **Malformed selectors warn instead of throwing.** `Vitra.modal.open('menu[1')`, `tooltip.show()`, `scenery.mount()`, `drawer.open()` / `toggle()` / `close()`, a particles `container` and a reveal `selector` that are not valid CSS now log `[Vitra <Module>] Invalid selector "…"` once and behave as "not found" (`false`, `null` or no-op). An id that starts with a digit has to be escaped (`#\31 nav`).
 - **`toggle.click()` on a dropdown moves focus into the menu.** A programmatic click (`detail === 0`) is treated like a keyboard activation and focuses the first item. A real mouse click does not.
 - **Modal trap scope.** The element passed to `modal.open()` is the trap root: Tab cycles through the focusable elements inside it, and the first one gets focus (else `.vitra-modal-content`, else the element itself). The module adds `role="dialog"` and `aria-modal="true"` to that element only when it has none, and removes only what it added. Opening a modal while another is open closes the first, as in 1.13.
 - **Keyframes** `vitra-progress-bar-stripes` and `vitra-progress-ring-spin` now animate `transform`.
@@ -123,17 +133,17 @@ Brotli, measured with `npx size-limit`; "1.13.5" is the `v1.13.5` tag, measured 
 
 | File | 1.13.5 | 1.14.0 | Limit | Raw 1.14.0 |
 |---|---|---|---|---|
-| `dist/vitra.min.css` (bundle) | 17.73 kB | 18.87 kB | 20 kB | 144,130 B |
-| `dist/vitra.core.min.css` | | 13.00 kB | 13.5 kB | 102,409 B |
+| `dist/vitra.min.css` (bundle) | 17.73 kB | 18.86 kB | 20 kB | 144,205 B |
+| `dist/vitra.core.min.css` | | 13.06 kB | 13.5 kB | 102,484 B |
 | `dist/vitra.scenery.min.css` | | 5.01 kB | 5.5 kB | 29,888 B |
 | `dist/vitra.effects.min.css` | | 2.25 kB | 2.5 kB | 12,383 B |
-| `dist/vitra.min.js` | 5.68 kB | 7.32 kB | 7.5 kB (was 6 kB) | 24,318 B |
-| `dist/vitra.esm.js` | 8.04 kB | 9.76 kB | 10.6 kB | 45,367 B |
-| `dist/vitra.cjs` | | 10.08 kB | 10.6 kB | 46,454 B |
+| `dist/vitra.min.js` | 5.68 kB | 7.46 kB | 7.5 kB (was 6 kB) | 23,390 B |
+| `dist/vitra.esm.js` | 8.04 kB | 10.00 kB | 10.6 kB | 43,998 B |
+| `dist/vitra.cjs` | | 10.35 kB | 10.6 kB | 45,085 B |
 
-The three pieces add up to 20.26 kB brotli because each is compressed on its own: loading all three costs about 1.4 kB more than the bundle. Use the pieces to leave something out, not to load everything.
+The three pieces add up to 20.32 kB brotli because each is compressed on its own: loading all three costs about 1.5 kB more than the bundle. Use the pieces to leave something out, not to load everything.
 
-**Why the JavaScript grew by 1.64 kB (+29%).** The budget was 6 kB and is now 7.5 kB, the ceiling the design set. The growth is the new drawer module, keyboard support in the dropdown, and the focus and ARIA fixes in modal, tooltip and toast (a shared focus-trap and scroll-lock helper, the tooltip's delegated listeners with touch, Esc and scroll handling, the toast live region and close button). The tooltip's inline styles moved to CSS, which is part of the CSS growth. Accessibility behaviour was not cut to fit: the budget moved instead. About 0.18 kB of headroom remains, so a tabs module (see Open) does not fit.
+**Why the JavaScript grew by 1.78 kB (+31%).** The budget was 6 kB and is now 7.5 kB, the ceiling the design set. The growth is the new drawer module, keyboard support in the dropdown, and the focus and ARIA fixes in modal, tooltip and toast (a shared focus-trap and scroll-lock helper, the tooltip's delegated listeners with touch, Esc and scroll handling, the toast live region and close button). The tooltip's inline styles moved to CSS, which is part of the CSS growth. The last fixes before release (one Esc per layer, guarded selectors, isolated auto-init) added about 0.14 kB, partly paid for by sharing the dropdown close path and the reveal hide/show steps. Accessibility behaviour was not cut to fit: the budget moved instead. About 0.04 kB of headroom remains, so a tabs module (see Open) does not fit.
 
 ### Known limitations
 
@@ -142,7 +152,7 @@ The three pieces add up to 20.26 kB brotli because each is compressed on its own
 - **Drawer**: if the drawer is closed through the API while a modal opened from it is still open, focus is lost; a deferred outside-click close can take focus from a modal that a script opened in the same click without the `.vitra-modal-open` class; a drawer's original `aria-hidden="false"` is restored as `"true"`; the module holds references to the drawers it manages until `destroy()`. The drawer slides in from the right only.
 - **Dropdown**: Esc is ignored while Alt, Ctrl or Meta is held; Tab from a text field inside the menu leaves the menu open; Home and End are swallowed on the toggle while the menu is open. The 400 ms guard that keeps a Tab-closed menu unreachable while it fades out was not checked against every closing transition.
 - **Inputs**: `opacity: 1` on the placeholder also applies to disabled inputs.
-- **Two copies of Vitra on one page** (the script tag and an ES import) both register their listeners; there is no guard. This predates 1.14.
+- **Two copies of Vitra on one page** (the script tag and an ES import) both register their listeners; there is no guard. This predates 1.14. With drawers and modals it is worse in 1.14: the two copies keep two independent scroll-lock counters, so the page can stay unscrollable after everything is closed.
 - **TypeScript**: `export as namespace Vitra` makes `Vitra.default` visible on the global namespace in the types; at runtime `window.Vitra.default` is undefined.
 - **`dist/vitra.cjs` is not in `SRI.txt`**; the list is explicit and covers the files a page loads.
 - **Pieces**: each one starts with the full `@layer` statement, which is what keeps the order stable when they load in a different order from the bundle's; do not strip it.
@@ -152,9 +162,9 @@ The three pieces add up to 20.26 kB brotli because each is compressed on its own
 Not fixed in 1.14, and why.
 
 - **`.vitra-gradient-rotate` still repaints every frame** while it is on screen (240 paints/s and 60 style recalcs/s in Chromium; still well above the empty page's main-thread time per frame in Firefox). It animates a registered custom property, and its continuous look was an explicit choice in 1.13.5. It is only paused offscreen. Rotating it with `transform`, as `.vitra-border-glow` now does, is the follow-up.
-- **`Vitra.tabs` keyboard module** (roles, roving tabindex, arrow keys, Home/End) was dropped for size: about 0.18 kB of headroom under the 7.5 kB ceiling cannot hold it. It is on the roadmap.
+- **`Vitra.tabs` keyboard module** (roles, roving tabindex, arrow keys, Home/End) was dropped for size: about 0.04 kB of headroom under the 7.5 kB ceiling cannot hold it. It is on the roadmap.
 - **The drawer, dropdown and tooltip edge cases** listed under Known limitations.
-- **`Vitra.theme` is still a plain object**, so its `_`-prefixed members (`_transition`, `_persist`, `_canTransition`, `_reveal`, `_getSystemTheme`) are enumerable on it; `_transition` and `_persist` are new in 1.14.
+- **`Vitra.theme` is still a plain object**, so its `_`-prefixed members (`_transition`, `_persist`, `_reveal`, `_getSystemTheme`) are enumerable on it; `_transition` and `_persist` are new in 1.14.
 - `tests/browser/known-failures.js` is empty: no test is expected to fail.
 
 ### Not verified
@@ -165,6 +175,7 @@ Not fixed in 1.14, and why.
 - **Performance figures are headless and relative** (software rendering). GPU time, Firefox's compositor and real hardware were not measured; the border glow's larger layer and the noise overlay's full-screen blend have a GPU cost that was not quantified.
 - **Contrast** is measured with the component on a plain `--vitra-color-bg` page. Over the scenery or over arbitrary content nothing is claimed.
 - **Forced colors** was checked by emulation in both engines.
+- **The CI check that `dist/` matches a fresh build** was run locally on Windows (clean `git status` after `npm run build`, also with CRLF JavaScript sources), not yet on the GitHub ubuntu and windows runners.
 
 ## [1.13.5] - 2026-10-13
 

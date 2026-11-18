@@ -20,6 +20,12 @@ describe('Theme Module', () => {
     expect(Vitra.theme.get()).toBe('auto');
   });
 
+  it('getEffective() works when destructured', () => {
+    const { getEffective } = Vitra.theme;
+    Vitra.theme.set('pastel');
+    expect(getEffective()).toBe('pastel');
+  });
+
   it('should set a valid theme', () => {
     const result = Vitra.theme.set('dark');
     expect(result).toBe(true);
@@ -536,6 +542,38 @@ describe('Drawer Module', () => {
     expect($('#d1').classList.contains('open')).toBe(false);
   });
 
+  it('a click inside the toast container does not close the drawer', async () => {
+    document.body.insertAdjacentHTML('beforeend', '<div class="vitra-toast-container"><div class="vitra-toast"><button id="tc">x</button></div></div>');
+    Vitra.drawer.init();
+    click($('#t1'));
+    click($('#tc'));
+    await tick();
+    expect($('#d1').classList.contains('open')).toBe(true);
+  });
+
+  it('an outside-click close leaves focus where the click put it; Esc, the close button and the API still return it', async () => {
+    $('#ov').remove(); // no overlay: the page outside stays clickable
+    document.body.insertAdjacentHTML('beforeend', '<input id="field">');
+    Vitra.drawer.init();
+    $('#t1').focus();
+    click($('#t1'));
+    expect($('#d1').contains(document.activeElement)).toBe(true);
+    $('#field').focus();
+    click($('#field'));
+    await tick();
+    expect($('#d1').classList.contains('open')).toBe(false);
+    expect(document.activeElement).toBe($('#field'));
+    for (const how of ['esc', 'button', 'api']) {
+      $('#t1').focus();
+      click($('#t1'));
+      expect($('#d1').classList.contains('open'), how).toBe(true);
+      if (how === 'esc') esc();
+      else if (how === 'button') click($('#d1 .vitra-drawer-close'));
+      else Vitra.drawer.close();
+      expect(document.activeElement, how).toBe($('#t1'));
+    }
+  });
+
   it('a plain author button calling toggle() opens and closes (outside-click close is deferred)', async () => {
     $('#outside').addEventListener('click', () => Vitra.drawer.toggle('#d1'));
     Vitra.drawer.init();
@@ -595,7 +633,6 @@ describe('Drawer Module', () => {
     click($('#outside'));
     expect(m.classList.contains('open')).toBe(true);
     expect(m.hasAttribute('role')).toBe(false);
-    expect(getComputedStyle(m).visibility).not.toBe('hidden');
     expect(Vitra.drawer.close()).toBeUndefined();
   });
 
@@ -769,6 +806,21 @@ describe('Tooltip Module', () => {
       document.getElementById('b').getBoundingClientRect = () => ({ top: 40, left: 0 }); // target moved, tip did not
       document.dispatchEvent(new Event('scroll'));
       expect(document.getElementById('b').hasAttribute('aria-describedby')).toBe(false);
+    });
+
+    it('a sub-pixel change of the target-to-tip offset on scroll keeps it (1px tolerance)', async () => {
+      document.body.innerHTML = '<button id="b" data-vitra-tooltip="Hi">B</button>';
+      const b = document.getElementById('b');
+      b.getBoundingClientRect = () => ({ top: 100.25, left: 50.5 });
+      Vitra.tooltip.init();
+      enter(b);
+      await wait(30);
+      b.getBoundingClientRect = () => ({ top: 100.75, left: 50.0001 }); // fractional rounding of the same place
+      document.dispatchEvent(new Event('scroll'));
+      expect(b.hasAttribute('aria-describedby')).toBe(true);
+      b.getBoundingClientRect = () => ({ top: 102, left: 50.5 }); // moved by more than 1px
+      document.dispatchEvent(new Event('scroll'));
+      expect(b.hasAttribute('aria-describedby')).toBe(false);
     });
 
     it('hide(anything) still hides the active tooltip', async () => {

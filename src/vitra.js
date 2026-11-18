@@ -1,11 +1,11 @@
 'use strict';
 
 /**
- * Vitra CSS Framework - JavaScript Modules
- * Phase 1: Tokens & Themes - Plan 02
- *
- * Optional JS for enhanced interactivity
- * Works with data-theme attribute on <html> element
+ * Vitra CSS Framework - optional JavaScript modules
+ * (theme, particles, reveal, ripple, modal, drawer, tooltip, toast, dropdown,
+ * spotlight, scenery, motionGuard). ES module source: dist/vitra.esm.js and
+ * dist/vitra.cjs are built from this file, the script-tag builds from
+ * vitra.iife.js. Auto-initialises on DOMContentLoaded (see _parseDataConfig).
  */
 
 // Shared private helpers
@@ -281,7 +281,7 @@ const theme = {
    * @returns {string} The effective theme name
    */
   getEffective() {
-    const current = this.get();
+    const current = theme.get();
     if (current !== 'auto') {
       return current;
     }
@@ -865,7 +865,8 @@ const drawer = (() => {
     _sync(el, false);
   };
 
-  const _close = (en) => {
+  // keep: an outside click leaves focus where it put it (no return to the opener)
+  const _close = (en, keep) => {
     if (en !== _active) return;
     _active = null;
     const el = en.el;
@@ -876,7 +877,7 @@ const drawer = (() => {
     if (en.hid) el.setAttribute('aria-hidden', 'true');
     en.untrap();
     en.unlock();
-    if (en.prev && en.prev.focus) en.prev.focus();
+    if (!keep && en.prev && en.prev.focus) en.prev.focus();
     el.setAttribute('inert', '');
   };
 
@@ -935,12 +936,12 @@ const drawer = (() => {
     const btn = t.closest('.vitra-drawer-close');
     const d = btn && btn.closest('.vitra-drawer');
     if (d && _managed.has(d)) close(d);
-    else if (_active && !_active.el.contains(t) && !t.closest('.vitra-modal-open')) {
+    else if (_active && !_active.el.contains(t) && !t.closest('.vitra-modal-open, .vitra-toast-container')) {
       const en = _active;
       // The overlay closes at once; any other outside click is deferred so an
       // author button that calls toggle()/open() in its own handler wins.
       if (t === _overlay(en.el)) close();
-      else setTimeout(() => _close(en));
+      else setTimeout(() => _close(en, 1));
     }
   };
 
@@ -1018,8 +1019,9 @@ const tooltip = (() => {
   };
   // Target-to-tip offset: focus scroll-into-view moves both (kept), a fixed
   // target or a container scroll moves only one (hidden).
-  const _at = () => { const r = _cur.getBoundingClientRect(); const q = _active.getBoundingClientRect(); return (r.top - q.top) + ',' + (r.left - q.left); };
-  const _scroll = () => { if (_at() !== _active._at) hide(); };
+  // Compared with a 1px tolerance: fractional offsets round differently.
+  const _at = () => { const r = _cur.getBoundingClientRect(); const q = _active.getBoundingClientRect(); return [r.top - q.top, r.left - q.left]; };
+  const _scroll = () => { if (_at().some((v, i) => Math.abs(v - _active._at[i]) > 1)) hide(); };
 
   /**
    * Show a tooltip
@@ -1072,8 +1074,9 @@ const tooltip = (() => {
   };
 
   /**
-   * Hide the active tooltip
-   * @param {string|HTMLElement} target - Optional target to hide tooltip for
+   * Hide the active tooltip (only one is ever shown)
+   * @param {string|HTMLElement} [target] - Accepted for compatibility and ignored:
+   *   whatever its value, the active tooltip is hidden
    */
   const hide = () => {
     clearTimeout(_showTimeout);

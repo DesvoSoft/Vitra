@@ -77,7 +77,7 @@ Load the JS and the CSS from the same release: the tooltip's styles live in the 
 
 | Piece | File | Contains | Brotli |
 |-------|------|----------|--------|
-| `core` | `dist/vitra.core.min.css` | tokens, themes, glass, motion (keyframes, reveal classes, cinematic effects such as glow orbs, aurora, mesh gradient, gradient text, border glow), layout, components, utilities | 13.0 kB |
+| `core` | `dist/vitra.core.min.css` | tokens, themes, glass, motion (keyframes, reveal classes, cinematic effects such as glow orbs, aurora, mesh gradient, gradient text, border glow), layout, components, utilities | 13.1 kB |
 | `scenery` | `dist/vitra.scenery.min.css` | the `.vitra-scenery` / `.vitra-scenery-inline` mountain landscape and its layers | 5.0 kB |
 | `effects` | `dist/vitra.effects.min.css` | particles (`.vitra-particle*`), noise overlays, shape morph, progress rings, gradient-rotate borders, click ripple (`.vitra-ripple`), CSS scroll reveal (`.vitra-scroll-reveal*`) | 2.3 kB |
 
@@ -152,7 +152,7 @@ import Vitra, { theme, drawer } from './dist/vitra.esm.js';
 
 Vitra supports declarative configuration via the `data-config` attribute. No JavaScript code required!
 
-Only the first element in the document that carries `data-config` is read. The default-on modules start even when there is no `data-config` at all: the attribute is for tuning and opting out.
+Only the first element in the document that carries `data-config` is read. The default-on modules start even when there is no `data-config` at all: the attribute is for tuning and opting out. Each module starts on its own: one whose `init()` throws is reported with `console.warn('[Vitra] Init failed: …')` and the modules after it still start.
 
 ### Basic Usage
 
@@ -305,7 +305,7 @@ theme.clear();
 const themes = theme.getValidThemes();
 ```
 
-`theme.set()` is safe to call from a script in `<head>`: until `<body>` exists the screen-reader announcement is skipped, not the theme change. `get`, `set`, `toggle` and `init` can be destructured (`const { toggle } = Vitra.theme`); `getEffective()` has to be called as a method. `init({ persist: false })` is remembered, so later `set()` calls do not write to `localStorage` either.
+`theme.set()` is safe to call from a script in `<head>`: until `<body>` exists the screen-reader announcement is skipped, not the theme change. `get`, `set`, `toggle`, `init` and `getEffective` can be destructured (`const { toggle } = Vitra.theme`). `init({ persist: false })` is remembered, so later `set()` calls do not write to `localStorage` either.
 
 ### Particles Module
 
@@ -366,6 +366,8 @@ reveal.destroy();
 
 Calling `init()` again replaces the previous observer. Without JS (`@media (scripting: none)`) `.vitra-reveal` content is simply visible.
 
+The directional variants (`.vitra-reveal-up`, `-left`, `-scale`, `-blur`) carry a keyframe animation. `init()` sets `animation-name: none` inline on every element it watches and clears it when the element is revealed (`reset()` sets it again, `destroy()` clears it), so they wait for the scroll. On a page that never calls `init()` (reveal is off by default in `data-config`) they play their keyframe at load and end visible, as in 1.13.5; a plain `.vitra-reveal` without a direction class stays at `opacity: 0` there.
+
 ### Modal Module
 
 ```javascript
@@ -406,6 +408,8 @@ What `open()` does:
 - **One at a time.** Opening a modal while another is open closes the first.
 - **Scroll lock.** The body gets `overflow: hidden`, with `padding-right` compensating the scrollbar width; your own inline values are restored on close. The lock is reference-counted, so it stays on while a drawer is also open.
 - **Close.** Esc, a click on the overlay itself, or any `[data-vitra-modal-close]` inside. Focus returns to the element that was focused before `open()`.
+- **One Esc, one layer.** While a tooltip is showing or a dropdown menu is open inside the modal, Esc closes that first and leaves the modal open; the next Esc closes the modal. The same holds inside a drawer.
+- **Selectors.** A string that is not a valid selector (`'menu[1'`, or `'#1nav'`: an id that starts with a digit has to be escaped, `'#\\31 nav'`) makes `open()` warn `[Vitra Modal] Invalid selector "…"` and return `false` instead of throwing. The same guard applies to every selector the modules take from you or from markup (drawer, tooltip, scenery, the particles container and the reveal `selector` option).
 
 ### Drawer Module
 
@@ -441,8 +445,11 @@ drawer.destroy();          // close, remove inert, unbind
 
 - **`.vitra-burger` is only displayed at 768 px and narrower** (`display: none` above that). On a wider viewport use any visible element, such as a plain `<button>`, as the toggle.
 - **`data-vitra-drawer-toggle="#id"`** on any element links it to a drawer. The module sets `aria-expanded` on every toggle and `.active` on a `.vitra-burger` toggle. The `.open` class is the open state, as before; the CSS slides the drawer in from the right.
-- **Closed means inert.** A managed drawer gets `inert` while closed (out of the tab order and the accessibility tree) and loses it when it opens. Opening it traps focus, locks scroll (same helper as the modal) and sets `role="dialog"` and `aria-modal="true"` if you did not provide a `role`; if you wrote `aria-hidden` on the drawer, the module flips it to `"false"` while open and back to `"true"` on close. Esc closes it, except while a modal is open. Focus goes back to the toggle (or the previously focused element) on close.
-- **Overlay.** The module adds and removes `.open` on the drawer's overlay: the element named by `data-vitra-drawer-overlay="#id"` on the drawer, otherwise the `.vitra-drawer-overlay` that is a direct child of the drawer's parent. A click on the overlay closes the drawer at once. A click anywhere else outside the drawer closes it as well, one tick later, so a button of your own that calls `drawer.toggle()` in its click handler is not undone.
+- **Closed means inert.** A managed drawer gets `inert` while closed (out of the tab order and the accessibility tree) and loses it when it opens. Opening it traps focus, locks scroll (same helper as the modal) and sets `role="dialog"` and `aria-modal="true"` if you did not provide a `role`; if you wrote `aria-hidden` on the drawer, the module flips it to `"false"` while open and back to `"true"` on close. Esc closes it, except while a modal is open and except when that Esc closes a tooltip or a dropdown menu inside the drawer (one Esc closes one layer). Focus goes back to the toggle (or the previously focused element) on close.
+- **Managed means you do not add `.open` yourself.** A drawer that has a `[data-vitra-drawer-toggle]` is managed: it is `inert` while closed, so open it with the toggle or `Vitra.drawer.open()`, not by adding `.open` in your own script.
+- **Roles differ from the modal.** The drawer adds `role="dialog"` and `aria-modal="true"` together, and only when the drawer has no `role` (a `<nav role="navigation">` gets neither). The modal module adds each of them on its own, when that attribute is missing.
+- **Overlay.** The module adds and removes `.open` on the drawer's overlay: the element named by `data-vitra-drawer-overlay="#id"` on the drawer, otherwise the `.vitra-drawer-overlay` that is a direct child of the drawer's parent. A click on the overlay closes the drawer at once. A click anywhere else outside the drawer closes it as well, one tick later, so a button of your own that calls `drawer.toggle()` in its click handler is not undone. That outside-click close leaves focus where the click put it (an input you clicked keeps it); Esc, the close button, the overlay and the API return focus to the toggle. Clicks inside an open modal or inside the toast container (a toast's close button, for one) do not close the drawer.
+- **Invalid selectors.** A `data-vitra-drawer-toggle` or `data-vitra-drawer-overlay` value that is not a valid selector (`"menu[1"`, or `"#1nav"`: an id that starts with a digit has to be escaped, `"#\31 nav"`) warns `[Vitra Drawer] Invalid selector "…"` once and matches nothing; the other drawers and the other modules keep working.
 - **`.vitra-drawer-close`** inside a managed drawer closes it.
 - **Which drawers are managed.** Only the ones referenced by a `[data-vitra-drawer-toggle]` and the ones you open with `drawer.open()`/`toggle()`. A `.vitra-drawer` that you open yourself by adding `.open` gets no `inert`, no focus trap and no other change, and keeps working as it did before 1.14.
 - **Toggles call `preventDefault()`** on every click, so a link or a submit button with `data-vitra-drawer-toggle` will not navigate or submit.
@@ -516,9 +523,9 @@ Keyboard, on both the `.open` route and the `[popover]` route:
 | Arrow Down / Arrow Up | menu open | next / previous item, wrapping around |
 | Home / End | menu open | first / last item |
 | Tab / Shift+Tab | menu open | closes the menu and moves on from the toggle |
-| Esc | `.open` route | closes the menu and focuses the toggle (a `[popover]` menu is closed by the browser) |
+| Esc | menu open | closes the menu and focuses the toggle; inside a modal or a drawer, that Esc leaves the modal or drawer open |
 
-Disabled items (`disabled` or `aria-disabled="true"`) are skipped; keys typed in a text field inside the menu and keys pressed with Alt, Ctrl or Meta are left alone. `aria-expanded` on the toggle follows the open state, including light dismiss of a popover. A `[popover]` menu is placed under its toggle and kept inside the viewport. Activating the toggle with a programmatic `toggle.click()` counts as a keyboard activation and moves focus into the menu; a real mouse click does not.
+Disabled items (`disabled` or `aria-disabled="true"`) are skipped; keys typed in a text field inside the menu and keys pressed with Alt, Ctrl or Meta are left alone. `aria-expanded` on the toggle follows the open state, including light dismiss of a popover. A `[popover]` menu is placed under its toggle and kept inside the viewport. A menu is at most `min(20rem, 100vw - 2 * var(--vitra-space-4))` wide and a long item wraps (`overflow-wrap: anywhere`), on both routes. Activating the toggle with a programmatic `toggle.click()` counts as a keyboard activation and moves focus into the menu; a real mouse click does not.
 
 ### Spotlight Module
 
@@ -771,7 +778,7 @@ Vitra.drawer.open('#menu');
 
 Importing by name selects the API you call; it does not promise a smaller bundle. Loading the module runs its auto-initialisation (the saved theme is restored at once, and on `DOMContentLoaded` every default-on module starts unless `data-config` turns it off), so the package is not declared free of side effects and a bundler keeps that code. To leave modules out at run time, set their key to `false` in `data-config`. To leave CSS out, use the CSS pieces.
 
-Measured sizes of the built files (brotli): `vitra.min.js` 7.32 kB, `vitra.esm.js` 9.76 kB, `vitra.cjs` 10.08 kB.
+Measured sizes of the built files (brotli): `vitra.min.js` 7.46 kB, `vitra.esm.js` 10.00 kB, `vitra.cjs` 10.35 kB.
 
 ---
 
