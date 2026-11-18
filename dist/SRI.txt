@@ -1,5 +1,5 @@
 vitra.min.css: sha256-Hob9EN9rcCt3QBaJT++HCRPvcpBGTcEn5hJMwQX4Y64=
-vitra.min.js: sha256-KA8itkLwwLBaXvAuI14wnxY6H1xobJo/3fNzP8R+hm8=
+vitra.min.js: sha256-YPCDzY9BV6oUWQrYW4dptkzlcscAQdYjNQLStxr45Kw=
 vitra.core.css: sha256-+QaxbeNI1pJdS8mczkD7DljLGqNWaHMLOINBuxdtbPA=
 vitra.core.min.css: sha256-Bs9jreeRXFjumFnKUkuVF07XW5Y5gPLfGcjp0faLZAo=
 vitra.scenery.css: sha256-mJ+l8rOUNiZQzZXKjpyxtLxFVL4KUqGdEHUK2kfkp0Y=

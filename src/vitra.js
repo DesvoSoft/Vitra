@@ -136,7 +136,7 @@ const theme = {
 
     const html = document.documentElement;
     const animate = options.transition !== undefined ? options.transition : theme._transition;
-    if (animate && html.dataset.theme !== themeName && theme._canTransition()) {
+    if (animate && html.dataset.theme !== themeName && typeof document.startViewTransition === 'function' && !_reducedMotion()) {
       theme._reveal(themeName, options.origin);
     } else {
       html.dataset.theme = themeName;
@@ -195,11 +195,6 @@ const theme = {
   // or per call via set(name, { transition: true }).
   _transition: false,
   _persist: true,
-
-  _canTransition() {
-    return typeof document.startViewTransition === 'function' &&
-      !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  },
 
   /**
    * Swap the theme inside a View Transition: the new theme grows as a
@@ -356,7 +351,7 @@ const particles = (() => {
     if (typeof direction === 'number') {
       return direction;
     }
-    if (Object.prototype.hasOwnProperty.call(_DIRECTION_ANGLES, direction)) {
+    if (Object.hasOwn(_DIRECTION_ANGLES, direction)) {
       return _DIRECTION_ANGLES[direction];
     }
     console.warn(`[Vitra Particles] Unknown direction "${direction}", falling back to "down"`);
@@ -1344,11 +1339,7 @@ const dropdown = (() => {
     } else {
       // Fallback: close all other dropdowns
       document.querySelectorAll('.vitra-dropdown.open').forEach(dd => {
-        if (!toggle || dd !== dropdown) {
-          dd.classList.remove('open');
-          const btn = dd.querySelector('[data-vitra-dropdown-toggle]');
-          if (btn) btn.setAttribute('aria-expanded', 'false');
-        }
+        if (!toggle || dd !== dropdown) _shut(dd);
       });
 
       if (toggle) {
@@ -1371,6 +1362,14 @@ const dropdown = (() => {
 
   const _isOpen = (dd, menu) =>
     _supportsPopover && menu.hasAttribute('popover') ? menu.matches(':popover-open') : dd.classList.contains('open');
+  // Close one dropdown on either route; returns its toggle
+  const _shut = (dd, menu = dd.querySelector('.vitra-dropdown-menu')) => {
+    const btn = dd.querySelector('[data-vitra-dropdown-toggle]');
+    if (menu && _supportsPopover && menu.hasAttribute('popover')) menu.hidePopover();
+    else dd.classList.remove('open');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+    return btn;
+  };
   const _items = (menu) => [...menu.querySelectorAll('.vitra-dropdown-item')]
     .filter(i => !i.disabled && i.getAttribute('aria-disabled') !== 'true');
 
@@ -1394,14 +1393,10 @@ const dropdown = (() => {
       // press cannot also reach a modal or drawer around it.
       if (_escTaken !== e) document.querySelectorAll('.vitra-dropdown').forEach(dd => {
         const menu = dd.querySelector('.vitra-dropdown-menu');
-        if (!menu || !_isOpen(dd, menu)) return;
-        _escTaken = e;
-        if (_supportsPopover && menu.hasAttribute('popover')) menu.hidePopover();
-        else dd.classList.remove('open');
-        const btn = dd.querySelector('[data-vitra-dropdown-toggle]');
-        if (btn) {
-          btn.setAttribute('aria-expanded', 'false');
-          btn.focus();
+        if (menu && _isOpen(dd, menu)) {
+          _escTaken = e;
+          const btn = _shut(dd, menu);
+          if (btn) btn.focus();
         }
       });
       return;
@@ -1430,8 +1425,7 @@ const dropdown = (() => {
         toggle.focus();
         if (e.shiftKey) e.preventDefault();
       }
-      if (menu.hasAttribute('popover') && _supportsPopover) menu.hidePopover();
-      else { dd.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); }
+      _shut(dd, menu);
       return;
     }
     const i = onToggle ? -1 : items.indexOf(document.activeElement);
