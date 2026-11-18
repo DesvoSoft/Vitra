@@ -1363,13 +1363,16 @@ const dropdown = (() => {
     const k = e.key;
     if (e.altKey || e.ctrlKey || e.metaKey) return;
     if (k === 'Escape') {
-      // Both routes: an open popover is closed here too, so the same key
-      // press cannot also reach a modal or drawer around it.
+      // Both routes claim the key press, so a Vitra modal or drawer around
+      // the menu skips it. A [popover] menu is left to the browser's light
+      // dismiss, which closes only the innermost layer (not a native
+      // <dialog> around it); the .open route is closed here.
       if (_escTaken !== e) document.querySelectorAll('.vitra-dropdown').forEach(dd => {
         const menu = dd.querySelector('.vitra-dropdown-menu');
         if (menu && _isOpen(dd, menu)) {
           _escTaken = e;
-          const btn = _shut(dd, menu);
+          const btn = _supportsPopover && menu.hasAttribute('popover')
+            ? dd.querySelector('[data-vitra-dropdown-toggle]') : _shut(dd, menu);
           if (btn) btn.focus();
         }
       });
@@ -1634,16 +1637,16 @@ const _parseDataConfig = () => {
   const p = config.particles;
   const r = config.reveal;
   [
-    [t, () => theme.init(typeof t === 'object' ? t : typeof t === 'string' ? { default: t } : {})],
-    [p, () => (p === true ? particles.init() : typeof p === 'object' && particles.spawn(p.count || 10, p))],
-    [r, () => reveal.init(typeof r === 'object' ? r : {})],
+    ['theme', t, () => theme.init(typeof t === 'object' ? t : typeof t === 'string' ? { default: t } : {})],
+    ['particles', p, () => (p === true ? particles.init() : typeof p === 'object' && particles.spawn(p.count || 10, p))],
+    ['reveal', r, () => reveal.init(typeof r === 'object' ? r : {})],
     // Default-on modules, in this order (scenery before the guard, which
     // observes the result); each is skipped when its key is false.
     ...Object.entries({ ripple, toast, tooltip, drawer, dropdown, spotlight, scenery, motionGuard })
-      .map(([k, m]) => [config[k] !== false, m.init])
-  ].forEach(([on, f]) => {
+      .map(([k, m]) => [k, config[k] !== false, m.init])
+  ].forEach(([k, on, f]) => {
     // One module failing to start must not keep the next ones from starting
-    if (on) try { f(); } catch (e) { console.warn('[Vitra] Init failed:', e); }
+    if (on) try { f(); } catch (e) { console.warn(`[Vitra] ${k} init failed:`, e); }
   });
 };
 

@@ -233,6 +233,16 @@
         <div class="vitra-modal-body"><button class="vitra-btn" data-vitra-modal-close>OK</button></div>
       </div>
     </div>
+    <!-- A [popover] dropdown inside an author's native <dialog> (showModal): Esc closes the menu only. -->
+    <dialog id="ks-dialog" aria-label="Native dialog">
+      <div class="vitra-dropdown" id="ks-dg-ddp">
+        <button class="vitra-btn" data-vitra-dropdown-toggle>Popover menu</button>
+        <div class="vitra-dropdown-menu" popover>
+          <button class="vitra-dropdown-item">One</button>
+          <button class="vitra-dropdown-item">Two</button>
+        </div>
+      </div>
+    </dialog>
     <!-- Inner layers inside a modal: one Esc closes one layer. Opened by script only. -->
     <div id="ks-modal-layers" class="vitra-modal-overlay" aria-hidden="true">
       <div class="vitra-modal-content" aria-label="Modal with inner layers">

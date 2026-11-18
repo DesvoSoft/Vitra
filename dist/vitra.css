@@ -5250,7 +5250,7 @@
 
     /* A long item wraps instead of widening the page (a closed menu is
        visibility: hidden, which still creates scrollable overflow). */
-    max-width: min(20rem, calc(100vw - 2 * var(--vitra-space-4)));
+    max-width: calc(100vw - 2 * var(--vitra-space-4));
     background: var(--vitra-glass-bg-fallback);
     border: 1px solid var(--vitra-color-border);
     border-radius: var(--vitra-radius-md);

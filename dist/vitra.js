@@ -1000,7 +1000,7 @@
           const menu2 = dd2.querySelector(".vitra-dropdown-menu");
           if (menu2 && _isOpen(dd2, menu2)) {
             _escTaken = e;
-            const btn = _shut(dd2, menu2);
+            const btn = _supportsPopover && menu2.hasAttribute("popover") ? dd2.querySelector("[data-vitra-dropdown-toggle]") : _shut(dd2, menu2);
             if (btn) btn.focus();
           }
         });
@@ -1196,17 +1196,17 @@
     const p = config.particles;
     const r = config.reveal;
     [
-      [t, () => theme.init(typeof t === "object" ? t : typeof t === "string" ? { default: t } : {})],
-      [p, () => p === true ? particles.init() : typeof p === "object" && particles.spawn(p.count || 10, p)],
-      [r, () => reveal.init(typeof r === "object" ? r : {})],
+      ["theme", t, () => theme.init(typeof t === "object" ? t : typeof t === "string" ? { default: t } : {})],
+      ["particles", p, () => p === true ? particles.init() : typeof p === "object" && particles.spawn(p.count || 10, p)],
+      ["reveal", r, () => reveal.init(typeof r === "object" ? r : {})],
       // Default-on modules, in this order (scenery before the guard, which
       // observes the result); each is skipped when its key is false.
-      ...Object.entries({ ripple, toast, tooltip, drawer, dropdown, spotlight, scenery, motionGuard }).map(([k, m]) => [config[k] !== false, m.init])
-    ].forEach(([on, f]) => {
+      ...Object.entries({ ripple, toast, tooltip, drawer, dropdown, spotlight, scenery, motionGuard }).map(([k, m]) => [k, config[k] !== false, m.init])
+    ].forEach(([k, on, f]) => {
       if (on) try {
         f();
       } catch (e) {
-        console.warn("[Vitra] Init failed:", e);
+        console.warn(`[Vitra] ${k} init failed:`, e);
       }
     });
   };

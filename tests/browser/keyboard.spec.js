@@ -294,6 +294,26 @@ test.describe('Esc closes one layer at a time', () => {
   }
 });
 
+// The browser's light dismiss closes a [popover] menu: the same Esc must not
+// also reach an author's native <dialog> (showModal) around it.
+test('[contract] Esc: a [popover] dropdown inside a native <dialog> closes first, the dialog on the next Esc', async ({ page }) => {
+  await openSink(page);
+  await page.evaluate(() => document.querySelector('#ks-dialog').showModal());
+  const toggle = '#ks-dg-ddp [data-vitra-dropdown-toggle]';
+  const item = page.locator('#ks-dg-ddp .vitra-dropdown-item').first();
+  const dialogOpen = () => page.evaluate(() => document.querySelector('#ks-dialog').open);
+  await activate(page, toggle);
+  await expect(page.locator(toggle)).toHaveAttribute('aria-expanded', 'true');
+  await expect(item).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(item, 'first Esc closes the menu').toBeHidden();
+  await expect(page.locator(toggle)).toHaveAttribute('aria-expanded', 'false');
+  expect(await dialogOpen(), 'first Esc leaves the dialog open').toBe(true);
+  expect(await isInside(page, '#ks-dialog'), 'focus stays inside the dialog').toBe(true);
+  await page.keyboard.press('Escape');
+  await expect.poll(dialogOpen, { message: 'second Esc closes the dialog' }).toBe(false);
+});
+
 // -------------------------------------------------------------- dropdown ---
 
 for (const [kind, sel] of [['classic', '#ks-dd'], ['popover', '#ks-dd-popover']]) {
