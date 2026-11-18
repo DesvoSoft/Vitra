@@ -646,6 +646,46 @@ test.describe('scenery stars', () => {
   }
 });
 
+// --------------------------------------------------------------- reveal ---
+
+// The kitchen sink has no data-config, so reveal.init() never runs on it
+// unless a test calls it: it is the page without init.
+test.describe('reveal', () => {
+  const VARIANTS = ['up', 'left', 'scale', 'blur'];
+  const opacity = (page, state) => page.locator(`[data-component="reveal"] [data-state="${state}"]`)
+    .evaluate((el) => getComputedStyle(el).opacity);
+  const settleOn = (page, sel) => page.locator(sel).evaluate((el) =>
+    Promise.all(el.getAnimations().map((a) => a.finished.catch(() => {}))));
+
+  test('[contract] directional variants without reveal.init() end visible, as in 1.13.5', async ({ page }) => {
+    await openSink(page);
+    for (const state of VARIANTS) {
+      await settleOn(page, `[data-component="reveal"] [data-state="${state}"]`);
+      expect(await opacity(page, state), state).toBe('1');
+    }
+  });
+
+  test('[contract] with reveal.init() a directional variant below the fold waits, then reveals on scroll', async ({ page }) => {
+    await openSink(page);
+    const sel = '[data-component="reveal"] [data-state="up"]';
+    await page.evaluate(() => {
+      const spacer = document.createElement('div');
+      spacer.style.height = '4000px';
+      const section = document.querySelector('[data-component="reveal"]');
+      section.parentNode.insertBefore(spacer, section);
+      window.scrollTo(0, 0);
+      window.Vitra.reveal.init();
+    });
+    await settleOn(page, sel);
+    expect(await opacity(page, 'up'), 'hidden while below the fold').toBe('0');
+    await page.locator(sel).evaluate((el) => el.scrollIntoView({ block: 'center' }));
+    await expect.poll(async () => {
+      await settleOn(page, sel);
+      return opacity(page, 'up');
+    }, { message: 'visible once scrolled into view' }).toBe('1');
+  });
+});
+
 // ---------------------------------------------------------------- no JS ---
 
 test.describe('without JavaScript', () => {

@@ -386,6 +386,20 @@
       _lastScrollY = y;
       _lastScrollTime = now;
     };
+    const _OBS = "vitra-scroll-reveal-observer";
+    const _cls = (el) => el.classList.contains(_OBS) ? "vitra-scroll-revealed" : "vitra-revealed";
+    const _hide = (el) => {
+      const c = el.classList;
+      el.style.transform = !c.contains(_OBS) ? "translateY(20px)" : c.contains("vitra-scroll-reveal-left") ? "translateX(-40px)" : c.contains("vitra-scroll-reveal-right") ? "translateX(40px)" : c.contains("vitra-scroll-reveal-scale") ? "scale(0.8)" : "translateY(40px)";
+      el.style.opacity = "0";
+      el.style.animationName = "none";
+    };
+    const _show = (el) => {
+      el.classList.add(_cls(el));
+      el.style.opacity = "1";
+      el.style.transform = "none";
+      el.style.animationName = "";
+    };
     const _ensureScrollTracking = () => {
       if (_scrollListenerAttached) return;
       window.addEventListener("scroll", _handleScroll, { passive: true });
@@ -408,7 +422,7 @@
         const scrollSelectors = ".vitra-scroll-reveal, .vitra-scroll-reveal-left, .vitra-scroll-reveal-right, .vitra-scroll-reveal-scale";
         const scrollElements = document.querySelectorAll(scrollSelectors);
         scrollElements.forEach((el) => {
-          el.classList.add("vitra-scroll-reveal-observer");
+          el.classList.add(_OBS);
         });
         elements = _q(selector, "Reveal", 1);
         elements.push(...scrollElements);
@@ -416,15 +430,7 @@
         elements = _q(selector, "Reveal", 1);
       }
       if (_reducedMotion()) {
-        elements.forEach((el) => {
-          if (el.classList.contains("vitra-scroll-reveal-observer")) {
-            el.classList.add("vitra-scroll-revealed");
-          } else {
-            el.classList.add("vitra-revealed");
-          }
-          el.style.opacity = "1";
-          el.style.transform = "none";
-        });
+        elements.forEach(_show);
         return;
       }
       if (!("IntersectionObserver" in window)) {
@@ -436,37 +442,16 @@
         const visible = entries.filter((entry) => entry.isIntersecting);
         const effectiveStagger = _isFastScrolling ? 0 : stagger;
         visible.forEach((entry, batchIndex) => {
-          setTimeout(() => {
-            if (entry.target.classList.contains("vitra-scroll-reveal-observer")) {
-              entry.target.classList.add("vitra-scroll-revealed");
-            } else {
-              entry.target.classList.add("vitra-revealed");
-            }
-            entry.target.style.opacity = "1";
-            entry.target.style.transform = "none";
-          }, batchIndex * effectiveStagger);
+          setTimeout(() => _show(entry.target), batchIndex * effectiveStagger);
           _observer.unobserve(entry.target);
           _pendingElements.delete(entry.target);
           _revealedElements.push(entry.target);
         });
       }, { threshold, rootMargin });
       elements.forEach((el) => {
-        if (el.classList.contains("vitra-scroll-reveal-observer")) {
-          if (el.classList.contains("vitra-scroll-reveal-left")) {
-            el.style.transform = "translateX(-40px)";
-          } else if (el.classList.contains("vitra-scroll-reveal-right")) {
-            el.style.transform = "translateX(40px)";
-          } else if (el.classList.contains("vitra-scroll-reveal-scale")) {
-            el.style.transform = "scale(0.8)";
-          } else {
-            el.style.transform = "translateY(40px)";
-          }
-          el.style.transition = "opacity 1s cubic-bezier(0.23, 1, 0.32, 1), transform 1s cubic-bezier(0.23, 1, 0.32, 1)";
-        } else {
-          el.style.transform = "translateY(20px)";
-          el.style.transition = "opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1), transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)";
-        }
-        el.style.opacity = "0";
+        _hide(el);
+        const t = el.classList.contains(_OBS) ? "1s" : "0.6s";
+        el.style.transition = `opacity ${t} cubic-bezier(0.23, 1, 0.32, 1), transform ${t} cubic-bezier(0.23, 1, 0.32, 1)`;
         _pendingElements.add(el);
         _observer.observe(el);
       });
@@ -476,23 +461,8 @@
     };
     const reset = () => {
       _revealedElements.forEach((el) => {
-        if (el.classList.contains("vitra-scroll-reveal-observer")) {
-          el.classList.remove("vitra-scroll-revealed");
-          el.style.opacity = "0";
-          if (el.classList.contains("vitra-scroll-reveal-left")) {
-            el.style.transform = "translateX(-40px)";
-          } else if (el.classList.contains("vitra-scroll-reveal-right")) {
-            el.style.transform = "translateX(40px)";
-          } else if (el.classList.contains("vitra-scroll-reveal-scale")) {
-            el.style.transform = "scale(0.8)";
-          } else {
-            el.style.transform = "translateY(40px)";
-          }
-        } else {
-          el.classList.remove("vitra-revealed");
-          el.style.opacity = "0";
-          el.style.transform = "translateY(20px)";
-        }
+        el.classList.remove(_cls(el));
+        _hide(el);
         if (_observer) {
           _pendingElements.add(el);
           _observer.observe(el);
@@ -513,15 +483,8 @@
       _lastScrollTime = null;
       _isFastScrolling = false;
       [..._revealedElements, ..._pendingElements].forEach((el) => {
-        el.style.opacity = "";
-        el.style.transform = "";
-        el.style.transition = "";
-        if (el.classList.contains("vitra-scroll-reveal-observer")) {
-          el.classList.remove("vitra-scroll-revealed");
-          el.classList.remove("vitra-scroll-reveal-observer");
-        } else {
-          el.classList.remove("vitra-revealed");
-        }
+        el.style.opacity = el.style.transform = el.style.transition = el.style.animationName = "";
+        el.classList.remove(_cls(el), _OBS);
         if (_pendingElements.has(el)) {
           el.style.opacity = "1";
           el.style.transform = "none";

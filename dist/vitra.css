@@ -1090,12 +1090,9 @@
   }
 
   /* The directional variants below carry a keyframe animation with
-     fill-mode: both. Next to .vitra-reveal it used to run at page load
-     and hold opacity: 1 over the hidden state, so nothing was left to
-     reveal on scroll. Hold it until the element is actually revealed. */
-  .vitra-reveal:not(.vitra-revealed) {
-    animation-name: none;
-  }
+     fill-mode: both, which shows them at load on a page that never calls
+     reveal.init() (as in 1.13.5). reveal.init() holds that animation inline
+     on the elements it watches, until each is revealed. */
 
   /* No script, no observer: never leave content hidden. */
   @media (scripting: none) {

@@ -1669,6 +1669,26 @@ describe('Audit 2026-11 regressions', () => {
       Vitra.reveal.reset();
       expect(io.targets.has(el)).toBe(true);
     });
+
+    it('holds a directional keyframe inline only while an element waits (init, reveal, reset, destroy)', async () => {
+      document.body.innerHTML = '<div class="vitra-reveal vitra-reveal-up" id="r"></div><div class="vitra-reveal vitra-reveal-left" id="p"></div>';
+      const el = document.getElementById('r');
+      const pending = document.getElementById('p');
+      expect(el.style.animationName).toBe('');
+      Vitra.reveal.init({ stagger: 0 });
+      expect(el.style.animationName).toBe('none');
+      expect(pending.style.animationName).toBe('none');
+      const io = observers[observers.length - 1];
+      io.cb([{ isIntersecting: true, target: el }]);
+      await wait(10);
+      expect(el.classList.contains('vitra-revealed')).toBe(true);
+      expect(el.style.animationName).toBe('');
+      Vitra.reveal.reset();
+      expect(el.style.animationName).toBe('none');
+      Vitra.reveal.destroy();
+      expect(el.style.animationName).toBe('');
+      expect(pending.style.animationName).toBe('');
+    });
   });
 });
 
