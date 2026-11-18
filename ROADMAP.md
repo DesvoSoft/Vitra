@@ -1,7 +1,7 @@
 # Vitra CSS Framework — Roadmap
 
-**Current version:** v1.13.5  
-**Last updated:** 2026-07-14
+**Current version:** v1.14.0  
+**Last updated:** 2026-11-17
 
 ---
 
@@ -129,7 +129,8 @@ All 29 audit findings are now closed. (Note: findings 12's dead-token removal �
 
 | # | Priority | Area | Issue |
 |---|----------|------|-------|
-| R7 | Low | `src/vitra.js` | `theme` module is a plain object literal, not a closure — its `_getSystemTheme`/`_isLocalStorageAvailable`/`_watchSystemTheme` "private" helpers leak as real enumerable own-properties on `Vitra.theme`, unlike every other module's closure-scoped-private pattern |
+| R7 | Low | `src/vitra.js` | `theme` module is a plain object literal, not a closure — its `_getSystemTheme`/`_reveal`/`_canTransition` "private" helpers leak as real enumerable own-properties on `Vitra.theme`, unlike every other module's closure-scoped-private pattern (`_watchSystemTheme` and `_isLocalStorageAvailable` were removed in 1.14) |
+| G1 | Medium | `src/08-shaders.css` | `.vitra-gradient-rotate` animates a registered custom property and repaints every frame while on screen (paused offscreen since 1.14); rotating it with `transform`, as `.vitra-border-glow` now does, is the follow-up |
 | D1 | Medium | demo | Heavy particle/cinematic sections not paused off-screen — can drop frames on mobile |
 | D2 | Low | demo | `demo.js` parses CSS custom props with string replace — breaks on nested vars |
 
@@ -152,6 +153,27 @@ All 29 audit findings are now closed. (Note: findings 12's dead-token removal �
 - `.d.ts` drift-guard test extended to cover `particles`/`reveal`/`modal`/`tooltip` (previously only `ripple`/`dropdown`/`spotlight`/`toast`) — this surfaced and fixed 3 real gaps: `reveal.destroy()`, `modal.destroy()`, and `tooltip.destroy()` all existed at runtime but were missing from `dist/vitra.d.ts`.
 - Keyboard-only walkthrough (Tab/Shift-Tab/Escape, no mouse) across dropdown/modal/tooltip/spotlight: modal's focus-trap and Escape handling confirmed already correct; tooltip's focus/blur-driven show/hide needs no Escape by design (non-interactive, `pointer-events: none`); spotlight has no focusable semantics of its own.
 - Found (not fixed — filed as R7): `theme` module's `_`-prefixed helpers leak onto the public `Vitra.theme` object, unlike every other module. Real fix requires restructuring `theme` into a closure like the rest of the codebase; deferred to avoid rushing a mid-release refactor.
+
+---
+
+## v1.14 — Component Contract, CSS Pieces & Test Net ✅
+
+A rigor release: every component held to one contract (themes, keyboard, touch, reduced motion, no-JS, screen readers) and a browser test suite that keeps it so. Details and measured numbers in [CHANGELOG.md](CHANGELOG.md).
+
+**New features:**
+- **`Vitra.drawer`** (`open`/`close`/`toggle`/`init`/`destroy`, `data-vitra-drawer-toggle`): focus trap, `inert` while closed, `aria-expanded`, Esc, overlay, shared scroll lock
+- **CSS pieces**: `vitra.core`, `vitra.scenery` and `vitra.effects` (`.css` + `.min.css`) next to the unchanged bundle, each with an `exports` entry, a size budget and an SRI line
+- **ES module with named exports**, `dist/vitra.cjs`, typings from `src/vitra.d.ts`; `package.json` `style` is the minified file
+- `.vitra-checkbox`, toast `warning` type and close button, dropdown arrow-key navigation, CSS-only tooltip (`data-tooltip`), `motionGuard.observe()`, `Vitra.toast.init()`
+
+**Fixes:**
+- `.vitra-glass` border renders; `auto` theme generated from `light`/`dark` (`@vitra-auto-mirror`); component colours are theme tokens only; contrast thresholds met in every theme via `--vitra-color-border-control`
+- Modal, tooltip, toast, dropdown and theme edge cases; touch targets, overflow at 360 px, hover-only lifts
+- Progress bar stripes and indeterminate ring animate `transform`; `motionGuard` covers every infinite loop
+
+**Infrastructure:** kitchen-sink page (`tests/kitchen-sink.html`), Playwright + axe-core specs in Chromium and Firefox, CI job for them. Budgets: `vitra.min.js` 6 → 7.5 kB brotli (measured 7.32), `vitra.min.css` 20 kB (18.87).
+
+**Not verified in 1.14:** Safari/WebKit, real-device touch, screen readers; performance figures are headless and relative.
 
 ---
 

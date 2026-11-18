@@ -14,15 +14,13 @@ Vitra includes **6 preset themes** (plus `auto` for system detection) that can b
 | `neon` | Neon | 285 (violet) | Vivid violet accent on a deep dark background |
 | `ocean` | Ocean | 205 (blue) | Deep blue-toned theme with a bright blue accent |
 | `emerald` | Emerald | 145 (green) | Rich green-toned theme with soft glows |
-| `auto` | Auto-Detect | 245 (purple) | Uses `prefers-color-scheme` to detect system preference |
+| `auto` | Auto-Detect | 222 or 177 | Follows the system: identical to `light` or to `dark` (see *Auto Theme*) |
 
 ### Premium Color Features
 
 Since v1.3, Vitra's theming system includes:
 
 - **Tinted Neutrals**: Every surface carries a trace of the accent hue — inspired by Stripe, Linear, and Raycast
-- **oklch() Support**: `--vitra-color-accent-oklch` for perceptually uniform color interpolation
-- **Warm/Cool Variants**: `--vitra-color-bg-warm` (+30° hue shift) and `--vitra-color-bg-cool` (-30° hue shift)
 - **`color-scheme` Sync**: Browser-native UI (scrollbars, form controls) automatically matches the theme
 
 ## Quick Start
@@ -66,33 +64,32 @@ console.log('Effective theme:', effective);
 
 ### 1. Default (No data-theme attribute)
 
-The default theme matches the base token values defined in `01-tokens.css`. Since v1.3, surfaces are tinted with the accent hue.
+The default theme is the base token set in `01-tokens.css`, which is the dark palette: accent hue 177 (teal) and `color-scheme: dark`. A page with no `data-theme` therefore gets dark form controls and scrollbars, and the stars of the scenery.
 
 **Core Colors:**
-- Background: `hsl(245, 15%, 4%)` (dark with purple tint)
-- Surface: `hsl(245, 20%, 95% / 5%)` (tinted white overlay)
-- Accent: `hsl(245, 100%, 70%)` — `#6c63ff` (purple)
-- Text: `rgba(255, 255, 255, 0.95)` (light)
+- Background: `hsl(var(--vitra-color-accent-h) 15% 4%)`
+- Surface: `hsl(var(--vitra-color-accent-h) 20% 95% / 5%)`
+- Text: `hsl(0deg 0% 100% / 95%)`
 
-**Use case:** Dark-themed applications, matches the "dark" theme.
+**Use case:** Dark-themed applications; the same as the "dark" theme.
 
 ---
 
 ### 2. Light Theme
 
-Bright theme with dark text on light background. Surface colors are subtly tinted with the accent hue.
+Bright theme with dark text on a pale blue-tinted background.
 
-**Key Tokens:**
 ```css
 html[data-theme="light"] {
-  --vitra-color-bg: hsl(245, 10%, 98%);
-  --vitra-color-surface: hsl(245, 20%, 10% / 4%);
-  --vitra-color-text-primary: rgba(0, 0, 0, 0.95);
-  --vitra-color-accent: #6c63ff;
+  --vitra-color-accent-h: 222;
+  --vitra-color-accent-s: 72%;
+  --vitra-color-accent-l: 51%;
+  --vitra-color-bg: hsl(222deg 32% 97%);
+  --vitra-color-surface: hsl(222deg 30% 10% / 5%);
+  --vitra-color-border-control: hsl(222deg 25% 15% / 50%);
+  --vitra-color-text-primary: hsl(222deg 28% 10%);
 }
 ```
-
-**Shadows:** Lighter shadows for light backgrounds.
 
 **Use case:** Documentation sites, light-themed dashboards.
 
@@ -100,19 +97,16 @@ html[data-theme="light"] {
 
 ### 3. Dark Theme
 
-Dark background with light text (explicit). Tinted with accent hue for cohesive premium look.
+Dark background with light text (explicit), tinted with the accent hue.
 
-**Key Tokens:**
 ```css
 html[data-theme="dark"] {
-  --vitra-color-bg: hsl(245, 15%, 4%);
-  --vitra-color-surface: hsl(245, 20%, 95% / 5%);
-  --vitra-color-text-primary: rgba(255, 255, 255, 0.95);
-  --vitra-color-accent: #6c63ff;
+  --vitra-color-bg: hsl(var(--vitra-color-accent-h) 15% 4%);
+  --vitra-color-surface: hsl(var(--vitra-color-accent-h) 20% 95% / 5%);
+  --vitra-color-border-control: hsl(var(--vitra-color-accent-h) 20% 95% / 37%);
+  --vitra-color-text-primary: hsl(0deg 0% 100% / 95%);
 }
 ```
-
-**Shadows:** Glow effects enhanced for dark theme.
 
 **Use case:** Default for admin panels, dark-mode applications.
 
@@ -122,7 +116,6 @@ html[data-theme="dark"] {
 
 Soft, muted colors with pink accents.
 
-**Key Tokens:**
 ```css
 html[data-theme="pastel"] {
   --vitra-color-bg: hsl(330deg 30% 98%);
@@ -132,27 +125,23 @@ html[data-theme="pastel"] {
 }
 ```
 
-**Shadows:** Soft pastel shadows.
-
 **Use case:** Children's apps, playful interfaces, soft UI.
 
 ---
 
 ### 5. Neon Theme
 
-Bright cyan glow effects on deep black background.
+Vivid violet accent on a deep dark background.
 
-**Key Tokens:**
 ```css
-[data-theme="neon"] {
-  --vitra-color-bg: #0a0a0f;
-  --vitra-color-accent: #00ffff; /* Cyan */
-  --vitra-color-text-primary: rgba(0, 255, 255, 0.95);
-  --vitra-shadow-glow: 0 0 20px rgba(0, 255, 255, 0.5);
+html[data-theme="neon"] {
+  --vitra-color-bg: hsl(285deg 35% 3%);
+  --vitra-color-accent-h: 285;
+  --vitra-color-accent-s: 100%;
+  --vitra-color-accent-l: 58%;
+  --vitra-color-text-primary: hsl(285deg 100% 96%);
 }
 ```
-
-**Shadows:** Strong glow effects using cyan.
 
 **Use case:** Gaming interfaces, creative portfolios, cyberpunk themes.
 
@@ -160,17 +149,15 @@ Bright cyan glow effects on deep black background.
 
 ### 6. Ocean Theme
 
-Deep blue-toned theme with cyan accents.
+Deep blue-toned theme with a bright blue accent.
 
-**Key Tokens:**
 ```css
 html[data-theme="ocean"] {
-  --vitra-color-bg: hsl(210, 30%, 4%);
-  --vitra-color-surface: hsla(210, 100%, 60%, 0.05);
-  --vitra-color-accent-h: 200;
+  --vitra-color-bg: hsl(205deg 35% 4%);
+  --vitra-color-accent-h: 205;
   --vitra-color-accent-s: 90%;
   --vitra-color-accent-l: 55%;
-  --vitra-color-text-primary: hsl(210, 100%, 95%);
+  --vitra-color-text-primary: hsl(205deg 100% 95%);
 }
 ```
 
@@ -182,15 +169,13 @@ html[data-theme="ocean"] {
 
 Rich green-toned theme with soft glows.
 
-**Key Tokens:**
 ```css
 html[data-theme="emerald"] {
-  --vitra-color-bg: hsl(160, 20%, 3%);
-  --vitra-color-surface: hsla(160, 100%, 50%, 0.05);
-  --vitra-color-accent-h: 155;
+  --vitra-color-bg: hsl(145deg 22% 3%);
+  --vitra-color-accent-h: 145;
   --vitra-color-accent-s: 80%;
   --vitra-color-accent-l: 45%;
-  --vitra-color-text-primary: hsl(160, 100%, 95%);
+  --vitra-color-text-primary: hsl(145deg 100% 95%);
 }
 ```
 
@@ -200,37 +185,31 @@ html[data-theme="emerald"] {
 
 ### 8. Auto Theme (System Preference)
 
-Automatically detects the user's system theme preference via `prefers-color-scheme`.
+`auto` follows the system: `prefers-color-scheme: dark` gives exactly the `dark` theme and `prefers-color-scheme: light` exactly the `light` theme, scenery, glass and modal included.
 
-**Behavior:**
-- Uses `prefers-color-scheme: dark` → Applies "dark" theme tokens
-- Uses `prefers-color-scheme: light` → Applies "light" theme tokens
-- Falls back to "dark" theme if detection fails
+**It is generated, not written.** Nobody edits an `auto` block. The build (`scripts/lib/auto-mirror.cjs`, called from `scripts/build-css.js`) reads the rules marked with `@vitra-auto-mirror` and, right after each one, emits a copy for `[data-theme="auto"]` wrapped in `@media (prefers-color-scheme: light)` or `(prefers-color-scheme: dark)`. The copy has the same specificity as the original and the marker comment is removed from the output. Source files never contain the string `data-theme="auto"`; a test enforces it.
 
-**Implementation:**
+To make a rule part of `auto` as well as of `light` or `dark`, put the marker on the line before it, naming the scheme the rule belongs to:
+
 ```css
-html[data-theme="auto"] {
-  /* Default to dark */
-  --vitra-color-bg: hsl(240, 15%, 4%);
-}
-
-@media (prefers-color-scheme: light) {
-  html[data-theme="auto"] {
-    --vitra-color-bg: hsl(0, 0%, 100%);
-    --vitra-color-surface: hsla(0, 0%, 0%, 0.04);
-    --vitra-color-text-primary: hsla(0, 0%, 0%, 0.95);
-    --vitra-color-text-secondary: hsla(0, 0%, 0%, 0.7);
-  }
+/* @vitra-auto-mirror light */
+:where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-halo {
+  /* … */
 }
 ```
 
-**JavaScript watches for changes:**
-```javascript
-// Auto theme listens for system changes
-if (themeToSet === 'auto') {
-  theme._watchSystemTheme();
-}
-```
+- The marker takes `light` or `dark`, and the rule after it must name at least one theme attribute.
+- In a selector list only the selectors that name a theme are copied; inside `:where()` or `:is()` the whole list of theme attributes is replaced by `[data-theme="auto"]`.
+- The build throws if a theme attribute is inside `:not()`, if theme attributes appear in several places of one selector, if the marker is not followed by a rule, or if the scheme is not `light` or `dark`.
+- A selector for pages with no `data-theme` (`:where(:root:not([data-theme]))`) can sit in the same list; the mirror leaves it out of the `auto` copy.
+
+**JavaScript.** `theme.getEffective()` resolves `auto` with `matchMedia('(prefers-color-scheme: dark)')`. There is no JS watcher: the CSS media query handles a change of the system theme.
+
+### Control borders and the token-only rule
+
+- **`--vitra-color-border-control`** is the border of an interactive control (input, select, switch, checkbox, radio). It is defined in `:root` and in every theme, and each value is the lowest alpha that reaches 3:1 against that theme's `--vitra-color-bg`. `--vitra-color-border` stays the quiet line of cards and panels (decorative, exempt from the 3:1 rule). A new theme must define both.
+- **Colours in components come from tokens.** Inside `@layer components`, `utilities` and `shaders`, colour declarations (`color`, `background`, `border`, `outline`, `fill`, `stroke`) use `var(--vitra-color-*)`, not literals. The exceptions are accent-hue expressions (`hsl(var(--vitra-color-accent-h) …)`), colours inside gradients, shadows, and a declaration preceded by `/* vitra-literal-ok: <reason> */`. `tests/build.test.js` fails on any other literal.
+- `--vitra-color-text-tertiary` is for non-essential text (hints, watermarks); text a user needs to read, placeholders included, uses `secondary` or `primary`.
 
 ### CSS Custom Properties Reference
 
@@ -244,6 +223,7 @@ Each theme defines the following `--vitra-*` properties:
 | `--vitra-color-surface-active` | Active state surface | ✅ All themes |
 | `--vitra-color-border` | Subtle borders | ✅ All themes |
 | `--vitra-color-border-hover` | Hover border state | ✅ All themes |
+| `--vitra-color-border-control` | Border of an interactive control (3:1 against the page) | ✅ All themes |
 | `--vitra-color-text-primary` | Primary text | ✅ All themes |
 | `--vitra-color-text-secondary` | Secondary/muted text | ✅ All themes |
 | `--vitra-color-text-tertiary` | Tertiary/disabled text | ✅ All themes |
@@ -253,10 +233,8 @@ Each theme defines the following `--vitra-*` properties:
 | `--vitra-color-accent-h` | Accent hue | ✅ Decorative themes override |
 | `--vitra-color-accent-s` | Accent saturation | ✅ Decorative themes override |
 | `--vitra-color-accent-l` | Accent lightness | ✅ Decorative themes override |
-| `--vitra-color-bg-warm` | Warm background variant | ✅ Dark/light |
-| `--vitra-color-bg-cool` | Cool background variant | ✅ Dark/light |
-| `--vitra-color-accent-oklch` | Perceptual color space | ✅ Dark/light |
-| `--vitra-border-glow-angle` | Animated border start angle | ✅ Dark/light |
+| `--vitra-border-glow-angle` | Animated border start angle | Base value only |
+| `--vitra-gradient-text-l` | Lightness of the animated gradient text | Base 55%, `light` sets 35% |
 
 **Note:** Decorative themes (pastel, neon, ocean, emerald) inherit shadow and premium token values from the default dark theme unless explicitly overridden.
 
@@ -287,8 +265,8 @@ const success = Vitra.theme.set('neon');
 // Persists to localStorage automatically
 ```
 
-#### `Vitra.theme.toggle()`
-Toggles between light and dark themes. If currently in a special theme (pastel, neon, etc.), defaults to light.
+#### `Vitra.theme.toggle(options)`
+Toggles between light and dark themes. If currently in a special theme (pastel, neon, etc.), defaults to light. `options` is `{ transition, origin }` as for `set()`.
 
 ```javascript
 // Toggle between light and dark
@@ -301,16 +279,17 @@ Initializes theme from localStorage or system preference.
 
 ```javascript
 Vitra.theme.init({
-  defaultTheme: 'auto',  // Fallback if nothing stored (default: 'auto')
-  persist: true            // Whether to persist theme (default: true)
+  default: 'auto',       // Fallback if nothing stored (default: 'auto'); 'defaultTheme' works too
+  persist: true,         // Whether to persist theme (default: true)
+  transition: false      // Animate later changes with a circular reveal (default: false)
 });
 
 // Behavior:
 // 1. Try to restore from localStorage
-// 2. If nothing stored, use defaultTheme
+// 2. If nothing stored, use the default
 // 3. Apply the theme
-// 4. If persist is true and no stored theme, save defaultTheme
-// 5. If theme is 'auto', watch for system changes
+// 4. If persist is true and no stored theme, save the default
+// 5. 'auto' needs no watcher: the CSS media query follows the system
 ```
 
 #### `Vitra.theme.getEffective()`
@@ -349,7 +328,7 @@ const themes = Vitra.theme.getValidThemes();
 
 <script>
 function toggleTheme() {
-  Vitra.theme.toggle('light', 'dark');
+  Vitra.theme.toggle();
 }
 </script>
 ```
@@ -378,7 +357,7 @@ function toggleTheme() {
 
 <script>
 function toggleTheme() {
-  const newTheme = Vitra.theme.toggle('light', 'dark');
+  const newTheme = Vitra.theme.toggle();
   
   // Update icons
   document.querySelectorAll('[data-theme-icon]').forEach(el => {
@@ -448,8 +427,8 @@ No additional work needed — all components use `var(--vitra-color-*)` tokens t
 ## Best Practices
 
 1. **Always use tokens:** Reference `var(--vitra-color-*)` in your custom CSS, not hard-coded colors
-2. **Test all themes:** Verify your UI looks good in all 8 presets
-3. **Use auto theme for new users:** Set `defaultTheme: 'auto'` in `Vitra.theme.init()`
+2. **Test all themes:** Verify your UI looks good in all 7 presets, and in `auto` under a light and a dark system
+3. **Use auto theme for new users:** Set `default: 'auto'` in `Vitra.theme.init()` (or `"theme": "auto"` in `data-config`)
 4. **Respect persistence:** Let users override the system preference if they want
 5. **Test with prefers-color-scheme:** Use DevTools to simulate system theme changes
 
@@ -463,7 +442,7 @@ No additional work needed — all components use `var(--vitra-color-*)` tokens t
 - Verify the theme name is spelled correctly (case-sensitive)
 
 ### localStorage not working?
-- Check if localStorage is available: `Vitra.theme._isLocalStorageAvailable()`
+- Check if localStorage is available: `try { localStorage.setItem('t', '1'); localStorage.removeItem('t'); } catch (e) { /* blocked */ }`
 - Some browsers disable localStorage in private/incognito mode
 
 ### Auto theme not detecting system preference?
