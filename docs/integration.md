@@ -90,7 +90,7 @@ Load the JS and the CSS from the same release: the tooltip's styles live in the 
 - `scenery` and `effects` need `core`: the tokens and themes they read are defined there.
 - Load order between the pieces does not matter. Each file starts with the same `@layer` statement, which fixes the layer order whichever file the browser sees first. Do not strip that line.
 - `core + scenery + effects` gives the same computed styles as `vitra.min.css` (a browser test compares a sample of elements in dark and light, in three load orders).
-- Without `effects`, particles that `Vitra.particles.spawn()` creates appear as small static dots (the JS sets their size and colour inline, the animation lives in the CSS), and `.vitra-ripple` has no ripple styling. Without `scenery`, `.vitra-scenery` roots take no space and draw nothing.
+- Without `effects`, particles that `Vitra.particles.spawn()` creates appear as small static dots (the JS sets their size and colour inline, the animation lives in the CSS), emoji particles show nothing (the glyph is drawn by a rule in `effects`), and `.vitra-ripple` has no ripple styling. Without `scenery`, `.vitra-scenery` roots take no space and draw nothing.
 - Each piece is compressed on its own, so the three together weigh more than the bundle (20.3 kB against 18.9 kB brotli). Use the pieces to leave one out, not to load all three.
 - Installed from npm or git: `vitra-css/core.css`, `vitra-css/scenery.css`, `vitra-css/effects.css` (see `exports` in `package.json`).
 
@@ -349,6 +349,7 @@ import { reveal } from './vitra.esm.js';
 reveal.init({
   selector: '.vitra-reveal',   // CSS selector
   threshold: 0.1,               // Visibility threshold (0-1)
+  rootMargin: '0px',             // Observer margin, e.g. '0px 0px 15% 0px' to trigger early
   stagger: 100,                 // Delay between elements (ms)
   scrollReveal: false           // Also observe .vitra-scroll-reveal* elements
 });
@@ -438,7 +439,8 @@ drawer.destroy();          // close, remove inert, unbind
 </nav>
 ```
 
-- **`data-vitra-drawer-toggle="#id"`** on any element links it to a drawer. The module sets `aria-expanded` on every toggle and `.active` on a `.vitra-burger` toggle. The `.open` class is the open state, as before; the CSS slides the drawer in from the right.
+- **`.vitra-burger` is only displayed at 768 px and narrower** (`display: none` above that). On a wider viewport use any visible element, such as a plain `<button>`, as the toggle.
+- **`data-vitra-drawer-toggle="#id"` on any element links it to a drawer. The module sets `aria-expanded` on every toggle and `.active` on a `.vitra-burger` toggle. The `.open` class is the open state, as before; the CSS slides the drawer in from the right.
 - **Closed means inert.** A managed drawer gets `inert` while closed (out of the tab order and the accessibility tree) and loses it when it opens. Opening it traps focus, locks scroll (same helper as the modal) and sets `role="dialog"` and `aria-modal="true"` if you did not provide a `role`; if you wrote `aria-hidden` on the drawer, the module flips it to `"false"` while open and back to `"true"` on close. Esc closes it, except while a modal is open. Focus goes back to the toggle (or the previously focused element) on close.
 - **Overlay.** The module adds and removes `.open` on the drawer's overlay: the element named by `data-vitra-drawer-overlay="#id"` on the drawer, otherwise the `.vitra-drawer-overlay` that is a direct child of the drawer's parent. A click on the overlay closes the drawer at once. A click anywhere else outside the drawer closes it as well, one tick later, so a button of your own that calls `drawer.toggle()` in its click handler is not undone.
 - **`.vitra-drawer-close`** inside a managed drawer closes it.
@@ -943,8 +945,8 @@ document.getElementById('party-btn').addEventListener('click', () => {
 # Minify CSS with lightningcss
 npx lightningcss vitra.css --minify --output vitra.min.css
 
-# Minify JS with esbuild
-npx esbuild vitra.js --bundle --minify --outfile=vitra.min.js
+# JS: use the shipped dist/vitra.min.js, or rebuild it the way package.json does
+npx esbuild src/vitra.iife.js --bundle --minify --outfile=dist/vitra.min.js --format=iife --sourcemap
 ```
 
 ### 3. Use the CDN with a pinned version
@@ -1016,7 +1018,7 @@ but a few patterns can still add up if you stack many instances on one page:
 - Check browser console for errors
 - Verify `prefers-reduced-motion` is not enabled (particles skip if enabled)
 - Check particle limits: `Vitra.particles.limits()`
-- Particles that appear as small static dots, or a click ripple without styling: the `effects` piece is not loaded (see *CSS Pieces*)
+- Particles that appear as small static dots (emoji particles: nothing at all), or a click ripple without styling: the `effects` piece is not loaded (see *CSS Pieces*)
 
 ### Tooltip unstyled or misplaced
 

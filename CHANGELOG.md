@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [1.14.0] - 2026-11-17
 
-A rigor release, not a feature release. Every component with state or interaction was held to one contract: legible in all seven themes and in `auto` under a light and a dark system, operable by keyboard with a visible focus ring, 44 px touch targets under `(pointer: coarse)`, no horizontal scroll at 360 px, correct final state under `prefers-reduced-motion`, content visible without JS, and correct role, name and state for screen readers. A browser test suite (Playwright with axe-core, Chromium and Firefox) now checks that contract on every change. The one new module is `Vitra.drawer`. No class, token, `data-*` attribute or public method was removed (see "Removed" for one selector that styled nothing).
+Every component with state or interaction was checked against one contract: legible in all seven themes and in `auto` under a light and a dark system, operable by keyboard with a visible focus ring, 44 px touch targets under `(pointer: coarse)`, no horizontal scroll at 360 px, correct final state under `prefers-reduced-motion`, content visible without JS, and role, name and state exposed for screen readers. The exceptions are listed under Known limitations and Open (tabs have no keyboard module, for one). The screen-reader part is inferred from axe-core and attribute assertions; no screen reader was run. A browser test suite (Playwright with axe-core, Chromium and Firefox) now checks the rest on every change. The one new module is `Vitra.drawer`. No class, token, `data-*` attribute or public method was removed (see "Removed" for one selector that styled nothing).
 
 ### Added
 
@@ -114,7 +114,7 @@ Things an existing site will see differ after upgrading.
 - **`dist/vitra.js` and `dist/vitra.min.js`** are built from `src/vitra.iife.js` and keep `"use strict"`. They set `window.Vitra`; they no longer declare a bare global `Vitra` where there is no `window` (a worker, for example).
 - **`Vitra.toast.init()` is public** and runs on load unless `"toast": false`. `toast.show()` still creates the container if `init()` never ran.
 - **`motionGuard` does not watch the DOM.** An element added after init is not paused offscreen unless you call `Vitra.motionGuard.observe(el)`; the scenery and particle modules do it for the elements they create.
-- **Pieces**: `Vitra.particles.spawn()` output and `.vitra-ripple` need the `effects` piece. With only `core`, spawned particles show as small static dots and ripples are unstyled.
+- **Pieces**: `Vitra.particles.spawn()` output and `.vitra-ripple` need the `effects` piece. With only `core`, spawned plain particles show as small static dots, emoji particles show nothing (the glyph is drawn by a rule in `effects`) and ripples are unstyled.
 - **A stored theme wins.** `theme.init()` and the load-time flash prevention restore the saved theme before the `default` option or the `data-config` value applies.
 
 ### Sizes
@@ -151,10 +151,10 @@ The three pieces add up to 20.26 kB brotli because each is compressed on its own
 
 Not fixed in 1.14, and why.
 
-- **`.vitra-gradient-rotate` still repaints every frame** while it is on screen (240 paints/s and 60 style recalcs/s in Chromium; about 12× the empty page's main-thread time per frame in Firefox). It animates a registered custom property, and its continuous look was an explicit choice in 1.13.5. It is only paused offscreen. Rotating it with `transform`, as `.vitra-border-glow` now does, is the follow-up.
+- **`.vitra-gradient-rotate` still repaints every frame** while it is on screen (240 paints/s and 60 style recalcs/s in Chromium; still well above the empty page's main-thread time per frame in Firefox). It animates a registered custom property, and its continuous look was an explicit choice in 1.13.5. It is only paused offscreen. Rotating it with `transform`, as `.vitra-border-glow` now does, is the follow-up.
 - **`Vitra.tabs` keyboard module** (roles, roving tabindex, arrow keys, Home/End) was dropped for size: about 0.18 kB of headroom under the 7.5 kB ceiling cannot hold it. It is on the roadmap.
 - **The drawer, dropdown and tooltip edge cases** listed under Known limitations.
-- **`Vitra.theme` is still a plain object**, so its remaining `_`-prefixed helpers (`_getSystemTheme`, `_reveal`, `_canTransition`) are enumerable on it.
+- **`Vitra.theme` is still a plain object**, so its `_`-prefixed members (`_transition`, `_persist`, `_canTransition`, `_reveal`, `_getSystemTheme`) are enumerable on it; `_transition` and `_persist` are new in 1.14.
 - `tests/browser/known-failures.js` is empty: no test is expected to fail.
 
 ### Not verified

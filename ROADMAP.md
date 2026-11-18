@@ -129,7 +129,7 @@ All 29 audit findings are now closed. (Note: findings 12's dead-token removal �
 
 | # | Priority | Area | Issue |
 |---|----------|------|-------|
-| R7 | Low | `src/vitra.js` | `theme` module is a plain object literal, not a closure — its `_getSystemTheme`/`_reveal`/`_canTransition` "private" helpers leak as real enumerable own-properties on `Vitra.theme`, unlike every other module's closure-scoped-private pattern (`_watchSystemTheme` and `_isLocalStorageAvailable` were removed in 1.14) |
+| R7 | Low | `src/vitra.js` | `theme` module is a plain object literal, not a closure — its `_transition`/`_persist`/`_canTransition`/`_reveal`/`_getSystemTheme` "private" members (`_transition` and `_persist` are new in 1.14) leak as real enumerable own-properties on `Vitra.theme`, unlike every other module's closure-scoped-private pattern (`_watchSystemTheme` and `_isLocalStorageAvailable` were removed in 1.14) |
 | G1 | Medium | `src/08-shaders.css` | `.vitra-gradient-rotate` animates a registered custom property and repaints every frame while on screen (paused offscreen since 1.14); rotating it with `transform`, as `.vitra-border-glow` now does, is the follow-up |
 | D1 | Medium | demo | Heavy particle/cinematic sections not paused off-screen — can drop frames on mobile |
 | D2 | Low | demo | `demo.js` parses CSS custom props with string replace — breaks on nested vars |
@@ -158,7 +158,7 @@ All 29 audit findings are now closed. (Note: findings 12's dead-token removal �
 
 ## v1.14 — Component Contract, CSS Pieces & Test Net ✅
 
-A rigor release: every component held to one contract (themes, keyboard, touch, reduced motion, no-JS, screen readers) and a browser test suite that keeps it so. Details and measured numbers in [CHANGELOG.md](CHANGELOG.md).
+A rigor release: every component checked against one contract (themes, keyboard, touch, reduced motion, no-JS, screen-reader attributes; exceptions in the changelog) and a browser test suite that keeps it so. Details and measured numbers in [CHANGELOG.md](CHANGELOG.md).
 
 **New features:**
 - **`Vitra.drawer`** (`open`/`close`/`toggle`/`init`/`destroy`, `data-vitra-drawer-toggle`): focus trap, `inert` while closed, `aria-expanded`, Esc, overlay, shared scroll lock
