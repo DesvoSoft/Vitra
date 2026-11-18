@@ -47,6 +47,7 @@ const FIXED_IDS = [
   'ks-drawer-manual', 'ks-dd', 'ks-dd-popover', 'ks-tabs', 'ks-tooltip',
   'ks-toast-btn-success', 'ks-toast-btn-error', 'ks-toast-btn-info',
   'ks-toast-btn-warning', 'ks-toast-btn-sticky',
+  'ks-modal-layers', 'ks-ml-dd', 'ks-ml-ddp', 'ks-ml-tip', 'ks-drawer-layers', 'ks-dl-dd', 'ks-dl-ddp', 'ks-dl-tip',
 ];
 
 test('kitchen sink exposes every fixed #ks-* id the specs rely on', async ({ page }) => {

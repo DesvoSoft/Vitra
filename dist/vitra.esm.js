@@ -44,6 +44,7 @@ var _trapFocus = (root, home = root) => {
     else home.setAttribute("tabindex", hadTabindex);
   };
 };
+var _escTaken;
 var _scrollLocks = 0;
 var _savedBody;
 var _lockScroll = () => {
@@ -573,11 +574,14 @@ var modal = /* @__PURE__ */ (() => {
     en.unlock();
     el.removeEventListener("click", en.onClick);
     en.buttons.forEach((btn) => btn.removeEventListener("click", en.close));
-    document.removeEventListener("keydown", _handleEsc);
+    window.removeEventListener("keydown", _handleEsc);
     if (en.prev && en.prev.focus) en.prev.focus();
   };
   const _handleEsc = (e) => {
-    if (e.key === "Escape" && _active && _active.esc) _closeEntry(_active);
+    if (e.key === "Escape" && _escTaken !== e && _active && _active.esc) {
+      _escTaken = e;
+      _closeEntry(_active);
+    }
   };
   const open = (target, options = {}) => {
     const { closeOnOverlay = true, closeOnEsc = true } = options;
@@ -609,7 +613,7 @@ var modal = /* @__PURE__ */ (() => {
     en.untrap = _trapFocus(modalEl, modalEl.querySelector(".vitra-modal-content") || modalEl);
     modalEl.addEventListener("click", en.onClick);
     en.buttons.forEach((btn) => btn.addEventListener("click", en.close));
-    document.addEventListener("keydown", _handleEsc);
+    window.addEventListener("keydown", _handleEsc);
     _active = en;
     return true;
   };
@@ -711,7 +715,7 @@ var drawer = /* @__PURE__ */ (() => {
     }
   };
   const _onKey = (e) => {
-    if (e.key === "Escape" && _active && !document.querySelector(".vitra-modal-open")) close();
+    if (e.key === "Escape" && _escTaken !== e && _active && !document.querySelector(".vitra-modal-open")) close();
   };
   const init = () => {
     document.querySelectorAll("[data-vitra-drawer-toggle]").forEach((t) => {
@@ -721,14 +725,14 @@ var drawer = /* @__PURE__ */ (() => {
     if (_bound) return;
     _bound = true;
     document.addEventListener("click", _onClick, true);
-    document.addEventListener("keydown", _onKey);
+    window.addEventListener("keydown", _onKey);
   };
   const destroy = () => {
     close();
     _managed.forEach((el) => el.removeAttribute("inert"));
     _managed.clear();
     document.removeEventListener("click", _onClick, true);
-    document.removeEventListener("keydown", _onKey);
+    window.removeEventListener("keydown", _onKey);
     _bound = false;
   };
   return { open, close, toggle, init, destroy };
@@ -759,11 +763,14 @@ var tooltip = /* @__PURE__ */ (() => {
     tip.style.top = `${Math.max(_offset, Math.min(c[1], H - h - _offset)) + window.scrollY}px`;
   };
   const _key = (e) => {
-    if (e.key === "Escape") hide();
+    if (e.key === "Escape") {
+      _escTaken = e;
+      hide();
+    }
   };
   const _watch = (on) => {
     const f = on ? "addEventListener" : "removeEventListener";
-    document[f]("keydown", _key);
+    window[f]("keydown", _key, true);
     document[f]("scroll", _scroll, { capture: true, passive: true });
     window[f]("resize", hide);
   };
@@ -1013,8 +1020,12 @@ var dropdown = (() => {
     const k = e.key;
     if (e.altKey || e.ctrlKey || e.metaKey) return;
     if (k === "Escape") {
-      document.querySelectorAll(".vitra-dropdown.open").forEach((dd2) => {
-        dd2.classList.remove("open");
+      if (_escTaken !== e) document.querySelectorAll(".vitra-dropdown").forEach((dd2) => {
+        const menu2 = dd2.querySelector(".vitra-dropdown-menu");
+        if (!menu2 || !_isOpen(dd2, menu2)) return;
+        _escTaken = e;
+        if (_supportsPopover && menu2.hasAttribute("popover")) menu2.hidePopover();
+        else dd2.classList.remove("open");
         const btn = dd2.querySelector("[data-vitra-dropdown-toggle]");
         if (btn) {
           btn.setAttribute("aria-expanded", "false");

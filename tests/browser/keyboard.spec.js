@@ -246,6 +246,54 @@ test.describe('drawer', () => {
   });
 });
 
+// ----------------------------------------------------------- Esc layers ---
+
+// One Esc press closes exactly one layer, the innermost: a tooltip, then a
+// dropdown menu, then the modal or drawer around it.
+test.describe('Esc closes one layer at a time', () => {
+  const OUTER = {
+    modal: {
+      sel: '#ks-modal-layers',
+      open: (page) => page.evaluate(() => window.Vitra.modal.open('#ks-modal-layers')),
+      isOpen: (page) => page.locator('#ks-modal-layers').evaluate((el) => el.classList.contains('vitra-modal-open')),
+      prefix: 'ml',
+    },
+    drawer: {
+      sel: '#ks-drawer-layers',
+      open: (page) => page.evaluate(() => window.Vitra.drawer.open('#ks-drawer-layers')),
+      isOpen: (page) => page.locator('#ks-drawer-layers').evaluate((el) => el.classList.contains('open')),
+      prefix: 'dl',
+    },
+  };
+  for (const [outer, o] of Object.entries(OUTER)) {
+    for (const inner of ['dropdown (.open)', 'dropdown ([popover])', 'tooltip']) {
+      test(`[contract] Esc: ${inner} inside a ${outer} closes first, the ${outer} on the next Esc`, async ({ page }) => {
+        await openSink(page);
+        await o.open(page);
+        await expect.poll(() => isInside(page, o.sel), { message: `focus inside the ${outer}` }).toBe(true);
+        let innerOpen;
+        if (inner === 'tooltip') {
+          await page.locator(`#ks-${o.prefix}-tip`).focus();
+          await expect(page.locator('.vitra-tooltip-js')).toBeVisible();
+          innerOpen = () => page.locator('.vitra-tooltip-js').count();
+        } else {
+          const dd = `#ks-${o.prefix}-${inner.includes('popover') ? 'ddp' : 'dd'}`;
+          await activate(page, `${dd} [data-vitra-dropdown-toggle]`);
+          await expect(page.locator(`${dd} [data-vitra-dropdown-toggle]`)).toHaveAttribute('aria-expanded', 'true');
+          await expect(page.locator(`${dd} .vitra-dropdown-item`).first()).toBeVisible();
+          innerOpen = async () => ((await page.locator(`${dd} .vitra-dropdown-item`).first().isVisible()) ? 1 : 0);
+        }
+        await page.keyboard.press('Escape');
+        await expect.poll(innerOpen, { message: `first Esc closes the ${inner}` }).toBe(0);
+        expect(await o.isOpen(page), `first Esc leaves the ${outer} open`).toBe(true);
+        expect(await isInside(page, o.sel), `focus stays inside the ${outer}`).toBe(true);
+        await page.keyboard.press('Escape');
+        await expect.poll(() => o.isOpen(page), { message: `second Esc closes the ${outer}` }).toBe(false);
+      });
+    }
+  }
+});
+
 // -------------------------------------------------------------- dropdown ---
 
 for (const [kind, sel] of [['classic', '#ks-dd'], ['popover', '#ks-dd-popover']]) {

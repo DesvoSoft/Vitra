@@ -67,6 +67,11 @@ const _trapFocus = (root, home = root) => {
   };
 };
 
+// One Esc closes one layer. The innermost layer that closes claims the
+// event (tooltip on window capture, then dropdown); modal and drawer listen
+// on window in the bubble phase and skip a claimed event.
+let _escTaken;
+
 // Counted body scroll lock: only the last release restores the author's values.
 let _scrollLocks = 0;
 let _savedBody;
@@ -781,12 +786,15 @@ const modal = (() => {
     en.unlock();
     el.removeEventListener('click', en.onClick);
     en.buttons.forEach((btn) => btn.removeEventListener('click', en.close));
-    document.removeEventListener('keydown', _handleEsc);
+    window.removeEventListener('keydown', _handleEsc);
     if (en.prev && en.prev.focus) en.prev.focus();
   };
 
   const _handleEsc = (e) => {
-    if (e.key === 'Escape' && _active && _active.esc) _closeEntry(_active);
+    if (e.key === 'Escape' && _escTaken !== e && _active && _active.esc) {
+      _escTaken = e;
+      _closeEntry(_active);
+    }
   };
 
   /**
@@ -829,7 +837,7 @@ const modal = (() => {
 
     modalEl.addEventListener('click', en.onClick);
     en.buttons.forEach((btn) => btn.addEventListener('click', en.close));
-    document.addEventListener('keydown', _handleEsc);
+    window.addEventListener('keydown', _handleEsc);
     _active = en;
     return true;
   };
@@ -958,7 +966,7 @@ const drawer = (() => {
   };
 
   const _onKey = (e) => {
-    if (e.key === 'Escape' && _active && !document.querySelector('.vitra-modal-open')) close();
+    if (e.key === 'Escape' && _escTaken !== e && _active && !document.querySelector('.vitra-modal-open')) close();
   };
 
   const init = () => {
@@ -969,7 +977,7 @@ const drawer = (() => {
     if (_bound) return;
     _bound = true;
     document.addEventListener('click', _onClick, true); // capture: sees the modal still open
-    document.addEventListener('keydown', _onKey);
+    window.addEventListener('keydown', _onKey);
   };
 
   const destroy = () => {
@@ -977,7 +985,7 @@ const drawer = (() => {
     _managed.forEach((el) => el.removeAttribute('inert'));
     _managed.clear();
     document.removeEventListener('click', _onClick, true);
-    document.removeEventListener('keydown', _onKey);
+    window.removeEventListener('keydown', _onKey);
     _bound = false;
   };
 
@@ -1022,10 +1030,10 @@ const tooltip = (() => {
     tip.style.top = `${Math.max(_offset, Math.min(c[1], H - h - _offset)) + window.scrollY}px`;
   };
 
-  const _key = (e) => { if (e.key === 'Escape') hide(); };
+  const _key = (e) => { if (e.key === 'Escape') { _escTaken = e; hide(); } };
   const _watch = (on) => {
     const f = on ? 'addEventListener' : 'removeEventListener';
-    document[f]('keydown', _key);
+    window[f]('keydown', _key, true);
     document[f]('scroll', _scroll, { capture: true, passive: true });
     window[f]('resize', hide);
   };
@@ -1369,8 +1377,14 @@ const dropdown = (() => {
     const k = e.key;
     if (e.altKey || e.ctrlKey || e.metaKey) return;
     if (k === 'Escape') {
-      document.querySelectorAll('.vitra-dropdown.open').forEach(dd => {
-        dd.classList.remove('open');
+      // Both routes: an open popover is closed here too, so the same key
+      // press cannot also reach a modal or drawer around it.
+      if (_escTaken !== e) document.querySelectorAll('.vitra-dropdown').forEach(dd => {
+        const menu = dd.querySelector('.vitra-dropdown-menu');
+        if (!menu || !_isOpen(dd, menu)) return;
+        _escTaken = e;
+        if (_supportsPopover && menu.hasAttribute('popover')) menu.hidePopover();
+        else dd.classList.remove('open');
         const btn = dd.querySelector('[data-vitra-dropdown-toggle]');
         if (btn) {
           btn.setAttribute('aria-expanded', 'false');

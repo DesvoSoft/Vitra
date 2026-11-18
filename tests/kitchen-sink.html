@@ -233,6 +233,29 @@
         <div class="vitra-modal-body"><button class="vitra-btn" data-vitra-modal-close>OK</button></div>
       </div>
     </div>
+    <!-- Inner layers inside a modal: one Esc closes one layer. Opened by script only. -->
+    <div id="ks-modal-layers" class="vitra-modal-overlay" aria-hidden="true">
+      <div class="vitra-modal-content" aria-label="Modal with inner layers">
+        <div class="vitra-modal-body">
+          <button class="vitra-btn" data-vitra-modal-close>Close</button>
+          <div class="vitra-dropdown" id="ks-ml-dd">
+            <button class="vitra-btn" data-vitra-dropdown-toggle>Menu</button>
+            <div class="vitra-dropdown-menu">
+              <button class="vitra-dropdown-item">One</button>
+              <button class="vitra-dropdown-item">Two</button>
+            </div>
+          </div>
+          <div class="vitra-dropdown" id="ks-ml-ddp">
+            <button class="vitra-btn" data-vitra-dropdown-toggle>Popover menu</button>
+            <div class="vitra-dropdown-menu" popover>
+              <button class="vitra-dropdown-item">One</button>
+              <button class="vitra-dropdown-item">Two</button>
+            </div>
+          </div>
+          <button class="vitra-btn" id="ks-ml-tip" data-vitra-tooltip="Inner tooltip">Tip</button>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section class="ks-section" data-component="drawer">
@@ -265,6 +288,30 @@
       </div>
       <div class="vitra-drawer-body">
         <a class="vitra-drawer-link" href="#ks-drawer-manual">Link</a>
+      </div>
+    </nav>
+    <!-- Inner layers inside a drawer: one Esc closes one layer. Opened by script only. -->
+    <nav id="ks-drawer-layers" class="vitra-drawer" data-state="layers" aria-label="Drawer with inner layers" aria-hidden="true">
+      <div class="vitra-drawer-header">
+        <span class="vitra-drawer-title">Layers</span>
+        <button class="vitra-drawer-close" aria-label="Close layers menu">&times;</button>
+      </div>
+      <div class="vitra-drawer-body">
+        <div class="vitra-dropdown" id="ks-dl-dd">
+          <button class="vitra-btn" data-vitra-dropdown-toggle>Menu</button>
+          <div class="vitra-dropdown-menu">
+            <button class="vitra-dropdown-item">One</button>
+            <button class="vitra-dropdown-item">Two</button>
+          </div>
+        </div>
+        <div class="vitra-dropdown" id="ks-dl-ddp">
+          <button class="vitra-btn" data-vitra-dropdown-toggle>Popover menu</button>
+          <div class="vitra-dropdown-menu" popover>
+            <button class="vitra-dropdown-item">One</button>
+            <button class="vitra-dropdown-item">Two</button>
+          </div>
+        </div>
+        <button class="vitra-btn" id="ks-dl-tip" data-vitra-tooltip="Inner tooltip">Tip</button>
       </div>
     </nav>
   </section>
