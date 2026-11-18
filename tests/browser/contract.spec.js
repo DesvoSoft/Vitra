@@ -374,6 +374,13 @@ const OVERFLOW_COMPONENT_IDS = {
   toggle: 'K-toggle-overflow',
 };
 
+// Wait until every running finite, time-based animation and transition on
+// the page has ended (paused and scroll-driven ones never finish).
+const settle = (page) => page.evaluate(() => Promise.all(document.getAnimations()
+  .filter((a) => a.playState === 'running' && a.timeline === document.timeline &&
+    a.effect && a.effect.getComputedTiming().iterations !== Infinity)
+  .map((a) => a.finished.catch(() => {}))));
+
 const scrollWidth = (page) =>
   page.evaluate(() => ({
     scroll: document.documentElement.scrollWidth,
@@ -401,6 +408,73 @@ test.describe('horizontal overflow at 360px', () => {
       await openSink(page, { viewport: MOBILE });
       await page.addStyleTag({ content: '[data-state="long-text"]:not([data-vitra-tooltip]) { display: none !important; }' });
       await open(page);
+      const w = await scrollWidth(page);
+      expect(w.scroll, JSON.stringify(w)).toBe(360);
+    });
+  }
+
+  // A closed menu is visibility: hidden, which still creates scrollable
+  // overflow: measure the page with the long items present, closed and open.
+  for (const dd of ['#ks-dd', '#ks-dd-popover']) {
+    test(`[contract] a long dropdown item does not widen the 360px page: ${dd} closed and open`, async ({ page }) => {
+      await openSink(page, { viewport: MOBILE });
+      await page.addStyleTag({ content: '[data-state="long-text"]:not(.vitra-dropdown-item) { display: none !important; }' });
+      expect((await scrollWidth(page)).scroll, 'closed').toBe(360);
+      await page.locator(`${dd} [data-vitra-dropdown-toggle]`).click();
+      await expect(page.locator(`${dd} .vitra-dropdown-item[data-state="long-text"]`)).toBeVisible();
+      await settle(page);
+      const w = await scrollWidth(page);
+      expect(w.scroll, 'open ' + JSON.stringify(w)).toBe(360);
+      const r = await page.locator(`${dd} .vitra-dropdown-menu`).evaluate((m) => m.getBoundingClientRect().toJSON());
+      expect(r.left, 'menu inside the viewport').toBeGreaterThanOrEqual(0);
+      expect(r.right, 'menu inside the viewport').toBeLessThanOrEqual(360);
+    });
+  }
+
+  // The whole page with the long-text variant of every component visible.
+  // The scenery section's paragraph is plain author text, not a component.
+  test('[contract] no horizontal overflow at 360x740: whole page with every long-text variant', async ({ page }) => {
+    await openSink(page, { viewport: MOBILE });
+    await page.addStyleTag({ content: '[data-component="scenery"] p[data-state="long-text"] { display: none !important; }' });
+    const w = await scrollWidth(page);
+    expect(w.scroll, JSON.stringify(w)).toBe(360);
+  });
+
+  // Every overlay opened WITH its long-text content visible: nothing may
+  // scroll the page sideways (the whole page's long-text variants stay in,
+  // except the scenery paragraph, see above).
+  const OVERLAYS_WITH_LONG_TEXT = {
+    'dropdown menu': async (page) => {
+      await page.locator('#ks-dd [data-vitra-dropdown-toggle]').click();
+      await expect(page.locator('#ks-dd .vitra-dropdown-item').first()).toBeVisible();
+    },
+    'popover menu': async (page) => {
+      await page.locator('#ks-dd-popover [data-vitra-dropdown-toggle]').click();
+      await expect(page.locator('#ks-dd-popover .vitra-dropdown-item').first()).toBeVisible();
+    },
+    modal: async (page) => {
+      await page.evaluate(() => window.Vitra.modal.open('#ks-modal'));
+      await expect(page.locator('#ks-modal [data-state="long-text"]')).toBeVisible();
+    },
+    drawer: async (page) => {
+      await page.evaluate(() => window.Vitra.drawer.open('#ks-drawer'));
+      await expect(page.locator('#ks-drawer [data-state="long-text"]')).toBeVisible();
+    },
+    toast: async (page) => {
+      await page.locator('#ks-toast-btn-long').click();
+      await expect(page.locator('.vitra-toast.show')).toBeVisible();
+    },
+    tooltip: async (page) => {
+      await page.locator('[data-state="long-text"][data-vitra-tooltip]').focus();
+      await expect(page.locator('.vitra-tooltip-js')).toBeVisible();
+    },
+  };
+  for (const [name, open] of Object.entries(OVERLAYS_WITH_LONG_TEXT)) {
+    test(`[contract] no horizontal overflow at 360x740 with long text: ${name} open`, async ({ page }) => {
+      await openSink(page, { viewport: MOBILE });
+      await page.addStyleTag({ content: '[data-component="scenery"] p[data-state="long-text"] { display: none !important; }' });
+      await open(page);
+      await settle(page);
       const w = await scrollWidth(page);
       expect(w.scroll, JSON.stringify(w)).toBe(360);
     });

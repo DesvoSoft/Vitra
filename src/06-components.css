@@ -1841,6 +1841,7 @@
     font-size: var(--vitra-font-size-sm);
     color: var(--vitra-color-text-secondary);
     min-width: 60px;
+    overflow-wrap: anywhere;
   }
 
   .vitra-progress-value {
@@ -2000,6 +2001,10 @@
     top: calc(100% + var(--vitra-space-2));
     left: 0;
     min-width: 200px;
+
+    /* A long item wraps instead of widening the page (a closed menu is
+       visibility: hidden, which still creates scrollable overflow). */
+    max-width: min(20rem, calc(100vw - 2 * var(--vitra-space-4)));
     background: var(--vitra-glass-bg-fallback);
     border: 1px solid var(--vitra-color-border);
     border-radius: var(--vitra-radius-md);
@@ -2049,6 +2054,7 @@
     background: transparent;
     border: none;
     text-align: left;
+    overflow-wrap: anywhere;
     color: var(--vitra-color-text-secondary);
     font-family: var(--vitra-font-family);
     font-size: var(--vitra-font-size-sm);
@@ -2321,6 +2327,7 @@
     color: var(--vitra-color-text-primary);
     font-size: var(--vitra-font-size-sm);
     line-height: var(--vitra-line-height-normal);
+    overflow-wrap: anywhere;
     position: relative;
   }
 
