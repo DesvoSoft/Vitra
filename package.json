@@ -28,12 +28,15 @@
     "./dist/*.js",
     "./dist/*.cjs",
     "./src/vitra.js",
+    "./src/vitra.iife.js",
     "*.css"
   ],
   "scripts": {
     "build:css": "node scripts/build-css.js",
     "build:js": "esbuild src/vitra.iife.js --bundle --outfile=dist/vitra.js --format=iife --sourcemap && esbuild src/vitra.iife.js --bundle --minify --outfile=dist/vitra.min.js --format=iife --sourcemap",
     "build:esm": "esbuild src/vitra.js --bundle --outfile=dist/vitra.esm.js --format=esm --sourcemap",
+    "build:cjs": "esbuild src/vitra.js --bundle --outfile=dist/vitra.cjs --format=cjs --sourcemap",
+    "build:types": "node -e \"require('fs').copyFileSync('src/vitra.d.ts','dist/vitra.d.ts')\"",
     "build": "npm run build:css && npm run build:js && npm run build:esm && npm run build:cjs && npm run build:types",
     "postbuild": "node generate-sri.js > dist/SRI.txt",
     "prepublishOnly": "npm test && npm run build",
@@ -44,8 +47,6 @@
     "size": "size-limit",
     "test:unit": "vitest run",
     "test:browser": "playwright test",
-    "build:cjs": "esbuild src/vitra.js --bundle --outfile=dist/vitra.cjs --format=cjs --sourcemap",
-    "build:types": "node -e \"require('fs').copyFileSync('src/vitra.d.ts','dist/vitra.d.ts')\"",
     "test:types": "npx -y -p typescript@5 tsc --noEmit -p tests/types/tsconfig.json"
   },
   "size-limit": [

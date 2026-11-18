@@ -312,6 +312,20 @@ describe('JS builds (run `npm run build` first)', () => {
     dom.window.close();
   });
 
+  it.each(['vitra.js', 'vitra.min.js', 'vitra.cjs'])('%s starts with a "use strict" directive', (file) => {
+    const src = fs.readFileSync(dist(file), 'utf8').replace(/^\s*(\/\/[^\n]*\n|\/\*[\s\S]*?\*\/\s*)*/, '');
+    expect(src).toMatch(/^["']use strict["'];/);
+  });
+
+  it('imports in plain Node (no DOM) without throwing', () => {
+    const root = path.join(__dirname, '..');
+    const cjs = spawnSync(process.execPath, ['-e', "require('./dist/vitra.cjs')"], { cwd: root, encoding: 'utf8' });
+    expect(cjs.stderr).toBe('');
+    expect(cjs.status).toBe(0);
+    const esm = spawnSync(process.execPath, ['-e', "import('./dist/vitra.esm.js').then(m => { if (!m.theme) process.exit(2); })"], { cwd: root, encoding: 'utf8' });
+    expect(esm.status).toBe(0);
+  });
+
   it('ships the types next to the build, copied from src', () => {
     expect(fs.readFileSync(dist('vitra.d.ts'), 'utf8')).toBe(fs.readFileSync(path.join(__dirname, '..', 'src', 'vitra.d.ts'), 'utf8'));
   });

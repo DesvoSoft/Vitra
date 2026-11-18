@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Vitra CSS Framework - JavaScript Modules
  * Phase 1: Tokens & Themes - Plan 02

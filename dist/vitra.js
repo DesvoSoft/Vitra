@@ -1,3 +1,4 @@
+"use strict";
 (() => {
   // src/vitra.js
   var _resolve = (t) => typeof t === "string" ? document.querySelector(t) : t && t.nodeType === 1 ? t : null;
