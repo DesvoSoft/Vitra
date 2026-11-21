@@ -89,20 +89,19 @@ const CONTRAST_TESTS = [
 test.describe('contrast', () => {
   for (const [component, kind] of CONTRAST_TESTS) {
     const id = CONTRAST_IDS[component + ':' + kind];
-    test(`[${id || 'contract'}] contrast (${kind}): ${component}`, async ({ page }) => {
-      if (id) expectedFail(test, id);
-      const failures = [];
-      let checked = 0;
-      for (const s of SCHEMES) {
+    // One test per scheme: eight page loads in a single test shared one
+    // 30 s budget and timed out under load; split, each has its own budget
+    // and a failure names its scheme.
+    for (const s of SCHEMES) {
+      test(`[${id || 'contract'}] contrast (${kind}): ${component}: ${schemeLabel(s)}`, async ({ page }) => {
+        if (id) expectedFail(test, id);
         await openSink(page, s);
         if (OPEN_FOR_CONTRAST[component]) await OPEN_FOR_CONTRAST[component](page);
         const r = await scanContrast(page, component, [kind]);
-        checked += r.checked;
-        failures.push(...r.failures.map((f) => `${schemeLabel(s)}: ${f}`));
-      }
-      expect(checked, 'something was measured').toBeGreaterThan(0);
-      expect(failures).toEqual([]);
-    });
+        expect(r.checked, 'something was measured').toBeGreaterThan(0);
+        expect(r.failures).toEqual([]);
+      });
+    }
   }
 });
 

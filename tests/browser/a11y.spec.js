@@ -20,6 +20,17 @@ for (const s of SCHEMES) {
   test(`[${id || 'contract'}] axe: no serious or critical violations: ${label}`, async ({ page }, testInfo) => {
     if (id) expectedFail(test, id);
     await openSink(page, s);
+    // Entrance animations (the directional reveal variants fade in at load)
+    // must be over before axe reads colours: mid-fade text measures as low
+    // contrast. Finite animations only; ambient loops never finish.
+    // Only the ones actually running: a loop paused offscreen never settles.
+    await page.evaluate(() => Promise.race([
+      Promise.all(document.getAnimations()
+        .filter((a) => a.playState === 'running'
+          && a.effect && a.effect.getComputedTiming().iterations !== Infinity)
+        .map((a) => a.finished.catch(() => {}))),
+      new Promise((r) => setTimeout(r, 2500)),
+    ]));
     const results = await new AxeBuilder({ page }).analyze();
     await testInfo.attach(`axe-${label}.json`, {
       body: JSON.stringify(results, null, 2),
