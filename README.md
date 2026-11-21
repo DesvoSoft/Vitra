@@ -1,15 +1,18 @@
 # Vitra CSS - Interactive Demo
 
-This branch (`demo`) contains the source for the interactive Vitra CSS demo website, hosted on GitHub Pages.
+This branch (`demo`) contains the source for the interactive Vitra CSS demo website and its documentation page, hosted on GitHub Pages:
 
-The demo loads the framework via CDN (jsDelivr) — no build step needed.
+- Demo: [https://desvosoft.github.io/Vitra/](https://desvosoft.github.io/Vitra/)
+- Docs: [https://desvosoft.github.io/Vitra/docs/](https://desvosoft.github.io/Vitra/docs/)
 
-> **Framework source code**, docs, and build scripts are in the `main` branch.
+The pages load the framework from jsDelivr, pinned to a release tag and checked with Subresource Integrity. There is no build step: `index.html`, `demo.css`, `demo.js` and `docs/` are served as they are.
 
-**CDN (v1.7.2):**
+> **Framework source code**, the integration guide and the build scripts are in the `main` branch of [DesvoSoft/Vitra](https://github.com/DesvoSoft/Vitra).
+
+**CDN (v1.14.0):**
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.2/dist/vitra.min.css" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.7.2/dist/vitra.min.js" crossorigin="anonymous" defer></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.css" integrity="sha256-VqvCW9TWtiiiYglM8Ok1T1Y/tbXZ8sWvYvW7i/fPZko=" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.js" integrity="sha256-XfDZdHFCtz3eXkyZ82L9abRDbp+yhwDFOvvsWNpqjFw=" crossorigin="anonymous" defer></script>
 ```
 
-Live demo: [https://desvosoft.github.io/Vitra/](https://desvosoft.github.io/Vitra/)
+The hashes of every distributed file are in `dist/SRI.txt` on the release tag. When the demo moves to a new release, change the tag and both hashes together in `index.html`, `docs/index.html`, the copyable snippets on both pages and this file.

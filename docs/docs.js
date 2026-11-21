@@ -108,19 +108,33 @@
     });
   }
 
+  // Tabs: the documented 1.14 markup (role="tab" + aria-controls, the
+  // panel shown by .vitra-active). Arrow keys, Home and End move between
+  // tabs; every tab stays in the Tab order, as the integration guide says.
   function initTabs() {
-    document.querySelectorAll('.vitra-tabs').forEach(function (tabs) {
-      var buttons = tabs.querySelectorAll('.vitra-tabs-tab');
-      var panels = tabs.querySelectorAll('.vitra-tabs-panel');
-      buttons.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          var target = this.getAttribute('data-tab');
-          buttons.forEach(function (b) { b.classList.remove('vitra-tabs-tab-active'); });
-          this.classList.add('vitra-tabs-tab-active');
-          panels.forEach(function (p) {
-            p.style.display = p.id === target ? '' : 'none';
-          });
+    document.querySelectorAll('[role="tablist"]').forEach(function (list) {
+      var tabs = Array.prototype.slice.call(list.querySelectorAll('[role="tab"]'));
+      function select(tab) {
+        tabs.forEach(function (t) {
+          var on = t === tab;
+          t.setAttribute('aria-selected', String(on));
+          var panel = document.getElementById(t.getAttribute('aria-controls'));
+          if (panel) panel.classList.toggle('vitra-active', on);
         });
+      }
+      list.addEventListener('click', function (e) {
+        var tab = e.target.closest('[role="tab"]');
+        if (tab) select(tab);
+      });
+      list.addEventListener('keydown', function (e) {
+        var i = tabs.indexOf(document.activeElement);
+        if (i < 0) return;
+        var next = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+        if (next === undefined) return;
+        e.preventDefault();
+        var tab = tabs[(next + tabs.length) % tabs.length];
+        tab.focus();
+        select(tab);
       });
     });
   }

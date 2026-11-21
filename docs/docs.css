@@ -192,6 +192,19 @@
   border-bottom: 1px solid var(--vitra-color-border);
 }
 
+/* Wide tables scroll inside their box on a phone instead of widening it */
+.docs-table-wrap {
+  overflow-x: auto;
+}
+
+/* Without JavaScript nothing switches the tabs: show every panel */
+@media (scripting: none) {
+  .docs-tabs .vitra-tabs-panel {
+    display: block;
+    opacity: 1;
+  }
+}
+
 /* ---- Code blocks ---- */
 
 .docs-code {

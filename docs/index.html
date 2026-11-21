@@ -7,14 +7,14 @@
   <meta name="theme-color" content="#0a0a14">
   <title>Vitra CSS — Documentation</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.5/dist/vitra.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.css" integrity="sha256-VqvCW9TWtiiiYglM8Ok1T1Y/tbXZ8sWvYvW7i/fPZko=" crossorigin="anonymous">
   <link rel="stylesheet" href="docs.css">
 </head>
 <body class="docs-body">
 
   <header class="docs-header vitra-glass">
     <a class="docs-wordmark" href="../">Vitra <span class="docs-wordmark-dot">·</span> Docs</a>
-    <span class="vitra-badge vitra-badge-sm vitra-badge-primary docs-version-badge">v1.13.5</span>
+    <span class="vitra-badge vitra-badge-sm vitra-badge-primary docs-version-badge">v1.14.0</span>
     <nav class="docs-header-links" aria-label="Site">
       <a href="../" class="docs-header-link">Demo</a>
       <a href="https://github.com/DesvoSoft/Vitra" class="docs-header-link" rel="noopener">GitHub</a>
@@ -59,7 +59,7 @@
         <h1 class="docs-hero-title">Vitra CSS</h1>
         <p class="docs-hero-tagline">Premium glassmorphism, directional particles, ambient scenery and smooth motion — CSS-only core, optional JS, zero dependencies.</p>
         <p class="docs-hero-badges">
-          <span class="vitra-badge vitra-badge-primary">v1.13.5</span>
+          <span class="vitra-badge vitra-badge-primary">v1.14.0</span>
           <span class="vitra-badge">CSS-only core</span>
           <span class="vitra-badge">0 dependencies</span>
         </p>
@@ -74,44 +74,48 @@
 
       <section id="installation" class="docs-section">
         <h2>Installation</h2>
-        <div class="vitra-tabs">
-          <div class="vitra-tabs-nav">
-            <button class="vitra-tabs-tab vitra-tabs-tab-active" data-tab="install-cdn">CDN</button>
-            <button class="vitra-tabs-tab" data-tab="install-npm">npm</button>
+        <div class="docs-tabs" id="install-tabs">
+          <div class="vitra-tabs" role="tablist" aria-label="Installation method">
+            <button class="vitra-tabs-tab" role="tab" id="install-cdn-tab" aria-selected="true" aria-controls="install-cdn">CDN</button>
+            <button class="vitra-tabs-tab" role="tab" id="install-git-tab" aria-selected="false" aria-controls="install-git">From GitHub (bundler)</button>
           </div>
-          <div class="vitra-tabs-content">
-            <div class="vitra-tabs-panel" id="install-cdn">
+          <div>
+            <div class="vitra-tabs-panel vitra-active" role="tabpanel" id="install-cdn" aria-labelledby="install-cdn-tab">
               <p>Add the stylesheet to <code>&lt;head&gt;</code>:</p>
               <div class="docs-code">
-                <pre tabindex="0" data-copy='<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.5/dist/vitra.min.css" crossorigin="anonymous">'><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.5/dist/vitra.min.css" crossorigin="anonymous"&gt;</code></pre>
+                <pre tabindex="0" data-copy='<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.css" integrity="sha256-VqvCW9TWtiiiYglM8Ok1T1Y/tbXZ8sWvYvW7i/fPZko=" crossorigin="anonymous">'><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.css" integrity="sha256-VqvCW9TWtiiiYglM8Ok1T1Y/tbXZ8sWvYvW7i/fPZko=" crossorigin="anonymous"&gt;</code></pre>
               </div>
               <p>Optionally add the script before <code>&lt;/body&gt;</code> — it enables modals, tooltips, toasts, dropdowns, particles, and theme persistence:</p>
               <div class="docs-code">
-                <pre tabindex="0" data-copy='<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.5/dist/vitra.min.js" crossorigin="anonymous" defer></script>'><code>&lt;script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.5/dist/vitra.min.js" crossorigin="anonymous" defer&gt;&lt;/script&gt;</code></pre>
+                <pre tabindex="0" data-copy='<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.js" integrity="sha256-XfDZdHFCtz3eXkyZ82L9abRDbp+yhwDFOvvsWNpqjFw=" crossorigin="anonymous" defer></script>'><code>&lt;script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.js" integrity="sha256-XfDZdHFCtz3eXkyZ82L9abRDbp+yhwDFOvvsWNpqjFw=" crossorigin="anonymous" defer&gt;&lt;/script&gt;</code></pre>
               </div>
-              <p>Always pin a version tag (<code>@v1.13.5</code>) in production. Subresource-integrity hashes for each release are generated at build time and published in <code>dist/SRI.txt</code>.</p>
+              <p>Always pin a version tag (<code>@v1.14.0</code>). The <code>integrity</code> hash makes the browser refuse the file if it ever differs from the release; the hashes of every distributed file are in <code>dist/SRI.txt</code> on the tag.</p>
             </div>
-            <div class="vitra-tabs-panel" id="install-npm" style="display: none;">
+            <div class="vitra-tabs-panel" role="tabpanel" id="install-git" aria-labelledby="install-git-tab">
+              <p>Vitra is not published on the npm registry: install it from GitHub, pinned to a tag. A registry package named <code>vitra-css</code> is not this project.</p>
               <div class="docs-code">
-                <pre tabindex="0" data-copy='npm install vitra-css'><code>npm install vitra-css</code></pre>
+                <pre tabindex="0" data-copy='npm install github:DesvoSoft/Vitra#v1.14.0'><code>npm install github:DesvoSoft/Vitra#v1.14.0</code></pre>
               </div>
-              <p>Then import the stylesheet and, if you need interactivity, the module:</p>
+              <p>Then import the stylesheet and, if you need interactivity, the modules by name:</p>
               <div class="docs-code">
-                <pre tabindex="0" data-copy="import 'vitra-css/dist/vitra.css';
-import Vitra from 'vitra-css';"><code>import 'vitra-css/dist/vitra.css';
-import Vitra from 'vitra-css';</code></pre>
+                <pre tabindex="0" data-copy="import 'vitra-css/dist/vitra.min.css';
+import { theme, drawer } from 'vitra-css';"><code>import 'vitra-css/dist/vitra.min.css';
+import { theme, drawer } from 'vitra-css';</code></pre>
               </div>
-              <p>The package ships <code>dist/vitra.css</code> (expanded), <code>dist/vitra.min.css</code>, a CommonJS/IIFE build (<code>dist/vitra.js</code>), and an ES module build (<code>dist/vitra.esm.js</code>) with TypeScript definitions.</p>
+              <p>The package ships the CSS bundle and its three pieces, the script-tag build (<code>dist/vitra.js</code>), an ES module with named exports (<code>dist/vitra.esm.js</code>), a CommonJS build (<code>dist/vitra.cjs</code>) and TypeScript definitions.</p>
             </div>
           </div>
         </div>
         <h3>Which file do I need?</h3>
-        <table>
-          <tr><th>File</th><th>Use</th></tr>
-          <tr><td><code>vitra.min.css</code></td><td>Everything visual. Required.</td></tr>
-          <tr><td><code>vitra.min.js</code></td><td>Interactive components and theme persistence. Optional.</td></tr>
-          <tr><td><code>vitra.esm.js</code></td><td>Same as above for bundlers, tree-shakeable imports.</td></tr>
-        </table>
+        <div class="docs-table-wrap">
+          <table>
+            <tr><th>File</th><th>Use</th></tr>
+            <tr><td><code>vitra.min.css</code></td><td>Everything visual (18.9&nbsp;kB brotli). Required.</td></tr>
+            <tr><td><code>vitra.core.min.css</code>, <code>vitra.scenery.min.css</code>, <code>vitra.effects.min.css</code></td><td>The same rules in three pieces, to leave out the scenery or the effects. <code>scenery</code> and <code>effects</code> need <code>core</code>; loading all three costs more than the bundle.</td></tr>
+            <tr><td><code>vitra.min.js</code></td><td>Interactive components and theme persistence (7.5&nbsp;kB brotli). Optional.</td></tr>
+            <tr><td><code>vitra.esm.js</code> / <code>vitra.cjs</code></td><td>The same modules for bundlers, as named exports. Importing runs the auto-init, so the package is not side-effect free and is not tree-shaken.</td></tr>
+          </table>
+        </div>
       </section>
 
       <section id="theming" class="docs-section">
@@ -569,7 +573,7 @@ Vitra.tooltip.init();   // activates all [data-vitra-tooltip] elements</code></p
     </main>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.13.5/dist/vitra.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.js" integrity="sha256-XfDZdHFCtz3eXkyZ82L9abRDbp+yhwDFOvvsWNpqjFw=" crossorigin="anonymous"></script>
   <script src="docs.js"></script>
 </body>
 </html>
