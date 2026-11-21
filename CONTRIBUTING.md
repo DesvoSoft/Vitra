@@ -5,7 +5,7 @@ Thanks for your interest in improving Vitra CSS. This document covers how to set
 ## Development Setup
 
 ```bash
-git clone https://github.com/desvosoft/vitra-css.git
+git clone https://github.com/DesvoSoft/Vitra.git
 cd vitra-css
 npm install
 npm run dev        # serves the repo root (npx serve .), open index.html for the live demo
@@ -82,4 +82,4 @@ Create `src/NN-name.css`, add the layer name to the `@layer` directive in `src/0
 
 ## Questions
 
-Open a [GitHub issue](https://github.com/desvosoft/vitra-css/issues) for anything not covered here.
+Open a [GitHub issue](https://github.com/DesvoSoft/Vitra/issues) for anything not covered here.

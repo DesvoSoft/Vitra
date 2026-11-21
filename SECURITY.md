@@ -6,14 +6,14 @@ Vitra CSS is a small, actively-maintained open-source project. Security fixes ar
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.7.x   | :white_check_mark: |
-| < 1.7   | :x:                |
+| 1.14.x  | :white_check_mark: |
+| < 1.14  | :x:                |
 
 ## Reporting a Vulnerability
 
 Vitra CSS does not run a bug bounty program. If you believe you've found a security vulnerability (for example, an XSS vector in the JS modules, a supply-chain issue in the build pipeline, or a way the CSS/JS could be abused to exfiltrate data), please report it privately rather than opening a public issue.
 
-Preferred: open a [GitHub Security Advisory](https://github.com/desvosoft/vitra-css/security/advisories/new) for this repository. This lets us discuss and fix the issue privately before it's disclosed.
+Preferred: open a [GitHub Security Advisory](https://github.com/DesvoSoft/Vitra/security/advisories/new) for this repository. This lets us discuss and fix the issue privately before it's disclosed.
 
 Alternative: email **desvox23@gmail.com** with a description of the issue, steps to reproduce, and any proof-of-concept code.
 

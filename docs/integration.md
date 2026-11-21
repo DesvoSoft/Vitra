@@ -92,7 +92,7 @@ Load the JS and the CSS from the same release: the tooltip's styles live in the 
 - `core + scenery + effects` gives the same computed styles as `vitra.min.css` (a browser test compares a sample of elements in dark and light, in three load orders).
 - Without `effects`, particles that `Vitra.particles.spawn()` creates appear as small static dots (the JS sets their size and colour inline, the animation lives in the CSS), emoji particles show nothing (the glyph is drawn by a rule in `effects`), and `.vitra-ripple` has no ripple styling. Without `scenery`, `.vitra-scenery` roots take no space and draw nothing.
 - Each piece is compressed on its own, so the three together weigh more than the bundle (20.3 kB against 18.9 kB brotli). Use the pieces to leave one out, not to load all three.
-- Installed from npm or git: `vitra-css/core.css`, `vitra-css/scenery.css`, `vitra-css/effects.css` (see `exports` in `package.json`).
+- Installed from git (`npm install github:DesvoSoft/Vitra#v1.14.0`; the package is not published on the npm registry, so do not install a registry package named `vitra-css`): `vitra-css/core.css`, `vitra-css/scenery.css`, `vitra-css/effects.css` (see `exports` in `package.json`).
 
 ---
 
