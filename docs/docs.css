@@ -4,12 +4,42 @@
    docs shell: header bar, sidebar grid, prose column, code blocks.
    ========================================================================== */
 
+/* System fonts: the framework's tokens name Inter, Outfit and JetBrains
+   Mono without shipping them, and a font CDN would add a third party to
+   every visit (same choice as the demo). */
+:root {
+  --vitra-font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --vitra-font-heading: var(--vitra-font-family);
+  --vitra-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 .docs-body {
   margin: 0;
   background: var(--vitra-color-bg);
   color: var(--vitra-color-text-primary);
-  font-family: var(--vitra-font-family, system-ui, sans-serif);
+  font-family: var(--vitra-font-family);
   line-height: 1.6;
+}
+
+code,
+pre,
+kbd {
+  font-family: var(--vitra-font-mono);
+}
+
+kbd {
+  font-size: 0.85em;
+  padding: 0.1em 0.4em;
+  border: 1px solid var(--vitra-color-border-control, var(--vitra-color-border));
+  border-radius: 4px;
+  background: var(--vitra-color-surface);
+  color: var(--vitra-color-text-primary);
 }
 
 /* ---- Header ---- */
@@ -197,6 +227,11 @@
   overflow-x: auto;
 }
 
+.docs-section th,
+.docs-section td {
+  overflow-wrap: anywhere;
+}
+
 /* Without JavaScript nothing switches the tabs: show every panel */
 @media (scripting: none) {
   .docs-tabs .vitra-tabs-panel {
@@ -212,21 +247,65 @@
   margin: var(--vitra-space-3) 0;
 }
 
+/* Code wraps instead of scrolling sideways, so a phone shows all of it.
+   The Copy button sits in the top-right corner, in space the padding
+   keeps free: to the right of the text on wide screens, above it on a
+   phone. */
 .docs-code pre {
   margin: 0;
-  overflow-x: auto;
   background: var(--vitra-color-surface);
   border: 1px solid var(--vitra-color-border);
   border-radius: var(--vitra-radius-md);
   padding: var(--vitra-space-4);
+  padding-right: 6rem;
   font-size: var(--vitra-font-size-sm);
   line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .docs-copy-btn {
   position: absolute;
   top: 8px;
   right: 8px;
+}
+
+@media (max-width: 560px) {
+  .docs-code pre {
+    padding-top: 3.75rem;
+    padding-right: var(--vitra-space-4);
+    font-size: var(--vitra-font-size-xs);
+  }
+}
+
+/* Live examples */
+.docs-card-sample {
+  max-width: 260px;
+}
+
+.docs-card-sample h4 {
+  margin-top: 0;
+}
+
+.docs-card-sample p {
+  margin-bottom: 0;
+}
+
+.docs-input-sample {
+  max-width: 200px;
+}
+
+.docs-ring-75 {
+  --vitra-progress-ring-value: 75%;
+}
+
+.docs-modal-narrow {
+  max-width: 400px;
+}
+
+.docs-modal-title {
+  margin: 0;
+  font-size: var(--vitra-font-size-xl);
 }
 
 /* ---- Live example panels ---- */
@@ -251,7 +330,9 @@
 }
 
 .docs-footer a {
-  color: var(--vitra-color-accent);
+  color: var(--vitra-color-text-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* ---- Mobile ---- */
@@ -277,6 +358,7 @@
 
 /* 44 px rows: the drawer is the touch menu */
 .docs-drawer .vitra-drawer-link {
+  box-sizing: border-box;
   min-height: 44px;
 }
 
@@ -290,4 +372,22 @@
 .docs-section li a {
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+/* 44 px touch targets in the docs chrome */
+@media (pointer: coarse) {
+  .docs-wordmark,
+  .docs-header-link,
+  .docs-nav-link {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .docs-header-link,
+  .docs-wordmark {
+    display: inline-flex;
+    justify-content: center;
+    min-width: 44px;
+  }
 }

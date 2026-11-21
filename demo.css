@@ -7,6 +7,30 @@
    Base & Layout
    ============================================ */
 
+/* System fonts. The framework's tokens name Inter, Outfit and JetBrains
+   Mono but do not ship them; loading them from a font CDN would add
+   requests and a third party to every visit, so the demo uses the
+   platform's own UI and monospace faces. */
+:root {
+  --vitra-font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --vitra-font-heading: var(--vitra-font-family);
+  --vitra-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+section[id] {
+  scroll-margin-top: 80px;
+}
+
+[id^="comp-"] {
+  scroll-margin-top: 100px;
+}
+
 html,
 body {
   /* The off-canvas drawer (.vitra-drawer, fixed at right: -100%) expands
@@ -21,18 +45,67 @@ body {
 
 body {
   background-color: var(--vitra-color-bg);
-  background-image:
-    radial-gradient(at 0% 0%, hsla(var(--vitra-color-accent-h), 100%, 70%, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, hsla(var(--vitra-color-info-h, 200), 100%, 70%, 0.1) 0px, transparent 50%);
-  background-attachment: fixed;
   min-height: 100vh;
+}
+
+/* The accent glow at the top of the page, on a fixed layer of its own:
+   background-attachment: fixed repaints the whole body on every scroll
+   frame on many phones. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(at 0% 0%, hsl(var(--vitra-color-accent-h) 100% 70% / 15%) 0, transparent 50%),
+    radial-gradient(at 100% 0%, hsl(var(--vitra-color-info-h, 200) 100% 70% / 10%) 0, transparent 50%);
+}
+
+/* Code wraps instead of scrolling sideways, so a phone shows all of it */
+pre {
+  background: var(--vitra-color-surface);
+  border: 1px solid var(--vitra-color-border);
+  border-radius: var(--vitra-radius-md);
+  padding: var(--vitra-space-4);
+  font-size: var(--vitra-font-size-sm);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+pre code {
+  color: var(--vitra-color-text-primary);
+  font-family: var(--vitra-font-mono);
+}
+
+kbd {
+  font-family: var(--vitra-font-mono);
+  font-size: 0.85em;
+  padding: 0.1em 0.4em;
+  border: 1px solid var(--vitra-color-border-control, var(--vitra-color-border));
+  border-radius: 4px;
+  background: var(--vitra-color-surface);
+  color: var(--vitra-color-text-primary);
+}
+
+/* Skip link: off screen until it gets keyboard focus */
+.demo-skip {
+  position: absolute;
+  top: var(--vitra-space-2);
+  left: var(--vitra-space-2);
+  z-index: 1000;
+  transform: translateY(-200%);
+}
+
+.demo-skip:focus {
+  transform: none;
 }
 
 .demo-section {
   position: relative;
   padding: var(--vitra-space-12) 0;
-  border-bottom: 1px solid hsla(var(--vitra-color-accent-h), 100%, 70%, 0.05);
-
+  border-bottom: 1px solid hsl(var(--vitra-color-accent-h) 100% 70% / 5%);
 
   /* No content-visibility: auto here. A skipped subtree never resolves
      style, so an animation-play-state change made while the section is
@@ -60,8 +133,8 @@ body {
   background: linear-gradient(
     to bottom,
     transparent,
-    hsla(var(--vitra-color-accent-h), 40%, 50%, 0.035) 12%,
-    hsla(var(--vitra-color-accent-h), 40%, 50%, 0.035) 88%,
+    hsl(var(--vitra-color-accent-h) 40% 50% / 3.5%) 12%,
+    hsl(var(--vitra-color-accent-h) 40% 50% / 3.5%) 88%,
     transparent
   );
 }
@@ -79,7 +152,7 @@ body {
 
 .demo-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: var(--vitra-space-4);
   margin: var(--vitra-space-6) 0;
 }
@@ -88,9 +161,17 @@ body {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.component-showcase:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--vitra-shadow-medium);
+@media (hover: hover) {
+  .component-showcase:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--vitra-shadow-medium);
+  }
+}
+
+.demo-note {
+  margin-top: var(--vitra-space-2);
+  margin-bottom: 0;
+  font-size: var(--vitra-font-size-sm);
 }
 
 /* ============================================
@@ -121,15 +202,11 @@ body {
   pointer-events: none;
 }
 
-/* Hero type: solid near-white, static. The scene provides the color;
-   the type provides the contrast. */
+/* Hero type: solid, static. The scene provides the color; the type
+   provides the contrast. Keyed to the colour scheme (light-dark()), not
+   to theme names, so `auto` under a light system gets the dark ink too. */
 .demo-hero h1.demo-hero-title {
-  color: hsl(var(--vitra-color-accent-h) 20% 96%);
-}
-
-html[data-theme="light"] .demo-hero h1.demo-hero-title,
-html[data-theme="pastel"] .demo-hero h1.demo-hero-title {
-  color: hsl(var(--vitra-color-accent-h) 30% 14%);
+  color: var(--vitra-color-text-primary);
 }
 
 /* Single accent word - the one deliberate color note in the headline.
@@ -141,26 +218,14 @@ html[data-theme="pastel"] .demo-hero h1.demo-hero-title {
     hsl(var(--vitra-color-accent-h) 95% 78%),
     hsl(calc(var(--vitra-color-accent-h) + 20) 90% 68%)
   );
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-}
-
-html[data-theme="light"] .demo-hero-title-accent,
-html[data-theme="pastel"] .demo-hero-title-accent {
   background: linear-gradient(
     100deg,
-    hsl(var(--vitra-color-accent-h) 85% 42%),
-    hsl(calc(var(--vitra-color-accent-h) + 20) 80% 34%)
+    light-dark(hsl(var(--vitra-color-accent-h) 85% 38%), hsl(var(--vitra-color-accent-h) 95% 78%)),
+    light-dark(hsl(calc(var(--vitra-color-accent-h) + 20) 80% 32%), hsl(calc(var(--vitra-color-accent-h) + 20) 90% 68%))
   );
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-}
-
-.demo-hero .demo-hero-sub {
-  color: var(--vitra-color-text-secondary);
-  opacity: 1;
 }
 
 .demo-hero .vitra-gradient-bg {
@@ -189,18 +254,14 @@ html[data-theme="pastel"] .demo-hero-title-accent {
 .demo-hero-overline {
   display: inline-block;
   margin-bottom: var(--vitra-space-4);
-  font-size: 0.72rem;
-  font-weight: 400;
+  font-size: 0.75rem;
+  font-weight: 600;
   letter-spacing: 0.34em;
   text-transform: uppercase;
-  color: hsl(var(--vitra-color-accent-h) 70% 78% / 0.9);
-  text-shadow: 0 1px 3px hsl(0deg 0% 0% / 60%), 0 1px 12px hsl(0deg 0% 0% / 35%);
-}
-
-html[data-theme="light"] .demo-hero-overline,
-html[data-theme="pastel"] .demo-hero-overline {
-  color: hsl(var(--vitra-color-accent-h) 75% 32% / 0.95);
-  text-shadow: 0 1px 2px hsl(0deg 0% 100% / 70%), 0 1px 8px hsl(0deg 0% 100% / 40%);
+  color: light-dark(hsl(var(--vitra-color-accent-h) 75% 28%), hsl(var(--vitra-color-accent-h) 70% 80%));
+  text-shadow:
+    0 1px 3px light-dark(hsl(0deg 0% 100% / 70%), hsl(0deg 0% 0% / 60%)),
+    0 1px 12px light-dark(hsl(0deg 0% 100% / 40%), hsl(0deg 0% 0% / 35%));
 }
 
 .demo-hero-sub {
@@ -211,23 +272,51 @@ html[data-theme="pastel"] .demo-hero-overline {
   margin-right: auto;
 }
 
+/* The subtitle crosses the ridges, which are lighter than the sky in the
+   dark themes and darker than it in the light ones: a soft glass backing
+   keeps it at 4.5:1 over both. */
+.demo-hero .demo-hero-sub {
+  display: inline-block;
+  padding: 0.35em 0.9em;
+  border-radius: var(--vitra-radius-lg);
+  color: var(--vitra-color-text-primary);
+  background: light-dark(color-mix(in srgb, var(--vitra-color-bg) 80%, transparent), color-mix(in srgb, var(--vitra-color-bg) 65%, transparent));
+  opacity: 1;
+}
+
+@supports (backdrop-filter: blur(1px)) {
+  .demo-hero .demo-hero-sub {
+    backdrop-filter: blur(6px);
+  }
+}
+
 /* Primary CTA - the single strong accent UI element on the page,
    keyed to the theme's own accent hue instead of a fixed warm tone. */
 .demo-btn-warm {
   background: linear-gradient(
     120deg,
     hsl(var(--vitra-color-accent-h) 90% 78%),
-    hsl(calc(var(--vitra-color-accent-h) + 25) 85% 62%)
+    hsl(calc(var(--vitra-color-accent-h) + 25) 85% 74%)
   );
   border: none;
   color: hsl(var(--vitra-color-accent-h) 60% 12%);
   font-weight: 600;
-  box-shadow: 0 4px 24px hsl(var(--vitra-color-accent-h) 85% 62% / 0.35);
+  box-shadow: 0 4px 24px hsl(var(--vitra-color-accent-h) 85% 62% / 35%);
 }
 
-.demo-btn-warm:hover {
-  box-shadow: 0 6px 32px hsl(var(--vitra-color-accent-h) 85% 62% / 0.5);
-  transform: translateY(-1px);
+@media (hover: hover) {
+  .demo-btn-warm:hover {
+    box-shadow: 0 6px 32px hsl(var(--vitra-color-accent-h) 85% 62% / 50%);
+    transform: translateY(-1px);
+  }
+}
+
+/* The ghost button sits on the scenery: a backing so its label reads
+   over the ridges, the headline's ink, and the accent on its border */
+.demo-hero .vitra-btn-ghost {
+  color: var(--vitra-color-text-primary);
+  border-color: light-dark(var(--vitra-color-border-control, var(--vitra-color-border)), var(--vitra-color-accent));
+  background: color-mix(in srgb, var(--vitra-color-bg) 70%, transparent);
 }
 
 /* Scroll cue: minimal chevron, fading drop */
@@ -238,8 +327,8 @@ html[data-theme="pastel"] .demo-hero-overline {
   width: 14px;
   height: 14px;
   z-index: 2;
-  border-right: 2px solid hsl(var(--vitra-color-accent-h) 30% 85% / 0.55);
-  border-bottom: 2px solid hsl(var(--vitra-color-accent-h) 30% 85% / 0.55);
+  border-right: 2px solid light-dark(hsl(var(--vitra-color-accent-h) 30% 25% / 55%), hsl(var(--vitra-color-accent-h) 30% 85% / 55%));
+  border-bottom: 2px solid light-dark(hsl(var(--vitra-color-accent-h) 30% 25% / 55%), hsl(var(--vitra-color-accent-h) 30% 85% / 55%));
   transform: translateX(-50%) rotate(45deg);
   /* Stepped, like the framework's own ambient loops: a continuously
      interpolated animation - even this 14px chevron - makes the browser
@@ -305,7 +394,7 @@ html[data-theme="pastel"] .demo-hero-overline {
 }
 
 /* ============================================
-   Cinematic Section
+   Cards & Cinematic Section
    ============================================ */
 
 .demo-card {
@@ -324,6 +413,7 @@ html[data-theme="pastel"] .demo-hero-overline {
 
 .demo-card-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   margin-bottom: var(--vitra-space-3);
@@ -333,6 +423,7 @@ html[data-theme="pastel"] .demo-hero-overline {
 .demo-card-header h3 {
   margin: 0;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--vitra-space-2);
 }
@@ -352,9 +443,17 @@ html[data-theme="pastel"] .demo-hero-overline {
 .cinematic-overlay-content {
   position: relative;
   z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: var(--vitra-space-1);
   text-align: center;
   pointer-events: none;
   padding: var(--vitra-space-4);
+}
+
+.demo-preview-caption {
+  font-size: 0.85rem;
+  color: var(--vitra-color-text-secondary);
 }
 
 /* Keep glow orbs within cinematic preview boundaries */
@@ -367,22 +466,71 @@ html[data-theme="pastel"] .demo-hero-overline {
   position: absolute;
 }
 
+.demo-orb-1 { --vitra-glow-size: 200px; --vitra-glow-opacity: 0.15; }
+.demo-orb-2 { --vitra-glow-size: 160px; --vitra-glow-opacity: 0.12; }
+.demo-orb-3 { --vitra-glow-size: 240px; --vitra-glow-opacity: 0.1; }
+
 /* Border glow cinematic demo */
 #cinematic-border-glow {
   --vitra-border-glow-angle: 0deg;
 }
 
-#cinematic-border-glow.toggle-off {
-  opacity: 0.5;
-  border-color: var(--vitra-color-border-hover);
+/* The mesh-gradient preview: .vitra-gradient-bg is position: fixed by
+   design (a full-page backdrop). Inside this demo box that resolved
+   against the whole section - a 2000px-tall animated layer hiding
+   behind the page. Pin it to its preview instead. */
+#cinematic-gradient-bg { position: relative; overflow: hidden; }
+#cinematic-gradient-bg .vitra-gradient-bg { position: absolute; }
+
+.demo-gradient-input {
+  margin: var(--vitra-space-4) 0;
 }
 
-.vitra-gradient-rotate.toggle-off::before {
+.demo-gradient-input .vitra-input {
+  width: 100%;
+}
+
+.demo-gradient-text-display {
+  margin: 0;
+  padding: var(--vitra-space-4) 0;
+  font-size: var(--vitra-font-size-2xl);
+  font-weight: var(--vitra-font-weight-bold);
+  text-align: center;
+}
+
+/* "Active" switches: .demo-off on the preview says what off means */
+#cinematic-gradient-bg.demo-off .vitra-gradient-bg,
+#cinematic-glow-orbs.demo-off .vitra-glow-orb,
+.vitra-noise-overlay.demo-off {
+  display: none;
+}
+
+#cinematic-border-glow.demo-off {
+  opacity: 0.5;
+}
+
+#cinematic-border-glow.demo-off::before,
+#cinematic-border-glow.demo-off::after {
+  display: none;
+}
+
+#shape-morphs.demo-off .vitra-shape-morph {
+  animation-play-state: paused;
+  opacity: 0.3;
+}
+
+#gradient-rotates.demo-off .vitra-gradient-rotate {
+  opacity: 0.4;
+}
+
+#gradient-rotates.demo-off .vitra-gradient-rotate::before {
   animation-play-state: paused;
 }
 
-.vitra-gradient-rotate.toggle-off {
-  opacity: 0.4;
+#scroll-reveals.demo-off > * {
+  animation: none;
+  opacity: 1;
+  transform: none;
 }
 
 /* ============================================
@@ -418,6 +566,17 @@ html[data-theme="pastel"] .demo-hero-overline {
   padding: var(--vitra-space-4);
 }
 
+.theme-preview-title {
+  margin: 0 0 var(--vitra-space-2);
+  font-size: var(--vitra-font-size-base);
+}
+
+.theme-preview-text {
+  margin: 0 0 var(--vitra-space-3);
+  font-size: 0.9rem;
+  color: var(--vitra-color-text-secondary);
+}
+
 .theme-preview-accent-bar {
   height: 4px;
   background: var(--vitra-color-accent);
@@ -427,25 +586,15 @@ html[data-theme="pastel"] .demo-hero-overline {
 }
 
 .theme-preview-glass {
+  margin-top: var(--vitra-space-3);
+  padding: var(--vitra-space-3);
   border: 1px solid var(--vitra-color-border);
+  border-radius: var(--vitra-radius-md);
+  font-size: 0.85rem;
 }
 
-/* Theme swatches (also used for token swatches) */
-.theme-swatch-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--vitra-space-1);
-}
-
-.theme-swatch-label {
-  font-size: 0.7rem;
-  opacity: 0.6;
-  letter-spacing: 0.03em;
-  white-space: nowrap;
-  pointer-events: none;
-}
-
+/* Theme swatches: each one is a button holding its colour disc and its
+   name, so the name is both visible and the accessible name. */
 .theme-swatches {
   display: flex;
   gap: var(--vitra-space-3);
@@ -454,38 +603,81 @@ html[data-theme="pastel"] .demo-hero-overline {
   margin-top: var(--vitra-space-4);
 }
 
+.theme-swatch-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--vitra-space-1);
+  min-width: 52px;
+  padding: var(--vitra-space-1);
+  border: 0;
+  border-radius: var(--vitra-radius-md);
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.theme-swatch-wrap:focus-visible {
+  outline: 2px solid var(--vitra-color-accent);
+  outline-offset: 2px;
+}
+
 .theme-swatch {
+  position: relative;
+  display: block;
   width: 44px;
   height: 44px;
   border-radius: 50%;
   border: 2px solid var(--swatch-border, var(--vitra-color-border));
-  cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  position: relative;
-  padding: 0;
-  outline: none;
 }
 
-.theme-swatch:hover {
-  transform: scale(1.15);
-  box-shadow: 0 0 20px hsla(var(--vitra-color-accent-h), 100%, 70%, 0.3);
+@media (hover: hover) {
+  .theme-swatch-wrap:hover .theme-swatch {
+    transform: scale(1.15);
+    box-shadow: 0 0 20px hsl(var(--vitra-color-accent-h) 100% 70% / 30%);
+  }
 }
 
-.theme-swatch.active {
+.theme-swatch-wrap[aria-pressed="true"] .theme-swatch {
   border-color: var(--vitra-color-accent);
-  box-shadow: 0 0 0 3px var(--vitra-color-accent), 0 0 20px hsla(var(--vitra-color-accent-h), 100%, 70%, 0.3);
+  box-shadow: 0 0 0 3px var(--vitra-color-accent), 0 0 20px hsl(var(--vitra-color-accent-h) 100% 70% / 30%);
 }
 
-.theme-swatch.active::after {
+.theme-swatch-wrap[aria-pressed="true"] .theme-swatch::after {
   content: '✓';
+  content: '✓' / '';
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  /* vitra-literal-ok: a white tick with a dark halo reads on every swatch */
   color: white;
   font-weight: bold;
   font-size: 1rem;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 3px rgb(0 0 0 / 60%);
+}
+
+.theme-swatch-label {
+  font-size: var(--vitra-font-size-xs);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  color: var(--vitra-color-text-secondary);
+}
+
+.theme-swatch-light { background: linear-gradient(135deg, hsl(168deg 10% 95%) 0%, hsl(168deg 40% 82%) 100%); --swatch-border: hsl(168deg 30% 70%); }
+.theme-swatch-dark { background: linear-gradient(135deg, hsl(168deg 15% 5%) 0%, hsl(168deg 60% 28%) 100%); --swatch-border: hsl(168deg 50% 35%); }
+.theme-swatch-auto { background: linear-gradient(135deg, hsl(168deg 10% 95%) 0 50%, hsl(168deg 15% 5%) 50% 100%); --swatch-border: hsl(168deg 30% 50%); }
+.theme-swatch-pastel { background: linear-gradient(135deg, hsl(300deg 30% 95%) 0%, hsl(320deg 65% 75%) 100%); --swatch-border: hsl(320deg 50% 68%); }
+.theme-swatch-neon { background: linear-gradient(135deg, hsl(260deg 30% 4%) 0%, hsl(180deg 100% 42%) 100%); --swatch-border: hsl(180deg 100% 45%); }
+.theme-swatch-ocean { background: linear-gradient(135deg, hsl(210deg 30% 5%) 0%, hsl(200deg 80% 45%) 100%); --swatch-border: hsl(200deg 70% 50%); }
+.theme-swatch-emerald { background: linear-gradient(135deg, hsl(160deg 20% 4%) 0%, hsl(155deg 75% 38%) 100%); --swatch-border: hsl(155deg 65% 42%); }
+
+.demo-swatch-hint {
+  margin-top: var(--vitra-space-3);
+  text-align: center;
+  font-size: var(--vitra-font-size-sm);
 }
 
 /* Token swatches (square, in tokens section) */
@@ -498,10 +690,59 @@ html[data-theme="pastel"] .demo-hero-overline {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.token-swatch:hover {
-  transform: scale(1.1);
-  box-shadow: var(--vitra-shadow-medium);
+@media (hover: hover) {
+  .token-swatch:hover {
+    transform: scale(1.1);
+    box-shadow: var(--vitra-shadow-medium);
+  }
 }
+
+.demo-token-bg { background: var(--vitra-color-bg); }
+.demo-token-surface { background: var(--vitra-color-surface); }
+.demo-token-accent { background: var(--vitra-color-accent); }
+.demo-token-text { background: var(--vitra-color-text-primary); }
+.demo-token-success { background: var(--vitra-color-success); }
+.demo-token-warning { background: var(--vitra-color-warning); }
+.demo-token-error { background: var(--vitra-color-error); }
+.demo-token-info { background: var(--vitra-color-info); }
+
+.demo-space-scale {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vitra-space-2);
+}
+
+.demo-space-scale > div {
+  height: 20px;
+  background: var(--vitra-color-accent);
+}
+
+.demo-space-1 { width: var(--vitra-space-1); }
+.demo-space-2 { width: var(--vitra-space-2); }
+.demo-space-4 { width: var(--vitra-space-4); }
+.demo-space-8 { width: var(--vitra-space-8); }
+
+.demo-radius {
+  width: 60px;
+  height: 60px;
+  background: var(--vitra-color-accent);
+}
+
+.demo-radius-sm { border-radius: var(--vitra-radius-sm); }
+.demo-radius-md { border-radius: var(--vitra-radius-md); }
+.demo-radius-lg { border-radius: var(--vitra-radius-lg); }
+.demo-radius-full { border-radius: var(--vitra-radius-full); }
+
+.demo-shadow {
+  width: 80px;
+  height: 80px;
+  background: var(--vitra-color-bg);
+  border-radius: var(--vitra-radius-md);
+}
+
+.demo-shadow-subtle { box-shadow: var(--vitra-shadow-subtle); }
+.demo-shadow-medium { box-shadow: var(--vitra-shadow-medium); }
+.demo-shadow-elevated { box-shadow: var(--vitra-shadow-elevated); }
 
 /* ============================================
    Modern CSS Section
@@ -509,7 +750,7 @@ html[data-theme="pastel"] .demo-hero-overline {
 
 .modern-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: var(--vitra-space-4);
 }
 
@@ -517,46 +758,93 @@ html[data-theme="pastel"] .demo-hero-overline {
   margin-bottom: 0;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
 }
 
 .modern-grid .demo-card > *:last-child {
   margin-top: auto;
 }
 
-/* Popover demo */
-#popover-demo {
-  transition: opacity 0.25s ease, transform 0.25s ease;
+/* Native popover: centred in the top layer by the browser */
+.demo-popover {
+  max-width: min(320px, calc(100vw - 2 * var(--vitra-space-4)));
+  padding: var(--vitra-space-4);
+  border: 1px solid var(--vitra-color-border);
+  border-radius: var(--vitra-radius-md);
+  color: var(--vitra-color-text-primary);
+  transition: opacity 0.25s ease, transform 0.25s ease, display 0.25s allow-discrete, overlay 0.25s allow-discrete;
+}
+
+.demo-popover:not(:popover-open) {
   opacity: 0;
   transform: translateY(-6px);
 }
 
-#popover-demo.open {
-  opacity: 1;
-  transform: translateY(0);
-}
-
 @starting-style {
-  #popover-demo.open {
+  .demo-popover:popover-open {
     opacity: 0;
     transform: translateY(-6px);
   }
 }
 
-/* Starting-style panel */
-.starting-panel {
-  transition: opacity 0.3s ease, transform 0.3s ease;
+.demo-popover-title {
+  margin-top: 0;
 }
 
-.starting-panel.open {
-  opacity: 1;
-  transform: translateY(0);
+.demo-popover p {
+  font-size: 0.9rem;
+}
+
+/* @starting-style panel: shown and hidden with the hidden attribute */
+.starting-panel {
+  align-self: stretch;
+  margin-top: var(--vitra-space-3);
+  padding: var(--vitra-space-4);
+  background: var(--vitra-color-surface);
+  border-radius: var(--vitra-radius-md);
+  transition: opacity 0.3s ease, transform 0.3s ease, display 0.3s allow-discrete;
+}
+
+.starting-panel p {
+  margin: 0;
+}
+
+.starting-panel[hidden] {
+  display: none;
+  opacity: 0;
+  transform: translateY(10px);
 }
 
 @starting-style {
-  .starting-panel.open {
+  .starting-panel:not([hidden]) {
     opacity: 0;
     transform: translateY(10px);
   }
+}
+
+.demo-oklch {
+  align-self: stretch;
+  margin-top: var(--vitra-space-3);
+}
+
+.demo-oklch-ramp {
+  display: flex;
+  gap: 2px;
+  height: 40px;
+  border-radius: var(--vitra-radius-md);
+  overflow: hidden;
+}
+
+.demo-oklch-ramp span { flex: 1; }
+.demo-oklch-ramp span:nth-child(1) { background: oklch(0.5 0.25 var(--vitra-color-accent-h)); }
+.demo-oklch-ramp span:nth-child(2) { background: oklch(0.6 0.25 var(--vitra-color-accent-h)); }
+.demo-oklch-ramp span:nth-child(3) { background: oklch(0.7 0.25 var(--vitra-color-accent-h)); }
+.demo-oklch-ramp span:nth-child(4) { background: oklch(0.8 0.25 var(--vitra-color-accent-h)); }
+.demo-oklch-ramp span:nth-child(5) { background: oklch(0.9 0.25 var(--vitra-color-accent-h)); }
+
+.demo-oklch-caption {
+  font-size: var(--vitra-font-size-xs);
+  color: var(--vitra-color-text-secondary);
 }
 
 /* Container Queries table demo */
@@ -595,6 +883,96 @@ html[data-theme="pastel"] .demo-hero-overline {
 }
 
 /* ============================================
+   Shaders
+   ============================================ */
+
+/* The ring's value is a registered property: transitioning it animates
+   the conic fill. */
+.demo-ring-0 { --vitra-progress-ring-value: 0%; }
+.demo-ring-75 { --vitra-progress-ring-value: 75%; }
+
+.demo-ring-animated {
+  transition: --vitra-progress-ring-value 1.2s var(--vitra-ease-out, cubic-bezier(0, 0, 0.2, 1));
+}
+
+.demo-rotate-box {
+  width: 100%;
+  max-width: 250px;
+  padding: var(--vitra-space-4);
+}
+
+.demo-rotate-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.demo-rotate-inner p {
+  margin: var(--vitra-space-2) 0 0;
+  font-size: 0.85rem;
+  color: var(--vitra-color-text-secondary);
+}
+
+.demo-reveal-grid {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--vitra-space-3);
+}
+
+.demo-mix-box {
+  flex: 1 1 180px;
+  padding: var(--vitra-space-3);
+  border: 1px solid var(--vitra-color-border);
+  border-radius: var(--vitra-radius-md);
+}
+
+.demo-mix-box-plain {
+  border: 0;
+}
+
+.demo-mix-box p {
+  margin: var(--vitra-space-1) 0 0;
+  font-size: 0.85rem;
+}
+
+/* ============================================
+   Glass
+   ============================================ */
+
+.demo-glass-panel {
+  padding: var(--vitra-space-6);
+  border-radius: var(--vitra-radius-lg);
+}
+
+.demo-glass-accent {
+  border: 2px solid var(--vitra-color-accent);
+}
+
+.demo-glass-card {
+  padding: 0;
+  border-radius: var(--vitra-radius-lg);
+  overflow: hidden;
+}
+
+.demo-glass-card-art {
+  height: 120px;
+}
+
+.demo-art-1 { background: linear-gradient(135deg, var(--vitra-color-accent), var(--vitra-color-info)); }
+.demo-art-2 { background: linear-gradient(135deg, var(--vitra-color-success), var(--vitra-color-accent)); }
+.demo-art-3 { background: linear-gradient(135deg, var(--vitra-color-warning), var(--vitra-color-error)); }
+
+.demo-glass-card-body {
+  padding: var(--vitra-space-4);
+}
+
+.demo-glass-card-body h4 {
+  margin-top: 0;
+}
+
+.demo-glass-card-body p {
+  font-size: var(--vitra-font-size-sm);
+}
+
+/* ============================================
    Mobile menu (Vitra.drawer)
    ============================================ */
 
@@ -616,6 +994,7 @@ html[data-theme="pastel"] .demo-hero-overline {
 
 /* 44 px rows: the drawer is the touch menu */
 .demo-drawer .vitra-drawer-link {
+  box-sizing: border-box;
   min-height: 44px;
 }
 
@@ -626,7 +1005,7 @@ main [tabindex="-1"]:focus {
 }
 
 /* ============================================
-   Dropdown Chevron
+   Dropdowns
    ============================================ */
 
 .dropdown-chevron {
@@ -635,6 +1014,12 @@ main [tabindex="-1"]:focus {
 
 .vitra-dropdown.open .dropdown-chevron {
   transform: rotate(180deg);
+}
+
+.demo-dropdown-divider {
+  height: 1px;
+  margin: var(--vitra-space-1) 0;
+  background: var(--vitra-color-border);
 }
 
 /* ============================================
@@ -649,6 +1034,10 @@ main [tabindex="-1"]:focus {
 /* Tighten actions area */
 .vitra-navbar-actions {
   gap: var(--vitra-space-2);
+}
+
+.vitra-navbar-brand {
+  text-decoration: none;
 }
 
 /* Theme button — compact, fixed width so theme name change doesn't shift layout */
@@ -672,6 +1061,8 @@ main [tabindex="-1"]:focus {
   align-items: center;
 }
 
+/* Same ink as the framework's navbar links (text-secondary, which
+   reaches 4.5:1 in every theme), not a 70% opacity */
 .demo-nav-dropdown-btn {
   display: flex;
   align-items: center;
@@ -679,18 +1070,23 @@ main [tabindex="-1"]:focus {
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--vitra-color-text-primary);
+  color: var(--vitra-color-text-secondary);
   font-size: var(--vitra-font-size-sm);
   font-weight: var(--vitra-font-weight-medium);
   font-family: inherit;
   letter-spacing: .02em;
-  opacity: 0.7;
   padding: 0;
-  transition: opacity var(--vitra-duration-fast) var(--vitra-ease-default);
+  transition: color var(--vitra-duration-fast) var(--vitra-ease-default);
 }
 
 .demo-nav-dropdown-btn:hover {
-  opacity: 1;
+  color: var(--vitra-color-text-primary);
+}
+
+@media (pointer: coarse) {
+  .demo-nav-dropdown-btn {
+    min-height: 44px;
+  }
 }
 
 .demo-nav-chevron {
@@ -718,6 +1114,150 @@ main [tabindex="-1"]:focus {
 .demo-nav-dropdown-menu .vitra-dropdown-item:hover {
   background: var(--vitra-color-surface-hover);
   color: var(--vitra-color-text-primary);
+}
+
+/* ============================================
+   What's new in 1.14
+   ============================================ */
+
+.demo-new-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: var(--vitra-space-6);
+  align-items: stretch;
+}
+
+.demo-new-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vitra-space-4);
+  margin-bottom: 0;
+}
+
+.demo-new-card .demo-card-header { margin: 0; padding: 0; border: 0; }
+.demo-new-card > p { margin: 0; }
+.demo-new-card > :last-child { margin-top: auto; }
+
+.demo-new-code {
+  margin: 0;
+  padding: var(--vitra-space-3) var(--vitra-space-4);
+  font-size: var(--vitra-font-size-xs);
+}
+
+.demo-bloom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--vitra-space-2);
+}
+
+.demo-bloom-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 99px;
+  border: 1px solid var(--vitra-color-border-control, var(--vitra-color-border));
+  background: var(--vitra-color-surface);
+  color: var(--vitra-color-text-primary);
+  font: inherit;
+  font-size: var(--vitra-font-size-sm);
+  cursor: pointer;
+  transition: transform 320ms var(--vitra-ease-spring), border-color var(--vitra-duration-fast) var(--vitra-ease-default);
+}
+
+.demo-bloom-chip::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--chip);
+  box-shadow: 0 0 10px var(--chip);
+}
+
+.demo-chip-dark { --chip: hsl(177deg 80% 60%); }
+.demo-chip-light { --chip: hsl(222deg 72% 52%); }
+.demo-chip-neon { --chip: hsl(285deg 100% 58%); }
+.demo-chip-ocean { --chip: hsl(205deg 90% 55%); }
+.demo-chip-emerald { --chip: hsl(145deg 80% 45%); }
+.demo-chip-pastel { --chip: hsl(330deg 70% 44%); }
+
+.demo-bloom-chip[aria-pressed="true"] {
+  border-color: var(--vitra-color-accent);
+  box-shadow: inset 0 0 0 1px var(--vitra-color-accent);
+}
+
+@media (hover: hover) {
+  .demo-bloom-chip:hover { transform: translateY(-2px) scale(1.04); border-color: var(--vitra-color-border-hover); }
+}
+
+.demo-bloom-chip:active { transform: scale(0.96); }
+
+.demo-bloom-chip:focus-visible {
+  outline: 2px solid var(--vitra-color-accent);
+  outline-offset: 2px;
+}
+
+@media (pointer: coarse) {
+  .demo-bloom-chip {
+    min-height: 44px;
+  }
+}
+
+.demo-contrast-sample {
+  display: grid;
+  gap: var(--vitra-space-2);
+}
+
+.demo-contrast-sample .demo-field-label {
+  margin-bottom: 0;
+}
+
+.demo-motion-live {
+  display: flex;
+  align-items: center;
+  gap: var(--vitra-space-4);
+}
+
+.demo-motion-live .vitra-progress {
+  flex: 1;
+}
+
+.demo-stat-list {
+  display: grid;
+  gap: var(--vitra-space-2);
+  margin: 0;
+}
+
+.demo-stat-list > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--vitra-space-1) var(--vitra-space-3);
+  padding-bottom: var(--vitra-space-1);
+  border-bottom: 1px solid var(--vitra-color-border);
+}
+
+.demo-stat-list dt {
+  font-size: var(--vitra-font-size-sm);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.demo-stat-list dd {
+  margin: 0;
+  font-size: var(--vitra-font-size-sm);
+  font-weight: var(--vitra-font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.demo-new-card .demo-note {
+  margin: 0;
+  font-size: var(--vitra-font-size-xs);
+}
+
+.demo-pick-result {
+  margin: 0;
+  font-size: var(--vitra-font-size-sm);
 }
 
 /* ============================================
@@ -763,53 +1303,41 @@ main [tabindex="-1"]:focus {
 .demo-qs-label {
   font-size: 1rem;
   color: var(--vitra-color-text-secondary);
-  margin-bottom: var(--vitra-space-3);
+  margin: 0 0 var(--vitra-space-3);
   font-weight: 600;
   letter-spacing: -0.01em;
 }
 
+/* Code and its Copy button side by side; on a phone the button drops
+   under the code, which keeps the full width and wraps */
 .demo-qs-code-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
   gap: var(--vitra-space-3);
-  background: var(--vitra-color-surface);
+  background: var(--vitra-bg-accent, var(--vitra-color-surface));
   border: 1px solid var(--vitra-color-border);
   border-radius: var(--vitra-radius-md);
   padding: var(--vitra-space-4) var(--vitra-space-5);
 }
 
-html[data-theme="dark"] .demo-qs-code-wrap,
-html[data-theme="midnight"] .demo-qs-code-wrap {
-  background: hsla(var(--vitra-color-accent-h), 20%, 8%, 0.8);
-}
-
-html[data-theme="light"] .demo-qs-code-wrap,
-html[data-theme="pastel"] .demo-qs-code-wrap {
-  background: var(--vitra-bg-accent);
-  border-color: var(--vitra-color-border);
-}
-
 .demo-qs-code {
-  flex: 1;
   margin: 0;
-  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
-  font-size: 0.95rem;
-  color: var(--vitra-color-text-primary);
-  white-space: pre;
-  overflow-x: auto;
+  font-family: var(--vitra-font-mono);
+  font-size: 0.9rem;
+  color: var(--vitra-color-accent);
+  color: light-dark(var(--vitra-color-text-primary), var(--vitra-color-accent));
   background: none;
   border: none;
   padding: 0;
   line-height: 1.7;
 }
 
-html[data-theme="dark"] .demo-qs-code,
-html[data-theme="midnight"] .demo-qs-code,
-html[data-theme="neon"] .demo-qs-code,
-html[data-theme="ocean"] .demo-qs-code,
-html[data-theme="emerald"] .demo-qs-code {
-  color: var(--vitra-color-accent);
+.demo-card .demo-qs-code {
+  padding: var(--vitra-space-3) var(--vitra-space-4);
+  background: var(--vitra-bg-accent, var(--vitra-color-surface));
+  border: 1px solid var(--vitra-color-border);
+  border-radius: var(--vitra-radius-md);
 }
 
 .demo-qs-code code {
@@ -820,8 +1348,29 @@ html[data-theme="emerald"] .demo-qs-code {
 }
 
 .demo-qs-copy {
-  flex-shrink: 0;
   min-width: 64px;
+}
+
+/* Nothing to copy with: no script */
+@media (scripting: none) {
+  .demo-qs-copy {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .demo-qs-code-wrap {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--vitra-space-3) var(--vitra-space-4);
+  }
+
+  .demo-qs-code {
+    font-size: 0.8rem;
+  }
+
+  .demo-qs-copy {
+    justify-self: end;
+  }
 }
 
 .demo-qs-note {
@@ -840,20 +1389,15 @@ html[data-theme="emerald"] .demo-qs-code {
 
 /* ============================================
    Footer
+   Theme surfaces and ink, so it follows light themes too
    ============================================ */
 
 .demo-footer {
   margin-top: var(--vitra-space-12);
   padding: var(--vitra-space-12) 0 var(--vitra-space-6);
-  background: hsla(var(--vitra-color-accent-h), 20%, 4%, 0.9);
-  border-top: 1px solid hsla(0, 0%, 100%, 0.05);
-}
-
-@supports (backdrop-filter: blur(1px)) {
-  .demo-footer {
-    background: hsla(var(--vitra-color-accent-h), 20%, 4%, 0.5);
-    backdrop-filter: blur(var(--vitra-blur-lg));
-  }
+  background: var(--vitra-bg-accent, var(--vitra-color-surface));
+  border-top: 1px solid var(--vitra-color-border);
+  color: var(--vitra-color-text-primary);
 }
 
 .footer-grid {
@@ -870,13 +1414,13 @@ html[data-theme="emerald"] .demo-qs-code {
 }
 
 .footer-brand {
+  margin: 0 0 var(--vitra-space-4);
   font-size: var(--vitra-font-size-xl);
   font-weight: var(--vitra-font-weight-bold);
-  margin-bottom: var(--vitra-space-4);
 }
 
 .footer-tagline {
-  opacity: 0.6;
+  color: var(--vitra-color-text-secondary);
   font-size: var(--vitra-font-size-sm);
   max-width: 300px;
   margin-bottom: var(--vitra-space-4);
@@ -888,9 +1432,9 @@ html[data-theme="emerald"] .demo-qs-code {
   gap: var(--vitra-space-2);
 }
 
-.footer-links h4 {
-  margin-bottom: var(--vitra-space-4);
-  color: var(--vitra-color-accent);
+.footer-heading {
+  margin: 0 0 var(--vitra-space-4);
+  color: var(--vitra-color-text-primary);
   font-size: var(--vitra-font-size-sm);
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -898,6 +1442,7 @@ html[data-theme="emerald"] .demo-qs-code {
 
 .footer-links ul {
   list-style: none;
+  margin: 0;
   padding: 0;
 }
 
@@ -906,20 +1451,52 @@ html[data-theme="emerald"] .demo-qs-code {
 }
 
 .footer-links a {
-  opacity: 0.6;
+  color: var(--vitra-color-text-secondary);
   font-size: var(--vitra-font-size-sm);
+  text-decoration: none;
 }
 
 .footer-links a:hover {
-  opacity: 1;
+  color: var(--vitra-color-accent);
+  text-decoration: underline;
+}
+
+@media (pointer: coarse) {
+  .footer-links li {
+    margin-bottom: 0;
+  }
+
+  .footer-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .vitra-toggle-label {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .vitra-navbar-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+  }
 }
 
 .footer-bottom {
   text-align: center;
   padding-top: var(--vitra-space-6);
-  border-top: 1px solid hsla(0, 0%, 100%, 0.05);
+  border-top: 1px solid var(--vitra-color-border);
   font-size: var(--vitra-font-size-xs);
-  opacity: 0.4;
+  color: var(--vitra-color-text-secondary);
+}
+
+.footer-bottom p {
+  margin: 0;
 }
 
 /* ============================================
@@ -929,6 +1506,7 @@ html[data-theme="emerald"] .demo-qs-code {
 #particle-demo-area {
   position: relative;
   min-height: 300px;
+  margin-top: var(--vitra-space-4);
   border: 2px dashed var(--vitra-color-border);
   border-radius: var(--vitra-radius-lg);
   padding: var(--vitra-space-4);
@@ -944,9 +1522,20 @@ html[data-theme="emerald"] .demo-qs-code {
   position: absolute;
   top: 50%;
   left: 50%;
+  margin: 0;
   transform: translate(-50%, -50%);
   pointer-events: none;
   z-index: 1;
+  text-align: center;
+  color: var(--vitra-color-text-secondary);
+}
+
+.demo-particle-info {
+  margin: var(--vitra-space-4) 0 0;
+  padding: var(--vitra-space-2);
+  background: var(--vitra-color-surface);
+  border-radius: var(--vitra-radius-sm);
+  font-size: var(--vitra-font-size-sm);
 }
 
 /* ============================================
@@ -961,57 +1550,112 @@ html[data-theme="emerald"] .demo-qs-code {
   margin: var(--vitra-space-4) 0;
 }
 
+.demo-controls-title {
+  margin-top: 0;
+}
+
 .demo-control-group {
   margin-bottom: var(--vitra-space-4);
 }
 
 .demo-label {
   display: block;
+  margin: 0 0 var(--vitra-space-2);
   font-family: var(--vitra-font-heading);
   font-weight: 600;
-  margin-bottom: var(--vitra-space-2);
   color: var(--vitra-color-text-primary);
   font-size: var(--vitra-font-size-xs);
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
 
-/* Range input enhancements */
-.vitra-range {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  height: 6px;
-  border-radius: 3px;
-  background: var(--vitra-color-surface-hover, rgba(0, 0, 0, 0.1));
-  outline: none;
+.demo-hint {
+  color: var(--vitra-color-text-secondary);
 }
 
-.vitra-range::-webkit-slider-thumb {
+.demo-color-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--vitra-space-2);
+  align-items: center;
+}
+
+.demo-color-input {
+  width: 44px;
+  height: 44px;
+  padding: 2px;
+  border: 1px solid var(--vitra-color-border-control, var(--vitra-color-border));
+  border-radius: var(--vitra-radius-sm);
+  background: none;
+  cursor: pointer;
+}
+
+.demo-color-text {
+  width: 7rem;
+}
+
+/* Sliders: a 44 px tall hit area around a 6 px track */
+.demo-range {
   -webkit-appearance: none;
   appearance: none;
-  width: 18px;
-  height: 18px;
+  display: block;
+  width: 100%;
+  height: 44px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.demo-range:focus-visible {
+  outline: 2px solid var(--vitra-color-accent);
+  outline-offset: 2px;
+  border-radius: var(--vitra-radius-sm);
+}
+
+.demo-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--vitra-color-border-control, var(--vitra-color-surface-hover));
+}
+
+.demo-range::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--vitra-color-border-control, var(--vitra-color-surface-hover));
+}
+
+.demo-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: -7px;
   border-radius: 50%;
   background: var(--vitra-color-accent);
-  cursor: pointer;
   border: 2px solid var(--vitra-color-bg);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
   transition: transform 0.2s ease;
 }
 
-.vitra-range::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
-}
-
-.vitra-range::-moz-range-thumb {
+.demo-range::-moz-range-thumb {
   width: 18px;
   height: 18px;
   border-radius: 50%;
   background: var(--vitra-color-accent);
-  cursor: pointer;
   border: 2px solid var(--vitra-color-bg);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
+}
+
+@media (hover: hover) {
+  .demo-range::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+  }
+}
+
+/* Resolves the accent to rgb for the colour picker (demo.js) */
+.demo-accent-probe {
+  position: absolute;
+  color: var(--vitra-color-accent);
 }
 
 /* ============================================
@@ -1027,28 +1671,84 @@ html[data-theme="emerald"] .demo-qs-code {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.motion-demo-item:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--vitra-shadow-elevated);
+@media (hover: hover) {
+  .motion-demo-item:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--vitra-shadow-elevated);
+  }
+}
+
+.demo-delay-1 { transition-delay: 0.1s; }
+.demo-delay-2 { transition-delay: 0.2s; }
+
+.demo-motion-result {
+  margin: var(--vitra-space-2) 0 0;
+  font-size: var(--vitra-font-size-sm);
 }
 
 /* ============================================
-   Code Blocks
+   Component Showcase
    ============================================ */
 
-pre {
-  background: var(--vitra-color-surface);
-  border: 1px solid var(--vitra-color-border);
-  border-radius: var(--vitra-radius-md);
-  padding: var(--vitra-space-4);
-  overflow-x: auto;
-  font-size: var(--vitra-font-size-sm);
-  line-height: 1.6;
+.demo-comp-block {
+  margin-top: var(--vitra-space-6);
 }
 
-pre code {
+.demo-field-label {
+  display: block;
+  margin-bottom: var(--vitra-space-2);
+  padding: 0;
+  font-size: var(--vitra-font-size-sm);
+  font-weight: var(--vitra-font-weight-semibold);
   color: var(--vitra-color-text-primary);
-  font-family: 'Courier New', Courier, monospace;
+}
+
+p.demo-field-label {
+  margin-top: 0;
+}
+
+.demo-fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.demo-w-30 { width: 30%; }
+.demo-w-45 { width: 45%; }
+.demo-w-60 { width: 60%; }
+.demo-w-70 { width: 70%; }
+.demo-w-80 { width: 80%; }
+
+.demo-type-scale p { margin: var(--vitra-space-1) 0; }
+.demo-fs-xs { font-size: var(--vitra-font-size-xs); }
+.demo-fs-sm { font-size: var(--vitra-font-size-sm); }
+.demo-fs-base { font-size: var(--vitra-font-size-base); }
+.demo-fs-lg { font-size: var(--vitra-font-size-lg); }
+.demo-fs-xl { font-size: var(--vitra-font-size-xl); }
+.demo-fs-2xl { font-size: var(--vitra-font-size-2xl); }
+
+/* The sample navbar keeps its links on a phone (the framework hides
+   .vitra-navbar-links under 768 px for the burger) */
+.demo-navbar-sample {
+  position: relative;
+  top: auto;
+  z-index: auto;
+  flex-wrap: wrap;
+}
+
+.demo-navbar-sample-links {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.demo-modal-narrow {
+  max-width: 400px;
+}
+
+.demo-modal-title {
+  margin: 0;
+  font-size: var(--vitra-font-size-xl);
 }
 
 /* ============================================
@@ -1074,18 +1774,17 @@ pre code {
   }
 
   .demo-section {
-    padding: var(--vitra-space-6) var(--vitra-space-2);
+    padding: var(--vitra-space-6) 0;
     margin: var(--vitra-space-4) auto;
+  }
+
+  .demo-card {
+    padding: var(--vitra-space-4);
   }
 
   .demo-grid,
   .modern-grid {
     grid-template-columns: 1fr;
-  }
-
-  .theme-swatch {
-    width: 36px;
-    height: 36px;
   }
 
   #particle-demo-area {
@@ -1110,14 +1809,21 @@ pre code {
 
 /* Small-phone tier (360-400px class devices): the 768px tier above
    assumes a tablet-ish tap target budget; at this width the theme
-   label + burger + brand start fighting for room in one row. */
+   label + burger + brand start fighting for room in one row. The theme
+   name stays in the button's accessible name. */
 @media (max-width: 400px) {
   .vitra-navbar {
     gap: var(--vitra-fluid-space-1);
   }
 
   .demo-theme-btn #current-theme-name {
-    display: none;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    min-width: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   .demo-hero h1.demo-hero-title {
@@ -1134,11 +1840,26 @@ pre code {
   .component-showcase,
   .theme-swatch,
   .token-swatch,
-  .vitra-range::-webkit-slider-thumb,
+  .demo-range::-webkit-slider-thumb,
   .demo-card,
   .cinematic-preview,
   .theme-preview-card {
     animation: none !important;
+  }
+
+  .demo-popover,
+  .starting-panel,
+  .demo-ring-animated {
+    transition: none;
+  }
+}
+
+/* Without a script the panel is simply shown */
+@media (scripting: none) {
+  .starting-panel[hidden] {
+    display: block;
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -1234,7 +1955,7 @@ pre code {
 }
 
 /* ============================================
-   Scenery Section (NEW in v1.8)
+   Scenery Section
    ============================================ */
 
 .demo-scenery-showcase {
@@ -1277,7 +1998,6 @@ pre code {
   .vitra-navbar {
     display: none;
   }
-
 }
 
 /* ============================================================
@@ -1299,44 +2019,6 @@ pre code {
 @keyframes demo-hero-rise {
   from { opacity: 0; transform: translateY(26px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-/* The mesh-gradient preview: .vitra-gradient-bg is position: fixed by
-   design (a full-page backdrop). Inside this demo box that resolved
-   against the whole section - a 2000px-tall animated layer hiding
-   behind the page. Pin it to its preview instead. */
-#cinematic-gradient-bg { position: relative; overflow: hidden; }
-#cinematic-gradient-bg .vitra-gradient-bg { position: absolute; }
-
-/* ============================================================
-   NEW IN 1.13
-   ============================================================ */
-.demo-new-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-  gap: var(--vitra-space-6);
-  align-items: stretch;
-}
-
-.demo-new-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--vitra-space-4);
-  margin-bottom: 0;
-}
-
-.demo-new-card .demo-card-header { margin: 0; padding: 0; border: 0; }
-.demo-new-card > p { margin: 0; }
-.demo-new-card > :last-child { margin-top: auto; }
-
-.demo-new-code {
-  margin: 0;
-  padding: var(--vitra-space-3) var(--vitra-space-4);
-  border-radius: var(--vitra-radius-md);
-  background: var(--vitra-color-surface);
-  border: 1px solid var(--vitra-color-border);
-  font-size: var(--vitra-font-size-xs);
-  overflow-x: auto;
 }
 
 /* Spring race: each runner is a rail the width of the track minus its
@@ -1376,45 +2058,6 @@ pre code {
 
 .demo-race.is-run .demo-race-runner { transform: translateX(100%); }
 .demo-race.is-reset .demo-race-runner { transition: none; }
-
-/* Theme bloom chips */
-.demo-bloom {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--vitra-space-2);
-}
-
-.demo-bloom-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  border-radius: 99px;
-  border: 1px solid var(--vitra-color-border);
-  background: var(--vitra-color-surface);
-  color: var(--vitra-color-text-primary);
-  font: inherit;
-  font-size: var(--vitra-font-size-sm);
-  cursor: pointer;
-  transition: transform 320ms var(--vitra-ease-spring), border-color var(--vitra-duration-fast) var(--vitra-ease-default);
-}
-
-.demo-bloom-chip::before {
-  content: '';
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--chip);
-  box-shadow: 0 0 10px var(--chip);
-}
-
-.demo-bloom-chip:hover { transform: translateY(-2px) scale(1.04); border-color: var(--vitra-color-border-hover); }
-.demo-bloom-chip:active { transform: scale(0.96); }
-
-.demo-bloom-chip:focus-visible {
-  outline: 2px solid var(--vitra-color-accent);
-  outline-offset: 2px;
-}
 
 /* Before/after meter */
 .demo-meter { margin: 0; display: grid; gap: var(--vitra-space-4); }

@@ -19,7 +19,8 @@
       <a href="../" class="docs-header-link">Demo</a>
       <a href="https://github.com/DesvoSoft/Vitra" class="docs-header-link" rel="noopener">GitHub</a>
       <div class="vitra-dropdown">
-        <button class="vitra-btn vitra-btn-glass vitra-btn-sm docs-theme-btn" data-vitra-dropdown-toggle aria-haspopup="true" aria-expanded="false" aria-label="Switch theme">
+        <button class="vitra-btn vitra-btn-glass vitra-btn-sm docs-theme-btn" data-vitra-dropdown-toggle aria-haspopup="true" aria-expanded="false">
+          <span class="vitra-sr-only">Theme:</span>
           <span id="docs-theme-name">Auto</span>
         </button>
         <div class="vitra-dropdown-menu vitra-dropdown-menu-end">
@@ -42,7 +43,7 @@
 
   <!-- Mobile menu: Vitra.drawer (toggle, overlay, Esc, focus trap, inert while closed) -->
   <div class="vitra-drawer-overlay"></div>
-  <nav id="docs-menu" class="vitra-drawer vitra-drawer-glass docs-drawer" aria-label="Docs menu">
+  <nav id="docs-menu" class="vitra-drawer docs-drawer" aria-label="Docs menu">
     <div class="vitra-drawer-header">
       <span class="vitra-drawer-title">Vitra Docs</span>
       <button class="vitra-drawer-close" aria-label="Close menu">&times;</button>
@@ -89,8 +90,8 @@
       <section id="introduction" class="docs-section">
         <h2>Introduction</h2>
         <p>Vitra is a lightweight, zero-dependency CSS framework built around glassmorphism, directional particles, ambient scenery, and smooth motion. The core is pure CSS: themes, glass surfaces, layout, components, and utilities all work from a single stylesheet.</p>
-        <p>JavaScript is optional and progressive. A small script (~6&nbsp;kB min) adds interactive behavior — theme persistence, modals, tooltips, toasts, dropdowns, particles — but nothing in the CSS depends on it. If the script never loads, every component still renders and the page stays usable.</p>
-        <p>This page is built with Vitra itself: the glass header and sidebar, the badges, the tabs below, the toast you'll see when you copy a snippet. Switch the theme from the header dropdown and the whole page re-colors. For a full visual tour, see the <a href="../">interactive demo</a>.</p>
+        <p>The stylesheet is 18.9&nbsp;kB brotli. JavaScript is optional and progressive: a 7.5&nbsp;kB (brotli) script adds interactive behavior — theme persistence, modals, drawers, tooltips, toasts, dropdowns, particles — but nothing in the CSS depends on it. If the script never loads, every component still renders and the page stays usable.</p>
+        <p>This page is built with Vitra itself: the glass header and sidebar, the badges, the tabs below, the drawer behind the menu button on a phone, the toast you'll see when you copy a snippet. Switch the theme from the header dropdown and the whole page re-colors. For a full visual tour, see the <a href="../">interactive demo</a>.</p>
       </section>
 
       <section id="installation" class="docs-section">
@@ -104,22 +105,22 @@
             <div class="vitra-tabs-panel vitra-active" role="tabpanel" id="install-cdn" aria-labelledby="install-cdn-tab">
               <p>Add the stylesheet to <code>&lt;head&gt;</code>:</p>
               <div class="docs-code">
-                <pre tabindex="0" data-copy='<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.css" integrity="sha256-VqvCW9TWtiiiYglM8Ok1T1Y/tbXZ8sWvYvW7i/fPZko=" crossorigin="anonymous">'><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.css" integrity="sha256-VqvCW9TWtiiiYglM8Ok1T1Y/tbXZ8sWvYvW7i/fPZko=" crossorigin="anonymous"&gt;</code></pre>
+                <pre data-copy='<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.css" integrity="sha256-VqvCW9TWtiiiYglM8Ok1T1Y/tbXZ8sWvYvW7i/fPZko=" crossorigin="anonymous">'><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.css" integrity="sha256-VqvCW9TWtiiiYglM8Ok1T1Y/tbXZ8sWvYvW7i/fPZko=" crossorigin="anonymous"&gt;</code></pre>
               </div>
               <p>Optionally add the script before <code>&lt;/body&gt;</code> — it enables modals, tooltips, toasts, dropdowns, particles, and theme persistence:</p>
               <div class="docs-code">
-                <pre tabindex="0" data-copy='<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.js" integrity="sha256-XfDZdHFCtz3eXkyZ82L9abRDbp+yhwDFOvvsWNpqjFw=" crossorigin="anonymous" defer></script>'><code>&lt;script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.js" integrity="sha256-XfDZdHFCtz3eXkyZ82L9abRDbp+yhwDFOvvsWNpqjFw=" crossorigin="anonymous" defer&gt;&lt;/script&gt;</code></pre>
+                <pre data-copy='<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.js" integrity="sha256-XfDZdHFCtz3eXkyZ82L9abRDbp+yhwDFOvvsWNpqjFw=" crossorigin="anonymous" defer></script>'><code>&lt;script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.js" integrity="sha256-XfDZdHFCtz3eXkyZ82L9abRDbp+yhwDFOvvsWNpqjFw=" crossorigin="anonymous" defer&gt;&lt;/script&gt;</code></pre>
               </div>
               <p>Always pin a version tag (<code>@v1.14.0</code>). The <code>integrity</code> hash makes the browser refuse the file if it ever differs from the release; the hashes of every distributed file are in <code>dist/SRI.txt</code> on the tag.</p>
             </div>
             <div class="vitra-tabs-panel" role="tabpanel" id="install-git" aria-labelledby="install-git-tab">
               <p>Vitra is not published on the npm registry: install it from GitHub, pinned to a tag. A registry package named <code>vitra-css</code> is not this project.</p>
               <div class="docs-code">
-                <pre tabindex="0" data-copy='npm install github:DesvoSoft/Vitra#v1.14.0'><code>npm install github:DesvoSoft/Vitra#v1.14.0</code></pre>
+                <pre data-copy='npm install github:DesvoSoft/Vitra#v1.14.0'><code>npm install github:DesvoSoft/Vitra#v1.14.0</code></pre>
               </div>
               <p>Then import the stylesheet and, if you need interactivity, the modules by name:</p>
               <div class="docs-code">
-                <pre tabindex="0" data-copy="import 'vitra-css/dist/vitra.min.css';
+                <pre data-copy="import 'vitra-css/dist/vitra.min.css';
 import { theme, drawer } from 'vitra-css';"><code>import 'vitra-css/dist/vitra.min.css';
 import { theme, drawer } from 'vitra-css';</code></pre>
               </div>
@@ -129,13 +130,13 @@ import { theme, drawer } from 'vitra-css';</code></pre>
         </div>
         <h3>Which file do I need?</h3>
         <div class="docs-table-wrap">
-          <table>
+        <table>
             <tr><th>File</th><th>Use</th></tr>
             <tr><td><code>vitra.min.css</code></td><td>Everything visual (18.9&nbsp;kB brotli). Required.</td></tr>
             <tr><td><code>vitra.core.min.css</code>, <code>vitra.scenery.min.css</code>, <code>vitra.effects.min.css</code></td><td>The same rules in three pieces, to leave out the scenery or the effects. <code>scenery</code> and <code>effects</code> need <code>core</code>; loading all three costs more than the bundle.</td></tr>
             <tr><td><code>vitra.min.js</code></td><td>Interactive components and theme persistence (7.5&nbsp;kB brotli). Optional.</td></tr>
             <tr><td><code>vitra.esm.js</code> / <code>vitra.cjs</code></td><td>The same modules for bundlers, as named exports. Importing runs the auto-init, so the package is not side-effect free and is not tree-shaken.</td></tr>
-          </table>
+        </table>
         </div>
       </section>
 
@@ -143,7 +144,7 @@ import { theme, drawer } from 'vitra-css';</code></pre>
         <h2>Theming</h2>
         <p>Themes are applied with a single attribute on the root element. Every <code>--vitra-*</code> token — accent hue, backgrounds, surfaces, borders, text — updates instantly.</p>
         <div class="docs-code">
-          <pre tabindex="0" data-copy='<html data-theme="dark">'><code>&lt;html data-theme="dark"&gt;</code></pre>
+          <pre data-copy='<html data-theme="dark">'><code>&lt;html data-theme="dark"&gt;</code></pre>
         </div>
         <h3>Built-in themes</h3>
         <p>Seven presets, each with its own accent hue and tinted neutrals so every surface carries a trace of the accent:</p>
@@ -160,13 +161,13 @@ import { theme, drawer } from 'vitra-css';</code></pre>
         <h3>Persistence</h3>
         <p>With the optional script, initialize once and the visitor's choice is stored in <code>localStorage</code> and restored on every page that calls <code>init</code>:</p>
         <div class="docs-code">
-          <pre tabindex="0" data-copy="Vitra.theme.init({ defaultTheme: 'auto', persist: true });"><code>Vitra.theme.init({ defaultTheme: 'auto', persist: true });</code></pre>
+          <pre data-copy="Vitra.theme.init({ defaultTheme: 'auto', persist: true });"><code>Vitra.theme.init({ defaultTheme: 'auto', persist: true });</code></pre>
         </div>
         <p>This docs page and the <a href="../">demo</a> share that stored choice — pick a theme here and the demo opens in it.</p>
         <h3>Creating a custom theme</h3>
         <p>A theme is a <code>[data-theme]</code> block that overrides tokens. Start from the accent and the base surfaces:</p>
         <div class="docs-code">
-          <pre tabindex="0" data-copy='html[data-theme="sunset"] {
+          <pre data-copy='html[data-theme="sunset"] {
   --vitra-color-accent-h: 18;
   --vitra-color-accent-s: 85%;
   --vitra-color-accent-l: 58%;
@@ -199,77 +200,108 @@ import { theme, drawer } from 'vitra-css';</code></pre>
         <div class="docs-example">
           <button class="vitra-btn vitra-btn-solid">Solid</button>
           <button class="vitra-btn vitra-btn-glass">Glass</button>
-          <button class="vitra-btn vitra-btn-outline">Outline</button>
           <button class="vitra-btn vitra-btn-ghost">Ghost</button>
+          <button class="vitra-btn vitra-btn-gradient">Gradient</button>
           <button class="vitra-btn vitra-btn-solid vitra-btn-sm">Small</button>
           <button class="vitra-btn vitra-btn-solid vitra-btn-lg">Large</button>
         </div>
         <div class="docs-code">
-          <pre tabindex="0" data-copy='<button class="vitra-btn vitra-btn-solid">Solid</button>
+          <pre data-copy='<button class="vitra-btn vitra-btn-solid">Solid</button>
 <button class="vitra-btn vitra-btn-glass">Glass</button>
-<button class="vitra-btn vitra-btn-outline">Outline</button>'><code>&lt;button class="vitra-btn vitra-btn-solid"&gt;Solid&lt;/button&gt;
+<button class="vitra-btn vitra-btn-ghost">Ghost</button>'><code>&lt;button class="vitra-btn vitra-btn-solid"&gt;Solid&lt;/button&gt;
 &lt;button class="vitra-btn vitra-btn-glass"&gt;Glass&lt;/button&gt;
-&lt;button class="vitra-btn vitra-btn-outline"&gt;Outline&lt;/button&gt;</code></pre>
+&lt;button class="vitra-btn vitra-btn-ghost"&gt;Ghost&lt;/button&gt;</code></pre>
         </div>
 
         <h3 id="c-cards">Cards &amp; Glass <span class="vitra-badge vitra-badge-sm">CSS-only</span></h3>
         <div class="docs-example">
-          <div class="vitra-card vitra-glass" style="max-width: 260px;">
-            <h4 style="margin-top: 0;">Glass card</h4>
-            <p style="margin-bottom: 0;">Backdrop blur with a solid-color fallback when <code>backdrop-filter</code> is unsupported.</p>
+          <div class="vitra-card vitra-glass docs-card-sample">
+            <h4>Glass card</h4>
+            <p>Backdrop blur with a solid-color fallback when <code>backdrop-filter</code> is unsupported.</p>
           </div>
         </div>
         <div class="docs-code">
-          <pre tabindex="0" data-copy='<div class="vitra-card vitra-glass">Hello, Vitra!</div>'><code>&lt;div class="vitra-card vitra-glass"&gt;Hello, Vitra!&lt;/div&gt;</code></pre>
+          <pre data-copy='<div class="vitra-card vitra-glass">Hello, Vitra!</div>'><code>&lt;div class="vitra-card vitra-glass"&gt;Hello, Vitra!&lt;/div&gt;</code></pre>
         </div>
 
         <h3 id="c-forms">Forms <span class="vitra-badge vitra-badge-sm">CSS-only</span></h3>
         <div class="docs-example">
-          <input type="text" class="vitra-input" placeholder="Text input" style="max-width: 200px;">
-          <label style="display: inline-flex; align-items: center; gap: 6px;"><input type="checkbox" checked> Checkbox</label>
+          <input type="text" class="vitra-input docs-input-sample" placeholder="Text input" aria-label="Text input">
+          <label class="vitra-checkbox"><input type="checkbox" checked> Checkbox</label>
+          <label class="vitra-radio"><input type="radio" name="docs-radio" checked> Radio</label>
         </div>
         <div class="docs-code">
-          <pre tabindex="0" data-copy='<input type="text" class="vitra-input" placeholder="Your name">'><code>&lt;input type="text" class="vitra-input" placeholder="Your name"&gt;</code></pre>
+          <pre data-copy='<input type="text" class="vitra-input" placeholder="Your name">
+<label class="vitra-checkbox"><input type="checkbox"> Remember me</label>'><code>&lt;input type="text" class="vitra-input" placeholder="Your name"&gt;
+&lt;label class="vitra-checkbox"&gt;&lt;input type="checkbox"&gt; Remember me&lt;/label&gt;</code></pre>
         </div>
 
-        <h3 id="c-tabs">Tabs</h3>
-        <p>Tab styling is CSS; the few lines that switch panels are yours to write (this page's switcher is ~15 lines — see the install section above working).</p>
+        <h3 id="c-tabs">Tabs <span class="vitra-badge vitra-badge-sm">CSS + your script</span></h3>
+        <p>Tab styling is CSS. The markup carries the roles and states; switching panels is a few lines of your own (this page's switcher, with arrow keys, drives the Installation section above). There is no <code>Vitra.tabs</code> module in 1.14.</p>
         <div class="docs-code">
-          <pre tabindex="0" data-copy='<div class="vitra-tabs">
-  <div class="vitra-tabs-nav">
-    <button class="vitra-tabs-tab vitra-tabs-tab-active" data-tab="tab1">One</button>
-    <button class="vitra-tabs-tab" data-tab="tab2">Two</button>
-  </div>
-  <div class="vitra-tabs-content">
-    <div class="vitra-tabs-panel" id="tab1">First panel</div>
-    <div class="vitra-tabs-panel" id="tab2" style="display: none;">Second panel</div>
-  </div>
-</div>'><code>&lt;div class="vitra-tabs"&gt;
-  &lt;div class="vitra-tabs-nav"&gt;
-    &lt;button class="vitra-tabs-tab vitra-tabs-tab-active" data-tab="tab1"&gt;One&lt;/button&gt;
-    &lt;button class="vitra-tabs-tab" data-tab="tab2"&gt;Two&lt;/button&gt;
-  &lt;/div&gt;
-  &lt;div class="vitra-tabs-content"&gt;
-    &lt;div class="vitra-tabs-panel" id="tab1"&gt;First panel&lt;/div&gt;
-    &lt;div class="vitra-tabs-panel" id="tab2" style="display: none;"&gt;Second panel&lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</code></pre>
+          <pre data-copy='<div class="vitra-tabs" role="tablist" aria-label="Sections">
+  <button class="vitra-tabs-tab" role="tab" id="tab-1" aria-selected="true" aria-controls="panel-1">One</button>
+  <button class="vitra-tabs-tab" role="tab" id="tab-2" aria-selected="false" aria-controls="panel-2">Two</button>
+</div>
+<div class="vitra-tabs-panel vitra-active" role="tabpanel" id="panel-1" aria-labelledby="tab-1">First panel</div>
+<div class="vitra-tabs-panel" role="tabpanel" id="panel-2" aria-labelledby="tab-2">Second panel</div>'><code>&lt;div class="vitra-tabs" role="tablist" aria-label="Sections"&gt;
+  &lt;button class="vitra-tabs-tab" role="tab" id="tab-1" aria-selected="true" aria-controls="panel-1"&gt;One&lt;/button&gt;
+  &lt;button class="vitra-tabs-tab" role="tab" id="tab-2" aria-selected="false" aria-controls="panel-2"&gt;Two&lt;/button&gt;
+&lt;/div&gt;
+&lt;div class="vitra-tabs-panel vitra-active" role="tabpanel" id="panel-1" aria-labelledby="tab-1"&gt;First panel&lt;/div&gt;
+&lt;div class="vitra-tabs-panel" role="tabpanel" id="panel-2" aria-labelledby="tab-2"&gt;Second panel&lt;/div&gt;</code></pre>
         </div>
+        <p>The selected tab is styled by <code>aria-selected="true"</code>; a panel shows only while it has <code>.vitra-active</code>. Your click handler updates both.</p>
 
         <h3 id="c-modals">Modals <span class="vitra-badge vitra-badge-sm vitra-badge-info">needs JS</span></h3>
         <div class="docs-example">
           <button class="vitra-btn vitra-btn-solid" data-docs-modal-open="docs-demo-modal">Open modal</button>
         </div>
         <div class="docs-code">
-          <pre tabindex="0" data-copy="Vitra.modal.open('my-modal');"><code>Vitra.modal.open('my-modal');  // focus trap, Esc + overlay close, scroll lock</code></pre>
+          <pre data-copy="Vitra.modal.open('my-modal');"><code>Vitra.modal.open('my-modal');  // focus trap, Esc + overlay close, scroll lock</code></pre>
         </div>
+
+        <h3 id="c-drawer">Drawer <span class="vitra-badge vitra-badge-sm vitra-badge-info">needs JS</span></h3>
+        <p>On a phone, the menu button at the top of this page opens one.</p>
+        <div class="docs-code">
+          <pre data-copy='<button class="vitra-burger" data-vitra-drawer-toggle="#menu" aria-label="Menu">
+  <span class="vitra-burger-line"></span>
+  <span class="vitra-burger-line"></span>
+  <span class="vitra-burger-line"></span>
+</button>
+<div class="vitra-drawer-overlay"></div>
+<nav id="menu" class="vitra-drawer" aria-label="Menu">
+  <div class="vitra-drawer-header">
+    <span class="vitra-drawer-title">Menu</span>
+    <button class="vitra-drawer-close" aria-label="Close menu">&amp;times;</button>
+  </div>
+  <div class="vitra-drawer-body">
+    <a class="vitra-drawer-link" href="/">Home</a>
+  </div>
+</nav>'><code>&lt;button class="vitra-burger" data-vitra-drawer-toggle="#menu" aria-label="Menu"&gt;
+  &lt;span class="vitra-burger-line"&gt;&lt;/span&gt;
+  &lt;span class="vitra-burger-line"&gt;&lt;/span&gt;
+  &lt;span class="vitra-burger-line"&gt;&lt;/span&gt;
+&lt;/button&gt;
+&lt;div class="vitra-drawer-overlay"&gt;&lt;/div&gt;
+&lt;nav id="menu" class="vitra-drawer" aria-label="Menu"&gt;
+  &lt;div class="vitra-drawer-header"&gt;
+    &lt;span class="vitra-drawer-title"&gt;Menu&lt;/span&gt;
+    &lt;button class="vitra-drawer-close" aria-label="Close menu"&gt;&amp;times;&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class="vitra-drawer-body"&gt;
+    &lt;a class="vitra-drawer-link" href="/"&gt;Home&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;</code></pre>
+        </div>
+        <p>The toggle gets <code>aria-expanded</code>; the drawer gets <code>inert</code> while closed, a focus trap, Esc, focus return and the scroll lock. Do not add <code>.open</code> yourself to a drawer that has a toggle.</p>
 
         <h3 id="c-tooltips">Tooltips <span class="vitra-badge vitra-badge-sm vitra-badge-info">needs JS</span></h3>
         <div class="docs-example">
           <button class="vitra-btn vitra-btn-ghost" data-vitra-tooltip="Hi from Vitra" data-vitra-tooltip-position="top">Hover me</button>
         </div>
         <div class="docs-code">
-          <pre tabindex="0" data-copy='<button data-vitra-tooltip="Click to save" data-vitra-tooltip-position="top">Save</button>'><code>&lt;button data-vitra-tooltip="Click to save" data-vitra-tooltip-position="top"&gt;Save&lt;/button&gt;</code></pre>
+          <pre data-copy='<button data-vitra-tooltip="Click to save" data-vitra-tooltip-position="top">Save</button>'><code>&lt;button data-vitra-tooltip="Click to save" data-vitra-tooltip-position="top"&gt;Save&lt;/button&gt;</code></pre>
         </div>
 
         <h3 id="c-toasts">Toasts <span class="vitra-badge vitra-badge-sm vitra-badge-info">needs JS</span></h3>
@@ -277,7 +309,7 @@ import { theme, drawer } from 'vitra-css';</code></pre>
           <button class="vitra-btn vitra-btn-glass" data-docs-toast>Show toast</button>
         </div>
         <div class="docs-code">
-          <pre tabindex="0" data-copy="Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });"><code>Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });</code></pre>
+          <pre data-copy="Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });"><code>Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });</code></pre>
         </div>
 
         <h3 id="c-dropdowns">Dropdowns <span class="vitra-badge vitra-badge-sm vitra-badge-info">needs JS</span></h3>
@@ -292,7 +324,7 @@ import { theme, drawer } from 'vitra-css';</code></pre>
           </div>
         </div>
         <div class="docs-code">
-          <pre tabindex="0" data-copy='<div class="vitra-dropdown">
+          <pre data-copy='<div class="vitra-dropdown">
   <button data-vitra-dropdown-toggle>Options</button>
   <div class="vitra-dropdown-menu">
     <button class="vitra-dropdown-item">Edit</button>
@@ -314,30 +346,32 @@ import { theme, drawer } from 'vitra-css';</code></pre>
           <span class="vitra-badge vitra-badge-sm">Small</span>
         </div>
         <div class="docs-code">
-          <pre tabindex="0" data-copy='<span class="vitra-badge vitra-badge-primary">Primary</span>'><code>&lt;span class="vitra-badge vitra-badge-primary"&gt;Primary&lt;/span&gt;</code></pre>
+          <pre data-copy='<span class="vitra-badge vitra-badge-primary">Primary</span>'><code>&lt;span class="vitra-badge vitra-badge-primary"&gt;Primary&lt;/span&gt;</code></pre>
         </div>
 
         <h3 id="c-progress">Progress ring <span class="vitra-badge vitra-badge-sm">CSS-only</span></h3>
         <div class="docs-example">
-          <div class="vitra-progress-ring" style="--vitra-progress-ring-value: 75;">
+          <div class="vitra-progress-ring docs-ring-75" role="progressbar" aria-label="Example ring" aria-valuemin="0" aria-valuemax="100" aria-valuenow="75">
             <div class="vitra-progress-ring-inner">75%</div>
           </div>
         </div>
         <div class="docs-code">
-          <pre tabindex="0" data-copy='<div class="vitra-progress-ring" style="--vitra-progress-ring-value: 75;">
+          <pre data-copy='<div class="vitra-progress-ring" style="--vitra-progress-ring-value: 75%;">
   <div class="vitra-progress-ring-inner">75%</div>
-</div>'><code>&lt;div class="vitra-progress-ring" style="--vitra-progress-ring-value: 75;"&gt;
+</div>'><code>&lt;div class="vitra-progress-ring" style="--vitra-progress-ring-value: 75%;"&gt;
   &lt;div class="vitra-progress-ring-inner"&gt;75%&lt;/div&gt;
 &lt;/div&gt;</code></pre>
         </div>
 
         <h3 id="c-avatars">Avatars <span class="vitra-badge vitra-badge-sm">CSS-only</span></h3>
         <div class="docs-example">
-          <div class="vitra-avatar" style="width: 40px; height: 40px; background: var(--vitra-color-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--vitra-color-text-inverse); font-weight: bold;">JD</div>
-          <div class="vitra-avatar" style="width: 48px; height: 48px; background: var(--vitra-color-success); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: hsl(230deg 25% 8%); font-weight: bold;">AB</div>
+          <div class="vitra-avatar">JD</div>
+          <div class="vitra-avatar vitra-avatar-lg" data-status="online">AB</div>
         </div>
         <div class="docs-code">
-          <pre tabindex="0" data-copy='<div class="vitra-avatar">JD</div>'><code>&lt;div class="vitra-avatar"&gt;JD&lt;/div&gt;</code></pre>
+          <pre data-copy='<div class="vitra-avatar">JD</div>
+<div class="vitra-avatar vitra-avatar-lg" data-status="online">AB</div>'><code>&lt;div class="vitra-avatar"&gt;JD&lt;/div&gt;
+&lt;div class="vitra-avatar vitra-avatar-lg" data-status="online"&gt;AB&lt;/div&gt;</code></pre>
         </div>
 
         <h3 id="c-particles">Particles <span class="vitra-badge vitra-badge-sm vitra-badge-info">needs JS</span></h3>
@@ -345,7 +379,7 @@ import { theme, drawer } from 'vitra-css';</code></pre>
           <button class="vitra-btn vitra-btn-glass" data-docs-particles>Spawn 10 particles</button>
         </div>
         <div class="docs-code">
-          <pre tabindex="0" data-copy="Vitra.particles.spawn(10, { direction: 'down' });"><code>Vitra.particles.spawn(10, { direction: 'down' });  // capped at 40 desktop / 15 mobile</code></pre>
+          <pre data-copy="Vitra.particles.spawn(10, { direction: 'down' });"><code>Vitra.particles.spawn(10, { direction: 'down' });  // capped at 40 desktop / 15 mobile</code></pre>
         </div>
       </section>
 
@@ -356,7 +390,7 @@ import { theme, drawer } from 'vitra-css';</code></pre>
         <h3>Scenery <span class="vitra-badge vitra-badge-sm">CSS-only</span></h3>
         <p>With <code>vitra.js</code> on the page, one empty element is enough — the eight layers are written for you:</p>
         <div class="docs-code">
-          <pre tabindex="0" data-copy='<!-- Full-page backdrop -->
+          <pre data-copy='<!-- Full-page backdrop -->
 <div class="vitra-scenery"></div>
 
 <!-- Or inside a hero -->
@@ -374,7 +408,7 @@ import { theme, drawer } from 'vitra-css';</code></pre>
         </div>
         <p>Without JavaScript, write the layers yourself. The scene is pure CSS either way:</p>
         <div class="docs-code">
-          <pre tabindex="0" data-copy='<div class="vitra-scenery" aria-hidden="true">
+          <pre data-copy='<div class="vitra-scenery" aria-hidden="true">
   <div class="vitra-scenery-sky"></div>
   <div class="vitra-scenery-stars"></div>
   <div class="vitra-scenery-clouds"></div>
@@ -394,6 +428,7 @@ import { theme, drawer } from 'vitra-css';</code></pre>
   &lt;div class="vitra-scenery-grain"&gt;&lt;/div&gt;
 &lt;/div&gt;</code></pre>
         </div>
+        <div class="docs-table-wrap">
         <table>
           <tr><th>Token</th><th>Default</th><th>Does</th></tr>
           <tr><td><code>--vitra-scenery-intro</code></td><td><code>1</code></td><td>Entrance length multiplier. <code>0</code> = the scene is simply there.</td></tr>
@@ -402,12 +437,13 @@ import { theme, drawer } from 'vitra-css';</code></pre>
           <tr><td><code>--vitra-scenery-halo-x</code> / <code>-y</code> / <code>-size</code></td><td><code>76%</code> / <code>13%</code> / <code>clamp(56px, 9vmin, 110px)</code></td><td>Moon (or sun, on light themes) position and size.</td></tr>
           <tr><td><code>--vitra-scenery-hue</code> / <code>-sat</code></td><td>theme accent</td><td>Base colour of the whole scene.</td></tr>
         </table>
+        </div>
         <p><strong>Scroll depth needs a host that is not <code>overflow: hidden</code>.</strong> That makes the host the scroll container the effect listens to, and it silently stays off. Use <code>overflow: clip</code>, or nothing — the scenery root clips itself. The same goes for <code>overflow-x: hidden</code> on both <code>html</code> and <code>body</code>.</p>
 
         <h3>Spring easing <span class="vitra-badge vitra-badge-sm">CSS-only</span></h3>
         <p>Modals, toasts, drawers and dropdown menus spring in and ease out. The same tokens are yours to use — put the spring on the <em>open</em> state only:</p>
         <div class="docs-code">
-          <pre tabindex="0" data-copy='.my-panel.open {
+          <pre data-copy='.my-panel.open {
   transition: transform var(--vitra-duration-spring) var(--vitra-ease-spring-soft);
 }'><code>.my-panel.open {
   transition: transform var(--vitra-duration-spring) var(--vitra-ease-spring-soft);
@@ -418,7 +454,7 @@ import { theme, drawer } from 'vitra-css';</code></pre>
         <h3>Animated theme change <span class="vitra-badge vitra-badge-sm vitra-badge-info">needs JS</span></h3>
         <p>Opt in and the new theme grows as a circle out of the control that was pressed. Try the theme menu at the top of this page.</p>
         <div class="docs-code">
-          <pre tabindex="0" data-copy="button.addEventListener('click', (event) => {
+          <pre data-copy="button.addEventListener('click', (event) => {
   Vitra.theme.toggle({ transition: true, origin: event });
 });"><code>button.addEventListener('click', (event) =&gt; {
   Vitra.theme.toggle({ transition: true, origin: event });
@@ -429,10 +465,10 @@ import { theme, drawer } from 'vitra-css';</code></pre>
 
       <!-- Live modal for the components section -->
       <div id="docs-demo-modal" class="vitra-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="docs-demo-modal-title">
-        <div class="vitra-modal-content" style="max-width: 400px;">
+        <div class="vitra-modal-content docs-modal-narrow">
           <div class="vitra-modal-header">
-            <h3 id="docs-demo-modal-title">A Vitra modal</h3>
-            <button class="vitra-btn vitra-btn-ghost vitra-btn-sm" data-vitra-modal-close>&times;</button>
+            <h2 id="docs-demo-modal-title" class="docs-modal-title">A Vitra modal</h2>
+            <button class="vitra-modal-close" data-vitra-modal-close aria-label="Close">&times;</button>
           </div>
           <div class="vitra-modal-body">
             <p>Focus is trapped, Esc closes, body scroll is locked.</p>
@@ -445,9 +481,10 @@ import { theme, drawer } from 'vitra-css';</code></pre>
 
       <section id="js-api" class="docs-section">
         <h2>JavaScript API</h2>
-        <p>The script exposes a single global, <code>Vitra</code>, with one submodule per feature. ES module builds export the same modules for tree-shaking. Every module is optional — use only what you call.</p>
+        <p>The script exposes a single global, <code>Vitra</code>, with one submodule per feature. The ES module build exports the same modules by name (<code>import { theme, drawer } from 'vitra-css'</code>); importing it runs the auto-init, so it is not side-effect free. Every module is optional — use only what you call.</p>
 
         <h3>Vitra.theme</h3>
+        <div class="docs-table-wrap">
         <table>
           <tr><th>Method</th><th>Does</th></tr>
           <tr><td><code>get()</code></td><td>Current theme name (<code>'auto'</code> if unset).</td></tr>
@@ -458,10 +495,11 @@ import { theme, drawer } from 'vitra-css';</code></pre>
           <tr><td><code>getValidThemes()</code></td><td>Array of the seven built-in names.</td></tr>
           <tr><td><code>clear()</code></td><td>Removes the stored preference.</td></tr>
         </table>
+        </div>
 
         <h3>Vitra.particles</h3>
         <div class="docs-code">
-          <pre tabindex="0" data-copy="Vitra.particles.spawn(10, {
+          <pre data-copy="Vitra.particles.spawn(10, {
   container: 'body',
   size: 4,
   direction: 'down'   // 'down' | 'down-left' | 'down-right' | angle in degrees | omit for ambient bob
@@ -479,7 +517,7 @@ Vitra.particles.limits();    // { active, available, max }</code></pre>
 
         <h3>Vitra.reveal</h3>
         <div class="docs-code">
-          <pre tabindex="0" data-copy="Vitra.reveal.init({
+          <pre data-copy="Vitra.reveal.init({
   selector: '.vitra-reveal',
   threshold: 0.1,
   rootMargin: '0px 0px 10% 0px',
@@ -495,7 +533,7 @@ Vitra.particles.limits();    // { active, available, max }</code></pre>
 
         <h3>Vitra.modal</h3>
         <div class="docs-code">
-          <pre tabindex="0" data-copy="Vitra.modal.open('my-modal', { closeOnOverlay: true, closeOnEsc: true });
+          <pre data-copy="Vitra.modal.open('my-modal', { closeOnOverlay: true, closeOnEsc: true });
 Vitra.modal.close();"><code>Vitra.modal.open('my-modal', { closeOnOverlay: true, closeOnEsc: true });
 Vitra.modal.close();</code></pre>
         </div>
@@ -503,7 +541,7 @@ Vitra.modal.close();</code></pre>
 
         <h3>Vitra.tooltip</h3>
         <div class="docs-code">
-          <pre tabindex="0" data-copy="Vitra.tooltip.show('#save-btn', 'Saves your draft', { position: 'top' });
+          <pre data-copy="Vitra.tooltip.show('#save-btn', 'Saves your draft', { position: 'top' });
 Vitra.tooltip.hide();
 Vitra.tooltip.init();   // activates all [data-vitra-tooltip] elements"><code>Vitra.tooltip.show('#save-btn', 'Saves your draft', { position: 'top' });
 Vitra.tooltip.hide();
@@ -512,23 +550,35 @@ Vitra.tooltip.init();   // activates all [data-vitra-tooltip] elements</code></p
 
         <h3>Vitra.toast</h3>
         <div class="docs-code">
-          <pre tabindex="0" data-copy="Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });"><code>Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });</code></pre>
+          <pre data-copy="Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });"><code>Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });</code></pre>
         </div>
-        <p>Types: <code>success</code>, <code>error</code>, <code>info</code>, <code>default</code>. Markup is created for you; messages are rendered as text, never HTML.</p>
+        <p>Types: <code>success</code>, <code>error</code>, <code>info</code>, <code>warning</code>. <code>closable: true</code> adds a close button; <code>duration: 0</code> keeps the toast until it is closed and always adds one. The container is a polite live region and error toasts are alerts. Messages are rendered as text, never HTML.</p>
+
+        <h3>Vitra.drawer</h3>
+        <div class="docs-code">
+          <pre data-copy="Vitra.drawer.open('#menu');
+Vitra.drawer.close();
+Vitra.drawer.toggle('#menu');   // true when it ends up open"><code>Vitra.drawer.open('#menu');
+Vitra.drawer.close();
+Vitra.drawer.toggle('#menu');   // true when it ends up open</code></pre>
+        </div>
+        <p>Toggles are bound automatically from <code>[data-vitra-drawer-toggle]</code> (see <a href="#c-drawer">Drawer</a>). Only one drawer is open at a time.</p>
 
         <h3>Vitra.dropdown / Vitra.ripple / Vitra.spotlight</h3>
-        <p>Behavior modules with <code>init()</code> / <code>destroy()</code>. They initialize automatically (see <a href="#data-config">data-config</a>): dropdowns from <code>[data-vitra-dropdown-toggle]</code>, ripple from <code>.vitra-ripple</code> elements, spotlight cursor-tracking from <code>.vitra-spotlight</code>.</p>
+        <p>Behavior modules with <code>init()</code> / <code>destroy()</code>. They initialize automatically (see <a href="#data-config">data-config</a>): dropdowns from <code>[data-vitra-dropdown-toggle]</code>, ripple from <code>.vitra-ripple</code> elements, spotlight cursor-tracking from <code>.vitra-spotlight</code>. Dropdowns work from the keyboard: <kbd>&darr;</kbd> on the toggle opens the menu, the arrow keys, <kbd>Home</kbd> and <kbd>End</kbd> move between items, <kbd>Esc</kbd> closes it.</p>
 
         <h3>Vitra.scenery</h3>
+        <div class="docs-table-wrap">
         <table>
           <tr><th>Method</th><th>Does</th></tr>
           <tr><td><code>init()</code></td><td>Fills every empty <code>.vitra-scenery</code> / <code>.vitra-scenery-inline</code> root with its eight layers; returns how many. Runs automatically.</td></tr>
           <tr><td><code>mount(target, options?)</code></td><td>Turns any element into a scene. <code>{ inline: true, moon: 'crescent' }</code>. Roots that already have layers are left alone.</td></tr>
           <tr><td><code>destroy()</code></td><td>Removes only the layers it injected.</td></tr>
         </table>
+        </div>
 
         <h3>Vitra.motionGuard</h3>
-        <p><code>init()</code> / <code>destroy()</code>. Pauses ambient loops — scenery, glow orbs, aurora, mesh gradient, gradient text — while they are outside the viewport. Initializes automatically; skipped under reduced motion, where those animations are already off.</p>
+        <p><code>init()</code> / <code>observe(el)</code> / <code>destroy()</code>. Pauses ambient loops — scenery, glow orbs, aurora, mesh gradient, gradient text, particles, spinners, skeletons, animated progress bars — while they are outside the viewport. Initializes automatically; skipped under reduced motion, where those animations are already off. It does not watch the DOM: call <code>observe(el)</code> for an element you add later.</p>
 
         <h3>Vitra.destroyAll()</h3>
         <p>Tears down every module — removes all listeners and injected nodes. Useful in SPAs on route teardown.</p>
@@ -538,7 +588,7 @@ Vitra.tooltip.init();   // activates all [data-vitra-tooltip] elements</code></p
         <h2>data-config</h2>
         <p>Declarative initialization without writing a line of JS: put a JSON <code>data-config</code> attribute on any element (conventionally <code>&lt;body&gt;</code>) and Vitra parses it on <code>DOMContentLoaded</code>.</p>
         <div class="docs-code">
-          <pre tabindex="0" data-copy='<body data-config=&apos;{
+          <pre data-copy='<body data-config=&apos;{
   "theme": { "default": "auto", "persist": true },
   "reveal": { "stagger": 100 },
   "particles": { "count": 12, "direction": "down" },
@@ -551,20 +601,24 @@ Vitra.tooltip.init();   // activates all [data-vitra-tooltip] elements</code></p
 }'&gt;</code></pre>
         </div>
         <h3>Defaults</h3>
-        <p>Since v1.10.3, <strong>ripple, tooltip, dropdown, spotlight, scenery and motionGuard initialize by default</strong> — with or without a <code>data-config</code> element. Setting a module to <code>false</code> opts out. <code>theme</code>, <code>particles</code>, and <code>reveal</code> are opt-in: they only run when their key is present.</p>
+        <p><strong>ripple, toast, tooltip, drawer, dropdown, spotlight, scenery and motionGuard initialize by default</strong> — with or without a <code>data-config</code> element. Setting a module to <code>false</code> opts out. <code>theme</code>, <code>particles</code>, and <code>reveal</code> are opt-in: they only run when their key is present.</p>
+        <div class="docs-table-wrap">
         <table>
           <tr><th>Key</th><th>Default</th><th>Value</th></tr>
           <tr><td><code>theme</code></td><td>off</td><td>Theme name, or <code>init()</code> options object.</td></tr>
           <tr><td><code>particles</code></td><td>off</td><td><code>true</code>, or <code>spawn()</code> options with <code>count</code>.</td></tr>
           <tr><td><code>reveal</code></td><td>off</td><td><code>true</code>, or <code>init()</code> options object.</td></tr>
           <tr><td><code>ripple</code></td><td>on</td><td><code>false</code> to disable.</td></tr>
+          <tr><td><code>toast</code></td><td>on</td><td><code>false</code> to skip creating the live region on load.</td></tr>
           <tr><td><code>tooltip</code></td><td>on</td><td><code>false</code> to disable.</td></tr>
+          <tr><td><code>drawer</code></td><td>on</td><td><code>false</code> to disable.</td></tr>
           <tr><td><code>dropdown</code></td><td>on</td><td><code>false</code> to disable.</td></tr>
           <tr><td><code>spotlight</code></td><td>on</td><td><code>false</code> to disable.</td></tr>
           <tr><td><code>scenery</code></td><td>on</td><td><code>false</code> to stop empty scenery roots being filled.</td></tr>
           <tr><td><code>motionGuard</code></td><td>on</td><td><code>false</code> to keep ambient animations running offscreen.</td></tr>
         </table>
-        <p>Malformed JSON logs a <code>[Vitra]</code> console warning and falls back to the defaults above — it never throws.</p>
+        </div>
+        <p>Malformed JSON logs a <code>[Vitra]</code> console warning and falls back to the defaults above — it never throws. Each module starts on its own, so one that fails is reported and the next ones still run.</p>
       </section>
 
       <section id="compat" class="docs-section">
@@ -578,14 +632,16 @@ Vitra.tooltip.init();   // activates all [data-vitra-tooltip] elements</code></p
           <li>Without JavaScript, all styling works; modals, toasts, dropdowns, and theme persistence simply don't activate.</li>
         </ul>
         <h3>Keyboard &amp; screen readers</h3>
-        <p>Modals trap focus and restore it on close; dropdowns close on Escape and refocus their toggle; theme changes are announced via an <code>aria-live</code> region; tooltips set <code>aria-describedby</code>.</p>
+        <p>Modals and drawers trap focus and restore it on close; a closed drawer is <code>inert</code>. Dropdowns work with the arrow keys and close on Escape, back to their toggle. One Esc closes one layer: a tooltip, then a menu, then the modal or drawer around it. Theme changes are announced via an <code>aria-live</code> region; tooltips add to <code>aria-describedby</code>. Every component reaches 4.5:1 text contrast and 3:1 control borders in all seven themes, and controls are 44&nbsp;px tall on touch screens.</p>
         <h3>Browser support</h3>
+        <div class="docs-table-wrap">
         <table>
           <tr><th>Tier</th><th>Browsers</th><th>What you get</th></tr>
           <tr><td>Tier 1</td><td>Chrome/Edge 117+, Firefox 129+, Safari 17.4+</td><td>Full feature set, including Popover API and <code>@starting-style</code>.</td></tr>
           <tr><td>Tier 2</td><td>Chrome/Edge 88+, Firefox 97+, Safari 15.4+</td><td>Everything core; advanced extras fall back (JS dropdown toggle, HSL colors, transition-based entries).</td></tr>
           <tr><td>Legacy</td><td>IE 11 and older</td><td>Not supported.</td></tr>
         </table>
+        </div>
       </section>
 
       <footer class="docs-footer">
