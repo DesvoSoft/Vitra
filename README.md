@@ -1,78 +1,69 @@
-# Vitra CSS Framework
+# Vitra CSS
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
-[![Version](https://img.shields.io/badge/version-1.14.0-blue)](https://github.com/DesvoSoft/Vitra)
-[![License](https://img.shields.io/badge/license-ISC-blue)](https://github.com/DesvoSoft/Vitra)
-[![Bundle Size](https://img.shields.io/badge/css-18.9%20kB%20brotli-brightgreen)](https://github.com/DesvoSoft/Vitra)
-[![Tests](https://img.shields.io/badge/tests-196%20unit%20passing-brightgreen)](https://github.com/DesvoSoft/Vitra)
+[![Build](https://github.com/DesvoSoft/Vitra/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/DesvoSoft/Vitra/actions/workflows/build.yml)
+[![Release](https://img.shields.io/github/v/tag/DesvoSoft/Vitra?label=release&sort=semver)](https://github.com/DesvoSoft/Vitra/releases)
+[![License: ISC](https://img.shields.io/badge/license-ISC-blue)](LICENSE)
+[![CSS 18.9 kB brotli](https://img.shields.io/badge/css-18.9%20kB%20brotli-brightgreen)](#sizes)
+[![Runtime dependencies: 0](https://img.shields.io/badge/runtime%20dependencies-0-brightgreen)](#trust)
 
-Vitra is a high-performance, premium CSS framework engineered for modern web applications. It specializes in Glassmorphism, Motion Design, Interactive Particles, and Cinematic Visual Effects, providing a sophisticated aesthetic out of the box with zero external dependencies.
+A CSS framework for glass surfaces, ambient motion and a living landscape behind your content. One stylesheet, an optional 7 kB script, no dependencies, no build step.
 
----
+[![The Vitra demo hero: a night sky with a moon and mountain ranges behind the title](docs/assets/hero.jpg)](https://desvosoft.github.io/Vitra/)
 
-## Why Vitra?
-
-Unlike generic utility-first frameworks, Vitra is built with a specific aesthetic philosophy: **Depth, Motion, and Life**. It eliminates CSS boilerplate while enforcing a strict, maintainable architecture.
-
--   **Glass-First Design**: Optimized backdrop-filter effects with robust `@supports` fallbacks for all browsers.
--   **Strict @layer Architecture**: Predictable cascade management using modern CSS layers.
--   **Motion Engine**: 25+ choreographed keyframes that automatically respect `prefers-reduced-motion`, plus spring easing tokens (`--vitra-ease-spring`) for things that arrive.
--   **Light on the machine**: ambient effects animate `transform`/`opacity` only, never repaint, and pause offscreen. Everything whose steps you could see glides: the scenery at sub-pixel precision, the mesh gradient, gradient text and conic borders. Only the softest glows (orbs, aurora) tick on a shared 10 Hz clock, where a step is too small to see.
--   **Particle System**: Native CSS/JS hybrid particles with built-in performance limits (15 mobile / 40 desktop).
--   **Cinematic Effects**: Animated mesh gradients, floating glow orbs, gradient text, spinning border glows, page-enter animation, 3D tilt cards, aurora background, text reveal, stagger system.
--   **Ambient Scenery**: CSS-only mountain landscape — faceted ranges with lit planes over a still foreground, twinkling stars, a moon with a breathing corona. It fades up on load and separates into depth planes as you scroll. One element of markup.
--   **Shader Effects**: Pure-CSS shader effects — noise overlay, shape morphing, progress rings, gradient rotate borders, scroll-driven reveals, material ripple.
--   **Modern CSS Features**: Container Queries, `@starting-style`, Popover API, scroll-driven animations, View Transitions, `linear()` easing — all with fallbacks.
--   **Premium Color System**: All surfaces tinted with accent hue — no pure neutral grays. Warm/cool/oklch variants.
--   **Smart Theming**: 7 themes (light, dark, auto, pastel, neon, ocean, emerald) with system-level sync.
+**[Live demo](https://desvosoft.github.io/Vitra/)** · **[Documentation](https://desvosoft.github.io/Vitra/docs/)** · [Integration guide](docs/integration.md) · [Themes](docs/themes.md) · [Changelog](CHANGELOG.md)
 
 ---
 
 ## Quick Start
 
-### 1. Installation
+Add one line to any HTML page:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.css" integrity="sha256-VqvCW9TWtiiiYglM8Ok1T1Y/tbXZ8sWvYvW7i/fPZko=" crossorigin="anonymous">
+```
+
+The script is optional. It adds modals, the drawer, tooltips, toasts, dropdown keyboard support, particles and theme switching:
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.js" integrity="sha256-XfDZdHFCtz3eXkyZ82L9abRDbp+yhwDFOvvsWNpqjFw=" crossorigin="anonymous" defer></script>
+```
+
+Then write markup:
+
+```html
+<html data-theme="dark">
+<body>
+  <div class="vitra-scenery"></div>            <!-- the landscape, fixed behind the page -->
+
+  <main class="vitra-glass" style="max-width: 32rem; margin: 20vh auto; padding: 2rem;">
+    <h1>Hello, Vitra</h1>
+    <p>A glass panel over a living scene.</p>
+    <button class="vitra-btn vitra-btn-solid">Get started</button>
+  </main>
+</body>
+</html>
+```
+
+The URLs are pinned to a release tag and carry Subresource Integrity hashes, so the browser refuses the file if it ever differs from what was published. The hashes of every distributed file are in [`dist/SRI.txt`](dist/SRI.txt).
+
+### Other ways to load it
+
+**Local files.** Download `dist/vitra.min.css` (and `dist/vitra.min.js`) from a [release](https://github.com/DesvoSoft/Vitra/releases) and serve them yourself.
+
+**With a bundler.** Install from GitHub, pinned to a tag:
 
 ```bash
-# Clone the repository
-git clone https://github.com/DesvoSoft/Vitra.git
-cd Vitra
-
-# Install dependencies and build
-npm install
-npm run build
+npm install github:DesvoSoft/Vitra#v1.14.0
 ```
 
-### 2. Basic Setup
-
-You can use Vitra by installing it locally, or via a free CDN (jsDelivr) for instant global delivery.
-
-#### Option A: Via CDN (Recommended for production)
-
-Use jsDelivr to load the minified files. We strongly recommend using a fixed version and including Subresource Integrity (SRI) hashes to guarantee security and stability.
-
-```html
-<!-- High-performance CSS (Fixed version with SRI) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.css" integrity="sha256-..." crossorigin="anonymous">
-
-<!-- Optional: Modular JS Engine (Fixed version with SRI) -->
-<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.js" integrity="sha256-..." crossorigin="anonymous" defer></script>
+```js
+import 'vitra-css/dist/vitra.min.css';
+import { theme, drawer } from 'vitra-css';
 ```
 
-> **Note:** Always use a pinned version (e.g., `@v1.14.0`) for production. The SRI hashes are generated during build and stored in `dist/SRI.txt`.
+Vitra is not published on the npm registry. Do not install a registry package named `vitra-css`: it is not this project.
 
-#### Option B: Local Assets
-
-```html
-<!-- High-performance CSS -->
-<link rel="stylesheet" href="dist/vitra.min.css">
-
-<!-- Optional: Modular JS Engine -->
-<script src="dist/vitra.min.js" defer></script>
-```
-
-#### Option C: Only the CSS you use
-
-`vitra.min.css` is the whole framework. Three pieces carry the same rules split by what they are for:
+**Only the CSS you use.** `vitra.min.css` is the whole framework. Three pieces carry the same rules split by what they are for:
 
 | Piece | Contains | Brotli |
 |-------|----------|--------|
@@ -86,7 +77,57 @@ Use jsDelivr to load the minified files. We strongly recommend using a fixed ver
 <link rel="stylesheet" href="dist/vitra.effects.min.css">  <!-- only if you use particles or shader effects -->
 ```
 
-Load order between the pieces does not matter. Compressed separately the three add up to more than the bundle (20.3 kB against 18.9 kB), so use the pieces to leave one out. From npm: `vitra-css/core.css`, `vitra-css/scenery.css`, `vitra-css/effects.css`.
+Load order between the pieces does not matter. Compressed separately the three add up to more than the bundle (20.3 kB against 18.9 kB), so use the pieces to leave one out, not to load all three. With a bundler: `vitra-css/core.css`, `vitra-css/scenery.css`, `vitra-css/effects.css`.
+
+---
+
+## What's in it
+
+-   **Glass surfaces** with `backdrop-filter`, each behind `@supports` with a solid fallback.
+-   **Ambient scenery**: a CSS-only mountain landscape with faceted ranges, twinkling stars and a moon. One element of markup; it re-colours itself from the theme's accent.
+-   **Components**: buttons, cards, forms, switch, checkbox and radio, tabs, modal, drawer, dropdown, tooltip, toast, progress, badges, alerts, tables, navbar. Each one is checked in every theme, with the keyboard, on touch targets, under reduced motion and without JavaScript.
+-   **Seven themes** (`light`, `dark`, `auto`, `pastel`, `neon`, `ocean`, `emerald`) driven by tokens; `auto` follows the system and is generated from `light` and `dark`, so it cannot drift.
+-   **Motion that stays off the main thread**: ambient loops animate `transform` and `opacity`, pause when offscreen, and stop under `prefers-reduced-motion`. Spring easing tokens for things that arrive.
+-   **Effects**: mesh gradients, glow orbs, gradient text, border glow, aurora, particles, noise, shape morph, scroll reveals.
+-   **A strict `@layer` cascade**, so your own CSS always wins without `!important`.
+
+## Trust
+
+A stylesheet and a script that run on other people's pages have to be boring in the right ways:
+
+-   **Zero runtime dependencies.** The distributed files contain no third-party code.
+-   **No network access.** The script makes no requests, loads no other script, and uses no `eval` or `innerHTML`. The only browser storage it touches is one `localStorage` key that remembers the chosen theme.
+-   **No external resources in the CSS.** Every image is an inline SVG; there are no remote fonts or imports.
+-   **Reproducible builds.** `dist/` is committed, and CI fails if a fresh build differs from it. SRI hashes for every file are in `dist/SRI.txt`.
+-   **Pinned tooling.** Development dependencies are locked with integrity hashes, and CI actions are pinned to commit SHAs.
+
+To report a vulnerability, see [SECURITY.md](SECURITY.md).
+
+## Sizes
+
+Brotli, measured by `size-limit` on every build:
+
+| File | Size | Budget |
+|------|------|--------|
+| `vitra.min.css` | 18.9 kB | 20 kB |
+| `vitra.min.js` | 7.5 kB | 7.5 kB |
+| `vitra.esm.js` | 10.0 kB | 10.6 kB |
+
+---
+
+## Develop
+
+```bash
+git clone https://github.com/DesvoSoft/Vitra.git
+cd Vitra
+npm install
+npm run build          # dist/: bundle, pieces, iife/esm/cjs, types, SRI.txt
+npm test               # unit tests (vitest + jsdom)
+npm run test:browser   # Playwright + axe-core in Chromium and Firefox
+npm run dev            # serves the repo; open /tests/kitchen-sink for every component in every state
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
@@ -241,7 +282,7 @@ Vitra/
 │   └── vitra.d.ts         # TypeScript types (copied to dist/)
 ├── dist/                  # Bundle, core/scenery/effects pieces, iife/esm/cjs, types, source maps, SRI hashes
 ├── docs/                  # Theming, integration, compatibility, audit
-└── tests/                 # 196 vitest tests, Playwright + axe specs, tests/kitchen-sink.html (every component)
+└── tests/                 # vitest unit tests, Playwright + axe specs, tests/kitchen-sink.html (every component)
 ```
 
 ---
@@ -274,7 +315,7 @@ Vitra leverages cutting-edge CSS for progressive enhancement:
 -   **Resource Safety**: Particle counts capped (15 mobile, 40 desktop).
 -   **Contrast**: checked with axe-core against WCAG 2.2 AA across all themes and with assertions (4.5:1 text, 3:1 control borders) on the kitchen-sink page in Chromium and Firefox. Safari is not tested; status badges use a fixed dark ink (`--vitra-color-on-status`) so they stay legible in light themes.
 -   **Screen Reader Support**: `aria-live` announcer on theme changes, `aria-describedby` on tooltips, `role="dialog"` + `aria-modal` on modals (focus trapped and returned; the drawer adds `inert` while closed), a live region for toasts, arrow-key navigation in dropdowns, `.vitra-sr-only` utilities. Scenery is `aria-hidden`.
--   **Bundle Size**: CSS ~144 KB minified (18.9 kB brotli), JS ~24 KB minified (7.3 kB brotli). Monitored via `size-limit`.
+-   **Bundle Size**: CSS ~144 KB minified (18.9 kB brotli), JS ~24 KB minified (7.5 kB brotli). Monitored via `size-limit`.
 
 ---
 
@@ -285,6 +326,9 @@ Vitra leverages cutting-edge CSS for progressive enhancement:
 | [Theming Guide](docs/themes.md) | Theme reference, customization, persistence |
 | [Integration & API](docs/integration.md) | CDN, CSS pieces, JS API, data-config, imports by name |
 | [Browser Compatibility](docs/compatibility.md) | Support matrix, fallback strategies |
+| [Changelog](CHANGELOG.md) | What changed in each release, including visible changes and known limitations |
+| [Security policy](SECURITY.md) | Supported versions, how to report a vulnerability |
+| [Audit (1.14)](docs/AUDIT-2026-11-16.md) | Code, themes and mobile audit behind the 1.14 release |
 | [Audit & Roadmap](docs/AUDIT-2026.md) | Full codebase audit, gaps, future plans |
 | [Performance & A11y Audit (1.13)](docs/AUDIT-2026-10-05.md) | Measured before/after, causes, open items |
 

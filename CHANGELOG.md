@@ -4,7 +4,7 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.14.0] - 2026-11-17
+## [1.14.0] - 2026-11-20
 
 Every component with state or interaction was checked against one contract: legible in all seven themes and in `auto` under a light and a dark system, operable by keyboard with a visible focus ring, 44 px touch targets under `(pointer: coarse)`, no horizontal scroll at 360 px, correct final state under `prefers-reduced-motion`, content visible without JS, and role, name and state exposed for screen readers. The exceptions are listed under Known limitations and Open (tabs have no keyboard module, for one). The screen-reader part is inferred from axe-core and attribute assertions; no screen reader was run. A browser test suite (Playwright with axe-core, Chromium and Firefox) now checks the rest on every change. The one new module is `Vitra.drawer`. No class, token, `data-*` attribute or public method was removed (see "Removed" for one selector that styled nothing).
 
@@ -145,6 +145,13 @@ Brotli, measured with `npx size-limit`; "1.13.5" is the `v1.13.5` tag, measured 
 The three pieces add up to 20.30 kB brotli because each is compressed on its own: loading all three costs about 1.5 kB more than the bundle. Use the pieces to leave something out, not to load everything.
 
 **Why the JavaScript grew by 1.81 kB (+32%).** The budget was 6 kB and is now 7.5 kB, the ceiling the design set. The growth is the new drawer module, keyboard support in the dropdown, and the focus and ARIA fixes in modal, tooltip and toast (a shared focus-trap and scroll-lock helper, the tooltip's delegated listeners with touch, Esc and scroll handling, the toast live region and close button). The tooltip's inline styles moved to CSS, which is part of the CSS growth. The last fixes before release (one Esc per layer, guarded selectors, isolated auto-init) added about 0.17 kB, partly paid for by sharing the dropdown close path and the reveal hide/show steps. Accessibility behaviour was not cut to fit: the budget moved instead. About 0.01 kB of headroom remains, so a tabs module (see Open) does not fit.
+
+### Security
+
+- CI actions are pinned to commit SHAs instead of version tags, and a CI step fails the build when `dist/` differs from a fresh build.
+- Development dependencies updated for three advisories (vite, undici); `npm audit` reports none. The distributed files have no dependencies, so users were not affected.
+- `package.json` `homepage` pointed to a domain that does not resolve; it now points to the project site. `SECURITY.md` and `CONTRIBUTING.md` linked to a repository that does not exist; they now link to `DesvoSoft/Vitra`.
+- The CDN snippets in the README and the integration guide carry SRI hashes. The guide no longer says the package is on the npm registry: it is not, and a registry package named `vitra-css` is not this project.
 
 ### Known limitations
 
