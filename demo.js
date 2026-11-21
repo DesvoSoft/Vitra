@@ -24,7 +24,7 @@
     initMotionDemo();
     initTabs();
     initModalDemo();
-    initNavigation();
+    initMenuLinks();
     initShaderToggles();
     initProgressRing();
     initQuickStartCopy();
@@ -489,50 +489,22 @@
     });
   }
 
-  // ==================== Mobile Navigation ====================
-  function initNavigation() {
-    var burger = document.querySelector('.vitra-burger');
-    var drawer = document.querySelector('.vitra-drawer');
-    var drawerClose = document.querySelector('.vitra-drawer-close');
-    var drawerLinks = document.querySelectorAll('.vitra-drawer .vitra-navbar-link');
-    var drawerOverlay = document.querySelector('.vitra-drawer-overlay');
-
-    if (!burger || !drawer) return;
-
-    function closeDrawer() {
-      burger.classList.remove('active');
-      drawer.classList.remove('open');
-      if (drawerOverlay) drawerOverlay.classList.remove('open');
-      document.body.style.overflow = '';
-    }
-
-    burger.addEventListener('click', function () {
-      var opening = !drawer.classList.contains('open');
-      burger.classList.toggle('active');
-      drawer.classList.toggle('open');
-      if (drawerOverlay) drawerOverlay.classList.toggle('open');
-      document.body.style.overflow = opening ? 'hidden' : '';
-    });
-
-    if (drawerClose) {
-      drawerClose.addEventListener('click', closeDrawer);
-    }
-
-    drawerLinks.forEach(function (link) {
-      link.addEventListener('click', closeDrawer);
-    });
-
-    // Close drawer on outside click
-    document.addEventListener('click', function (e) {
-      if (!drawer.classList.contains('open')) return;
-      if (drawer.contains(e.target) || burger.contains(e.target)) return;
-      closeDrawer();
-    });
-
-    // Close drawer on ESC
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && drawer.classList.contains('open')) {
-        closeDrawer();
+  // ==================== Mobile menu ====================
+  // Vitra.drawer owns the menu: the burger toggle, the overlay, Esc, the
+  // focus trap and inert while closed. An in-page link inside it also
+  // closes it and hands focus to the section it points to, so a keyboard
+  // user carries on from there instead of from the burger.
+  function initMenuLinks() {
+    var menu = document.getElementById('site-menu');
+    if (!menu) return;
+    menu.addEventListener('click', function (e) {
+      var link = e.target.closest('a[href^="#"]');
+      if (!link || !window.Vitra || !Vitra.drawer) return;
+      var target = document.getElementById(link.getAttribute('href').slice(1));
+      Vitra.drawer.close();
+      if (target) {
+        if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+        target.focus({ preventScroll: true });
       }
     });
   }

@@ -90,7 +90,7 @@
           </div>
         </div>
 
-        <button class="vitra-burger" aria-label="Toggle menu">
+        <button class="vitra-burger" data-vitra-drawer-toggle="#site-menu" aria-controls="site-menu" aria-expanded="false" aria-label="Menu">
           <span class="vitra-burger-line"></span>
           <span class="vitra-burger-line"></span>
           <span class="vitra-burger-line"></span>
@@ -99,50 +99,46 @@
     </div>
   </nav>
 
-  <!-- Mobile Drawer -->
-  <div class="vitra-drawer vitra-drawer-glass" role="dialog" aria-label="Mobile navigation menu">
+  <!-- Mobile menu: Vitra.drawer (toggle, overlay, Esc, focus trap, inert while closed) -->
+  <div class="vitra-drawer-overlay"></div>
+  <nav id="site-menu" class="vitra-drawer vitra-drawer-glass demo-drawer" aria-label="Site menu">
     <div class="vitra-drawer-header">
-      <h3 class="vitra-drawer-title">Vitra CSS</h3>
-      <button class="vitra-drawer-close">&times;</button>
+      <span class="vitra-drawer-title">Vitra CSS</span>
+      <button class="vitra-drawer-close" aria-label="Close menu">&times;</button>
     </div>
     <div class="vitra-drawer-body">
-      <nav class="vitra-flex vitra-flex-col vitra-gap-2" aria-label="Mobile">
-        <a href="#quick-start" class="vitra-navbar-link">Get Started</a>
-        <a href="docs/" class="vitra-navbar-link">Docs</a>
-        <span class="demo-drawer-group-label">Features</span>
-        <div class="demo-drawer-subnav">
-          <a href="#whats-new" class="vitra-navbar-link demo-drawer-sublink">↳ New in 1.13</a>
-          <a href="#cinematic" class="vitra-navbar-link demo-drawer-sublink">↳ Cinematic</a>
-          <a href="#scenery" class="vitra-navbar-link demo-drawer-sublink">↳ Scenery</a>
-          <a href="#themes" class="vitra-navbar-link demo-drawer-sublink">↳ Themes</a>
-          <a href="#modern-css" class="vitra-navbar-link demo-drawer-sublink">↳ Modern CSS</a>
-          <a href="#shaders" class="vitra-navbar-link demo-drawer-sublink">↳ Shaders</a>
-          <a href="#tokens" class="vitra-navbar-link demo-drawer-sublink">↳ Tokens</a>
-          <a href="#glass" class="vitra-navbar-link demo-drawer-sublink">↳ Glass</a>
-          <a href="#particles" class="vitra-navbar-link demo-drawer-sublink">↳ Particles</a>
-          <a href="#motion" class="vitra-navbar-link demo-drawer-sublink">↳ Motion</a>
-        </div>
-        <span class="demo-drawer-group-label">Components</span>
-        <div class="demo-drawer-subnav">
-          <a href="#components" class="vitra-navbar-link demo-drawer-sublink">↳ All</a>
-          <a href="#comp-buttons" class="vitra-navbar-link demo-drawer-sublink">↳ Buttons</a>
-          <a href="#comp-cards" class="vitra-navbar-link demo-drawer-sublink">↳ Cards</a>
-          <a href="#comp-forms" class="vitra-navbar-link demo-drawer-sublink">↳ Forms</a>
-          <a href="#comp-tabs" class="vitra-navbar-link demo-drawer-sublink">↳ Tabs</a>
-          <a href="#comp-modals" class="vitra-navbar-link demo-drawer-sublink">↳ Modals</a>
-          <a href="#comp-tooltips" class="vitra-navbar-link demo-drawer-sublink">↳ Tooltips</a>
-          <a href="#comp-toasts" class="vitra-navbar-link demo-drawer-sublink">↳ Toasts</a>
-          <a href="#comp-progress" class="vitra-navbar-link demo-drawer-sublink">↳ Progress</a>
-          <a href="#comp-badges" class="vitra-navbar-link demo-drawer-sublink">↳ Badges</a>
-          <a href="#comp-avatars" class="vitra-navbar-link demo-drawer-sublink">↳ Avatars</a>
-          <a href="#comp-typography" class="vitra-navbar-link demo-drawer-sublink">↳ Typography</a>
-        </div>
-      </nav>
+      <a href="#quick-start" class="vitra-drawer-link">Get Started</a>
+      <a href="docs/" class="vitra-drawer-link">Docs</a>
+      <p class="demo-drawer-group" id="drawer-features">Features</p>
+      <ul class="demo-drawer-list" aria-labelledby="drawer-features">
+        <li><a href="#whats-new" class="vitra-drawer-link">What's new in 1.14</a></li>
+        <li><a href="#cinematic" class="vitra-drawer-link">Cinematic</a></li>
+        <li><a href="#scenery" class="vitra-drawer-link">Scenery</a></li>
+        <li><a href="#themes" class="vitra-drawer-link">Themes</a></li>
+        <li><a href="#modern-css" class="vitra-drawer-link">Modern CSS</a></li>
+        <li><a href="#shaders" class="vitra-drawer-link">Shaders</a></li>
+        <li><a href="#tokens" class="vitra-drawer-link">Tokens</a></li>
+        <li><a href="#glass" class="vitra-drawer-link">Glass</a></li>
+        <li><a href="#particles" class="vitra-drawer-link">Particles</a></li>
+        <li><a href="#motion" class="vitra-drawer-link">Motion</a></li>
+      </ul>
+      <p class="demo-drawer-group" id="drawer-components">Components</p>
+      <ul class="demo-drawer-list" aria-labelledby="drawer-components">
+        <li><a href="#components" class="vitra-drawer-link">All components</a></li>
+        <li><a href="#comp-buttons" class="vitra-drawer-link">Buttons</a></li>
+        <li><a href="#comp-cards" class="vitra-drawer-link">Cards</a></li>
+        <li><a href="#comp-forms" class="vitra-drawer-link">Forms</a></li>
+        <li><a href="#comp-tabs" class="vitra-drawer-link">Tabs</a></li>
+        <li><a href="#comp-modals" class="vitra-drawer-link">Modals</a></li>
+        <li><a href="#comp-tooltips" class="vitra-drawer-link">Tooltips</a></li>
+        <li><a href="#comp-toasts" class="vitra-drawer-link">Toasts</a></li>
+        <li><a href="#comp-progress" class="vitra-drawer-link">Progress</a></li>
+        <li><a href="#comp-badges" class="vitra-drawer-link">Badges</a></li>
+        <li><a href="#comp-avatars" class="vitra-drawer-link">Avatars</a></li>
+        <li><a href="#comp-typography" class="vitra-drawer-link">Typography</a></li>
+      </ul>
     </div>
-  </div>
-
-  <!-- Drawer Overlay -->
-  <div class="vitra-drawer-overlay" id="drawer-overlay"></div>
+  </nav>
 
   <!-- ============================================================
        HERO CINEMATOGRÁFICO

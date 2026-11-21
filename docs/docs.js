@@ -1,38 +1,37 @@
-/* Vitra Docs — theme dropdown, scrollspy, copy buttons, tabs, mobile drawer.
-   Page stays fully readable without this file; everything here is enhancement. */
+/* Vitra Docs — theme dropdown, scrollspy, copy buttons, tabs, menu links.
+   The page stays fully readable without this file or without Vitra; the
+   parts that need the framework check for it first. */
 (function () {
   'use strict';
 
+  function vitra(mod) {
+    return window.Vitra && window.Vitra[mod] ? window.Vitra[mod] : null;
+  }
+
   function initDocs() {
-    if (!window.Vitra) {
-      console.warn('[Vitra Docs] Vitra failed to load; interactive features disabled.');
-      return;
-    }
-    Vitra.theme.init({ defaultTheme: 'auto', persist: true });
-    initThemeDropdown();
+    // These work without the framework script
     initScrollspy();
     initCopyButtons();
     initTabs();
+    if (!window.Vitra) return;
+    if (vitra('theme')) Vitra.theme.init({ defaultTheme: 'auto', persist: true });
+    initThemeDropdown();
     initLiveExamples();
-    initMobileNav();
+    initMenuLinks();
   }
 
-  // Wire the components section's live triggers (modal / toast / particles).
+  // Live triggers in the components section (modal / toast / particles),
+  // one delegated listener.
   function initLiveExamples() {
-    document.querySelectorAll('[data-docs-modal-open]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        if (Vitra.modal) Vitra.modal.open(this.getAttribute('data-docs-modal-open'));
-      });
-    });
-    document.querySelectorAll('[data-docs-toast]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        if (Vitra.toast) Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });
-      });
-    });
-    document.querySelectorAll('[data-docs-particles]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        if (Vitra.particles) Vitra.particles.spawn(10, { direction: 'down' });
-      });
+    document.addEventListener('click', function (e) {
+      var modalBtn = e.target.closest('[data-docs-modal-open]');
+      if (modalBtn && vitra('modal')) Vitra.modal.open(modalBtn.getAttribute('data-docs-modal-open'));
+      if (e.target.closest('[data-docs-toast]') && vitra('toast')) {
+        Vitra.toast.show('Saved successfully!', { type: 'success', duration: 3000 });
+      }
+      if (e.target.closest('[data-docs-particles]') && vitra('particles')) {
+        Vitra.particles.spawn(10, { direction: 'down' });
+      }
     });
   }
 
@@ -41,19 +40,20 @@
     return name.charAt(0).toUpperCase() + name.slice(1);
   }
 
+  // The dropdown module closes the menu on an item click and resets
+  // aria-expanded; this only applies the theme and gives focus back to
+  // the toggle, since the item that had it is now hidden.
   function initThemeDropdown() {
     var label = document.getElementById('docs-theme-name');
-    if (!label) return;
+    if (!label || !vitra('theme')) return;
     label.textContent = themeLabel(Vitra.theme.get());
-    document.querySelectorAll('.docs-theme-item').forEach(function (item) {
-      item.addEventListener('click', function () {
-        var value = this.getAttribute('data-theme-value');
-        if (Vitra.theme.set(value)) {
-          label.textContent = themeLabel(value);
-          var dd = this.closest('.vitra-dropdown');
-          if (dd) dd.classList.remove('open');
-        }
-      });
+    document.addEventListener('click', function (e) {
+      var item = e.target.closest('.docs-theme-item');
+      if (!item) return;
+      var value = item.getAttribute('data-theme-value');
+      if (Vitra.theme.set(value)) label.textContent = themeLabel(value);
+      var toggle = item.closest('.vitra-dropdown').querySelector('[data-vitra-dropdown-toggle]');
+      if (toggle && item === document.activeElement) setTimeout(function () { toggle.focus(); }, 0);
     });
   }
 
@@ -67,9 +67,9 @@
     var observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
-        if (current) current.classList.remove('active');
+        if (current) { current.classList.remove('active'); current.removeAttribute('aria-current'); }
         current = links[entry.target.id] || null;
-        if (current) current.classList.add('active');
+        if (current) { current.classList.add('active'); current.setAttribute('aria-current', 'location'); }
       });
     }, { rootMargin: '-20% 0px -70% 0px' });
     document.querySelectorAll('.docs-section').forEach(function (s) { observer.observe(s); });
@@ -81,30 +81,22 @@
       btn.className = 'vitra-btn vitra-btn-glass vitra-btn-sm docs-copy-btn';
       btn.type = 'button';
       btn.textContent = 'Copy';
+      btn.setAttribute('aria-label', 'Copy code');
       btn.addEventListener('click', function () {
         var text = pre.getAttribute('data-copy');
         var done = function () {
-          if (Vitra.toast) Vitra.toast.show('Copied to clipboard', { type: 'success' });
+          if (vitra('toast')) Vitra.toast.show('Copied to clipboard', { type: 'success' });
+          btn.textContent = 'Copied';
+          setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
         };
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(text).then(done, function () {
-            console.warn('[Vitra Docs] Clipboard write failed.');
+            btn.textContent = 'Failed';
+            setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
           });
-        } else {
-          var ta = document.createElement('textarea');
-          ta.value = text;
-          document.body.appendChild(ta);
-          ta.select();
-          try {
-            document.execCommand('copy');
-            done();
-          } catch (e) {
-            console.warn('[Vitra Docs] Copy unsupported in this browser.');
-          }
-          document.body.removeChild(ta);
         }
       });
-      pre.parentElement.appendChild(btn);
+      pre.parentElement.insertBefore(btn, pre);
     });
   }
 
@@ -139,18 +131,20 @@
     });
   }
 
-  function initMobileNav() {
-    var burger = document.querySelector('.docs-burger');
-    var sidebar = document.getElementById('docs-sidebar');
-    if (!burger || !sidebar) return;
-    burger.addEventListener('click', function () {
-      var open = sidebar.classList.toggle('open');
-      burger.setAttribute('aria-expanded', String(open));
-    });
-    sidebar.addEventListener('click', function (e) {
-      if (e.target.classList.contains('docs-nav-link')) {
-        sidebar.classList.remove('open');
-        burger.setAttribute('aria-expanded', 'false');
+  // Vitra.drawer owns the mobile menu (toggle, overlay, Esc, focus trap,
+  // inert while closed). An in-page link closes it and moves focus to the
+  // section it points to.
+  function initMenuLinks() {
+    var menu = document.getElementById('docs-menu');
+    if (!menu || !vitra('drawer')) return;
+    menu.addEventListener('click', function (e) {
+      var link = e.target.closest('a[href^="#"]');
+      if (!link) return;
+      var target = document.getElementById(link.getAttribute('href').slice(1));
+      Vitra.drawer.close();
+      if (target) {
+        if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+        target.focus({ preventScroll: true });
       }
     });
   }

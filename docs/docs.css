@@ -262,35 +262,26 @@
   }
 
   .docs-burger {
-    display: inline-flex;
+    display: flex;
   }
 
   .docs-shell {
     grid-template-columns: 1fr;
   }
 
+  /* The sidebar's links live in the Vitra.drawer menu on narrow screens */
   .docs-sidebar {
-    position: fixed;
-    top: 56px;
-    bottom: 0;
-    left: 0;
-    width: min(280px, 80vw);
-    max-height: none;
-    border-radius: 0;
-    transform: translateX(-100%);
-    transition: transform var(--vitra-duration-normal) var(--vitra-ease-default);
-    z-index: 90;
-  }
-
-  .docs-sidebar.open {
-    transform: translateX(0);
+    display: none;
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .docs-sidebar {
-    transition: none;
-  }
+/* 44 px rows: the drawer is the touch menu */
+.docs-drawer .vitra-drawer-link {
+  min-height: 44px;
+}
+
+.docs-main [tabindex="-1"]:focus {
+  outline: none;
 }
 
 /* Links inside running text are underlined: colour alone (1.4:1 against

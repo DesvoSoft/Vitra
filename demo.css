@@ -595,11 +595,34 @@ html[data-theme="pastel"] .demo-hero-overline {
 }
 
 /* ============================================
-   Drawer
+   Mobile menu (Vitra.drawer)
    ============================================ */
 
-.vitra-drawer-body {
-  padding-top: 70px;
+.demo-drawer-group {
+  margin: var(--vitra-space-3) 0 0;
+  padding: 0 var(--vitra-space-3);
+  font-size: var(--vitra-font-size-xs);
+  font-weight: var(--vitra-font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--vitra-color-text-secondary);
+}
+
+.demo-drawer-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 var(--vitra-space-3);
+}
+
+/* 44 px rows: the drawer is the touch menu */
+.demo-drawer .vitra-drawer-link {
+  min-height: 44px;
+}
+
+/* A menu link moves focus to its section (tabindex=-1): no ring on the
+   whole section */
+main [tabindex="-1"]:focus {
+  outline: none;
 }
 
 /* ============================================
@@ -695,34 +718,6 @@ html[data-theme="pastel"] .demo-hero-overline {
 .demo-nav-dropdown-menu .vitra-dropdown-item:hover {
   background: var(--vitra-color-surface-hover);
   color: var(--vitra-color-text-primary);
-}
-
-/* Mobile drawer sub-links */
-.demo-drawer-group-label {
-  font-size: var(--vitra-font-size-xs);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--vitra-color-text-secondary);
-  padding: var(--vitra-space-3) 0 var(--vitra-space-1);
-  display: block;
-}
-
-.demo-drawer-subnav {
-  display: flex;
-  flex-direction: column;
-  padding-left: var(--vitra-space-4);
-  margin-bottom: var(--vitra-space-2);
-}
-
-.demo-drawer-sublink {
-  font-size: var(--vitra-font-size-sm) !important;
-
-  /* Full strength: dimming accent-coloured links by opacity dropped them
-     to ~3:1 on the light themes. Size alone carries the hierarchy. */
-  opacity: 1;
-  padding-top: 0.15rem;
-  padding-bottom: 0.15rem;
 }
 
 /* ============================================
@@ -1111,11 +1106,6 @@ pre code {
     right: 0;
     left: auto;
   }
-
-  .vitra-drawer-header,
-  .vitra-drawer-body {
-    padding-inline: var(--vitra-fluid-space-2);
-  }
 }
 
 /* Small-phone tier (360-400px class devices): the 768px tier above
@@ -1136,10 +1126,6 @@ pre code {
 
   .demo-hero .demo-hero-sub {
     font-size: var(--vitra-font-size-sm);
-  }
-
-  .vitra-drawer {
-    width: 88%;
   }
 }
 
@@ -1293,11 +1279,6 @@ pre code {
   }
 
 }
-
-/* Drawer links at full strength: the framework dims .vitra-navbar-link to
-   70% until hover, which takes accent-coloured links below 3:1 on the
-   light themes. */
-.vitra-drawer .vitra-navbar-link { opacity: 1; }
 
 /* ============================================================
    HERO ARRIVAL

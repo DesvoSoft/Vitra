@@ -33,12 +33,33 @@
         </div>
       </div>
     </nav>
-    <button class="vitra-burger docs-burger" aria-label="Toggle navigation" aria-expanded="false">
+    <button class="vitra-burger docs-burger" data-vitra-drawer-toggle="#docs-menu" aria-controls="docs-menu" aria-expanded="false" aria-label="Menu">
       <span class="vitra-burger-line"></span>
       <span class="vitra-burger-line"></span>
       <span class="vitra-burger-line"></span>
     </button>
   </header>
+
+  <!-- Mobile menu: Vitra.drawer (toggle, overlay, Esc, focus trap, inert while closed) -->
+  <div class="vitra-drawer-overlay"></div>
+  <nav id="docs-menu" class="vitra-drawer vitra-drawer-glass docs-drawer" aria-label="Docs menu">
+    <div class="vitra-drawer-header">
+      <span class="vitra-drawer-title">Vitra Docs</span>
+      <button class="vitra-drawer-close" aria-label="Close menu">&times;</button>
+    </div>
+    <div class="vitra-drawer-body">
+      <a class="vitra-drawer-link" href="#introduction">Introduction</a>
+      <a class="vitra-drawer-link" href="#installation">Installation</a>
+      <a class="vitra-drawer-link" href="#theming">Theming</a>
+      <a class="vitra-drawer-link" href="#components">Components</a>
+      <a class="vitra-drawer-link" href="#scenery">Scenery &amp; Motion</a>
+      <a class="vitra-drawer-link" href="#js-api">JavaScript API</a>
+      <a class="vitra-drawer-link" href="#data-config">data-config</a>
+      <a class="vitra-drawer-link" href="#compat">Accessibility &amp; Support</a>
+      <a class="vitra-drawer-link" href="../">Interactive demo</a>
+      <a class="vitra-drawer-link" href="https://github.com/DesvoSoft/Vitra">GitHub</a>
+    </div>
+  </nav>
 
   <div class="docs-shell">
     <aside class="docs-sidebar vitra-glass" id="docs-sidebar" aria-label="Docs navigation">
