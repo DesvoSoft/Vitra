@@ -389,10 +389,10 @@ drawer.open('#menu');</code></pre>
       <div class="demo-card">
         <div class="demo-card-header">
           <h3>Animated Mesh Gradient</h3>
-          <label class="vitra-toggle-label">
+          <span class="demo-switch">
             <input type="checkbox" class="vitra-toggle" id="toggle-gradient-bg" data-target="#cinematic-gradient-bg" checked>
-            <span>Active<span class="vitra-sr-only">: mesh gradient</span></span>
-          </label>
+            <label class="vitra-toggle-label" for="toggle-gradient-bg"><span><span class="demo-state-on">Active</span><span class="demo-state-off">Inactive</span><span class="vitra-sr-only">: mesh gradient</span></span></label>
+          </span>
         </div>
         <p>Radial mesh gradient with 3 blobs that shift position continuously via <code>vitra-mesh-shift</code> keyframes.</p>
         <div class="cinematic-preview" id="cinematic-gradient-bg">
@@ -408,10 +408,10 @@ drawer.open('#menu');</code></pre>
       <div class="demo-card">
         <div class="demo-card-header">
           <h3>Floating Glow Orbs</h3>
-          <label class="vitra-toggle-label">
+          <span class="demo-switch">
             <input type="checkbox" class="vitra-toggle" id="toggle-glow-orbs" data-target="#cinematic-glow-orbs" checked>
-            <span>Active<span class="vitra-sr-only">: glow orbs</span></span>
-          </label>
+            <label class="vitra-toggle-label" for="toggle-glow-orbs"><span><span class="demo-state-on">Active</span><span class="demo-state-off">Inactive</span><span class="vitra-sr-only">: glow orbs</span></span></label>
+          </span>
         </div>
         <p>Large blur spheres (300–400px) with 80px blur that float in parallax via <code>vitra-float</code> keyframes.</p>
         <div class="cinematic-preview" id="cinematic-glow-orbs">
@@ -441,10 +441,10 @@ drawer.open('#menu');</code></pre>
       <div class="demo-card">
         <div class="demo-card-header">
           <h3>Spinning Border Glow</h3>
-          <label class="vitra-toggle-label">
+          <span class="demo-switch">
             <input type="checkbox" class="vitra-toggle" id="toggle-border-glow" data-target="#cinematic-border-glow" checked>
-            <span>Active<span class="vitra-sr-only">: border glow</span></span>
-          </label>
+            <label class="vitra-toggle-label" for="toggle-border-glow"><span><span class="demo-state-on">Active</span><span class="demo-state-off">Inactive</span><span class="vitra-sr-only">: border glow</span></span></label>
+          </span>
         </div>
         <p>Animated conic-gradient border via an oversized <code>::before</code> that turns with <code>transform</code>; the inner area is masked via <code>::after</code>. It covers hosts of any proportion.</p>
         <div class="cinematic-preview vitra-border-glow" id="cinematic-border-glow">
@@ -617,10 +617,10 @@ drawer.open('#menu');</code></pre>
       <div class="demo-card">
         <div class="demo-card-header">
           <h3>Noise Overlay</h3>
-          <label class="vitra-toggle-label">
+          <span class="demo-switch">
             <input type="checkbox" class="vitra-toggle" id="toggle-noise-overlay" checked>
-            <span>Active<span class="vitra-sr-only">: film grain over this page</span></span>
-          </label>
+            <label class="vitra-toggle-label" for="toggle-noise-overlay"><span><span class="demo-state-on">Active</span><span class="demo-state-off">Inactive</span><span class="vitra-sr-only">: film grain over this page</span></span></label>
+          </span>
         </div>
         <p>Grain texture via SVG <code>feTurbulence</code> filter rendered as a data URI background. <code>mix-blend-mode: overlay</code> for cinematic film grain. It is on over this whole page.</p>
       </div>
@@ -650,10 +650,10 @@ drawer.open('#menu');</code></pre>
       <div class="demo-card">
         <div class="demo-card-header">
           <h3>Shape Morph</h3>
-          <label class="vitra-toggle-label">
+          <span class="demo-switch">
             <input type="checkbox" class="vitra-toggle" id="toggle-shape-morph" data-target="#shape-morphs" checked>
-            <span>Active<span class="vitra-sr-only">: shape morph</span></span>
-          </label>
+            <label class="vitra-toggle-label" for="toggle-shape-morph"><span><span class="demo-state-on">Active</span><span class="demo-state-off">Inactive</span><span class="vitra-sr-only">: shape morph</span></span></label>
+          </span>
         </div>
         <p><code>clip-path</code> polygon morphing animation: diamond → square → triangle → hexagon → diamond. 12s ease-in-out loop.</p>
         <div class="vitra-flex vitra-gap-4 vitra-justify-center vitra-mt-4 vitra-flex-wrap" id="shape-morphs">
@@ -666,10 +666,10 @@ drawer.open('#menu');</code></pre>
       <div class="demo-card">
         <div class="demo-card-header">
           <h3>Gradient Rotate</h3>
-          <label class="vitra-toggle-label">
+          <span class="demo-switch">
             <input type="checkbox" class="vitra-toggle" id="toggle-gradient-rotate" data-target="#gradient-rotates" checked>
-            <span>Active<span class="vitra-sr-only">: gradient rotate</span></span>
-          </label>
+            <label class="vitra-toggle-label" for="toggle-gradient-rotate"><span><span class="demo-state-on">Active</span><span class="demo-state-off">Inactive</span><span class="vitra-sr-only">: gradient rotate</span></span></label>
+          </span>
         </div>
         <p>Animated conic-gradient border using <code>@property --vitra-border-glow-angle</code> for smooth angle interpolation. Use <code>.vitra-gradient-rotate-fast</code> or <code>.vitra-gradient-rotate-slow</code> variants.</p>
         <div class="vitra-flex vitra-gap-4 vitra-mt-4 vitra-flex-wrap vitra-justify-center" id="gradient-rotates">
@@ -698,10 +698,10 @@ drawer.open('#menu');</code></pre>
       <div class="demo-card">
         <div class="demo-card-header">
           <h3>Scroll-Driven Reveal</h3>
-          <label class="vitra-toggle-label">
+          <span class="demo-switch">
             <input type="checkbox" class="vitra-toggle" id="toggle-scroll-reveal" data-target="#scroll-reveals" checked>
-            <span>Active<span class="vitra-sr-only">: scroll-driven reveal</span></span>
-          </label>
+            <label class="vitra-toggle-label" for="toggle-scroll-reveal"><span><span class="demo-state-on">Active</span><span class="demo-state-off">Inactive</span><span class="vitra-sr-only">: scroll-driven reveal</span></span></label>
+          </span>
         </div>
         <p>Uses <code>animation-timeline: view()</code> for scroll-driven entry animations. Elements fade + slide as they enter the viewport. Progressive enhancement — falls back gracefully in unsupported browsers.</p>
         <div class="vitra-grid vitra-mt-4 demo-reveal-grid" id="scroll-reveals">
@@ -1067,10 +1067,10 @@ drawer.open('#menu');</code></pre>
             </div>
             <fieldset class="demo-fieldset">
               <legend class="demo-field-label">Toggle Switch</legend>
-              <label class="vitra-toggle-label">
+              <span class="demo-switch">
                 <input type="checkbox" id="demo-toggle" class="vitra-toggle">
-                <span>Enable feature</span>
-              </label>
+                <label class="vitra-toggle-label" for="demo-toggle"><span>Enable feature</span></label>
+              </span>
             </fieldset>
             <fieldset class="demo-fieldset">
               <legend class="demo-field-label">Checkbox</legend>

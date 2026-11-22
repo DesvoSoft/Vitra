@@ -361,6 +361,22 @@ kbd {
   gap: var(--vitra-space-3);
 }
 
+/* A Vitra switch is an input followed by its label (the label draws the
+   track from the input's :checked state). The wrapper keeps the pair
+   together as one item of the card header. */
+.demo-switch {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* The word next to a switch follows its state, in CSS so it holds
+   without JavaScript too. */
+.vitra-toggle:checked + .vitra-toggle-label .demo-state-off,
+.vitra-toggle:not(:checked) + .vitra-toggle-label .demo-state-on {
+  display: none;
+}
+
 .demo-card-header h3 {
   margin: 0;
   display: flex;
