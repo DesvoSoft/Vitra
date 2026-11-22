@@ -695,6 +695,24 @@
     }
   }
 
+  /* --- SCROLL LOCK (modal, drawer) ---
+     The JS locks scrolling with overflow: hidden on <body>, but a body
+     value only reaches the viewport while <html> has no overflow of its
+     own. A page that sets overflow on the root (overflow-x: clip is
+     common off-canvas hygiene) kept scrolling behind an open modal or
+     drawer. Lock the root too, keyed on states the JS sets: the open
+     modal, a drawer toggle that is expanded, a drawer the module made
+     modal. Drawers a page opens with its own script carry none of them.
+     !important: an unlayered author rule on html would otherwise win. */
+  :root:has(
+    .vitra-modal.vitra-modal-open,
+    .vitra-modal-overlay.vitra-modal-open,
+    [data-vitra-drawer-toggle][aria-expanded="true"],
+    .vitra-drawer.open[aria-modal="true"]
+  ) {
+    overflow: hidden !important;
+  }
+
   /* --- DRAWER --- */
 
   /* Mobile slide-out drawer */
