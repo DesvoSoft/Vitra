@@ -9,10 +9,10 @@ The pages load the framework from jsDelivr, pinned to a release tag and checked 
 
 > **Framework source code**, the integration guide and the build scripts are in the `main` branch of [DesvoSoft/Vitra](https://github.com/DesvoSoft/Vitra).
 
-**CDN (v1.14.1):**
+**CDN (v1.14.2):**
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.1/dist/vitra.min.css" integrity="sha256-VqvCW9TWtiiiYglM8Ok1T1Y/tbXZ8sWvYvW7i/fPZko=" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.1/dist/vitra.min.js" integrity="sha256-XfDZdHFCtz3eXkyZ82L9abRDbp+yhwDFOvvsWNpqjFw=" crossorigin="anonymous" defer></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.2/dist/vitra.min.css" integrity="sha256-2OyRLn3Y5YKEEEfm8Ag2Xw6t1Iecy/yj7wif5LoDKyQ=" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.2/dist/vitra.min.js" integrity="sha256-XfDZdHFCtz3eXkyZ82L9abRDbp+yhwDFOvvsWNpqjFw=" crossorigin="anonymous" defer></script>
 ```
 
 The hashes of every distributed file are in `dist/SRI.txt` on the release tag. When the demo moves to a new release, change the tag and both hashes together in `index.html`, `docs/index.html`, the copyable snippets on both pages and this file.
