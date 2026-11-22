@@ -1,7 +1,7 @@
-vitra.min.css: sha256-VqvCW9TWtiiiYglM8Ok1T1Y/tbXZ8sWvYvW7i/fPZko=
+vitra.min.css: sha256-2OyRLn3Y5YKEEEfm8Ag2Xw6t1Iecy/yj7wif5LoDKyQ=
 vitra.min.js: sha256-XfDZdHFCtz3eXkyZ82L9abRDbp+yhwDFOvvsWNpqjFw=
-vitra.core.css: sha256-OcqO1VhEr3VS1ksjukhxDLWSjl6yXg8K6yWoF4HGGX8=
-vitra.core.min.css: sha256-EsgGLWfDdFShZNoWH2lCxEQ8gjlI2Tgrf0pbfXLeUUk=
+vitra.core.css: sha256-BCtODzqLcGLnd3MWpsQXZsJBT8Zh1cFjWDGXmzsN+bU=
+vitra.core.min.css: sha256-00CyDrZVbT+v5bEM8scE7RGkYZvhSHraDrlVUaeD/2E=
 vitra.scenery.css: sha256-mJ+l8rOUNiZQzZXKjpyxtLxFVL4KUqGdEHUK2kfkp0Y=
 vitra.scenery.min.css: sha256-iCmCgZ0clZqZcnlK1t2YVQqSf0LmVD8+pqPA9MLAn+E=
 vitra.effects.css: sha256-D9fvTDJC/nKfkFdfF93txB8A3jTJRb3ePtOUYsm0orU=

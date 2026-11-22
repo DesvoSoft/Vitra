@@ -4,6 +4,20 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.14.2] - 2026-11-22
+
+### Fixed
+
+- **Scroll lock on pages that set `overflow` on `<html>`.** The modal and the drawer lock scrolling with `overflow: hidden` on `<body>`, but a body value only reaches the viewport while `<html>` has no overflow of its own. A page that sets one (for example `overflow-x: clip` on `html` and `body`, common with off-canvas menus) kept scrolling behind an open modal or drawer. The stylesheet now also locks the root while a Vitra modal is open, while a drawer toggle is expanded, or while a drawer the module made modal is open. Drawers a page opens with its own script are not affected, as before. CSS only: the script is unchanged.
+
+### Sizes
+
+`vitra.min.css` 18.91 kB brotli (was 18.85); `vitra.min.js` unchanged at 7.49 kB. The SRI hash of the CSS files changes; the JS hashes do not.
+
+### Not verified
+
+Safari (`:has()` is supported since 15.4). Firefox before 121 has no `:has()`: there the body lock works as in 1.14.1.
+
 ## [1.14.1] - 2026-11-22
 
 No code changes: every file in `dist/` is byte-identical to 1.14.0, with the same SRI hashes.
