@@ -109,22 +109,11 @@ kbd {
 
   /* No content-visibility: auto here. A skipped subtree never resolves
      style, so an animation-play-state change made while the section is
-     skipped (the offscreen pause below, Vitra.motionGuard) stays
+     skipped (Vitra.motionGuard's offscreen pause) stays
      "pending" forever and Chromium keeps producing main-thread frames
      for it - ~100 style recalcs/s on an idle page. The animations inside
      are compositor-only and paused offscreen anyway, so there was
      little left for content-visibility to save. */
-}
-
-/* Applied by demo.js (initOffscreenPause) to zones outside the viewport.
-   Only animations pause — transitions (reveal-on-scroll) are unaffected. */
-.demo-anim-paused,
-.demo-anim-paused *,
-.demo-anim-paused::before,
-.demo-anim-paused::after,
-.demo-anim-paused *::before,
-.demo-anim-paused *::after {
-  animation-play-state: paused !important;
 }
 
 /* Alternating tint gives the page vertical rhythm - sections read
@@ -226,17 +215,6 @@ kbd {
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-}
-
-.demo-hero .vitra-gradient-bg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  will-change: background-position;
-}
-
-.demo-hero .vitra-glow-orb {
-  will-change: transform;
 }
 
 .demo-hero .vitra-container {
@@ -353,43 +331,6 @@ kbd {
     --vitra-scenery-halo-size: clamp(40px, 11vw, 64px);
     --vitra-scenery-halo-x: 72%;
     --vitra-scenery-halo-y: 8%;
-  }
-}
-
-.demo-hero .vitra-glow-orb {
-  z-index: 1;
-}
-
-/* Hero particles sit inside .vitra-scenery-inline (moved there by demo.js
-   so they fall behind the near ridge), so they need enough size/contrast
-   to read against the sky gradient instead of the framework's flat default.
-   Cool near-white, same hue family as the starfield/halo (see
-   src/09-scenery.css) - reads as drifting starlight/dust, not warm embers
-   fighting the sky. */
-.demo-hero .vitra-scenery-inline .vitra-particle {
-  --vitra-particle-color: hsl(var(--vitra-scenery-hue) 20% 92%);
-  box-shadow: 0 0 6px hsl(var(--vitra-scenery-hue) 20% 92% / 70%);
-}
-
-/* Classic (non-directional) hero particles: amplify the built-in float
-   keyframe's opacity pulse into a visible flicker for depth cueing
-   against the static mountain ridges. */
-.demo-hero .vitra-scenery-inline .vitra-particle:not([data-direction]) {
-  animation-name: demo-hero-particle-flicker;
-  animation-timing-function: ease-in-out;
-}
-
-@keyframes demo-hero-particle-flicker {
-  0%, 100% { opacity: 0.25; transform: translateY(0) scale(1); }
-  25% { opacity: 0.9; transform: translateY(-8px) scale(1.15); }
-  50% { opacity: 0.35; transform: translateY(-20px) scale(0.95); }
-  75% { opacity: 1; transform: translateY(-12px) scale(1.1); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .demo-hero .vitra-scenery-inline .vitra-particle:not([data-direction]) {
-    animation: none !important;
-    opacity: 0.6;
   }
 }
 
@@ -845,41 +786,6 @@ kbd {
 .demo-oklch-caption {
   font-size: var(--vitra-font-size-xs);
   color: var(--vitra-color-text-secondary);
-}
-
-/* Container Queries table demo */
-.vitra-table-wrapper {
-  container-type: inline-size;
-}
-
-@container (max-width: 500px) {
-  .vitra-table thead {
-    display: none;
-  }
-
-  .vitra-table tr {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid var(--vitra-color-border);
-    border-radius: var(--vitra-radius-md);
-    padding: var(--vitra-space-3);
-    margin-bottom: var(--vitra-space-3);
-  }
-
-  .vitra-table td {
-    border: none;
-    padding: var(--vitra-space-1) 0;
-  }
-
-  .vitra-table td::before {
-    content: attr(data-label);
-    font-weight: 600;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    opacity: 0.5;
-    display: block;
-  }
 }
 
 /* ============================================
@@ -1378,15 +1284,6 @@ main [tabindex="-1"]:focus {
   margin-top: var(--vitra-space-2);
 }
 
-.demo-qs-inline-code {
-  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
-  font-size: 0.85em;
-  background: hsla(var(--vitra-color-accent-h), 60%, 60%, 0.12);
-  padding: 0.1em 0.4em;
-  border-radius: var(--vitra-radius-sm);
-  color: var(--vitra-color-accent);
-}
-
 /* ============================================
    Footer
    Theme surfaces and ink, so it follows light themes too
@@ -1864,97 +1761,6 @@ p.demo-field-label {
 }
 
 /* ============================================
-   BSOD Prank Overlay
-   ============================================ */
-
-#demo-bsod {
-  position: fixed;
-  inset: 0;
-  background: #0078d4;
-  z-index: 99999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: bsod-flicker 0.08s steps(1) 2;
-}
-
-#demo-bsod.bsod-fade-out {
-  animation: bsod-out 0.6s ease forwards;
-}
-
-@keyframes bsod-flicker {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-@keyframes bsod-out {
-  to { opacity: 0; transform: scale(1.04); }
-}
-
-.bsod-inner {
-  max-width: 640px;
-  padding: 3rem 2.5rem;
-  color: #fff;
-  font-family: 'Segoe UI', system-ui, sans-serif;
-}
-
-.bsod-emoji {
-  font-size: 5rem;
-  font-weight: 100;
-  line-height: 1;
-  margin-bottom: 1.5rem;
-}
-
-.bsod-title {
-  font-size: 1.75rem;
-  font-weight: 600;
-  margin: 0 0 1rem;
-  color: #fff;
-}
-
-.bsod-msg {
-  font-size: 1rem;
-  opacity: 0.92;
-  margin-bottom: 1.5rem;
-  line-height: 1.6;
-}
-
-.bsod-code {
-  font-family: 'Courier New', monospace;
-  font-size: 0.85rem;
-  opacity: 0.75;
-  margin-bottom: 2rem;
-  letter-spacing: 0.04em;
-}
-
-.bsod-progress-wrap {
-  height: 4px;
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 2px;
-  overflow: hidden;
-  margin-bottom: 0.6rem;
-}
-
-.bsod-bar {
-  height: 100%;
-  width: 0%;
-  background: #fff;
-  border-radius: 2px;
-  transition: width 0.08s linear;
-}
-
-.bsod-pct {
-  font-size: 0.9rem;
-  opacity: 0.85;
-  margin-bottom: 2.5rem;
-}
-
-.bsod-footer {
-  font-size: 0.78rem;
-  opacity: 0.55;
-}
-
-/* ============================================
    Scenery Section
    ============================================ */
 
@@ -2021,75 +1827,7 @@ p.demo-field-label {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Spring race: each runner is a rail the width of the track minus its
-   dot, so translateX(100%) carries the dot exactly to the far end and
-   the spring's overshoot has room to show. */
-.demo-race-row code {
-  font-size: var(--vitra-font-size-xs);
-  color: var(--vitra-color-text-secondary);
-}
-
-.demo-race-track {
-  position: relative;
-  height: 6px;
-  margin: 10px 0 18px;
-  border-radius: 99px;
-  background: var(--vitra-color-surface-active, var(--vitra-color-surface));
-}
-
-.demo-race-runner {
-  position: absolute;
-  inset: 0 44px 0 0;
-  transition: transform 1100ms var(--demo-ease);
-}
-
-.demo-race-runner::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 18px;
-  height: 18px;
-  margin-top: -9px;
-  border-radius: 50%;
-  background: var(--vitra-color-accent);
-  box-shadow: 0 0 14px hsl(var(--vitra-color-accent-h) 90% 60% / 55%);
-}
-
-.demo-race.is-run .demo-race-runner { transform: translateX(100%); }
-.demo-race.is-reset .demo-race-runner { transition: none; }
-
-/* Before/after meter */
-.demo-meter { margin: 0; display: grid; gap: var(--vitra-space-4); }
-.demo-meter-row dt { font-size: var(--vitra-font-size-sm); margin-bottom: 6px; }
-.demo-meter-row dd { margin: 0; display: grid; gap: 4px; }
-
-.demo-meter-bar {
-  display: block;
-  box-sizing: border-box;
-  width: max(var(--w), 3.5rem);
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-size: var(--vitra-font-size-xs);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-.demo-meter-before { background: var(--vitra-color-surface-active, var(--vitra-color-surface)); color: var(--vitra-color-text-secondary); }
-.demo-meter-after { background: var(--vitra-color-accent); color: var(--vitra-color-text-inverse); font-weight: 600; }
-.demo-meter-note { font-size: var(--vitra-font-size-xs); margin: 0; }
-
-.demo-meter-key {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 3px;
-  margin-right: 4px;
-  vertical-align: baseline;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .demo-hero > .vitra-container > * { animation: none; }
-  .demo-race-runner { transition: none; }
   .demo-bloom-chip { transition: none; }
 }
