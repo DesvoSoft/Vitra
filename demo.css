@@ -1664,10 +1664,14 @@ p.demo-field-label {
   .demo-hero {
     min-height: 60vh;
     padding: var(--vitra-fluid-space-4);
+
+    /* Room under the buttons for the scroll cue, which sits 26px from
+       the bottom: without it the chevron overlapped the last button. */
+    padding-bottom: calc(var(--vitra-fluid-space-4) + 56px);
   }
 
   .demo-hero h1.demo-hero-title {
-    font-size: var(--vitra-font-size-3xl);
+    font-size: clamp(2.5rem, 12vw, 3.5rem);
   }
 
   .demo-section {
@@ -1721,10 +1725,6 @@ p.demo-field-label {
     overflow: hidden;
     clip-path: inset(50%);
     white-space: nowrap;
-  }
-
-  .demo-hero h1.demo-hero-title {
-    font-size: var(--vitra-font-size-2xl);
   }
 
   .demo-hero .demo-hero-sub {
