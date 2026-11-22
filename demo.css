@@ -523,6 +523,23 @@ kbd {
   padding: var(--vitra-space-4);
 }
 
+.theme-preview-actions {
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.theme-preview-actions > * {
+  white-space: nowrap;
+}
+
+/* Three nested paddings left the sample card too narrow on phones:
+   "Accent" broke over two lines and "Glass" did not fit its button. */
+@media (max-width: 480px) {
+  .theme-preview-bg {
+    padding: var(--vitra-space-3);
+  }
+}
+
 .theme-preview-title {
   margin: 0 0 var(--vitra-space-2);
   font-size: var(--vitra-font-size-base);
