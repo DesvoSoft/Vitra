@@ -4,6 +4,12 @@ All notable changes to Vitra CSS are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.14.1] - 2026-11-22
+
+No code changes: every file in `dist/` is byte-identical to 1.14.0, with the same SRI hashes.
+
+jsDelivr cached a file it minified itself in place of `dist/vitra.min.js` for the `v1.14.0` tag, so `https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.js` does not match its SRI hash and a browser that checks integrity blocks it. Load 1.14.1 instead. The CSS and every other file served for 1.14.0 are correct.
+
 ## [1.14.0] - 2026-11-20
 
 Every component with state or interaction was checked against one contract: legible in all seven themes and in `auto` under a light and a dark system, operable by keyboard with a visible focus ring, 44 px touch targets under `(pointer: coarse)`, no horizontal scroll at 360 px, correct final state under `prefers-reduced-motion`, content visible without JS, and role, name and state exposed for screen readers. The exceptions are listed under Known limitations and Open (tabs have no keyboard module, for one). The screen-reader part is inferred from axe-core and attribute assertions; no screen reader was run. A browser test suite (Playwright with axe-core, Chromium and Firefox) now checks the rest on every change. The one new module is `Vitra.drawer`. No class, token, `data-*` attribute or public method was removed (see "Removed" for one selector that styled nothing).

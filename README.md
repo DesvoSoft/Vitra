@@ -19,13 +19,13 @@ A CSS framework for glass surfaces, ambient motion and a living landscape behind
 Add one line to any HTML page:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.css" integrity="sha256-VqvCW9TWtiiiYglM8Ok1T1Y/tbXZ8sWvYvW7i/fPZko=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.1/dist/vitra.min.css" integrity="sha256-VqvCW9TWtiiiYglM8Ok1T1Y/tbXZ8sWvYvW7i/fPZko=" crossorigin="anonymous">
 ```
 
 The script is optional. It adds modals, the drawer, tooltips, toasts, dropdown keyboard support, particles and theme switching:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.0/dist/vitra.min.js" integrity="sha256-XfDZdHFCtz3eXkyZ82L9abRDbp+yhwDFOvvsWNpqjFw=" crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/DesvoSoft/Vitra@v1.14.1/dist/vitra.min.js" integrity="sha256-XfDZdHFCtz3eXkyZ82L9abRDbp+yhwDFOvvsWNpqjFw=" crossorigin="anonymous" defer></script>
 ```
 
 Then write markup:
@@ -53,7 +53,7 @@ The URLs are pinned to a release tag and carry Subresource Integrity hashes, so 
 **With a bundler.** Install from GitHub, pinned to a tag:
 
 ```bash
-npm install github:DesvoSoft/Vitra#v1.14.0
+npm install github:DesvoSoft/Vitra#v1.14.1
 ```
 
 ```js
