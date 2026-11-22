@@ -41,3 +41,8 @@ yarn-debug.log*
 # Project Docs
 # ===========================================
 KNOWN-ISSUES.md
+# Playwright
+test-results/
+# scripts/measure-motion.cjs output
+scratch/
+playwright-report/

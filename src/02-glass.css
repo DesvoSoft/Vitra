@@ -33,7 +33,12 @@
     /* --- GLASS BORDER TOKENS --- */
     --vitra-border-width: 1px;
     --vitra-border-style: solid;
-    --vitra-border-color: rgb(var(--vitra-color-border-rgb) / 10%);
+
+    /* Legacy comma syntax on purpose: --vitra-color-border-rgb is a
+       comma-separated triplet (public token), and `rgb(r, g, b / a)` is
+       invalid - it silently dropped the whole border of .vitra-glass. */
+    /* stylelint-disable-next-line color-function-notation, color-function-alias-notation, alpha-value-notation */
+    --vitra-border-color: rgba(var(--vitra-color-border-rgb), 0.1);
   }
 
   /* Light-scheme themes need an opaque-leaning tint here, not the dark
@@ -44,6 +49,8 @@
      be silently beaten by this layer's own :root default. Plain
      attribute selectors, not :where() - see src/09-scenery.css for the
      same trap. */
+
+  /* @vitra-auto-mirror light */
   [data-theme="light"],
   [data-theme="pastel"] {
     --vitra-glass-bg: hsl(222deg 45% 96% / 70%);
@@ -53,13 +60,6 @@
   [data-theme="pastel"] {
     --vitra-glass-bg: hsl(330deg 80% 98% / 65%);
     --vitra-glass-bg-menu: hsl(330deg 60% 99% / 92%);
-  }
-
-  @media (prefers-color-scheme: light) {
-    [data-theme="auto"] {
-      --vitra-glass-bg: hsl(222deg 45% 96% / 70%);
-      --vitra-glass-bg-menu: hsl(222deg 40% 99% / 92%);
-    }
   }
 
   /* Dark-family themes keep their own hue-tinted glass at the same low

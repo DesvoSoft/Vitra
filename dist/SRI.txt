@@ -1,2 +1,8 @@
-vitra.min.css: sha256-7lz7IewOkqmHCI7FaSpWfIpaGkXVV6VB87UJIlrR64k=
-vitra.min.js: sha256-j6sCgR0Ua0vRhJLLvod8vWtShkOiDtHC6SEoi1BUcL8=
+vitra.min.css: sha256-VqvCW9TWtiiiYglM8Ok1T1Y/tbXZ8sWvYvW7i/fPZko=
+vitra.min.js: sha256-XfDZdHFCtz3eXkyZ82L9abRDbp+yhwDFOvvsWNpqjFw=
+vitra.core.css: sha256-OcqO1VhEr3VS1ksjukhxDLWSjl6yXg8K6yWoF4HGGX8=
+vitra.core.min.css: sha256-EsgGLWfDdFShZNoWH2lCxEQ8gjlI2Tgrf0pbfXLeUUk=
+vitra.scenery.css: sha256-mJ+l8rOUNiZQzZXKjpyxtLxFVL4KUqGdEHUK2kfkp0Y=
+vitra.scenery.min.css: sha256-iCmCgZ0clZqZcnlK1t2YVQqSf0LmVD8+pqPA9MLAn+E=
+vitra.effects.css: sha256-D9fvTDJC/nKfkFdfF93txB8A3jTJRb3ePtOUYsm0orU=
+vitra.effects.min.css: sha256-garXeDa1FVvLFlPb7E1PFC4zE+t0Fq4ANI3T6PQjlSs=

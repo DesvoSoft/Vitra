@@ -10,11 +10,20 @@
 /* Tokens layer - immutable design tokens */
 @layer tokens {
   :root {
+    /* Lightness of the animated gradient text; light themes darken it */
+    --vitra-gradient-text-l: 55%;
+
     /* ============================================
        CORE TOKENS - Vitra CSS Framework
        All tokens use --vitra- prefix
        Immutable: defined once, overridden only in themes
        ============================================ */
+
+    /* The token defaults below are the dark palette. Without this a page
+       with no data-theme resolved light-dark() to its light branch and
+       drew light form controls/scrollbars on a dark page. Every
+       html[data-theme] block sets its own value. */
+    color-scheme: dark;
 
     /* --- Colors (HSL System for flexibility) --- */
     --vitra-color-accent-h: 177;
@@ -61,6 +70,11 @@
     --vitra-color-surface-active: hsl(var(--vitra-color-accent-h) 20% 95% / 12%);
     --vitra-color-border: hsl(var(--vitra-color-accent-h) 20% 95% / 10%);
     --vitra-color-border-hover: hsl(var(--vitra-color-accent-h) 20% 95% / 20%);
+
+    /* Border of an interactive control (input, select, switch): the one
+       border that must reach 3:1 against the page. --vitra-color-border
+       stays the quiet decorative line of cards and panels. */
+    --vitra-color-border-control: hsl(var(--vitra-color-accent-h) 20% 95% / 37%);
 
     /* Text */
     --vitra-color-text-primary: hsl(0deg 0% 100% / 95%);

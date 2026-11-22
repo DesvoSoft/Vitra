@@ -96,9 +96,25 @@
     will-change: transform, opacity;
   }
 
+  /* will-change only while the element waits to be revealed: kept after
+     that, every revealed card would hold a compositor layer forever. */
   .vitra-revealed {
     opacity: 1 !important;
     transform: translateY(0) scale(1) !important;
+    will-change: auto;
+  }
+
+  /* The directional variants below carry a keyframe animation with
+     fill-mode: both, which shows them at load on a page that never calls
+     reveal.init() (as in 1.13.5). reveal.init() holds that animation inline
+     on the elements it watches, until each is revealed. */
+
+  /* No script, no observer: never leave content hidden. */
+  @media (scripting: none) {
+    .vitra-reveal {
+      opacity: 1;
+      transform: none;
+    }
   }
 
   /* Reveal Up - fade in while sliding up */
@@ -203,11 +219,13 @@
   /* Hover Lift - subtle upward translation */
   .vitra-hover-lift {
     transition: transform var(--vitra-duration-normal, 250ms) var(--vitra-ease-out, cubic-bezier(0, 0, 0.2, 1));
-    will-change: transform;
   }
 
-  .vitra-hover-lift:hover {
-    transform: translateY(-4px);
+  /* hover: hover keeps the lift from sticking after a tap on touch screens */
+  @media (hover: hover) {
+    .vitra-hover-lift:hover {
+      transform: translateY(-4px);
+    }
   }
 
   .vitra-hover-lift:focus-visible {
@@ -383,10 +401,10 @@
   .vitra-gradient-text {
     background: linear-gradient(
       135deg,
-      hsl(var(--vitra-color-accent-h) 85% 55%),
-      hsl(calc(var(--vitra-color-accent-h) + 40) 85% 50%),
-      hsl(calc(var(--vitra-color-accent-h) - 20) 85% 55%),
-      hsl(var(--vitra-color-accent-h) 85% 55%)
+      hsl(var(--vitra-color-accent-h) 85% var(--vitra-gradient-text-l)),
+      hsl(calc(var(--vitra-color-accent-h) + 40) 85% calc(var(--vitra-gradient-text-l) - 5%)),
+      hsl(calc(var(--vitra-color-accent-h) - 20) 85% var(--vitra-gradient-text-l)),
+      hsl(var(--vitra-color-accent-h) 85% var(--vitra-gradient-text-l))
     );
     background-size: 300% 300%;
     background-clip: text;
@@ -403,30 +421,10 @@
   }
 
   /* Light theme: darken gradient text for contrast on light bg */
-  html[data-theme="light"] .vitra-gradient-text {
-    background: linear-gradient(
-      135deg,
-      hsl(var(--vitra-color-accent-h) 85% 35%),
-      hsl(calc(var(--vitra-color-accent-h) + 40) 85% 30%),
-      hsl(calc(var(--vitra-color-accent-h) - 20) 85% 35%),
-      hsl(var(--vitra-color-accent-h) 85% 35%)
-    );
-    background-size: 300% 300%;
-    background-clip: text;
-  }
 
-  @media (prefers-color-scheme: light) {
-    html[data-theme="auto"] .vitra-gradient-text {
-      background: linear-gradient(
-        135deg,
-        hsl(var(--vitra-color-accent-h) 85% 35%),
-        hsl(calc(var(--vitra-color-accent-h) + 40) 85% 30%),
-        hsl(calc(var(--vitra-color-accent-h) - 20) 85% 35%),
-        hsl(var(--vitra-color-accent-h) 85% 35%)
-      );
-      background-size: 300% 300%;
-      background-clip: text;
-    }
+  /* @vitra-auto-mirror light */
+  html[data-theme="light"] .vitra-gradient-text {
+    --vitra-gradient-text-l: 35%;
   }
 
   /* --- Animated Gradient Border --- */
@@ -441,13 +439,20 @@
     overflow: hidden;
   }
 
+  /* The spinning layer is a square centred on the host, 1.5x its longer
+     side (more than its diagonal), so every angle of the turn covers all
+     four corners. A 200% x 200% rectangle only did while the host was at
+     most 1.73x wider than tall: on a 600x60 bar it left the ends bare.
+     min-width/min-height with aspect-ratio give the larger of the two. */
   .vitra-border-glow::before {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
+    top: 50%;
+    left: 50%;
+    min-width: 150%;
+    min-height: 150%;
+    aspect-ratio: 1;
+    translate: -50% -50%;
     z-index: -2;
     background: conic-gradient(
       from var(--vitra-border-glow-angle, 0deg),
@@ -561,18 +566,26 @@
      ============================================ */
 
   .vitra-tilt-card {
-    perspective: 1000px;
+    /* perspective() lives in the transform itself: the `perspective`
+       property only affects children, so the card's own tilt rendered
+       as a flat squash. */
+    transform: perspective(1000px);
     transform-style: preserve-3d;
     transition: transform var(--vitra-duration-normal) var(--vitra-ease-luxury);
-    will-change: transform;
   }
 
-  .vitra-tilt-card:hover {
-    transform: rotateX(4deg) rotateY(-4deg);
+  @media (hover: hover) {
+    .vitra-tilt-card:hover {
+      transform: perspective(1000px) rotateX(4deg) rotateY(-4deg);
+    }
+  }
+
+  .vitra-tilt-card:focus-visible {
+    transform: perspective(1000px) rotateX(4deg) rotateY(-4deg);
   }
 
   .vitra-tilt-card:active {
-    transform: rotateX(2deg) rotateY(-2deg) scale(0.98);
+    transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) scale(0.98);
   }
 
   /* ============================================
@@ -689,7 +702,6 @@
 
   .vitra-text-reveal {
     animation: vitra-text-reveal 0.8s var(--vitra-ease-luxury) both;
-    will-change: clip-path;
   }
 
   /* ============================================

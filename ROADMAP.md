@@ -1,7 +1,7 @@
 # Vitra CSS Framework — Roadmap
 
-**Current version:** v1.13.5  
-**Last updated:** 2026-07-14
+**Current version:** v1.14.0  
+**Last updated:** 2026-11-17
 
 ---
 
@@ -129,7 +129,8 @@ All 29 audit findings are now closed. (Note: findings 12's dead-token removal �
 
 | # | Priority | Area | Issue |
 |---|----------|------|-------|
-| R7 | Low | `src/vitra.js` | `theme` module is a plain object literal, not a closure — its `_getSystemTheme`/`_isLocalStorageAvailable`/`_watchSystemTheme` "private" helpers leak as real enumerable own-properties on `Vitra.theme`, unlike every other module's closure-scoped-private pattern |
+| R7 | Low | `src/vitra.js` | `theme` module is a plain object literal, not a closure — its `_transition`/`_persist`/`_canTransition`/`_reveal`/`_getSystemTheme` "private" members (`_transition` and `_persist` are new in 1.14) leak as real enumerable own-properties on `Vitra.theme`, unlike every other module's closure-scoped-private pattern (`_watchSystemTheme` and `_isLocalStorageAvailable` were removed in 1.14) |
+| G1 | Medium | `src/08-shaders.css` | `.vitra-gradient-rotate` animates a registered custom property and repaints every frame while on screen (paused offscreen since 1.14); rotating it with `transform`, as `.vitra-border-glow` now does, is the follow-up |
 | D1 | Medium | demo | Heavy particle/cinematic sections not paused off-screen — can drop frames on mobile |
 | D2 | Low | demo | `demo.js` parses CSS custom props with string replace — breaks on nested vars |
 
@@ -155,12 +156,34 @@ All 29 audit findings are now closed. (Note: findings 12's dead-token removal �
 
 ---
 
+## v1.14 — Component Contract, CSS Pieces & Test Net ✅
+
+A rigor release: every component checked against one contract (themes, keyboard, touch, reduced motion, no-JS, screen-reader attributes; exceptions in the changelog) and a browser test suite that keeps it so. Details and measured numbers in [CHANGELOG.md](CHANGELOG.md).
+
+**New features:**
+- **`Vitra.drawer`** (`open`/`close`/`toggle`/`init`/`destroy`, `data-vitra-drawer-toggle`): focus trap, `inert` while closed, `aria-expanded`, Esc, overlay, shared scroll lock
+- **CSS pieces**: `vitra.core`, `vitra.scenery` and `vitra.effects` (`.css` + `.min.css`) next to the unchanged bundle, each with an `exports` entry, a size budget and an SRI line
+- **ES module with named exports**, `dist/vitra.cjs`, typings from `src/vitra.d.ts`; `package.json` `style` is the minified file
+- `.vitra-checkbox`, toast `warning` type and close button, dropdown arrow-key navigation, CSS-only tooltip (`data-tooltip`), `motionGuard.observe()`, `Vitra.toast.init()`
+
+**Fixes:**
+- `.vitra-glass` border renders; `auto` theme generated from `light`/`dark` (`@vitra-auto-mirror`); component colours are theme tokens only; contrast thresholds met in every theme via `--vitra-color-border-control`
+- Modal, tooltip, toast, dropdown and theme edge cases; touch targets, overflow at 360 px, hover-only lifts
+- Progress bar stripes and indeterminate ring animate `transform`; `motionGuard` covers every infinite loop
+
+**Infrastructure:** kitchen-sink page (`tests/kitchen-sink.html`), Playwright + axe-core specs in Chromium and Firefox, CI job for them. Budgets: `vitra.min.js` 6 → 7.5 kB brotli (measured 7.32), `vitra.min.css` 20 kB (18.87).
+
+**Not verified in 1.14:** Safari/WebKit, real-device touch, screen readers; performance figures are headless and relative.
+
+---
+
 ## v2.0 — Future
 
 - TypeScript type definitions (`vitra.d.ts`)
 - CSS Layers exposed for consumer override documentation
 - CSS custom properties for animation durations per-component
 - `Vitra.destroyAll()` comprehensive teardown
+- `Vitra.tabs` keyboard module (roles, roving tabindex, arrow keys, Home/End): deferred from 1.14 for bundle-size reasons; until then tabs ship CSS only and the ARIA markup is documented
 - npm publish for shorter CDN URLs (`cdn.jsdelivr.net/npm/vitra-css@latest/...`)
 
 ---

@@ -1,17 +1,21 @@
 {
   "name": "vitra-css",
-  "version": "1.13.5",
+  "version": "1.14.0",
   "description": "A lightweight, zero-dependency CSS framework focused on glassmorphism, directional particles, ambient scenery, and smooth motion",
-  "main": "dist/vitra.js",
+  "main": "dist/vitra.cjs",
   "module": "dist/vitra.esm.js",
-  "style": "dist/vitra.css",
+  "style": "dist/vitra.min.css",
   "types": "dist/vitra.d.ts",
   "exports": {
     ".": {
-      "style": "./dist/vitra.css",
+      "types": "./dist/vitra.d.ts",
+      "style": "./dist/vitra.min.css",
       "import": "./dist/vitra.esm.js",
-      "require": "./dist/vitra.js"
+      "require": "./dist/vitra.cjs"
     },
+    "./core.css": "./dist/vitra.core.min.css",
+    "./scenery.css": "./dist/vitra.scenery.min.css",
+    "./effects.css": "./dist/vitra.effects.min.css",
     "./dist/*": "./dist/*"
   },
   "files": [
@@ -20,18 +24,30 @@
     "LICENSE",
     "README.md"
   ],
+  "sideEffects": [
+    "./dist/*.js",
+    "./dist/*.cjs",
+    "./src/vitra.js",
+    "./src/vitra.iife.js",
+    "*.css"
+  ],
   "scripts": {
     "build:css": "node scripts/build-css.js",
-    "build:js": "esbuild src/vitra.js --bundle --outfile=dist/vitra.js --format=iife --global-name=Vitra --sourcemap && esbuild src/vitra.js --bundle --minify --outfile=dist/vitra.min.js --format=iife --global-name=Vitra --sourcemap",
+    "build:js": "esbuild src/vitra.iife.js --bundle --outfile=dist/vitra.js --format=iife --sourcemap && esbuild src/vitra.iife.js --bundle --minify --outfile=dist/vitra.min.js --format=iife --sourcemap",
     "build:esm": "esbuild src/vitra.js --bundle --outfile=dist/vitra.esm.js --format=esm --sourcemap",
-    "build": "npm run build:css && npm run build:js && npm run build:esm",
+    "build:cjs": "esbuild src/vitra.js --bundle --outfile=dist/vitra.cjs --format=cjs --sourcemap",
+    "build:types": "node -e \"require('fs').copyFileSync('src/vitra.d.ts','dist/vitra.d.ts')\"",
+    "build": "npm run build:css && npm run build:js && npm run build:esm && npm run build:cjs && npm run build:types",
     "postbuild": "node generate-sri.js > dist/SRI.txt",
     "prepublishOnly": "npm test && npm run build",
     "dev": "npx serve .",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "stylelint \"src/**/*.css\" --fix",
-    "size": "size-limit"
+    "size": "size-limit",
+    "test:unit": "vitest run",
+    "test:browser": "playwright test",
+    "test:types": "npx -y -p typescript@5 tsc --noEmit -p tests/types/tsconfig.json"
   },
   "size-limit": [
     {
@@ -39,19 +55,39 @@
       "limit": "20 kB"
     },
     {
+      "path": "dist/vitra.core.min.css",
+      "limit": "13.5 kB"
+    },
+    {
+      "path": "dist/vitra.scenery.min.css",
+      "limit": "5.5 kB"
+    },
+    {
+      "path": "dist/vitra.effects.min.css",
+      "limit": "2.5 kB"
+    },
+    {
       "path": "dist/vitra.min.js",
-      "limit": "6 kB"
+      "limit": "7.5 kB"
     },
     {
       "path": "dist/vitra.esm.js",
-      "limit": "8.5 kB"
+      "limit": "10.6 kB"
+    },
+    {
+      "path": "dist/vitra.cjs",
+      "limit": "10.6 kB"
     }
   ],
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.65.1",
     "@size-limit/file": "^14.1.0",
     "esbuild": "^0.28.2",
     "jsdom": "^30.1.2",
     "lightningcss": "^1.33.0",
+    "postcss": "^8.5.33",
+    "serve": "^14.2.8",
     "size-limit": "^14.1.0",
     "stylelint": "^17.16.0",
     "stylelint-config-standard": "^40.0.0",
@@ -78,5 +114,5 @@
   "bugs": {
     "url": "https://github.com/DesvoSoft/Vitra/issues"
   },
-  "homepage": "https://vitra-css.dev"
+  "homepage": "https://desvosoft.github.io/Vitra/"
 }

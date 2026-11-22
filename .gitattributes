@@ -1,0 +1,4 @@
+# dist/ is published exactly as committed (npm, jsDelivr). Keep the working
+# copy byte-identical to the blob on every platform, so the hashes in
+# dist/SRI.txt are the hashes of what is served. Scoped to dist/ only.
+dist/** text eol=lf

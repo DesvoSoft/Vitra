@@ -83,6 +83,8 @@
   /* NOTE: plain attribute selectors, not :where() - the token defaults
      above live on :root (specificity 0,1,0) and a zero-specificity
      :where() can never override them. */
+
+  /* @vitra-auto-mirror light */
   [data-theme="light"],
   [data-theme="pastel"] {
     --vitra-scenery-opacity-far: 0.78;
@@ -167,6 +169,8 @@
 
   /* Light schemes: golden hour - same structure, brighter values,
      stronger warm presence against the pale sky */
+
+  /* @vitra-auto-mirror light */
   :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-sky {
     background:
       radial-gradient(
@@ -233,6 +237,8 @@
   }
 
   /* Light schemes: bright wisps, warm-white against the pale sky */
+
+  /* @vitra-auto-mirror light */
   :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-clouds {
     background: linear-gradient(
       to top,
@@ -280,10 +286,11 @@
     height: 68%;
     visibility: hidden;
 
-    /* The ONLY animation on this element's opacity. A second one on the
-       same property - an entrance fade was tried - makes Chromium run
-       both on the main thread: a style recalc on every frame, forever. */
-    animation: vitra-scenery-twinkle 8s steps(4) infinite;
+    /* The twinkle animation is declared with the visibility rules further
+       down, so a layer hidden by the theme does not animate. It is the ONLY
+       animation on this element's opacity: a second one on the same
+       property - an entrance fade was tried - makes Chromium run both on
+       the main thread: a style recalc on every frame, forever. */
     will-change: opacity;
   }
 
@@ -371,7 +378,8 @@
     opacity: 0;
     transform-origin: 0 0;
     transform: translate(66cqw, 14cqh) rotate(-35deg) translateX(0) scaleX(1);
-    animation: vitra-scenery-shooting-star 34s linear 4s infinite;
+
+    /* The animation is declared with the visibility rules below. */
   }
 
   @keyframes vitra-scenery-shooting-star {
@@ -390,33 +398,32 @@
     100% { transform: translate(40cqw, 8cqh) rotate(-18deg) translateX(-420px) scaleX(1.44); opacity: 0; }
   }
 
-  :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"]) .vitra-scenery-stars {
+  /* Stars appear in every dark-scheme theme and on a page with no theme at
+     all (the :root defaults are the dark palette). The no-theme selector
+     carries no theme attribute for light/dark, so mirrorAuto drops it from
+     the `auto` copy and keeps only the first selector of each list;
+     :where() keeps it at zero specificity, like the theme list.
+     Each layer's animation lives in the same rule as its visibility, so a
+     layer the theme hides never animates. */
+
+  /* @vitra-auto-mirror dark */
+  :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"], [data-theme="emerald"]) .vitra-scenery-stars,
+  :where(:root:not([data-theme])) .vitra-scenery-stars {
+    visibility: visible;
+    animation: vitra-scenery-twinkle 8s steps(4) infinite;
+  }
+
+  /* @vitra-auto-mirror dark */
+  :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"], [data-theme="emerald"]) .vitra-scenery-sky::before,
+  :where(:root:not([data-theme])) .vitra-scenery-sky::before {
     visibility: visible;
   }
 
-  :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"]) .vitra-scenery-sky::before,
-  :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"]) .vitra-scenery-sky::after {
+  /* @vitra-auto-mirror dark */
+  :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"], [data-theme="emerald"]) .vitra-scenery-sky::after,
+  :where(:root:not([data-theme])) .vitra-scenery-sky::after {
     visibility: visible;
-  }
-
-  html[data-theme="auto"] .vitra-scenery-stars {
-    visibility: hidden;
-  }
-
-  html[data-theme="auto"] .vitra-scenery-sky::before,
-  html[data-theme="auto"] .vitra-scenery-sky::after {
-    visibility: hidden;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    html[data-theme="auto"] .vitra-scenery-stars {
-      visibility: visible;
-    }
-
-    html[data-theme="auto"] .vitra-scenery-sky::before,
-    html[data-theme="auto"] .vitra-scenery-sky::after {
-      visibility: visible;
-    }
+    animation: vitra-scenery-shooting-star 34s linear 4s infinite;
   }
 
   /* --- HALO LAYER (sun / moon) --- */
@@ -492,6 +499,8 @@
      Lightness dropped well below the pale sky (97%) instead of sitting
      a few points above it - a sun needs to read as a saturated disc,
      not a paler patch of the same sky. */
+
+  /* @vitra-auto-mirror light */
   :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-halo {
     background: radial-gradient(
       circle at 45% 40%,
@@ -501,6 +510,7 @@
     box-shadow: 0 0 34px 12px hsl(var(--vitra-scenery-warm-h) calc(var(--vitra-scenery-sat) * 0.9) 60% / 55%);
   }
 
+  /* @vitra-auto-mirror light */
   :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-halo::after {
     background: radial-gradient(
       closest-side,
@@ -649,6 +659,8 @@
      no depth. Lower the lightness further and raise both saturation
      and alpha so each ridge reads as a solid, richly-colored mass
      instead of a translucent haze over pale grey. */
+
+  /* @vitra-auto-mirror light */
   :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-ridge-far::after {
     background: linear-gradient(
       to bottom,
@@ -658,6 +670,7 @@
     );
   }
 
+  /* @vitra-auto-mirror light */
   :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-ridge-mid::after {
     background: linear-gradient(
       to bottom,
@@ -667,6 +680,7 @@
     );
   }
 
+  /* @vitra-auto-mirror light */
   :where([data-theme="light"], [data-theme="pastel"]) .vitra-scenery-ridge-near::after {
     background: linear-gradient(
       to bottom,
@@ -900,7 +914,9 @@
       to { translate: 0 calc(3cqh * var(--vitra-scenery-depth)); }
     }
 
-    .vitra-scenery-inline > .vitra-scenery-stars {
+    /* @vitra-auto-mirror dark */
+    :where([data-theme="dark"], [data-theme="neon"], [data-theme="ocean"], [data-theme="emerald"]) .vitra-scenery-inline > .vitra-scenery-stars,
+    :where(:root:not([data-theme])) .vitra-scenery-inline > .vitra-scenery-stars {
       animation:
         vitra-scenery-twinkle 8s steps(4) infinite,
         vitra-scenery-depth-sky linear both;
