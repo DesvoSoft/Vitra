@@ -357,6 +357,23 @@ kbd {
 }
 
 /* 44 px rows: the drawer is the touch menu */
+/* A navigation panel sits over arbitrary page content. The translucent
+   glass let the hero show through the links wherever the blur does not
+   render; the menu glass is 88-92% opaque and stays legible either way. */
+.vitra-drawer.docs-drawer {
+  background: var(--vitra-glass-bg-menu);
+}
+
+.docs-drawer .vitra-drawer-close {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+/* Room under the last link, and the phone's gesture bar */
+.docs-drawer .vitra-drawer-body {
+  padding-bottom: max(var(--vitra-space-6), env(safe-area-inset-bottom));
+}
+
 .docs-drawer .vitra-drawer-link {
   box-sizing: border-box;
   min-height: 44px;

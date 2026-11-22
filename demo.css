@@ -43,6 +43,15 @@ body {
   overflow-x: clip;
 }
 
+/* Vitra locks scrolling with overflow: hidden on <body>. Because the root
+   above sets its own overflow, the body value no longer reaches the
+   viewport and the page kept scrolling behind an open drawer or modal.
+   Lock the root itself while one is open. */
+html:has(.vitra-drawer.open),
+html:has(.vitra-modal.vitra-modal-open) {
+  overflow: hidden;
+}
+
 body {
   background-color: var(--vitra-color-bg);
   min-height: 100vh;
@@ -935,6 +944,23 @@ kbd {
 .demo-drawer .vitra-drawer-link {
   box-sizing: border-box;
   min-height: 44px;
+}
+
+/* A navigation panel sits over arbitrary page content. The translucent
+   glass let the hero show through the links wherever the blur does not
+   render; the menu glass is 88-92% opaque and stays legible either way. */
+.vitra-drawer.demo-drawer {
+  background: var(--vitra-glass-bg-menu);
+}
+
+.demo-drawer .vitra-drawer-close {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+/* Room under the last link, and the phone's gesture bar */
+.demo-drawer .vitra-drawer-body {
+  padding-bottom: max(var(--vitra-space-6), env(safe-area-inset-bottom));
 }
 
 /* A menu link moves focus to its section (tabindex=-1): no ring on the
